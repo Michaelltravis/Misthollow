@@ -758,6 +758,18 @@ export function createHud() {
     clearTimeout(bannerTimer);
     bannerTimer = setTimeout(() => { els.banner.style.opacity = 0; }, zone ? 3200 : 1800);
   }
+  // the world's news, large and gilded for a few seconds: an achievement, a rare creature sighted
+  let heraldTimer = 0;
+  function herald({ kicker = '', title = '', sub = '', tone = '' } = {}) {
+    const el = document.getElementById('herald');
+    if (!el) return toast(`${kicker} ${title}`);
+    el.className = `hud on ${tone}`;
+    el.querySelector('.hd-k').textContent = kicker;
+    el.querySelector('.hd-t').textContent = title;
+    el.querySelector('.hd-s').textContent = sub;
+    clearTimeout(heraldTimer);
+    heraldTimer = setTimeout(() => { el.className = `hud ${tone}`; }, 5200);
+  }
   function toast(msg, ms = 2900) {
     if (!msg) return;
     sound.play('toast');
@@ -1105,6 +1117,6 @@ export function createHud() {
   // whisper someone: the chat input set to tell them
   function whisper(name) { tellFrom = name; setMode('tell'); els.input.focus(); }
 
-  return { showGame, setPlayer, setTarget, setCharges, noteAilment, reward, targetCast, moment, fallen, suggestStrike, setRanges, setDistance, banner, toast, log, targetSkills, useAbility, prefill, openPanel, openTrainer, openShop, openTalk, closeTalk, lootwin, giveTo, flashSlot,
+  return { showGame, setPlayer, setTarget, setCharges, noteAilment, reward, targetCast, moment, fallen, suggestStrike, setRanges, setDistance, banner, herald, toast, log, targetSkills, useAbility, prefill, openPanel, openTrainer, openShop, openTalk, closeTalk, lootwin, giveTo, flashSlot,
     spellbook, unslot, party, quest, whisper, get player() { return st.player; }, get bar() { return st.bar.slice(); } };
 }

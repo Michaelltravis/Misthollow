@@ -9,6 +9,7 @@ from typing import Dict, Tuple, Set, List, Optional
 
 from config import Config
 from affects import AffectManager
+import nodes as _nodes
 
 DIR_OFFSETS = {
     'north': (0, -1, 0),
@@ -855,6 +856,8 @@ def _wards(entity):
             out.add(key)
     if (getattr(entity, 'blinded_rounds', 0) or 0) > 0:      # sand in the eyes (Pocket Sand)
         out.add('blinded')
+    if getattr(entity, 'elite', False):                       # a rare (elites.py): its gold glow
+        out.add('elite')
     return sorted(out)
 
 
@@ -1811,7 +1814,11 @@ def _nearby_entities(player, radius: int = 3) -> list:
         if not r:
             continue
         mobs, players, doors, items = _room_entities(r, v, player)
-        out.append({'vnum': v, 'mobs': mobs, 'players': players, 'doors': doors, 'items': items})
+        entry = {'vnum': v, 'mobs': mobs, 'players': players, 'doors': doors, 'items': items}
+        node = _nodes.payload(r)            # a herb patch or ore vein (nodes.py)
+        if node:
+            entry['node'] = node
+        out.append(entry)
     return out
 
 

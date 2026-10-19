@@ -359,6 +359,8 @@
         else if (payload.type === 'revoked') { MH.state.leaving = true; MH.bus.emit('session.revoked', payload); }
         // the marquee quest (marquee.py): quest_offer / quest_embark / quest_stage / quest_done
         else if (typeof payload.type === 'string' && payload.type.startsWith('quest_')) MH.bus.emit(`quest.${payload.type.slice(6)}`, payload);
+        // the world's news for this player (docs/GAMEPLAY_POLISH.md): world_rare (elites.py), world_achievement
+        else if (typeof payload.type === 'string' && payload.type.startsWith('world_')) MH.bus.emit(`world.${payload.type.slice(6)}`, payload);
       } catch (err) {
         console.warn('map socket parse error', err);
       }

@@ -696,6 +696,47 @@ async def main():
     p_w = map_system.build_map_payload(sayer, mode='zone')
     check(isinstance(p_w.get('weather'), dict) and 'sky' in p_w.get('weather', {}), 'the payload carries the zone\'s weather for /play to draw')
 
+    # reasons to keep playing (docs/GAMEPLAY_POLISH.md group 4)
+    import nodes, elites, bounties, crafting
+    from quests import QUEST_DEFINITIONS
+    from achievements import AchievementManager
+    spot_room = next(r for r in world.rooms.values() if (nodes.node_of(r) or {}).get('k') == 'herb' and not r.characters)
+    n1, n2 = nodes.node_of(spot_room), nodes.node_of(spot_room)
+    check(n1 == n2 and 3 <= n1['x'] <= 21 and 3 <= n1['z'] <= 12, f'a herb patch sits in the same place for everyone ({spot_room.vnum}: {n1})')
+    picker = Player.create_new(name='Picker', password=None, race='human', char_class='ranger',
+                               stats={s: 16 for s in ('str', 'int', 'wis', 'dex', 'con', 'cha')}, world=world)
+    picker.world, picker.room, picker.move, picker.inventory = world, spot_room, 100, []
+    heard.clear()
+    picker.send = hear
+    was_ri = _rnd.randint
+    _rnd.randint = lambda a, b: b          # (the worst luck: an ordinary forage would fail)
+    try:
+        await crafting.cmd_forage(picker, [])
+    finally:
+        _rnd.randint = was_ri
+    check(len(picker.inventory) == 2 and not nodes.ready(spot_room), f'a herb patch gives surely and twice, then is spent ({len(picker.inventory)} found)')
+    entry = next(e for e in map_system._nearby_entities(picker) if e['vnum'] == spot_room.vnum)
+    check(entry.get('node', {}).get('ready') is False, 'and /play is told it is spent')
+    spot_room.node_ready_at = 0
+    beast = next(m for m in world.npcs if elites.eligible(m))
+    hp0 = beast.max_hp
+    name = elites.promote(beast, world, 'grizzled')
+    check(beast.elite and beast.max_hp == int(hp0 * 2.5) and 'grizzled' in name and 'elite' in map_system._wards(beast),
+          f'a rare elite: its own name, tougher, a gold glow in /play ({name})')
+    bounties._day = None
+    bounties.refresh(world)
+    posted = [QUEST_DEFINITIONS[q]['name'] for q, *_ in bounties.BANDS if q in QUEST_DEFINITIONS]
+    check(len(posted) == 3 and all(QUEST_DEFINITIONS[q].get('daily') for q, *_ in bounties.BANDS),
+          f'the bounty board posts three named daily bounties ({posted})')
+    reader = Player.create_new(name='Reader', password=None, race='human', char_class='mage',
+                               stats={s: 16 for s in ('str', 'int', 'wis', 'dex', 'con', 'cha')}, world=world)
+    reader.world, reader.room = world, here
+    reader.send = hear
+    import journal
+    for i in range(10):
+        await journal.JournalManager.discover_creature(reader, f'test{i}', f'creature {i}', 'seen', silent=True)
+    check('bestiary_10' in (getattr(reader, 'achievements', None) or {}), 'ten creatures catalogued: the bestiary\'s first milestone, rewarded')
+
     print(f"\n{'ALL OK' if not FAILED else f'{len(FAILED)} FAILED'}")
     sys.exit(1 if FAILED else 0)
 
