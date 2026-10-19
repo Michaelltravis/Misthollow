@@ -171,15 +171,43 @@ def hat(pal):
     return join('Archmage_Hat', [crown, brim, band, gem, setting, charm, cord])
 
 
-def beard(pal):
-    rings = [(0, -0.47, 0.66, 0, 0), (0, -0.47, 0.74, 0.08, 0.06), (0, -0.49, 0.86, 0.2, 0.12), (0, -0.51, 1.0, 0.3, 0.16),
-             (0, -0.52, 1.14, 0.38, 0.18), (0, -0.52, 1.28, 0.42, 0.17), (0, -0.49, 1.40, 0.4, 0.12)]
-    b = shell('beard', rings, segs=12, cap_hi=True, wave=lambda a, i: 0.07 * math.sin(5 * a) if 1 <= i <= 4 else 0)
-    pal.paint_ramp(b, 'beard')
-    parts = [b]
-    for s in (-1, 1):
-        m = ball(f'moustache{s}', (s * 0.14, -0.6, 1.39), 0.1, scale=(1.5, 0.6, 0.55), sub=2)
-        m.rotation_euler = (0, s * math.radians(-22), 0)
+def beard(pal, head):
+    """Grown from the face: the jaw and cheeks of the mage's own head, lifted a little off the skin
+    and given thickness (so it hugs the face, with sideburns up the sides), and from under the chin
+    a long beard hanging over the chest; a moustache over the mouth."""
+    bm = bmesh.new()
+    bm.from_mesh(head.data)
+    bm.transform(head.matrix_world)
+
+    def keep(f):
+        c = f.calc_center_median()
+        ax = min(1.0, abs(c.x) / 0.45)
+        return c.y < -0.05 and 1.18 < c.z < 1.37 + 0.16 * ax
+    bmesh.ops.delete(bm, geom=[f for f in bm.faces if not keep(f)], context='FACES')
+    bmesh.ops.delete(bm, geom=[v for v in bm.verts if not v.link_faces], context='VERTS')
+    bm.normal_update()
+    for v in bm.verts:
+        v.co += v.normal * 0.035
+    me = bpy.data.meshes.new('jaw')
+    bm.to_mesh(me)
+    bm.free()
+    jaw = scene.link(bpy.data.objects.new('jaw', me))
+    sol = jaw.modifiers.new('thick', 'SOLIDIFY')
+    sol.thickness = 0.03
+    sol.offset = -1
+    scene.select_only(jaw)
+    bpy.ops.object.modifier_apply(modifier='thick')
+    for p in me.polygons:
+        p.use_smooth = True
+    pal.paint(jaw, 'beard')
+    rings = [(0, -0.46, 0.66, 0, 0), (0, -0.47, 0.75, 0.08, 0.06), (0, -0.49, 0.86, 0.2, 0.11), (0, -0.5, 1.0, 0.3, 0.14),
+             (0, -0.47, 1.16, 0.34, 0.15), (0, -0.38, 1.3, 0.28, 0.12)]
+    hang = shell('beard', rings, segs=12, cap_hi=True, wave=lambda a, i: 0.07 * math.sin(5 * a) if 1 <= i <= 4 else 0)
+    pal.paint_ramp(hang, 'beard')
+    parts = [jaw, hang]
+    for sd in (-1, 1):
+        m = ball(f'moustache{sd}', (sd * 0.12, -0.47, 1.36), 0.09, scale=(1.5, 0.55, 0.5), sub=2)
+        m.rotation_euler = (0, sd * math.radians(-24), 0)
         pal.paint(m, 'beard')
         parts.append(m)
     return join('Archmage_Beard', parts)
@@ -304,6 +332,31 @@ def staff(pal, kay_staff):
     return join('Archmage_Staff', [sh, mo, orb])
 
 
+def closeup(body, name, out):
+    """The face from the front, three-quarters and the side, close: does the beard grow from it?"""
+    import importlib
+    import numpy as np
+    pvmod = importlib.import_module('mhb.preview')   # (the package's `preview` is the function)
+    s = bpy.context.scene                            # lit and floored already by preview()
+    s.render.resolution_x = s.render.resolution_y = 400
+    tiles = []
+    tmp = os.path.join(out, f'.{name}_close.png')
+    for yaw in (0, 35, 75):
+        c = pvmod._camera(Vector((0, 0, 1.45)), 2.4, yaw, 6)
+        s.render.filepath = tmp
+        bpy.ops.render.render(write_still=True)
+        img = bpy.data.images.load(tmp, check_existing=False)
+        tiles.append(np.array(img.pixels[:], dtype=np.float32).reshape(400, 400, 4))
+        bpy.data.images.remove(img)
+        bpy.data.objects.remove(c)
+    grid = np.concatenate(tiles, axis=1)
+    img = bpy.data.images.new(f'{name}_close', grid.shape[1], grid.shape[0])
+    img.pixels = grid.ravel()
+    img.filepath_raw = os.path.join(out, f'{name}_closeup.png')
+    img.file_format = 'PNG'
+    img.save()
+
+
 def main():
     opts = scene.args()
     variant = opts['variant'] or 'blue'
@@ -317,7 +370,7 @@ def main():
         'beard': [v['beard'], v['beard'], '#b9b2a6'], 'glow': v['glow'], 'leather': '#6a4a2e', 'wood': ['#8a6a44', '#6b4a2e', '#4a3220'],
     })
     pieces = {
-        'Archmage_Hat': (hat(pal), 'head'), 'Archmage_Beard': (beard(pal), 'head'), 'Archmage_Mantle': (mantle(pal), 'chest'),
+        'Archmage_Hat': (hat(pal), 'head'), 'Archmage_Beard': (beard(pal, bpy.data.objects['Mage_Head']), 'head'), 'Archmage_Mantle': (mantle(pal), 'chest'),
         'Archmage_Cuff_L': (cuff(pal, 1), 'lowerarm.l'), 'Archmage_Cuff_R': (cuff(pal, -1), 'lowerarm.r'),
         'Archmage_Sash': (sash(pal), 'hips'), 'Archmage_Staff': (staff(pal, kay_staff), 'handslot.r'),
         'Archmage_Robe': (robe(pal), None),
@@ -347,6 +400,7 @@ def main():
         body = dup[0]
         poses = (('Idle_Rig', 0), ('Walking_A_Rig', 8), ('Spellcast_Shoot_Rig', 14), ('Spellcasting_Rig', 10), ('Running_A_Rig', 6))
         preview(arm, body, f'archmage_{variant}', opts['out'], size=360, samples=10, poses=poses)
+        closeup(body, f'archmage_{variant}', opts['out'])
 
 
 main()
