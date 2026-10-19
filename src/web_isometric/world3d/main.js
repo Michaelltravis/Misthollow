@@ -5,7 +5,9 @@ import * as THREE from 'three';
 // a zone's light, read from its rooms' words (zone_tone.py)
 const TONE_LIGHT = { ghost: 0x9affb0, moon: 0xa8bcff, fire: 0xffb070 };
 import { createEngine } from './engine.js';
-import { loadKit } from './assets.js';
+import { loadKit, GRASS } from './assets.js';
+import { WeatherView, weatherKind } from './weather.js';
+import { Wildlife } from './wildlife.js';
 import { Zone, fetchZonemap, REV } from './zone.js';
 import { ROOM_W, ROOM_H, LABEL_FADE } from './terrain.js';
 import { Controller, findPath } from './controller.js';
@@ -45,6 +47,9 @@ import { FAR, farKind } from './far.js';
 
 const $ = s => document.querySelector(s);
 const WATER_TILE = 4;   // zone.js / terrain.js tile kinds
+// where no sky reaches: no weather, no birds (weather.js, wildlife.js)
+const UNDER_SKY = new Set(['inside', 'web', 'necropolis', 'sewer', 'underwater', 'ice_cave', 'lava_cave', 'cave', 'mine', 'dungeon', 'crypt']);
+const WATER_Y = -0.12;
 const params = new URLSearchParams(location.search);
 const pref = k => { try { return localStorage.getItem(k); } catch (_) { return null; } };
 const engine = createEngine($('#stage'), { quality: params.get('q') || pref('mh3d_quality') || 'high' });
@@ -148,6 +153,27 @@ async function runGame() {
   } });
   engine.onTick((dt, t) => loot.update(dt, t));
   const fx = new FX(engine, $('#fct'));
+  // the sky over the hero (weather.js: the server's weather for the zone, under open sky only) and
+  // the small life about them (wildlife.js: birds, fireflies, a leaping fish)
+  const sky = new WeatherView(engine, fx, sound);
+  const wild = new Wildlife(engine, fx, sky.ripples, sound, (x, z) => {
+    const r = zone && zone.roomAt(x, z);
+    return !!(r && zone.tile(r, x, z) === WATER_TILE);
+  });
+  let skyOpen = false, skyTheme = 'field';
+  function applySky() {
+    const w = lastPayload && lastPayload.weather;
+    sky.set(weatherKind(w, skyTheme), w && w.wind, skyOpen);
+    GRASS.wind.value = 0.3 + Math.min(1.2, ((w && w.wind) || 0) / 20);
+  }
+  engine.onTick((dt, t) => {
+    if (!hero || !hero.root) return;
+    const p = hero.root.position;
+    GRASS.hero.value.set(p.x, p.y, p.z);
+    GRASS.time.value = t;
+    sky.update(dt, t, p, 0);
+    wild.update(dt, t, p, !!MH.state.inCombat);
+  });
   const wards = new Wards(engine, fx);      // the spells on everyone, shown while they last
   const adorn = new Adorn(engine, fx);       // what lingers round the well-geared and the renowned
   const combat = new CombatView({
@@ -487,6 +513,7 @@ async function runGame() {
   // ---- server events ----
   MH.bus.on('map', payload => {
     lastPayload = payload;
+    if (zone) applySky();
     if (payload.player) { hud.setPlayer(payload.player); ents.heroLevel = payload.player.level || 1; }
     // what the hero wears (gear_look.py): re-dressed when it changes
     if (hero && payload.player && payload.player.look) dress(hero, payload.player.look, payload.player.char_class);
@@ -555,7 +582,7 @@ async function runGame() {
     ents.sync(payload, MH.state.playerName); loot.sync(payload); followLoot(payload);
     mm.setExplored((payload.rooms || []).map(r => r.vnum));
     mm.setTime(payload.time);
-    window.MH3D = { engine, zone: () => zone, hero, ctl, sync, ents, loot, fx, combat, hud, cues, THREE, sound, adorn, wards,
+    window.MH3D = { engine, zone: () => zone, hero, ctl, sync, ents, loot, fx, combat, hud, cues, THREE, sound, adorn, wards, sky, wild,
       heroRoom: () => heroRoom, hop: () => hop, gate, lastPayload: () => lastPayload,
       // for probes: an area spell being aimed ({id, at, radius}), or null
       aim: () => (aiming ? { id: aiming.ab.id, at: aiming.at, radius: aiming.ab.radius } : null),
@@ -633,6 +660,12 @@ async function runGame() {
     sound.setZoneMusic(musicFor(look));
     sound.ambience(bedFor(look));
     stepSurface = surfaceFor(look);
+    // the sky and its small life: open sky or not, night or day, this room's bounds
+    const hourNow = lastPayload && lastPayload.time ? lastPayload.time.hour : 12;
+    skyTheme = L.theme;
+    skyOpen = !L.dark && !UNDER_SKY.has(L.theme);
+    applySky();
+    wild.set(L.theme, skyOpen, hourNow >= 20 || hourNow < 5, { x0: room.ox, z0: room.oz, x1: room.ox + ROOM_W, z1: room.oz + ROOM_H });
     applyFar(L);
     const hour = lastPayload && lastPayload.time ? lastPayload.time.hour : 12;
     // the room's look (room_looks.py): rock is darkest, then crypts and sewers; sand, snow and ash
@@ -1492,6 +1525,12 @@ async function runGame() {
     if (stride < len) return;
     stride = 0;
     const wet = heroRoom && zone.tile(heroRoom, p.x, p.z) === WATER_TILE;
+    // wading leaves rings on the water; snow and sand (and fresh snow falling) keep footprints
+    if (wet && !riding) sky.ripples.spawn(p.x, WATER_Y, p.z, { size: 0.9, life: 1.1, opacity: 0.5 });
+    else if (!wet && !riding) {
+      const snowy = skyTheme === 'snow' || stepSurface === 'step_snow' || (skyOpen && sky.kind === 'snow');
+      if (snowy || skyTheme === 'desert' || skyTheme === 'shore') sky.prints.step(p.x, 0, p.z, hero.root.rotation.y, snowy ? 'snow' : 'sand');
+    }
     // a mount's hooves clop; feet patter
     sound.play(wet ? 'step_water' : riding ? 'wood' : stepSurface, { vol: riding ? 0.4 : v > 3.2 ? 1 : 0.7 });
   }

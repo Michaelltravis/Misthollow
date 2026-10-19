@@ -183,7 +183,8 @@ export function createEngine(container, opts = {}) {
   // ---- mood blending ----
   const cur = { ...MOODS.day }, want = { ...MOODS.day };
   const colors = { sky: new THREE.Color(), ground: new THREE.Color(), sun: new THREE.Color(), fog: new THREE.Color() };
-  let gloomNow = 0, darkNow = 0;
+  let gloomNow = 0, darkNow = 0, flashNow = 0;
+  const wNow = { dim: 0, fog: 0, grey: 0 }, GREY = new THREE.Color(0x9aa2ac);
   function setMood(m, instant) {
     Object.assign(want, typeof m === 'string' ? MOODS[m] : m);
     if (instant) Object.assign(cur, want);
@@ -199,14 +200,19 @@ export function createEngine(container, opts = {}) {
     gloomNow += ((api.gloom || 0) - gloomNow) * (1 - Math.exp(-dt * 1.5));
     // a dark room (main.js sight): the light of the world goes, the hero's own light stays
     darkNow += ((api.darkness || 0) - darkNow) * (1 - Math.exp(-dt * 2.5));
+    // the weather under open sky (weather.js): cloud dims the sun, rain and fog draw the haze in
+    // and grey it; a storm's lightning lights everything for an instant
+    const wt = api.weather || {}, open = (cur.bg ?? 0) >= 0.75 ? 1 : 0;
+    for (const k of ['dim', 'fog', 'grey']) wNow[k] += ((wt[k] || 0) * open - wNow[k]) * (1 - Math.exp(-dt * 0.8));
+    flashNow = Math.max(0, flashNow - dt * 5);
     const dim = (1 - 0.85 * gloomNow) * (1 - 0.75 * darkNow);
-    hemi.color.set(cur.sky); hemi.groundColor.set(cur.ground); hemi.intensity = cur.hemi * dim;
-    sun.color.set(cur.sun); sun.intensity = cur.sunI * dim;
-    scene.fog.color.set(cur.fog).multiplyScalar(1 - 0.85 * darkNow);
+    hemi.color.set(cur.sky); hemi.groundColor.set(cur.ground); hemi.intensity = cur.hemi * dim * (1 - 0.35 * wNow.dim) + flashNow * 2.5;
+    sun.color.set(cur.sun); sun.intensity = cur.sunI * dim * (1 - 0.7 * wNow.dim);
+    scene.fog.color.set(cur.fog).lerp(GREY, wNow.grey * 0.6).multiplyScalar(1 - 0.85 * darkNow);
     // under open sky the haze lies further off (far.js draws what is out there; by quality)
     const sight = (cur.bg ?? 0) >= 0.75 ? (api.farSight || 1) : 1;
-    scene.fog.near = cur.near * (1 + (sight - 1) * 0.5) * (1 - 0.4 * gloomNow) * (1 - 0.5 * darkNow);
-    scene.fog.far = cur.far * sight * (1 - 0.5 * gloomNow) * (1 - 0.45 * darkNow);
+    scene.fog.near = cur.near * (1 + (sight - 1) * 0.5) * (1 - 0.4 * gloomNow) * (1 - 0.5 * darkNow) * (1 - 0.75 * wNow.fog);
+    scene.fog.far = cur.far * sight * (1 - 0.5 * gloomNow) * (1 - 0.45 * darkNow) * (1 - 0.6 * wNow.fog);
     // under open sky the distance fades into the haze itself; enclosed, into the dark
     scene.background.set(cur.fog).multiplyScalar(cur.bg ?? 0.35);
     if (darkNow > 0.01) scene.background.multiplyScalar(1 - 0.9 * darkNow);
@@ -300,6 +306,9 @@ export function createEngine(container, opts = {}) {
     hitStop: ms => { stopUntil = Math.max(stopUntil, performance.now() + ms); },
     // a crit lands: the view darts in a little and eases back (the rig's own easing)
     punch: m => { rig.dist = Math.max(rig.minDist * 0.8, rig.dist - m); },
+    // a storm's lightning (weather.js): the whole scene lit for an instant
+    lightning: () => { flashNow = 1; },
+    weather: null,                     // {dim, fog, grey}: the sky's mood under open sky (weather.js)
     setMood, placeCamera, MOODS,
     // stop the loop and advance by hand, `n` frames of `dt` each (a slow machine still shows
     // every moment of an effect); setManual(false) starts the loop again

@@ -50,6 +50,9 @@ export const SOUNDS = {
   fizzle:       { synth: 'fizzle', vol: 0.35, pos: true },
   growl:        { synth: 'growl', vol: 0.6, gap: 0.6, pos: true },
   alert:        { synth: 'alert', vol: 0.5, gap: 0.4, pos: true },
+  rain:         { synth: 'rain', vol: 0.7, gap: 1, bus: 'amb' },
+  thunder:      { synth: 'thunder', vol: 0.9, gap: 2, bus: 'amb' },
+  flutter:      { synth: 'flutter', vol: 0.6, gap: 0.5, pos: true },
   heartbeat:    { synth: 'heartbeat', vol: 0.8, bus: 'ui', gap: 0.3 },
   // ---- skills and spells, by phase (school stings from the 2D client, fx-schools.js) ----
   charge:       { synth: 'charge', vol: 0.32, pos: true },

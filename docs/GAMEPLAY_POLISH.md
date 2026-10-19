@@ -7,7 +7,7 @@ The owner: "What else should we look at to further polish and make the game play
 |---|---|---|
 | 1 | Every harm drawn on the body | done |
 | 2 | Combat feel | done |
-| 3 | A world that feels alive | |
+| 3 | A world that feels alive | done |
 | 4 | Reasons to keep playing | |
 | 5 | Guidance and quality of life | |
 
@@ -58,3 +58,26 @@ Checks: `node --test tests/web/wards.test.mjs`.
   server's `autoloot gold`, on by default).
 
 Checks: `node --test tests/web/corpse.test.mjs tests/web/wards.test.mjs`.
+
+## 3. A world that feels alive
+
+- **Weather** (`weather.js`): the server keeps a weather for each zone through the seasons
+  (`weather.py`); the map payload carries the hero's (`weather`: sky, wind, precipitation). Under
+  open sky (`main.js UNDER_SKY`: never in a house, cave, crypt, sewer...) the client draws it:
+  rain falling slant in the wind and splashing in rings, its hiss; a storm's lightning (the scene
+  lit for an instant: `engine.lightning`) and thunder a moment after; snow drifting; a desert's
+  dust instead of its rain; fog closing in; leaves blown past on a strong wind. Cloud dims the sun
+  and greys the haze, rain and fog draw it in (`engine.weather`, eased). `weatherKind` reads the
+  sky as the ground makes it (rain on snowy ground falls as snow).
+- **Grass bends** away from the hero walking through it and stirs in the wind, harder as it
+  blows (`assets.js bendable`: a few lines in the instanced Grass_* tufts' vertex shader, on their
+  own copy of the material).
+- **Ripples** when the hero wades, and **footprints** in snow and sand (or fresh snow falling),
+  left foot, right foot, fading after a while (`weather.js Ripples`, `Footprints`).
+- **Small life** (`wildlife.js`, client only): birds pecking on open ground by day that take wing
+  when the hero comes near or a fight starts; fireflies over grass and marsh at night; now and then
+  a fish leaping from water nearby, with a splash and its rings.
+- **Townsfolk keep a day** (`mobs.py Mobile._townsfolk_day`): a peaceable creature of the
+  streets makes for a house next door at night and stays in; by day it comes back out.
+
+Checks: `node --test tests/web/alive.test.mjs`; `python3 tests/test_polish.py` (townsfolk, weather).

@@ -59,6 +59,39 @@ export async function loadKit(name) {
 
 // Collects placements for many models and turns them into one InstancedMesh per
 // model part: a forest of 300 trees is a handful of draw calls.
+// grass bends away from the hero walking through it and stirs in the wind (the instanced tufts of
+// Grass_*: a few lines added to their vertex shader; main.js moves GRASS.hero and the clock)
+export const GRASS = { hero: { value: new THREE.Vector3(1e5, 0, 1e5) }, time: { value: 0 }, wind: { value: 0.4 } };
+const bent = new WeakSet();
+export function bendable(material) {
+  if (!material || bent.has(material)) return;
+  bent.add(material);
+  material.onBeforeCompile = shader => {
+    shader.uniforms.uHero = GRASS.hero; shader.uniforms.uTime = GRASS.time; shader.uniforms.uWind = GRASS.wind;
+    shader.vertexShader = 'uniform vec3 uHero; uniform float uTime; uniform float uWind;\n' + shader.vertexShader.replace('#include <project_vertex>', `
+      vec4 mvPosition = vec4( transformed, 1.0 );
+      #ifdef USE_INSTANCING
+        mvPosition = instanceMatrix * mvPosition;
+        vec3 gBase = ( modelMatrix * instanceMatrix * vec4( 0.0, 0.0, 0.0, 1.0 ) ).xyz;
+      #else
+        vec3 gBase = ( modelMatrix * vec4( 0.0, 0.0, 0.0, 1.0 ) ).xyz;
+      #endif
+      vec4 gWorld = modelMatrix * mvPosition;
+      float gH = max( gWorld.y - gBase.y, 0.0 );
+      vec2 gAway = gBase.xz - uHero.xz;
+      float gD = length( gAway );
+      float gPush = ( 1.0 - smoothstep( 0.2, 1.4, gD ) ) * gH * 0.9;
+      gWorld.xz += ( gD > 0.001 ? gAway / gD : vec2( 0.0 ) ) * gPush;
+      gWorld.y -= gPush * gH * 0.35;
+      gWorld.x += sin( uTime * 1.6 + gBase.x * 0.7 + gBase.z * 0.4 ) * gH * 0.12 * uWind;
+      gWorld.z += cos( uTime * 1.3 + gBase.z * 0.6 ) * gH * 0.05 * uWind;
+      mvPosition = viewMatrix * gWorld;
+      gl_Position = projectionMatrix * mvPosition;`);
+  };
+  material.customProgramCacheKey = () => 'grass-bend';
+  material.needsUpdate = true;
+}
+
 export class Batcher {
   constructor() { this.items = new Map(); }
   add(model, matrix, opts = {}) {
@@ -69,8 +102,11 @@ export class Batcher {
   }
   build(group) {
     for (const it of this.items.values()) {
+      const grass = /^Grass_/.test(String(it.model.name));
       for (const part of it.model.parts) {
-        const mesh = new THREE.InstancedMesh(part.geometry, part.material, it.mats.length);
+        // (grass gets its own copy of the material: the kit's trees and bushes may share it)
+        if (grass && !part.bendMat) { part.bendMat = part.material.clone(); bendable(part.bendMat); }
+        const mesh = new THREE.InstancedMesh(part.geometry, grass ? part.bendMat : part.material, it.mats.length);
         it.mats.forEach((m, i) => mesh.setMatrixAt(i, m));
         mesh.instanceMatrix.needsUpdate = true;
         mesh.computeBoundingSphere();

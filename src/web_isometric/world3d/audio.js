@@ -105,6 +105,11 @@ export const SYNTHS = {
   drip: (c, o) => Math.max(tone(c, o, { f: 1700, f2: 700, dur: 0.09, vol: 0.09 }), tone(c, o, { f: 1300, f2: 600, dur: 0.07, vol: 0.05, delay: 0.55 })),
   gust: (c, o) => Math.max(hiss(c, o, { dur: 2.2, vol: 0.08, f: 260, f2: 720, q: 0.7 }), hiss(c, o, { dur: 1.6, vol: 0.04, type: 'highpass', f: 1800, f2: 900, delay: 0.4 })),
   steps: (c, o) => Math.max(...[0, 0.5, 1.0, 1.5].map(d => tone(c, o, { f: 92, f2: 52, type: 'triangle', dur: 0.14, vol: 0.13, delay: d }))),
+  // the weather (weather.js): rain's hiss, a storm's thunder; a bird taking wing (wildlife.js)
+  rain: (c, o) => Math.max(hiss(c, o, { dur: 1.7, vol: 0.05, type: 'highpass', f: 1400, f2: 2400, attack: 0.3 }), hiss(c, o, { dur: 1.6, vol: 0.04, f: 700, f2: 900, q: 0.6, attack: 0.3 })),
+  thunder: (c, o) => Math.max(hiss(c, o, { dur: 0.25, vol: 0.22, type: 'lowpass', f: 1600, f2: 300 }), hiss(c, o, { dur: 2.8, vol: 0.18, type: 'lowpass', f: 220, f2: 80, delay: 0.08 }),
+    tone(c, o, { f: 48, f2: 32, dur: 2.4, vol: 0.16, delay: 0.1 })),
+  flutter: (c, o) => Math.max(...[0, 0.05, 0.1, 0.15, 0.2].map(d => hiss(c, o, { dur: 0.05, vol: 0.06, f: 1800, f2: 1200, q: 1.5, delay: d }))),
   // the hero's own heart when health runs low: lub-dub
   heartbeat: (c, o) => Math.max(tone(c, o, { f: 62, f2: 44, dur: 0.16, vol: 0.32 }), tone(c, o, { f: 56, f2: 40, dur: 0.14, vol: 0.24, delay: 0.2 })),
   // a creature notices you: a sharp two-note sting
