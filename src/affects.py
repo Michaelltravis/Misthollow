@@ -103,7 +103,7 @@ class AffectManager:
         'combustion', 'presence_of_mind', 'arcane_power',
         'guardian_spirit', 'beacon_of_light', 'holy_shield',
         'divine_guardian', 'aegis_ward', 'shadowform',
-        'armour_ward', 'briskness', 'shielded', 'deafened'
+        'armour_ward', 'briskness', 'shielded', 'deafened', 'tracks_covered'
     }
 
     @staticmethod

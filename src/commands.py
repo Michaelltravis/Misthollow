@@ -3608,6 +3608,8 @@ class CommandHandler:
             return
         import random
         chance = player.skills.get('steal', 0) + (player.dex - getattr(target, 'dex', 10))
+        if 'tracks_covered' in (getattr(player, 'affect_flags', None) or ()):
+            chance += 10                     # (cover tracks: no trace to give you away)
         if random.randint(1, 100) <= max(5, chance):
             amt = min(getattr(target, 'gold', 0), random.randint(1, 20))
             if amt > 0:
@@ -3690,8 +3692,10 @@ class CommandHandler:
 
     @classmethod
     async def cmd_cover(cls, player: 'Player', args: List[str]):
-        """Cover your light source. Usage: cover light"""
+        """Cover your light source (cover light), or your tracks (cover tracks: thieves, assassins)."""
         c = player.config.COLORS
+        if args and args[0].lower() in ('tracks', 'track', 'trail', 'trails'):
+            return await cls.cmd_cover_tracks(player, args[1:])
         if not args or args[0].lower() != 'light':
             await player.send(f"{c['yellow']}Usage: cover light{c['reset']}")
             return
@@ -5375,6 +5379,13 @@ class CommandHandler:
             player._door_channel = None
             await player.send(f"{c['yellow']}You abandon the work.{c['reset']}")
         # silent when there's nothing to stop — this fires on movement keys
+
+    @classmethod
+    async def cmd_cover_tracks(cls, player: 'Player', args: List[str]):
+        """Thief, assassin: sweep away your trail (docs/STEALTH.md). Whatever is hunting you and
+        not in sight loses the trail now; for a few minutes you leave none (stealth.py)."""
+        import stealth
+        await stealth.cover_tracks(player)
 
     @classmethod
     async def cmd_caltrops(cls, player: 'Player', args: List[str]):

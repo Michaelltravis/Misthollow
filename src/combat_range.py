@@ -52,7 +52,7 @@ ABILITY_RANGE = {
     # thief / assassin
     'backstab': (MELEE, 'melee'), 'circle': (MELEE, 'melee'), 'trip': (MELEE, 'melee'), 'low_blow': (MELEE, 'melee'),
     'pocket_sand': (5.0, 'ranged'), 'jackpot': (MELEE, 'melee'), 'mark': (15.0, 'ranged'), 'expose': (MELEE, 'melee'),
-    'vital': (MELEE, 'melee'), 'feint': (MELEE, 'melee'), 'execute_contract': (MELEE, 'melee'), 'fade': (0, 'self'),
+    'vital': (MELEE, 'melee'), 'feint': (MELEE, 'melee'), 'execute_contract': (MELEE, 'melee'), 'fade': (0, 'self'), 'cover_tracks': (0, 'self'),
     # mage
     'magic_missile': (18.0, 'ranged'), 'fireball': (16.0, 'blast:3'), 'lightning_bolt': (18.0, 'ranged'),
     'chill_touch': (MELEE, 'melee'), 'sleep': (12.0, 'ranged'), 'towerbolt': (20.0, 'ranged'),

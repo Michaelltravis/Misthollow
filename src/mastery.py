@@ -21,7 +21,7 @@ PASSIVE = frozenset({'second_attack', 'third_attack', 'parry', 'shield_block', '
 # one-off choices, not abilities you practise: they keep their own rules
 CHOICES = frozenset({'doctrine', 'swear', 'evolve', 'oath'})
 # skills used on yourself or the room, not aimed at a foe (the bar sends them without a target)
-SELF_SKILLS = frozenset({'sneak', 'hide', 'track', 'scan', 'scribe', 'drink_the_leyline', 'charge_release', 'detect_traps',
+SELF_SKILLS = frozenset({'sneak', 'hide', 'cover_tracks', 'track', 'scan', 'scribe', 'drink_the_leyline', 'charge_release', 'detect_traps',
                          'lore', 'caltrops', 'snare', 'bone_shield', 'fade', 'slip_the_veil', 'countersong', 'encore',
                          'magnum_opus', 'rigged_dice', 'poison', 'evasion', 'divine_intervention', 'pick_lock',
                          'warpath', 'titans_wrath', 'perfect_crime', 'camouflage_master', 'camouflage', 'shadow_dance',
@@ -61,7 +61,7 @@ UNLOCK = {
                    travelling_grace=32, divine_protection=34, resurrect=36, shared_burden=38, cleansing_rite=44,
                    font_of_the_vigil=50, serenity=56, divine_intervention=60, seraphs_vigil=45),
     'thief': dict(backstab=1, sneak=1, hide=2, pick_lock=3, knife_toss=3, steal=4, trip=5, dodge=6, circle=8, pocket_sand=10,
-                  detect_traps=11, low_blow=12, second_attack=14, evasion=16, caltrops=18, rigged_dice=20,
+                  detect_traps=11, cover_tracks=7, low_blow=12, second_attack=14, evasion=16, caltrops=18, rigged_dice=20,
                   jackpot=24, nerve_strike=32, garrote=44, marked_for_death_thief=56, perfect_crime=60, heist=45),
     'ranger': dict(truesight_shot=1, track=1, scan=2, cure_light=3, sneak=4, quarry_mark=5, hide=6, faerie_fire=7,
                    tame=8, wildbond_strike=9, dodge=10, snare=11, entangle=12, second_attack=13, detect_magic=14,
@@ -82,7 +82,7 @@ UNLOCK = {
                  slow=15, heroism=16, fear=17, encore=18, invisibility=19, haste=22, mass_charm=28,
                  refrain_of_hope=32, chord_of_disruption=38, epic_tale=44, siren_song=50, requiem=56,
                  magnum_opus=60, song_of_the_ages=45),
-    'assassin': dict(backstab=1, mark=1, sneak=2, hide=3, expose=4, vital=5, dodge=6, feint=8, poison=9, fade=10,
+    'assassin': dict(backstab=1, mark=1, sneak=2, hide=3, cover_tracks=7, expose=4, vital=5, dodge=6, feint=8, poison=9, fade=10,
                      second_attack=12, execute_contract=14, evasion=16, dual_wield=18, slip_the_veil=20,
                      shadowstrike=32, fan_of_knives=38, rupture=44, shadow_blades_master=50,
                      vendetta_assassin=56, death_mark=60, thousand_shadows=45),

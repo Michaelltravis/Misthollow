@@ -59,6 +59,8 @@ export const WARDS = {
   silenced: { motes: 0x9a9a9a, sink: true, fx: 'hush' },
   cursed: { motes: 0x7a3aa8, sink: true, fx: 'curse' },
   weakened: { motes: 0x8a9a5a, sink: true },
+  // tracks covered (stealth.py): a faint dust settling about the feet (and no footprints: main.js)
+  tracks_covered: { motes: 0x9a8a70, sink: true },
   // harms on the body (harms.js): a glow (the strongest, tp), what comes off it, how it moves
   poisoned: { tint: 0x8cff4a, tp: 2, fx: 'poison' },
   burning: { tint: 0xff3c08, tp: 3, fx: 'burn' },

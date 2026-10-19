@@ -1612,8 +1612,11 @@ async function runGame() {
     // wading leaves rings on the water; snow and sand (and fresh snow falling) keep footprints
     if (wet && !riding) sky.ripples.spawn(p.x, WATER_Y, p.z, { size: 0.9, life: 1.1, opacity: 0.5 });
     else if (!wet && !riding) {
+      // tracks covered (stealth.py): no prints, only a faint brush of dust at the heel
+      const covered = ((MH.state.player && MH.state.player.wards) || []).includes('tracks_covered');
       const snowy = skyTheme === 'snow' || stepSurface === 'step_snow' || (skyOpen && sky.kind === 'snow');
-      if (snowy || skyTheme === 'desert' || skyTheme === 'shore') sky.prints.step(p.x, 0, p.z, hero.root.rotation.y, snowy ? 'snow' : 'sand');
+      if (covered) fx.p.emit(new THREE.Vector3(p.x, 0.12, p.z), { count: 2, color: snowy ? 0xe8eef6 : 0xb8a888, bright: 0.6, speed: 0.35, up: 0.15, life: 0.6, size: 0.25, grow: 0.5, drag: 2 });
+      else if (snowy || skyTheme === 'desert' || skyTheme === 'shore') sky.prints.step(p.x, 0, p.z, hero.root.rotation.y, snowy ? 'snow' : 'sand');
     }
     // a mount's hooves clop; feet patter
     sound.play(wet ? 'step_water' : riding ? 'wood' : stepSurface, { vol: riding ? 0.4 : v > 3.2 ? 1 : 0.7 });
