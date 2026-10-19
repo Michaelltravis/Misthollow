@@ -438,6 +438,11 @@ SKILL_PROSE = {
               "risk, high reward.", "steal <item> <target>"),
     'pick_lock': ("Pick a locked door or chest open without a key. Needs decent skill "
                   "for tougher locks.", "pick <direction|container>"),
+    'cover_tracks': ("Sweep away your trail: anything already hunting you that is not in sight "
+                     "loses it, and for a few minutes you leave none (hunters lose your trail, "
+                     "creatures notice you only from half as far, those you flee give up for "
+                     "longer, a theft leaves no trace; no footprints in /play). Best with sneak.",
+                     "cover_tracks"),
     'detect_traps': ("Spot traps on doors, chests, and floors before they spring on "
                      "you. Keep it practiced when delving dungeons.", "detect_traps"),
     'knife_toss': ("Flick a knife at a foe up to 14 m away: a little damage and the fight is "

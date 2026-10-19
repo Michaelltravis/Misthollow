@@ -177,6 +177,8 @@ def lost(mob, player, seconds=FLEE_GRACE):
     seen = getattr(mob, 'lost_quarry', None)
     if seen is None:
         seen = mob.lost_quarry = {}
+    if 'tracks_covered' in (getattr(player, 'affect_flags', None) or ()):
+        seconds *= 2                                 # (cover tracks: nothing to follow)
     seen[getattr(player, 'name', '')] = _time.time() + seconds
 
 
@@ -218,6 +220,8 @@ def noticed(world, mob, spared=lambda ch: False):
             if getattr(room, 'sector_type', '') == 'city' and getattr(mob, 'level', 0) - getattr(ch, 'level', 0) > 5:
                 continue
             dist = distance(world, mob, ch)
+            if dist is not None and 'tracks_covered' in (getattr(ch, 'affect_flags', None) or ()):
+                dist *= 2                            # (cover tracks: noticed from half as far)
             if dist is not None and dist <= best_d:
                 best, best_d = ch, dist
     return best

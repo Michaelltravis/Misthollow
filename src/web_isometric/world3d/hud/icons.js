@@ -294,12 +294,13 @@ export const ICON_OVERRIDE = {
   thief: {
     jackpot: {picto: 'crosshair'}, circle: {picto: 'sword'}, eviscerate: {picto: 'axe'},
     knife_toss: {glyph: 'dagger'}, kidneyshot: {picto: 'crack'}, fade: {glyph: 'wisp'}, marked_for_death_thief: {glyph: 'skull'},
-    shadow_step: {picto: 'boot'},
+    shadow_step: {picto: 'boot'}, cover_tracks: {glyph: 'paw'},
   },
   assassin: {
     execute_contract: {picto: 'sword'}, feint: {picto: 'axe'}, shadowstrike: {picto: 'pierce'},
     fan_of_knives: {picto: 'fan'}, death_mark: {glyph: 'skull'}, rupture: {glyph: 'drop'},
     shadow_blades_master: {glyph: 'wisp'}, hide: {glyph: 'wisp'}, envenom: {glyph: 'star'},
+    cover_tracks: {glyph: 'paw'},
   },
   ranger: {
     bestial_wrath: {picto: 'banner'}, briskness: {glyph: 'chevron'}, detect_magic: {picto: 'book'},

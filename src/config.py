@@ -369,7 +369,7 @@ class Config:
             'move_dice': 8,
             'thac0_progression': 'medium',
             'save_progression': 'thief',
-            'skills': ['backstab', 'sneak', 'hide', 'steal', 'pick_lock', 'detect_traps',
+            'skills': ['backstab', 'sneak', 'hide', 'steal', 'pick_lock', 'detect_traps', 'cover_tracks',
                       'second_attack', 'dodge', 'evasion', 'pocket_sand', 'low_blow', 'knife_toss',
                       'rigged_dice', 'jackpot', 'circle', 'trip', 'caltrops',
                       # level 31-60 (56 and 60 are reached through prestige)
@@ -478,7 +478,7 @@ class Config:
             'save_progression': 'thief',
             'skills': ['backstab', 'mark', 'expose', 'vital', 'execute_contract',
                       'feint', 'evasion', 'fade', 'slip_the_veil',
-                      'sneak', 'hide', 'dual_wield', 'second_attack', 'dodge', 'poison',
+                      'sneak', 'hide', 'cover_tracks', 'dual_wield', 'second_attack', 'dodge', 'poison',
                       # level 31-60 (56 and 60 are reached through prestige)
                       'shadowstrike', 'fan_of_knives', 'rupture', 'shadow_blades_master', 'vendetta_assassin', 'death_mark',
                       'thousand_shadows'],

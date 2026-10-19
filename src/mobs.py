@@ -698,6 +698,16 @@ class Mobile(Character):
             await self._give_up_chase(target)
             return True
 
+        # a trail swept away (stealth.py): out of sight, the hunter may lose it at each step
+        if target.room is not self.room:
+            import stealth
+            if stealth.covered(target) and random.random() < stealth.LOSE_EACH_STEP:
+                words = stealth.lose_trail(self, target)
+                if self.room:
+                    c = self.config.COLORS
+                    await self.room.send_to_room(f"{c['yellow']}{self.name} {words}.{c['reset']}")
+                return True
+
         # If target is in the same room, attack!
         if target.room == self.room:
             if not self.is_fighting:

@@ -79,6 +79,13 @@
     "type": "skill"
    },
    {
+    "id": "cover_tracks",
+    "level": 7,
+    "shape": "self",
+    "target": "self",
+    "type": "skill"
+   },
+   {
     "id": "dual_wield",
     "level": 18,
     "passive": true,
@@ -2192,6 +2199,13 @@
    {
     "id": "detect_traps",
     "level": 11,
+    "shape": "self",
+    "target": "self",
+    "type": "skill"
+   },
+   {
+    "id": "cover_tracks",
+    "level": 7,
     "shape": "self",
     "target": "self",
     "type": "skill"

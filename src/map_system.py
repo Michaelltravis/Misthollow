@@ -797,7 +797,7 @@ WARD_FLAGS = frozenset({
     'stoneskin', 'ice_armor', 'fire_shield', 'mirror_image', 'displacement', 'blink', 'fly', 'haste',
     'invisible', 'prot_evil', 'prot_good', 'regenerating', 'spell_reflect', 'shadowform', 'beacon_of_light',
     'aegis_ward', 'briskness', 'guardian_spirit', 'spirit_link', 'slow', 'entangled', 'silenced', 'stunned',
-    'poisoned',
+    'poisoned', 'tracks_covered',
 })
 # a wound over time that is a poison shows as one (the 3D client: green bubbles and haze, wards.js)
 WARD_NAMES = {'barkskin': 'barkskin', 'bless': 'bless', 'poison': 'poisoned', 'knife_poison': 'poisoned',
