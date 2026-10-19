@@ -7,7 +7,7 @@
 // radius ~45, so a particle can spin without its corners being cut off.
 
 export const GLYPHS = ['dot', 'star', 'note', 'notes', 'skull', 'bone', 'cross', 'snow', 'bolt', 'leaf', 'feather',
-  'coin', 'die', 'rune', 'sun', 'drop', 'flame', 'petal', 'shard', 'dagger', 'eye', 'chevron', 'paw', 'wisp', 'ring', 'bubble'];
+  'coin', 'die', 'rune', 'sun', 'drop', 'flame', 'petal', 'shard', 'dagger', 'eye', 'chevron', 'paw', 'wisp', 'ring', 'bubble', 'zzz', 'heart', 'hush'];
 export const ATLAS_COLS = 5;
 export const CELL = 96;
 export const glyphIndex = name => Math.max(0, GLYPHS.indexOf(name));
@@ -142,6 +142,20 @@ export const DRAW = {
     c.fillStyle = 'rgba(255,255,255,0.16)'; c.beginPath(); c.arc(0, 0, 34, 0, TAU); c.fill();
     c.strokeStyle = '#fff'; c.lineWidth = 4; c.beginPath(); c.arc(0, 0, 34, 0, TAU); c.stroke();
     c.lineWidth = 6; c.lineCap = 'round'; c.beginPath(); c.arc(0, 0, 22, -2.6, -1.75); c.stroke();
+  },
+  // a sleeper's Z, a charm's heart, a silenced word (a speech bubble struck through)
+  zzz(c) {
+    c.strokeStyle = '#fff'; c.lineWidth = 9; c.lineJoin = 'round'; c.lineCap = 'round';
+    c.beginPath(); c.moveTo(-26, -26); c.lineTo(26, -26); c.lineTo(-26, 26); c.lineTo(26, 26); c.stroke();
+  },
+  heart(c) {
+    c.fillStyle = '#fff'; c.beginPath(); c.moveTo(0, 34);
+    c.bezierCurveTo(-46, 4, -34, -38, 0, -16); c.bezierCurveTo(34, -38, 46, 4, 0, 34); c.fill();
+  },
+  hush(c) {
+    c.strokeStyle = '#fff'; c.lineWidth = 6; c.lineJoin = 'round';
+    c.beginPath(); c.moveTo(-34, -26); c.lineTo(34, -26); c.lineTo(34, 14); c.lineTo(-4, 14); c.lineTo(-18, 32); c.lineTo(-16, 14); c.lineTo(-34, 14); c.closePath(); c.stroke();
+    c.lineWidth = 8; c.beginPath(); c.moveTo(-40, 36); c.lineTo(40, -36); c.stroke();
   },
 };
 

@@ -13,6 +13,7 @@ register('data:text/javascript,' + encodeURIComponent(
   `export async function resolve(s, c, next) { return s === 'three' ? { url: ${JSON.stringify(THREE_URL)}, shortCircuit: true } : next(s, c); }`));
 const THREE = await import('three');
 const { WARDS, wardPlan, planKey, Wards, HAZE } = await import('../../src/web_isometric/world3d/wards.js');
+const { HARMS, emitHarms } = await import('../../src/web_isometric/world3d/harms.js');
 const { buffList } = await import('../../src/web_isometric/world3d/hud/buffs.js');
 
 test('a plan: the strongest shell, two orbits at most, a ring, motes, flying', () => {
@@ -44,8 +45,41 @@ const body = () => {
 };
 const fx = { near: () => true, p: { emit() {} }, glyph() {} };
 
+test('every harm the server names has a look, and each emitter puts something out', () => {
+  const src = readFileSync(path.join(HERE, '../../src/map_system.py'), 'utf8');
+  const named = [...src.matchAll(/return '([a-z]+)'/g)].map(m => m[1]).filter(k => ['burning', 'bleeding', 'frozen', 'cursed'].includes(k));
+  const flags = Object.values(Object.fromEntries([...src.match(/STATUS_FLAGS = \{([^}]*)\}/)[1].matchAll(/'([a-z_]+)': '([a-z_]+)'/g)].map(m => [m[1], m[2]])));
+  for (const k of [...new Set([...named, ...flags, 'poisoned'])]) assert.ok(WARDS[k], `${k} has a look`);
+  for (const kind of Object.keys(HARMS)) {
+    let n = 0;
+    const count = { near: () => true, p: { emit: () => n++ }, glyph: () => n++ };
+    const s = { h: 1.8, w: 0.8 };
+    for (let i = 0; i < 40; i++) emitHarms([kind], count, body().root, s, 0.1, 0);
+    assert.ok(n >= 2, `${kind}: ${n} in 4 s`);
+  }
+});
+
+test('harms on the body: the strongest glow; a frost or hold slows or stops it; a sleeper slumps; the blind wear a band', () => {
+  const p = wardPlan(['poisoned', 'burning', 'frozen', 'asleep', 'feared', 'blinded', 'bleeding']);
+  assert.equal(p.tint, WARDS.frozen.tint, 'frost outshines burn and poison');
+  assert.equal(p.rate, 0.2);
+  assert.ok(p.slump && p.tremble && p.band);
+  assert.deepEqual(p.fx.sort(), ['bleed', 'burn', 'fear', 'frost', 'poison', 'zzz']);
+  const w = new Wards({ quality: { name: 'high' } }, fx);
+  const a = body();
+  const stand = a.m.rotation.x;
+  w.update(0.1, 1, a, ['asleep', 'blinded', 'feared']);
+  assert.equal(a.root.userData.animRate, 0.3, 'a sleeper moves slowly');
+  assert.ok(a.m.rotation.x > stand + 0.2, 'and slumps forward');
+  assert.ok(a.root.children.some(c => c.name === 'ward_band'), 'the blind wear a band');
+  w.update(0.1, 1.1, a, []);
+  assert.equal(a.root.userData.animRate, undefined);
+  assert.ok(Math.abs(a.m.rotation.x - stand) < 1e-6 && Math.abs(a.m.position.x) < 1e-6, 'all of it taken off again');
+});
+
 test('poisoned: green bubbles rise off the body and a haze hangs about it, for as long as it lasts', () => {
-  assert.equal(wardPlan(['poisoned']).poison, WARDS.poisoned.poison);
+  assert.equal(wardPlan(['poisoned']).tint, WARDS.poisoned.tint);
+  assert.deepEqual(wardPlan(['poisoned']).fx, ['poison']);
   const seen = { bubbles: 0, haze: 0 };
   const watch = { near: () => true, p: { emit: (_p, o) => { if (o.color === HAZE) seen.haze++; } }, glyph: (_p, o) => { if (o.glyph === 'bubble') seen.bubbles++; } };
   const w = new Wards({ quality: { name: 'high' } }, watch);

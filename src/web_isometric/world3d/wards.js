@@ -8,12 +8,17 @@
 //   motes  — sparks drifting up (Bless gold, Haste yellow, Regenerating green...)
 //   hover  — Fly: the body lifted off the ground and bobbing, wind stirring under it
 //   fade   — Invisible: the hero drawn faint (only you see yourself)
-//   poison — Poisoned: the body glows a sickly green, bubbles rise off it and a haze hangs about it
-//            (and it winces at each tick of it: combat.js tick)
+//   harms  — what holds or hurts the body (harms.js): it glows (a poison green, a burn orange, a
+//            frost blue), something rises or falls off it (bubbles, flames, rime, drips, Zzz, sweat,
+//            hearts, a hushed word), its animation slows or stops (frozen, held, asleep), a sleeper
+//            slumps, the frightened tremble, the blinded wear a dark band over the eyes
 // One shell at a time (the strongest), at most two orbits; the hero always, and the nearest few
 // others by quality tier.
 import * as THREE from 'three';
 import { shellMaterial } from './shell.js';
+import { emitHarms, HAZE } from './harms.js';
+
+export { HAZE };
 
 export const WARDS = {
   // shells, strongest first (p)
@@ -48,18 +53,30 @@ export const WARDS = {
   displacement: { motes: 0xb0a0e8 },
   blink: { motes: 0xd8c8ff },
   shadowform: { motes: 0x5a3a8a, sink: true },
-  slow: { motes: 0x8a98b0, sink: true },
-  silenced: { motes: 0x9a9a9a, sink: true },
+  slow: { motes: 0x8a98b0, sink: true, rate: 0.6 },
+  silenced: { motes: 0x9a9a9a, sink: true, fx: 'hush' },
+  cursed: { motes: 0x7a3aa8, sink: true, fx: 'curse' },
+  weakened: { motes: 0x8a9a5a, sink: true },
+  // harms on the body (harms.js): a glow (the strongest, tp), what comes off it, how it moves
+  poisoned: { tint: 0x8cff4a, tp: 2, fx: 'poison' },
+  burning: { tint: 0xff3c08, tp: 3, fx: 'burn' },
+  frozen: { tint: 0x9fd8ff, tp: 4, fx: 'frost', rate: 0.2, shell: 0xd6f2ff, p: 1 },
+  paralyzed: { tint: 0x6a6a72, tp: 5, rate: 0 },
+  bleeding: { fx: 'bleed' },
+  asleep: { fx: 'zzz', rate: 0.3, slump: true },
+  feared: { fx: 'fear', tremble: true, tint: 0x7a9aff, tp: 1 },
+  charmed: { fx: 'hearts' },
+  blinded: { band: true },
   // the body itself
-  poisoned: { poison: 0x8cff4a },
   fly: { hover: true },
   invisible: { fade: true },
 };
 
 // what to draw for a list of ward keys: {shell, orbits: [{kind, color}], rings, motes, hover, fade}
 export function wardPlan(keys) {
-  const plan = { shell: null, orbits: [], ring: null, motes: [], hover: false, fade: false, poison: null };
-  let best = -1;
+  const plan = { shell: null, orbits: [], ring: null, motes: [], hover: false, fade: false,
+    tint: null, fx: [], rate: 1, tremble: false, slump: false, band: false };
+  let best = -1, tbest = -1;
   for (const k of keys || []) {
     const w = WARDS[k];
     if (!w) continue;
@@ -69,7 +86,12 @@ export function wardPlan(keys) {
     if (w.motes != null) plan.motes.push({ color: w.motes, fast: !!w.fast, sink: !!w.sink });
     if (w.hover) plan.hover = true;
     if (w.fade) plan.fade = true;
-    if (w.poison != null) plan.poison = w.poison;
+    if (w.tint != null && w.tp > tbest) { tbest = w.tp; plan.tint = w.tint; }
+    if (w.fx && !plan.fx.includes(w.fx)) plan.fx.push(w.fx);
+    if (w.rate != null) plan.rate = Math.min(plan.rate, w.rate);
+    if (w.tremble) plan.tremble = true;
+    if (w.slump) plan.slump = true;
+    if (w.band) plan.band = true;
   }
   plan.motes = plan.motes.slice(0, 3);
   return plan;
@@ -80,7 +102,6 @@ const BUDGET = { low: 3, med: 6, high: 10, gallery: 200 };    // others warded b
 const NEAR = 24;
 const HOVER = 0.38;                                            // metres off the ground when flying
 const _p = new THREE.Vector3();
-export const HAZE = 0x9ad43a;               // a poison's haze about the body
 const _box = new THREE.Box3();
 
 // the things that circle: small and cheap, shared geometry
@@ -99,6 +120,31 @@ function geos() {
   return GEO;
 }
 const COUNT = { rune: 3, stone: 4, shard: 5, flame: 4, leaf: 5, star: 3 };
+// where a body's eyes are, for a blindfold (root-local metres): its head mesh if it has one (the
+// big heads of the rigged folk: about two fifths up it), else its head bone, else an upright
+// body's top; none for a beast whose head is out in front
+function eyeLine(root, h, w) {
+  const sy = Math.max(1e-3, root.scale.y || 1);
+  let head = null, bone = null;
+  root.traverse(o => {
+    if (/^ward_/.test(String(o.name))) return;
+    if (!head && o.isMesh && /head/i.test(o.name)) head = o;
+    if (!bone && o.isBone && /^head/i.test(o.name)) bone = o;
+  });
+  if (head) {
+    const b = new THREE.Box3().setFromObject(head);
+    const lo = (b.min.y - root.position.y) / sy, hi = (b.max.y - root.position.y) / sy;
+    if (hi > lo) return { y: lo + (hi - lo) * 0.38, r: Math.max(0.12, 0.52 * Math.max(b.max.x - b.min.x, b.max.z - b.min.z) / sy), bone };
+  }
+  if (bone && h > w * 0.9) {
+    const v = new THREE.Vector3();
+    bone.getWorldPosition(v);
+    const by = (v.y - root.position.y) / sy;
+    return { y: by + 0.4 * (by / 1.21), r: 0.6 * (by / 1.21), bone };
+  }
+  return h > w * 1.15 ? { y: h * 0.86, r: Math.max(0.13, w * 0.24) } : null;
+}
+
 // a body's own children (not its steed or raft): what flying lifts
 const ridden = root => root.children.some(c => /^(steed_|raft$)/.test(String(c.name)));
 const body = root => root.children.filter(c => !/^(steed_|raft$|ward_)/.test(String(c.name)));
@@ -145,7 +191,7 @@ export class Wards {
     for (const c of body(root)) _box.expandByObject(c);
     const h = _box.isEmpty() ? 1.8 : Math.max(0.6, (_box.max.y - _box.min.y) / Math.max(1e-3, root.scale.y || 1));
     const w = _box.isEmpty() ? 0.8 : Math.max(0.5, Math.max(_box.max.x - _box.min.x, _box.max.z - _box.min.z) / Math.max(1e-3, root.scale.x || 1));
-    const s = { key, plan, h, w, parts: [], mats: [], orbits: [], motesT: Math.random() * 0.2, windT: 0, bubT: 0, hazeT: 0, lift: 0, faded: null };
+    const s = { key, plan, h, w, parts: [], mats: [], orbits: [], motesT: Math.random() * 0.2, windT: 0, lift: 0, faded: null };
     const add = (m, name) => { m.name = `ward_${name}`; root.add(m); s.parts.push(m); return m; };
     const g = geos();
     if (plan.shell != null) {
@@ -195,7 +241,19 @@ export class Wards {
       s.wind.position.y = 0.04;
     }
     if (plan.fade) s.faded = this.fade(root);
-    else if (plan.poison != null) s.tinted = this.tint(root, plan.poison);
+    else if (plan.tint != null) s.tinted = this.tint(root, plan.tint);
+    // blinded: a dark band over the eyes
+    const eyes = plan.band ? eyeLine(root, h, w) : null;
+    if (eyes) {
+      const mat = new THREE.MeshBasicMaterial({ color: 0x0c0a0a, transparent: true, opacity: 0.9, side: THREE.DoubleSide });
+      s.mats.push(mat);
+      s.band = add(new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, 24, 1, true), mat), 'band');
+      s.band.scale.set(eyes.r, eyes.r * 0.16, eyes.r);
+      s.band.position.y = s.eyeY = eyes.y;
+      // worn on the head: it nods, turns and slumps with it
+      if (eyes.bone) { root.updateMatrixWorld(true); eyes.bone.attach(s.band); }
+    }
+    root.userData.animRate = plan.rate;
     return s;
   }
 
@@ -227,8 +285,16 @@ export class Wards {
         }
       }
     }
-    // poisoned: the sickly glow on the body comes and goes
-    if (s.tinted) for (const [, , mine] of s.tinted) for (const m of [].concat(mine)) if ('emissiveIntensity' in m) m.emissiveIntensity = 0.2 + 0.13 * Math.sin(t * 2.6);
+    // a harm's glow on the body comes and goes (a frost's or a hold's stays still)
+    if (s.tinted) {
+      const burn = s.plan.tint === WARDS.burning.tint;
+      const k = s.plan.rate < 0.5 ? 0.3 : burn ? 0.42 + 0.18 * Math.sin(t * 9) * Math.sin(t * 3.7) : 0.2 + 0.13 * Math.sin(t * 2.6);
+      for (const [, , mine] of s.tinted) for (const m of [].concat(mine)) if ('emissiveIntensity' in m) m.emissiveIntensity = k;
+    }
+    if (s.band && s.band.parent === root) s.band.position.y = s.eyeY + (root.userData.wardLift || 0);
+    // the frightened tremble; a sleeper slumps forward
+    if (s.plan.tremble) this.shake(root, (Math.random() - 0.5) * 0.06, (Math.random() - 0.5) * 0.06);
+    if (s.plan.slump) this.lean(root, 0.28);
     if (!this.fx.near(root.position, NEAR)) return;
     if (s.plan.motes.length && (s.motesT -= dt) <= 0) {
       const m = s.plan.motes[Math.floor(Math.random() * s.plan.motes.length)];
@@ -238,26 +304,7 @@ export class Wards {
       this.fx.p.emit(_p, { count: 1, color: m.color, bright: 1.6, speed: m.fast ? 0.6 : 0.12, up: m.sink ? -0.25 : m.fast ? 0.2 : 0.4,
         life: m.fast ? 0.6 : 1.8, size: 0.12, drag: 0.5 });
     }
-    // poisoned: bubbles rise off the skin, and a green haze hangs about the body
-    if (s.plan.poison != null) {
-      const pos = root.position, r = 0.18 + s.w * 0.3;
-      // (kept to time, not to frames: a slow machine sees as many, up to a few a frame)
-      s.bubT -= dt;
-      for (let n = 0; s.bubT <= 0 && n < 3; n++) {
-        s.bubT += 0.07 + Math.random() * 0.09;
-        const a = Math.random() * Math.PI * 2;
-        _p.set(pos.x + Math.cos(a) * r, pos.y + lift + s.h * (0.25 + Math.random() * 0.65), pos.z + Math.sin(a) * r);
-        this.fx.glyph(_p, { glyph: 'bubble', count: 1, color: s.plan.poison, bright: 2, speed: 0.12, up: 0.6, spread: 0.6,
-          life: 1.3, size: 0.2 + Math.random() * 0.16, drag: 0.8, grow: 0.06 });
-      }
-      s.hazeT -= dt;
-      for (let n = 0; s.hazeT <= 0 && n < 2; n++) {
-        s.hazeT += 0.2 + Math.random() * 0.15;
-        _p.set(pos.x + (Math.random() - 0.5) * r * 2.4, pos.y + lift + s.h * (0.15 + Math.random() * 0.6), pos.z + (Math.random() - 0.5) * r * 2.4);
-        this.fx.p.emit(_p, { count: 1, color: HAZE, bright: 0.75, speed: 0.12, up: 0.22, life: 1.7, size: 0.55, grow: 0.6, drag: 1 });
-      }
-      s.bubT = Math.max(s.bubT, -0.5); s.hazeT = Math.max(s.hazeT, -0.5);
-    }
+    if (s.plan.fx.length) emitHarms(s.plan.fx, this.fx, root, s, dt, lift);
     if (s.plan.hover && !ridden(root) && (s.windT -= dt) <= 0) {
       s.windT = 0.12;
       const pos = root.position;
@@ -288,7 +335,21 @@ export class Wards {
     return swaps;
   }
 
-  // poisoned: the body's own copies of its materials, glowing green (put back unless gear replaced them)
+  // the body's own parts nudged by (x, z) from where they stand (the frightened trembling); and
+  // tipped forward by `a` (a sleeper's slump). What is applied is kept, so it can be taken off
+  shake(root, x, z) {
+    const was = root.userData.wardShake || [0, 0];
+    for (const c of body(root)) { c.position.x += x - was[0]; c.position.z += z - was[1]; }
+    root.userData.wardShake = [x, z];
+  }
+  lean(root, a) {
+    const was = root.userData.wardLean || 0;
+    if (Math.abs(a - was) < 1e-4) return;
+    for (const c of body(root)) c.rotation.x += a - was;
+    root.userData.wardLean = a;
+  }
+
+  // a harm's glow: the body's own copies of its materials (put back unless gear replaced them)
   tint(root, color) {
     const swaps = [];
     const glow = new THREE.Color(color);
@@ -311,6 +372,10 @@ export class Wards {
     for (const m of s.mats) m.dispose();
     if (s.shell) s.shell.geometry.dispose();
     if (s.plan.hover) this.lift(a.root, 0);
+    if (s.plan.tremble) this.shake(a.root, 0, 0);
+    if (s.plan.slump) this.lean(a.root, 0);
+    if (s.band) { if (s.band.parent) s.band.parent.remove(s.band); s.band.geometry.dispose(); }
+    delete a.root.userData.animRate;
     for (const [o, was, mine] of [...(s.faded || []), ...(s.tinted || [])]) {
       if (o.material !== mine) continue;
       for (const m of [].concat(mine)) m.dispose();
