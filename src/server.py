@@ -97,6 +97,7 @@ class Connection:
     STATE_CONFIRM_NEW_PASSWORD = 15
     STATE_CONFIRM_DELETE = 16
     STATE_GET_SEX = 17
+    STATE_GET_STYLE = 18
     
     def __init__(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter, server):
         self.reader = reader
@@ -238,6 +239,8 @@ class Connection:
             await self.handle_sex(line)
         elif self.state == self.STATE_GET_CLASS:
             await self.handle_class(line)
+        elif self.state == self.STATE_GET_STYLE:
+            await self.handle_style(line)
         elif self.state == self.STATE_ROLLING_STATS:
             await self.handle_stats(line)
         elif self.state == self.STATE_PLAYING:
@@ -479,6 +482,30 @@ class Connection:
             return
             
         self.temp_class = char_class
+        self.temp_style = ''
+        if char_class == 'mage':
+            await self.show_style_menu()
+            self.state = self.STATE_GET_STYLE
+            return
+        await self.show_stats()
+        self.state = self.STATE_ROLLING_STATS
+
+    async def show_style_menu(self):
+        """A mage chooses their look in the 3D world: the classic mage, or the archmage (a tall hat,
+        a long white beard, a robe to the ankles and a moon staff). 'appearance' changes it later."""
+        c = self.config.COLORS
+        await self.send(f"\r\n {c['bright_yellow']}1){c['reset']} {c['bright_green']}classic{c['reset']}   {c['white']}the young mage in a travelling coat{c['reset']}")
+        await self.send(f" {c['bright_yellow']}2){c['reset']} {c['bright_green']}archmage{c['reset']}  {c['white']}a tall hat, a long white beard, a robe to the ankles{c['reset']}")
+        await self.send(f"\r\n{c['white']}Which look, classic or archmage? {c['reset']}")
+
+    async def handle_style(self, answer: str):
+        a = answer.strip().lower()
+        style = {'1': '', 'classic': '', 'c': '', '2': 'archmage', 'archmage': 'archmage', 'a': 'archmage'}.get(a)
+        if style is None:
+            await self.send("Please choose classic or archmage (1 or 2).")
+            await self.send("Which look, classic or archmage? ")
+            return
+        self.temp_style = style
         await self.show_stats()
         self.state = self.STATE_ROLLING_STATS
         
@@ -528,6 +555,7 @@ class Connection:
             stats=self.temp_stats,
             world=self.world,
             sex=self.temp_sex or 'neutral',
+            look_style=getattr(self, 'temp_style', '') or '',
         )
         if self.temp_password and not self.account:
             import security

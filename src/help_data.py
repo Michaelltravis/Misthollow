@@ -3303,6 +3303,12 @@ HELP_TOPICS = {'auction': {'category': 'command',
               'description': 'Show the current in-game time (old version).',
               'syntax': 'time_old',
               'title': 'Time Old'},
+ 'appearance': {'category': 'command',
+                'description': "How your hero looks in the 3D world, where their class has a choice. A mage chooses the "
+                               "classic mage or the archmage (a tall hat, a long white beard, a robe to the ankles and a "
+                               "moon staff). Chosen when a mage is made; change it any time.",
+                'syntax': 'appearance [classic|archmage]',
+                'title': 'Appearance'},
  'gender': {'category': 'command',
             'description': 'Whether your character is male or female: their pronouns, and their face and build in the 3D world. '
                            'Chosen when a character is made; one made before that was asked chooses once.',

@@ -67,6 +67,7 @@
     "blue":         {"family": "cloth", "c": ["#658aaa", "#4d6c82", "#364f5b"]},
     "royal_blue":   {"family": "cloth", "c": ["#6a8ae8", "#3a5ac0", "#1a2a6a"]},
     "navy":         {"family": "cloth", "c": ["#4a5a8a", "#2a3a6a", "#141a3a"]},
+    "archmage_blue": {"family": "cloth", "c": ["#4a5ab0", "#33418f", "#1e2760"]},
     "green":        {"family": "cloth", "c": ["#00ae5d", "#008353", "#00594a"]},
     "forest":       {"family": "cloth", "c": ["#068e6d", "#096253", "#0b363b"]},
     "olive":        {"family": "cloth", "c": ["#a0a860", "#707a3a", "#3a4220"]},

@@ -491,10 +491,17 @@ def _sex(ch):
     return sex if sex in ('male', 'female') else ''
 
 
+def _style(ch):
+    """A look the hero chose beyond their class's own (player.py LOOK_STYLES): the archmage, for a mage."""
+    from player import LOOK_STYLES
+    style = str(getattr(ch, 'look_style', '') or '')
+    return style if str(getattr(ch, 'char_class', '') or '').lower() in LOOK_STYLES.get(style, ()) else ''
+
+
 def _signature(ch):
     """What the look depends on, cheaply: rebuilt only when this changes."""
     eq = getattr(ch, 'equipment', {}) or {}
-    parts = [_standing(ch), str(getattr(ch, 'race', '') or ''), _sex(ch)]
+    parts = [_standing(ch), str(getattr(ch, 'race', '') or ''), _sex(ch), _style(ch)]
     for slot in sorted(eq):
         it = eq[slot]
         if it is not None:
@@ -516,6 +523,8 @@ def look_of(ch):
         look['race'] = race
     if _sex(ch):
         look['sex'] = _sex(ch)
+    if _style(ch):
+        look['style'] = _style(ch)
     if eq.get('wield'):
         look['main'] = weapon_piece(eq['wield'])
     if eq.get('shield'):
