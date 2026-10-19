@@ -44,3 +44,24 @@ test("a rare's gold glow; the world's news reaches the page and is heralded", ()
   assert.match(src('world3d/hud/hud.js'), /function herald\(/);
   assert.match(src('world3d/play.html'), /id="herald"/);
 });
+
+test('guidance: the quest step picked out in gold; whom your target fights; pings; graphics that keep up', async () => {
+  const { CombatCues } = await import('../../src/web_isometric/world3d/combatcues.js');
+  const scene = new THREE.Scene();
+  const mk = (key, name, x) => { const root = new THREE.Group(); root.position.set(x, 0, 0); scene.add(root); return { key, kind: 'mob', root, data: { name, short: name } }; };
+  const list = new Map([['m1', mk('m1', 'a grey wolf', 2)], ['m2', mk('m2', 'a rabbit', 4)]]);
+  const hero = new THREE.Group(); scene.add(hero);
+  let want = { t: 'kill', target: 'grey wolf' };
+  const cues = new CombatCues({ engine: { scene }, ents: { list, targeted: null }, getHero: () => ({ actor: { root: hero } }),
+    rangeOf: () => null, want: () => want, loot: () => new Map(), callout: null, onStrike: null });
+  cues.update(0.5, 1);
+  assert.equal(cues.qmarked.length, 1);
+  assert.ok(cues.qmarks[0].visible && Math.abs(cues.qmarks[0].position.x - 2) < 1e-6, 'a gold ring under the wolf');
+  want = null;
+  cues.update(0.5, 2);
+  assert.ok(!cues.qmarks[0].visible, 'and none when the step wants nothing to be found');
+  assert.match(src('world3d/hud/hud.js'), /tot\.textContent = `⟶ /);
+  assert.match(src('world3d/main.js'), /e\.altKey && ctl\) \{ const g = ctl\.groundAt/, 'alt-click pings');
+  assert.match(src('world3d/main.js'), /MH\.bus\.on\('world\.ping'/);
+  assert.match(src('world3d/main.js'), /localStorage\.setItem\('mh3d_quality_auto', next\)/, 'a machine that cannot keep up steps down');
+});

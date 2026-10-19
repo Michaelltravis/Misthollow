@@ -1399,7 +1399,8 @@ class Connection:
         if first in ('remember', 'forget'):
             await self._device_token(first, line.split()[1:])
             return
-        web_internal = line.startswith(('webmove ', 'webdoor ', 'webbar ', 'webattack'))
+        # (named in full: 'web' alone is a spell)
+        web_internal = line.startswith(('webmove ', 'webdoor ', 'webbar ', 'webattack', 'webpull ', 'webping ', 'webtrack ', 'uiseen '))
         secret = self._secret_line(line)
         if secret:
             web_internal = True

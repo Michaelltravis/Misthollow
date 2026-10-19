@@ -712,6 +712,14 @@ export function createHud() {
     const role = t.shopkeeper ? ' · shopkeeper' : t.trainer ? ' · trainer' : t.boss ? ' · boss' : t.rank === 'sub-boss' ? ' · sub-boss' : t.rank === 'elite' ? ' · elite' : '';
     els.tf.querySelector('.tsub').textContent = `${t.kind === 'player' ? `Level ${t.level || '?'} ${t.char_class || ''}` : `Level ${t.level || '?'} · ${con.label}`}${role}`;
     vbar(els.tf.querySelector('.vbar.hp'), t.maxHp ? t.hp : 1, t.maxHp || 1);
+    // whom it is fighting (target of target): you, a friend, or someone else
+    const tot = els.tf.querySelector('.ttot');
+    if (tot) {
+      const who = t.kind !== 'player' && t.fighting_name;
+      const me = String(MH.state.playerName || '').toLowerCase();
+      tot.classList.toggle('hidden', !who);
+      if (who) { tot.textContent = `⟶ ${String(who).toLowerCase() === me ? 'you' : who}`; tot.classList.toggle('you', String(who).toLowerCase() === me); }
+    }
     if (!t.maxHp) els.tf.querySelector('.vbar.hp span').textContent = '';
     paintAilments(t);
     // its portrait, once per target

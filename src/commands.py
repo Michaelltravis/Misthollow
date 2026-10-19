@@ -1070,6 +1070,34 @@ class CommandHandler:
             await QuestManager.check_tutorial_progress(player, c)
 
     @classmethod
+    async def cmd_webping(cls, player: 'Player', args: List[str]):
+        """Internal, for the 3D web client (/play): "webping <room vnum> <x> <z>": a ping on the
+        map (alt-click), seen by the player and the members of their group (a ring and a beam where
+        it was put, a flash on the minimap). Once a second at most."""
+        import time as _t
+        try:
+            vnum, x, z = int(args[0]), float(args[1]), float(args[2])
+        except (IndexError, ValueError):
+            return
+        now = _t.monotonic()
+        if now - getattr(player, '_last_ping', 0) < 1.0 or vnum not in player.world.rooms:
+            return
+        player._last_ping = now
+        group = getattr(player, 'group', None)
+        to = list(getattr(group, 'members', [])) if group else [player]
+        if player not in to:
+            to.append(player)
+        wm = getattr(player.world, 'web_map', None)
+        if not wm:
+            return
+        event = {'type': 'world_ping', 'from': player.name, 'vnum': vnum, 'x': round(x, 2), 'z': round(z, 2)}
+        for m in to:
+            try:
+                await wm.notify_event(m, event)
+            except Exception:
+                pass
+
+    @classmethod
     async def cmd_webtrack(cls, player: 'Player', args: List[str]):
         """Internal, for the 3D web client (/play): "webtrack hide|show <quest id>": whether the
         quest tracker under the minimap follows a quest (quest_guide.tracked, player.quest_tracking). Saved with the

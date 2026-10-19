@@ -203,6 +203,10 @@ def guide_block(player):
          'title': web_text(current.description) if current else 'Return to the one who gave you this quest',
          'objectives': [{'text': web_text(o.description), 'have': o.current, 'need': o.required, 'done': bool(o.completed)} for o in objs],
          'party': []}
+    # what the step wants, for /play to pick out in the world (cues: a gold ring under the
+    # creature to slay or speak with, the thing to pick up)
+    if current is not None and current.type in ('kill', 'talk', 'collect') and str(current.target or '').lower() not in ('', 'any'):
+        b['want'] = {'t': current.type, 'target': str(current.target)}
     if current is not None and current.type == 'command':
         hit = None                    # done where you stand: the title says how
     elif current is not None:

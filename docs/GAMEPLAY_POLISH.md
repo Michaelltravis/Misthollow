@@ -9,7 +9,7 @@ The owner: "What else should we look at to further polish and make the game play
 | 2 | Combat feel | done |
 | 3 | A world that feels alive | done |
 | 4 | Reasons to keep playing | done |
-| 5 | Guidance and quality of life | |
+| 5 | Guidance and quality of life | done |
 
 ## 1. Harms on the body (`harms.js`, `wards.js`, `map_system._wards`)
 
@@ -108,3 +108,22 @@ Checks: `node --test tests/web/alive.test.mjs`; `python3 tests/test_polish.py` (
 
 Checks: `node --test tests/web/progress.test.mjs`; `python3 tests/test_polish.py` (spots,
 elites, bounties, bestiary).
+
+## 5. Guidance and quality of life
+
+- **What the quest wants, picked out in the world**: the tracker's block says what the current
+  step wants (`quest_guide.py want`: slay, speak with or pick up what); in /play a slow gold ring
+  lies under each creature to slay or speak with, and under each thing to pick up
+  (`combatcues.js updateQuest`).
+- **Target of target**: the target frame says whom your target is fighting (`⟶ you` in red, or
+  the friend it has turned on), from the payload's `fighting_name`.
+- **Pings**: alt-click on the ground puts a ping there (`webping`): a gold beam and rings in the
+  world and a flash on the minimap, for you and everyone in your group; once a second at most.
+- **Graphics that keep up** (a performance pass, the Mac in mind): the picture's sharpness
+  already followed the machine (engine.js); now a machine that still cannot keep up (slower than
+  ~30 frames a second for ten seconds at the screen's own pixel density) steps the graphics down a
+  notch and says so, remembered for next time; never over a quality the player chose.
+- The internal commands the client sends (`webpull`, `webping`, `webtrack`, `uiseen`) no longer
+  echo into the chat (server.py).
+
+Checks: `node --test tests/web/progress.test.mjs`; `python3 tests/test_polish.py` (want, ping).
