@@ -106,3 +106,15 @@ test("a big body built in code goes over whole, its wings folded and kept off th
   assert.ok(Math.abs(wing.rotation.z) > 1.2, 'its wing folded');
   assert.ok(Math.abs(C.bodyBox(root).min.y) < 0.05, 'its body rests on the floor (the wing may pass under it)');
 });
+
+test('each creature dies as what it is (deathStyle), and leaves its remains', () => {
+  const cases = { 'a wailing ghost': 'dissolve', 'the lich king': 'dissolve', 'a green slime': 'burst', 'a gelatinous cube': 'burst',
+    'a fire elemental': 'burn', 'an imp': 'burn', 'a stone golem': 'shatter', 'an ice elemental': 'shatter', 'a goblin': 'fall',
+    'a grey wolf': 'fall', 'the cityguard': 'fall' };
+  for (const [name, style] of Object.entries(cases)) assert.equal(C.deathStyle(name), style, name);
+  assert.equal(C.deathStyle(null, 'a shimmering spectre'), 'dissolve', 'the short description counts too');
+  for (const style of ['dissolve', 'burst', 'burn', 'shatter']) {
+    const g = C.remains(style, new THREE.Vector3(3, 0, 4));
+    assert.ok(g.children.length >= 1 && g.position.x === 3, `${style} leaves something`);
+  }
+});

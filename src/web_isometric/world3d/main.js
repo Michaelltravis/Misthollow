@@ -261,6 +261,20 @@ async function runGame() {
     }
   });
   engine.onTick((dt, t) => { if (hero) cues.update(dt, t); });
+  // health running low (hud.js marks it at 30%): the heart beats, faster below 15%, and the
+  // reddened edge pulses with it (hud.css)
+  let beat = 0;
+  engine.onTick(dt => {
+    const p = MH.state.player, k = p && p.max_hp ? p.hp / p.max_hp : 1;
+    const low = k > 0 && k <= 0.3, crit = low && k <= 0.15;
+    document.documentElement.classList.toggle('hp-crit', crit);
+    if (!low) { beat = 0; return; }
+    if ((beat -= dt) <= 0) {
+      beat = crit ? 0.62 : 0.95;
+      sound.play('heartbeat');
+      document.documentElement.style.setProperty('--beat', `${beat}s`);
+    }
+  });
   MH.bus.on('combat.events', p => {
     // the server's word on your swing clock (private to you)
     for (const e of p.events || []) if (e.k === 'swing' && combat.isHero(e.src)) clock.told(e, performance.now());
@@ -340,6 +354,41 @@ async function runGame() {
     const at = e.root.position.clone();
     sound.play('growl', { at });
     fx.p.emit(at.clone().setY(0.25), { count: 14, color: 0xcabfa8, speed: 2.2, up: 0.4, life: 0.6, size: 0.35, grow: 0.6, drag: 2 });
+    notice(e);
+  };
+  // a creature that has just noticed you: a "!" over its head and a sharp sting (once a while each)
+  function notice(e) {
+    if (!e || !e.root || e.kind !== 'mob') return;
+    const now = performance.now();
+    if (e.noticedAt && now - e.noticedAt < 15000) return;
+    e.noticedAt = now;
+    const p = e.root.position.clone().setY(e.root.position.y + (e.plateY || 2) + 0.35);
+    fx.text(p, '!', { color: '#ffd23a', size: 34, rise: 0.5, life: 1.2, exact: true });
+    sound.play('alert', { at: e.root.position });
+  }
+  // how each creature dies (corpse.js deathStyle; entities.js plays it on the body): a spirit's
+  // last light rising, a slime's splash, a burning body's embers, a statue's shards
+  ents.onDeath = (e, style) => {
+    const at = e.root.position.clone(), mid = at.clone().setY(at.y + (e.plateY || 2) * 0.45);
+    if (style === 'dissolve') {
+      fx.p.emit(mid, { count: 34, color: 0xcfe8ff, bright: 1.8, speed: 0.6, up: 1.4, life: 1.6, size: 0.22, drag: 0.8, jitter: 0.8 });
+      sound.play('aura', { at });
+    } else if (style === 'burst') {
+      fx.after(0.22, () => {
+        fx.p.emit(mid, { count: 40, color: 0x7ad83a, bright: 1.3, speed: 3.6, up: 1.4, gravity: 9, life: 0.8, size: 0.24, drag: 0.6 });
+        sound.play('step_water', { at, vol: 1.5 });
+      });
+    } else if (style === 'shatter') {
+      fx.after(0.06, () => {
+        fx.glyph(mid, { glyph: 'shard', count: 16, color: 0xd8d2c8, bright: 1.2, speed: 4.2, up: 2, gravity: 10, life: 0.9, size: 0.3, drag: 0.4, spin: 6 });
+        fx.p.emit(at.clone().setY(0.3), { count: 20, color: 0xb8b0a0, speed: 2.4, up: 0.6, life: 0.9, size: 0.5, grow: 0.6, drag: 2 });
+        sound.play('shatter_big', { at });
+      });
+    } else if (style === 'burn') {
+      for (let i = 0; i < 6; i++) fx.after(i * 0.25, () => fx.p.emit(mid, { count: 10, color: i < 3 ? 0xff7a1a : 0x6a5a50, bright: i < 3 ? 2.2 : 0.6,
+        speed: 0.6, up: 1.4, life: 0.9, size: i < 3 ? 0.22 : 0.5, grow: i < 3 ? -0.2 : 0.6, drag: 1, jitter: 0.7 }));
+      sound.play('fizzle', { at });
+    }
   };
   const mmSmall = createMinimap($('#minimap'), room => travelTo(room), () => engine.snapNorth());
   // the big map (M): the same drawing, larger — the whole zone at a glance, click to walk there
@@ -1369,8 +1418,10 @@ async function runGame() {
       if (now - aggroRefresh > 1500 && MH.refreshState) { aggroRefresh = now; MH.refreshState(); }
       return;
     }
+    const fresh = !e.aggroAt || now - e.aggroAt > 20000;
     e.aggroAt = now;
     ents.markHostile(e);
+    if (fresh) notice(e);
     if (heroRoom && shouldRetarget(ents.targeted, e, heroRoom.vnum, now)) ents.setTarget(e.key);
   }
   function applyPendingAggro() {

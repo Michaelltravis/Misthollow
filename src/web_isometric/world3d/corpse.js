@@ -198,3 +198,34 @@ export function grave(rng = Math.random) {
   g.traverse(o => { o.userData.own = true; });
   return g;
 }
+
+// how a creature dies, by what it is: a spirit fades away, a slime bursts, a creature of fire burns
+// to ash, a thing of stone or ice shatters; anything else falls (fallOver)
+const BURN = /\b(fire|flame|flaming|magma|lava|ember|inferno|imp|demon|demonic|efreet|ifrit|salamander|phoenix|hellhound|balor)\b/i;
+const DISSOLVE = /\b(ghost|ghostly|spirit|wraith|spectre|specter|spectral|phantom|shade|wisp|banshee|apparition|poltergeist|haunt|soul|lich|vampire|wight|revenant|shadow)\b/i;
+const BURST = /\b(slime|ooze|jelly|blob|pudding|mold|mould|fungus|myconid|amoeba|gelatinous|leech|maggot|cube)\b/i;
+const SHATTER = /\b(golem|elemental|gargoyle|statue|crystal|construct|animated|stone|ice|frost|iron|clay)\b/i;
+export function deathStyle(...names) {
+  const s = names.filter(Boolean).join(' ');
+  if (BURN.test(s)) return 'burn';
+  if (DISSOLVE.test(s)) return 'dissolve';
+  if (BURST.test(s)) return 'burst';
+  if (SHATTER.test(s)) return 'shatter';
+  return 'fall';
+}
+
+// what one that did not fall leaves for its corpse: a heap of ash, a puddle of goo, a scatter of
+// rubble, a faint pool of light where a spirit was
+export function remains(style, at) {
+  const g = new THREE.Group();
+  g.position.copy(at);
+  const add = (geo, color, x, z, sy, extra = {}) => {
+    const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color, roughness: 0.9, flatShading: true, ...extra }));
+    m.position.set(x, 0, z); m.scale.y = sy; g.add(m); return m;
+  };
+  if (style === 'burst') add(new THREE.SphereGeometry(0.55, 14, 6, 0, Math.PI * 2, 0, Math.PI / 2), 0x5aa82a, 0, 0, 0.12, { roughness: 0.25, transparent: true, opacity: 0.85 });
+  else if (style === 'shatter') for (let i = 0; i < 7; i++) add(new THREE.DodecahedronGeometry(0.12 + (i % 3) * 0.06, 0), 0x8a8478, Math.cos(i * 2.1) * 0.45, Math.sin(i * 2.1) * 0.45, 1);
+  else if (style === 'dissolve') add(new THREE.CircleGeometry(0.5, 24).rotateX(-Math.PI / 2).translate(0, 0.02, 0), 0xbfe0ff, 0, 0, 1, { emissive: 0x6a9acc, emissiveIntensity: 0.6, transparent: true, opacity: 0.55 });
+  else add(new THREE.ConeGeometry(0.42, 0.3, 9).translate(0, 0.15, 0), 0x3a3634, 0, 0, 1);
+  return g;
+}

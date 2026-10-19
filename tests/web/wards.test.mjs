@@ -59,6 +59,16 @@ test('every harm the server names has a look, and each emitter puts something ou
   }
 });
 
+test('combat feel: the knock, the punch, the notice, the heartbeat, the deaths are wired', () => {
+  const W = p => readFileSync(path.join(HERE, '../../src/web_isometric/world3d', p), 'utf8');
+  assert.match(W('combat.js'), /this\.ents\.knock\(dst\.ent, src\.root\.position/);
+  assert.match(W('engine.js'), /punch: m =>/);
+  assert.match(W('main.js'), /if \(fresh\) notice\(e\);/);
+  assert.match(W('main.js'), /sound\.play\('heartbeat'\)/);
+  assert.match(W('entities.js'), /deathStyle\(e\.data\.name, e\.data\.short/);
+  assert.match(W('play.html'), /data-set="autolootgold"/);
+});
+
 test('harms on the body: the strongest glow; a frost or hold slows or stops it; a sleeper slumps; the blind wear a band', () => {
   const p = wardPlan(['poisoned', 'burning', 'frozen', 'asleep', 'feared', 'blinded', 'bleeding']);
   assert.equal(p.tint, WARDS.frozen.tint, 'frost outshines burn and poison');
