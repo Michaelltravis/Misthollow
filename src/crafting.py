@@ -571,7 +571,9 @@ async def cmd_mine(player, args):
 
     _ensure_crafting_data(player)
     skill = player.skills.get('mining', 1)
-    if random.randint(1, 100) > min(90, 30 + skill + player.level * 2):
+    import nodes
+    vein = nodes.at(player.room, 'ore')         # an ore vein here gives surely, and more
+    if not vein and random.randint(1, 100) > min(90, 30 + skill + player.level * 2):
         await player.send(f"{c['yellow']}You swing your pick but find nothing useful.{c['reset']}")
         # Skill up chance on failure too
         if hasattr(player, 'improve_skill') and random.randint(1, 100) <= 15:
@@ -583,12 +585,33 @@ async def cmd_mine(player, args):
     if material:
         player.inventory.append(material)
         await player.send(f"{c['bright_cyan']}You mine {material.short_desc}.{c['reset']}")
+        if vein:
+            await _work_spot(player, options, 'You work the ore vein until it gives no more', 'bright_cyan')
         if hasattr(player, 'improve_skill'):
             await player.improve_skill('mining', difficulty=4)
         # Quest progress
         try:
             from quests import QuestManager
             await QuestManager.check_quest_progress(player, 'collect', {'item_vnum': material.vnum, 'item_name': material.name})
+        except Exception:
+            pass
+
+
+async def _work_spot(player, options, words, colour):
+    """A herb patch or ore vein worked (nodes.py): a second find from the better half of the
+    ground's table, and the spot is spent a while."""
+    import nodes
+    c = player.config.COLORS
+    nodes.take(player.room)
+    best = sorted(options, key=lambda o: o[1])[:max(1, (len(options) + 1) // 2)]
+    extra = create_material(_weighted_choice(best), getattr(player, 'world', None))
+    if extra:
+        player.inventory.append(extra)
+        await player.send(f"{c[colour]}{words}: {extra.short_desc} as well.{c['reset']}")
+    wm = getattr(getattr(player, 'world', None), 'web_map', None)
+    if wm:
+        try:
+            await wm.notify_player(player)
         except Exception:
             pass
 
@@ -615,7 +638,9 @@ async def cmd_forage(player, args):
     player.move -= 3
 
     skill = player.skills.get('herbalism', 1)
-    if random.randint(1, 100) > min(90, 35 + skill + player.level * 2):
+    import nodes
+    patch = nodes.at(player.room, 'herb')       # a herb patch here gives surely, and more
+    if not patch and random.randint(1, 100) > min(90, 35 + skill + player.level * 2):
         await player.send(f"{c['yellow']}You search through the undergrowth but find nothing useful.{c['reset']}")
         if hasattr(player, 'improve_skill') and random.randint(1, 100) <= 15:
             await player.improve_skill('herbalism', difficulty=4)
@@ -626,6 +651,8 @@ async def cmd_forage(player, args):
     if material:
         player.inventory.append(material)
         await player.send(f"{c['bright_green']}You find {material.short_desc}.{c['reset']}")
+        if patch:
+            await _work_spot(player, options, 'You pick the herb patch clean', 'bright_green')
         if hasattr(player, 'improve_skill'):
             await player.improve_skill('herbalism', difficulty=4)
         try:

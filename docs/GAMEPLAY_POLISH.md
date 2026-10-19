@@ -8,7 +8,7 @@ The owner: "What else should we look at to further polish and make the game play
 | 1 | Every harm drawn on the body | done |
 | 2 | Combat feel | done |
 | 3 | A world that feels alive | done |
-| 4 | Reasons to keep playing | |
+| 4 | Reasons to keep playing | done |
 | 5 | Guidance and quality of life | |
 
 ## 1. Harms on the body (`harms.js`, `wards.js`, `map_system._wards`)
@@ -81,3 +81,30 @@ Checks: `node --test tests/web/corpse.test.mjs tests/web/wards.test.mjs`.
   streets makes for a house next door at night and stays in; by day it comes back out.
 
 Checks: `node --test tests/web/alive.test.mjs`; `python3 tests/test_polish.py` (townsfolk, weather).
+
+## 4. Reasons to keep playing
+
+- **Rare elites** (`elites.py`): checked with the weather (every five minutes), each zone with a
+  player in it may get one (35%; one at a time a zone): an ordinary creature turns up with a name
+  of its own ("a grizzled grey wolf"), 2.5 times the health, harder blows, three times the
+  experience and four times the gold, and a piece of gear fit for its level in its pack. The zone
+  is told where it was seen (in the log, and in /play a gold herald: `world_rare`); in /play it
+  wears a gold ring and rising sparks (the `elite` ward).
+- **The bounty board's daily bounties** (`bounties.py`): three named contracts a day (novice,
+  veteran, champion), each on a dangerous creature that roams the world in numbers (never the
+  town's own people, never harmless beasts): slay so many, for gold and experience by its level.
+  They are daily quests offered by the bounty board's keeper, so the journal offers them and the
+  tracker leads to the nearest of the creature; a new three each day.
+- **Herb patches and ore veins** (`nodes.py`, drawn by `nodes.js`): about one room in five of
+  forest, field, marsh, hills, mountain or dungeon holds a spot, in the same place for everyone.
+  Worked (a click walks the hero over and forages or mines), it gives surely and twice (the
+  second from the better half of the ground's finds), then is spent for five minutes; a ready
+  spot glints, a spent one is dull.
+- **The bestiary's milestones** (`achievements.py`): 10, 25, 50, 100 and 200 creatures catalogued
+  are achievements, with gold, experience, titles (the Naturalist, the Beastwise, Keeper of
+  Beasts, the Living Almanac) and, for the later ones, a point of wisdom or intellect.
+- **Achievements in /play**: unlocked, each is heralded on screen (`world_achievement`: its icon,
+  name, what it was for and any title won), not only written in the log.
+
+Checks: `node --test tests/web/progress.test.mjs`; `python3 tests/test_polish.py` (spots,
+elites, bounties, bestiary).

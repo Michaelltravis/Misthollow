@@ -256,11 +256,18 @@ class JournalManager:
     async def discover_creature(player, mob_key: str, mob_name: str, content: str,
                                 location: str = None, metadata: dict = None,
                                 silent: bool = False) -> bool:
-        """Record a creature for the bestiary."""
-        return await JournalManager.add_entry(
-            player, 'bestiary', f'mob:{mob_key}', mob_name, content, location, 
+        """Record a creature for the bestiary (and its milestones: achievements.py)."""
+        new = await JournalManager.add_entry(
+            player, 'bestiary', f'mob:{mob_key}', mob_name, content, location,
             metadata=metadata, silent=silent
         )
+        if new:
+            try:
+                from achievements import AchievementManager
+                await AchievementManager.check_bestiary(player, JournalManager.get_stats(player)['bestiary_entries'])
+            except Exception:
+                pass
+        return new
     
     @staticmethod
     async def record_quest(player, quest_id: str, quest_name: str, content: str,

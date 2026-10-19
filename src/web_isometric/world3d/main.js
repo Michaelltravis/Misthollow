@@ -8,6 +8,7 @@ import { createEngine } from './engine.js';
 import { loadKit, GRASS } from './assets.js';
 import { WeatherView, weatherKind } from './weather.js';
 import { Wildlife } from './wildlife.js';
+import { GatherNodes } from './nodes.js';
 import { Zone, fetchZonemap, REV } from './zone.js';
 import { ROOM_W, ROOM_H, LABEL_FADE } from './terrain.js';
 import { Controller, findPath } from './controller.js';
@@ -159,6 +160,33 @@ async function runGame() {
   const wild = new Wildlife(engine, fx, sky.ripples, sound, (x, z) => {
     const r = zone && zone.roomAt(x, z);
     return !!(r && zone.tile(r, x, z) === WATER_TILE);
+  });
+  // herb patches and ore veins (nodes.js; the server's nodes.py): drawn, glinting, worked on a click
+  const spots = new GatherNodes(engine, () => zone, fx);
+  engine.onTick(dt => spots.update(dt));
+  let spotWalk = null;
+  function workSpot(n) {
+    if (!n || !hero) return;
+    const go = () => { spotWalk = null; if (heroRoom && heroRoom.vnum === n.vnum) MH.sendCommand(n.kind === 'ore' ? 'mine' : 'forage'); };
+    const near = () => Math.hypot(hero.root.position.x - n.root.position.x, hero.root.position.z - n.root.position.z) < 1.6;
+    if (near()) return go();
+    travel = null;
+    ctl.walkTo(n.root.position.x, n.root.position.z);
+    spotWalk = { near, go, until: performance.now() + 9000 };
+  }
+  engine.onTick(() => {
+    if (!spotWalk || !hero) return;
+    if (performance.now() > spotWalk.until || !ctl.path) { if (spotWalk.near()) spotWalk.go(); else spotWalk = null; return; }
+    if (spotWalk.near()) { ctl.stop(); spotWalk.go(); }
+  });
+  // the world's news: an achievement earned, a rare creature sighted in this zone (elites.py)
+  MH.bus.on('world.achievement', e => {
+    sound.play('quest_done');
+    hud.herald({ kicker: 'Achievement unlocked', title: `${e.icon || '★'} ${e.name}`, sub: `${e.desc || ''}${e.title ? ` · new title: ${e.title}` : ''}` });
+  });
+  MH.bus.on('world.rare', e => {
+    sound.play('ui_offer');
+    hud.herald({ kicker: 'A rare creature stirs', title: e.name, sub: `seen near ${e.where}`, tone: 'rare' });
   });
   let skyOpen = false, skyTheme = 'field';
   function applySky() {
@@ -523,7 +551,7 @@ async function runGame() {
     if (!payload.player || !payload.player.vnum) return;
     if (!zone) { if (!starting) starting = start(payload).catch(err => { console.error(err); hud.toast('Could not load the world: ' + err.message); }).finally(() => { starting = null; }); return; }
     if (starting) return;
-    ents.sync(payload, MH.state.playerName); loot.sync(payload); followLoot(payload);
+    ents.sync(payload, MH.state.playerName); loot.sync(payload); spots.sync(payload); followLoot(payload);
     applyPendingAggro();
     mm.setExplored((payload.rooms || []).map(r => r.vnum));
     mm.setTime(payload.time);
@@ -579,10 +607,10 @@ async function runGame() {
     engine.placeCamera(true);
     hud.showGame(true);
     hud.banner(room.name, zone.name);
-    ents.sync(payload, MH.state.playerName); loot.sync(payload); followLoot(payload);
+    ents.sync(payload, MH.state.playerName); loot.sync(payload); spots.sync(payload); followLoot(payload);
     mm.setExplored((payload.rooms || []).map(r => r.vnum));
     mm.setTime(payload.time);
-    window.MH3D = { engine, zone: () => zone, hero, ctl, sync, ents, loot, fx, combat, hud, cues, THREE, sound, adorn, wards, sky, wild,
+    window.MH3D = { engine, zone: () => zone, hero, ctl, sync, ents, loot, fx, combat, hud, cues, THREE, sound, adorn, wards, sky, wild, spots,
       heroRoom: () => heroRoom, hop: () => hop, gate, lastPayload: () => lastPayload,
       // for probes: an area spell being aimed ({id, at, radius}), or null
       aim: () => (aiming ? { id: aiming.ab.id, at: aiming.at, radius: aiming.ab.radius } : null),
@@ -595,6 +623,7 @@ async function runGame() {
     zone = new Zone(engine, kits, zm);
     ents.setZone(zone);
     loot.clear();
+    spots.clear();
     mm.setZone(zone);
     zmCache.set(zm.zone, zm);
     nextDoor(zone);
@@ -748,7 +777,7 @@ async function runGame() {
       const r = zone.rooms.get(v);
       teleport(r, oldV != null ? zone.arrival(r, oldV, null) : zone.centre(r));
       hud.banner(r.name, zone.name);
-      if (lastPayload) { ents.sync(lastPayload, MH.state.playerName); loot.sync(lastPayload); }
+      if (lastPayload) { ents.sync(lastPayload, MH.state.playerName); loot.sync(lastPayload); spots.sync(lastPayload); }
     } finally {
       const next = relocating && relocating.next;
       relocating = null;
@@ -806,7 +835,7 @@ async function runGame() {
         const r = zone.rooms.get(v);
         land(r, zone.arrival(r, h.from.vnum, h.dir), h.from.vnum, h.seamless);
         hud.banner(r.name, zone.name);
-        if (lastPayload) { ents.sync(lastPayload, MH.state.playerName); loot.sync(lastPayload); }
+        if (lastPayload) { ents.sync(lastPayload, MH.state.playerName); loot.sync(lastPayload); spots.sync(lastPayload); }
       } else {
         const r = zone.rooms.get(v);
         land(r, zone.arrival(r, h.from.vnum, h.dir), h.from.vnum);
@@ -937,6 +966,8 @@ async function runGame() {
     if (hit) { ents.setTarget(hit.key, { byHand: true }); return; }
     const item = loot.pick(e.clientX, e.clientY, canvas);
     if (item) { takeLoot(item); return; }
+    const spot = spots.pick(e.clientX, e.clientY, canvas);
+    if (spot) { workSpot(spot); return; }
     const g = ctl.groundAt(e.clientX, e.clientY);
     if (!g) return;
     travel = null;

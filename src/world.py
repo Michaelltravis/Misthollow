@@ -826,6 +826,13 @@ class World:
         except Exception as e:
             logger.warning(f"Failed to work out quest routes: {e}")
 
+        # the day's bounties on the bounty board (bounties.py)
+        try:
+            import bounties
+            bounties.refresh(self)
+        except Exception as e:
+            logger.warning(f"Failed to post the bounties: {e}")
+
         logger.info(f"World loaded: {len(self.zones)} zones, {len(self.rooms)} rooms")
         
     def zone_of_vnum(self, vnum: int) -> int:
@@ -1442,7 +1449,14 @@ class World:
             await CompanionManager.apply_daily_upkeep(self)
 
     async def weather_tick(self):
-        """Process weather updates for all zones."""
+        """Process weather updates for all zones (and, as often: a rare elite may turn up where
+        someone plays, elites.py; the day's bounties are posted, bounties.py)."""
+        try:
+            import elites, bounties
+            bounties.refresh(self)
+            await elites.tick(self)
+        except Exception as e:
+            logger.warning(f"elites/bounties tick failed: {e}")
         for zone in self.zones.values():
             if zone.number > 0:  # Skip Limbo (zone 0)
                 old_weather = zone.weather.sky_condition

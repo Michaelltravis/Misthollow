@@ -37,6 +37,22 @@ class Achievement:
 
 # Achievement definitions
 ACHIEVEMENTS: Dict[str, Achievement] = {
+    # === THE BESTIARY (docs/GAMEPLAY_POLISH.md group 4): creatures catalogued ===
+    'bestiary_10': Achievement(id='bestiary_10', name='Field Notes', description='Catalogue 10 creatures in your bestiary',
+                               category='exploration', icon='📖', points=10, target=10, progress_key='bestiary',
+                               reward_gold=200, reward_xp=400),
+    'bestiary_25': Achievement(id='bestiary_25', name='Naturalist', description='Catalogue 25 creatures in your bestiary',
+                               category='exploration', icon='📖', points=20, target=25, progress_key='bestiary',
+                               reward_gold=600, reward_xp=1500, reward_title='the Naturalist'),
+    'bestiary_50': Achievement(id='bestiary_50', name='Beastwise', description='Catalogue 50 creatures in your bestiary',
+                               category='exploration', icon='📖', points=30, target=50, progress_key='bestiary',
+                               reward_gold=1500, reward_xp=5000, reward_title='the Beastwise', reward_stat_bonus={'wis': 1}),
+    'bestiary_100': Achievement(id='bestiary_100', name='Keeper of Beasts', description='Catalogue 100 creatures in your bestiary',
+                                category='exploration', icon='📖', points=50, target=100, progress_key='bestiary',
+                                reward_gold=4000, reward_xp=15000, reward_title='Keeper of Beasts', reward_stat_bonus={'int': 1, 'wis': 1}),
+    'bestiary_200': Achievement(id='bestiary_200', name='The Living Almanac', description='Catalogue 200 creatures in your bestiary',
+                                category='exploration', icon='📖', points=100, target=200, progress_key='bestiary',
+                                reward_gold=10000, reward_xp=40000, reward_title='the Living Almanac', reward_stat_bonus={'int': 2, 'wis': 2}),
     # === COMBAT ===
     'first_blood': Achievement(
         id='first_blood',
@@ -880,6 +896,14 @@ class AchievementManager:
     # ----------------------------- unlock & display ----------------------------
 
     @classmethod
+    async def check_bestiary(cls, player: 'Player', count: int) -> None:
+        """The bestiary's milestones: so many creatures catalogued (journal.py)."""
+        cls._set_progress(player, 'bestiary', count)
+        for aid, a in ACHIEVEMENTS.items():
+            if a.progress_key == 'bestiary' and count >= (a.target or 0):
+                await cls.unlock(player, aid)
+
+    @classmethod
     async def unlock(cls, player: 'Player', achievement_id: str) -> bool:
         """Unlock an achievement for a player."""
         if achievement_id not in ACHIEVEMENTS:
@@ -907,6 +931,14 @@ class AchievementManager:
         await player.send(f"{c['bright_cyan']}{achievement.icon} {achievement.name}{c['reset']}")
         await player.send(f"{c['white']}{achievement.description}{c['reset']}")
         await player.send(f"{c['yellow']}+{achievement.points} achievement points{c['reset']}")
+        wm = getattr(getattr(player, 'world', None), 'web_map', None)
+        if wm:
+            try:
+                await wm.notify_event(player, {'type': 'world_achievement', 'name': achievement.name, 'icon': achievement.icon,
+                                               'desc': achievement.description, 'points': achievement.points,
+                                               'title': achievement.reward_title or achievement.reward_title_prefix})
+            except Exception:
+                pass
 
         # Grant rewards
         if achievement.reward_xp > 0:

@@ -44,6 +44,8 @@ export const WARDS = {
   guardian_spirit: { ring: 0xc8f0ff },
   spirit_link: { ring: 0x8ae0ff },
   entangled: { ring: 0x5f9a3a },
+  // a rare elite (elites.py): a gold ring under it and gold sparks rising
+  elite: { ring: 0xffc24a, motes: 0xffd86a },
   // motes
   bless: { motes: 0xffe9a8 },
   haste: { motes: 0xffd25a, fast: true },
