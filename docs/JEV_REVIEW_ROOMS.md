@@ -1,77 +1,10 @@
 # JEV review: room looks
 
-JEV judged 8571 rooms against the look the game draws. Listed: the 882 where it
+JEV judged 8571 rooms against the look the game draws. Listed: the 691 where it
 is at least 90% sure of another look and gives the drawn one 5% or less.
 Nothing is changed by this list; `stated` rooms were set by hand or by the build-out.
 
-## Trade Road (62)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 1801 | The Meadow Thrithing | forest | field | 1.00 | rules |
-| 1802 | The Meadow Thrithing | forest | field | 1.00 | rules |
-| 1803 | The Meadow Thrithing | forest | field | 1.00 | rules |
-| 1804 | The Meadow Thrithing | forest | field | 0.97 | rules |
-| 1806 | The Meadow Thrithing | forest | field | 1.00 | rules |
-| 1808 | The Meadow Thrithing | forest | field | 1.00 | rules |
-| 1809 | The Meadow Thrithing | forest | field | 1.00 | rules |
-| 1813 | The Meadow Thrithing | forest | field | 1.00 | rules |
-| 1814 | The Meadow Thrithing | forest | field | 1.00 | rules |
-| 1815 | The Meadow Thrithing | forest | field | 1.00 | rules |
-| 1816 | The Meadow Thrithing | forest | field | 1.00 | rules |
-| 1817 | The Meadow Thrithing | forest | field | 0.97 | rules |
-| 1819 | The Meadow Thrithing | forest | field | 1.00 | rules |
-| 1820 | The Meadow Thrithing | forest | field | 1.00 | rules |
-| 1821 | The Meadow Thrithing | forest | field | 1.00 | rules |
-| 1822 | The Meadow Thrithing | forest | field | 1.00 | rules |
-| 1824 | The Meadow Thrithing | forest | field | 1.00 | rules |
-| 1853 | The Rangers Camp | forest | camp | 0.97 | rules |
-| 2301 | The Dusty Road | forest | field | 0.98 | description |
-| 2302 | The Dusty Road | forest | field | 0.97 | description |
-| 2303 | The Dusty Road | city | field | 1.00 | rules |
-| 2315 | In The Vegetable Garden | field | garden | 1.00 | rules |
-| 8120 | The Never Ending Plains | stones | field | 1.00 | neighbours |
-| 8121 | The Never Ending Plains | stones | field | 1.00 | neighbours |
-| 8122 | The Never Ending Plains | stones | field | 1.00 | description |
-| 8123 | The Never Ending Plains | stones | field | 1.00 | neighbours |
-| 8127 | The Never Ending Plains | stones | field | 1.00 | neighbours |
-| 8133 | The Ruined Road | field | ruins | 0.90 | rules |
-| 8183 | The Plains | stones | field | 1.00 | neighbours |
-| 8184 | The Plains | stones | field | 1.00 | neighbours |
-| 8185 | The Plains | stones | field | 1.00 | description |
-| 8187 | The Plains | stones | field | 1.00 | neighbours |
-| 8188 | The Plains | stones | field | 1.00 | neighbours |
-| 8189 | The Plains | stones | field | 1.00 | neighbours |
-| 8226 | On The Caravan Road | city | village | 0.99 | rules |
-| 8231 | On The Caravan Road | city | field | 1.00 | rules |
-| 8262 | On The Old Temple Road | field | city | 0.93 | name |
-| 8273 | An Old Road | stones | field | 0.96 | description |
-| 8301 | On The Caravan Road | city | field | 1.00 | rules |
-| 8303 | The Road Crossing | city | field | 0.98 | rules |
-| 8490 | On The Caravan Road | city | field | 1.00 | rules |
-| 8491 | On The Caravan Road | field | swamp | 1.00 | stated |
-| 8494 | On The Caravan Road | city | field | 0.97 | rules |
-| 8600 | The Small Path | forest | garden | 0.99 | rules |
-| 8604 | The King's Road | forest | ruins | 0.91 | rules |
-| 8616 | The King's Road | forest | field | 0.97 | rules |
-| 8681 | On The Trail Of Shadows | forest | ruins | 0.99 | rules |
-| 8682 | On The Trail Of Shadows | forest | ruins | 1.00 | rules |
-| 8683 | The Ruined City | forest | ruins | 0.98 | rules |
-| 8684 | The Ruined City | forest | ruins | 0.96 | rules |
-| 8685 | The Ruined City | forest | ruins | 0.99 | rules |
-| 8687 | In The Ruined City | forest | ruins | 0.96 | rules |
-| 8691 | In The Ruined City | forest | ruins | 0.95 | rules |
-| 8703 | At The Forest Lake | forest | shore | 1.00 | name |
-| 8726 | The Forest Lake | forest | shore | 0.97 | name |
-| 9140 | On A Rocky Mountain Road | cave | mountain | 0.97 | neighbours |
-| 9738 | Rubble and Ruin | hills | ruins | 1.00 | rules |
-| 9790 | Shokogya Street | city | garden | 0.97 | rules |
-| 15061 | Road Through The Plains | hills | field | 0.96 | rules |
-| 15062 | Road Through The Plains | hills | field | 1.00 | rules |
-| 203500 | End Of The King's Road | city | field | 1.00 | rules |
-| 203501 | On The King's Road | city | field | 0.91 | rules |
-
-## The Winterwood (56)
+## The Winterwood (55)
 
 | room | name | drawn | JEV | sure | set by |
 |---|---|---|---|---|---|
@@ -121,7 +54,6 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 12452 | A Path Through The Winterwood | snow | forest | 1.00 | description |
 | 12453 | A Path Through The Winterwood | snow | forest | 1.00 | description |
 | 12454 | A Path Through The Winterwood | snow | forest | 0.93 | description |
-| 12456 | A Narrow Mountain Path | snow | mountain | 1.00 | description |
 | 12457 | A Large Cluster Of Trees | snow | forest | 1.00 | description |
 | 12458 | A Large Cluster Of Trees | snow | forest | 1.00 | description |
 | 12459 | A Large Cluster Of Trees | snow | forest | 1.00 | description |
@@ -219,75 +151,41 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 203072 | On The City Wall | city | castle | 0.97 | rules |
 | 203073 | On The City Wall | city | castle | 0.99 | rules |
 
-## Durmandel I (32)
+## Trade Road (31)
 
 | room | name | drawn | JEV | sure | set by |
 |---|---|---|---|---|---|
-| 13027 | Valin's Road | field | city | 0.98 | rules |
-| 13029 | Valin's Road | field | city | 1.00 | rules |
-| 13032 | Bolgrim's Way | cave | city | 0.96 | stated |
-| 13033 | Bolgrim's Way | field | city | 0.99 | rules |
-| 13034 | Bolgrim's Way | field | city | 0.97 | rules |
-| 13035 | The House Of Gems | city | inside | 1.00 | rules |
-| 13036 | Bolgrim's Way | field | city | 0.99 | rules |
-| 13037 | Bolgrim's Way | field | city | 1.00 | rules |
-| 13038 | Before The Watchtower | cave | castle | 0.95 | stated |
-| 13057 | Valin's Road | field | city | 1.00 | rules |
-| 13058 | Valin's Road | field | city | 0.99 | rules |
-| 13059 | Valin's Road | field | city | 1.00 | rules |
-| 13061 | North Plaza | cave | city | 1.00 | stated |
-| 13063 | East Plaza | field | city | 1.00 | rules |
-| 13064 | Southeast Plaza | field | city | 1.00 | rules |
-| 13065 | South Plaza | field | city | 0.98 | rules |
-| 13066 | Southwest Plaza | field | city | 1.00 | rules |
-| 13067 | West Plaza | field | city | 1.00 | rules |
-| 13068 | Northwest Plaza | field | city | 1.00 | rules |
-| 13081 | The Cityguard's Headquarters | city | inside | 1.00 | rules |
-| 13085 | The Prison | inside | dungeon | 0.99 | name |
-| 13095 | Theo's Magical Things | city | inside | 1.00 | rules |
-| 13096 | The Mineral Storage | city | inside | 0.93 | rules |
-| 13098 | A Private Home | city | inside | 1.00 | rules |
-| 13099 | A Private Home | city | inside | 1.00 | rules |
-| 13100 | A Nobles House | city | inside | 0.94 | rules |
-| 13101 | A Nobles House | city | inside | 0.99 | rules |
-| 13102 | A Nobles House | city | inside | 0.98 | rules |
-| 13103 | A Nobles House | city | inside | 1.00 | rules |
-| 13104 | An Abandon House | city | inside | 1.00 | rules |
-| 13105 | An Abandon House | city | inside | 0.99 | rules |
-| 13113 | The Golden Plough | city | inside | 1.00 | rules |
-
-## Badlands II (28)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 8305 | The Black Hills | field | hills | 0.99 | rules |
-| 8306 | The Black Hills | stones | hills | 0.95 | neighbours |
-| 8324 | The Camp | forest | camp | 0.99 | rules |
-| 8337 | The Cellar | cave | dungeon | 1.00 | zone |
-| 8338 | The Plains | snow | field | 1.00 | neighbours |
-| 8339 | The Plains | snow | field | 0.98 | neighbours |
-| 8353 | At The Bridge Of Death | field | mountain | 0.97 | rules |
-| 8354 | Crossing A Narrow Stone Bridge | field | mountain | 0.96 | rules |
-| 9100 | The Badlands | field | desert | 0.98 | rules |
-| 9101 | The Badlands | field | desert | 0.95 | rules |
-| 9104 | The Black Hills | stones | terrace | 0.93 | neighbours |
-| 9105 | The Black Hills | field | hills | 0.91 | rules |
-| 9106 | The Black Hills | field | hills | 0.94 | rules |
-| 9109 | The Black Hills | forest | hills | 0.90 | description |
-| 9111 | The Black Hills | field | hills | 0.92 | rules |
-| 9118 | The Black Hills | field | hills | 0.95 | rules |
-| 9120 | The Black Hills | stones | hills | 0.98 | neighbours |
-| 9121 | The Black Hills | stones | hills | 0.94 | description |
-| 9122 | The Plains | snow | field | 0.99 | neighbours |
-| 9123 | The Plains | snow | field | 0.99 | neighbours |
-| 9127 | The Plains | snow | field | 1.00 | neighbours |
-| 9128 | The Plains | snow | field | 1.00 | neighbours |
-| 9129 | The Rickety-Rope Bridge | snow | mountain | 0.93 | neighbours |
-| 9132 | The Plains | snow | field | 0.96 | neighbours |
-| 9133 | The Plains | snow | field | 0.98 | neighbours |
-| 9166 | The Trail Along The Dim Stairs | field | cave | 0.98 | name |
-| 9174 | The Old Gravel Road | field | mountain | 0.92 | rules |
-| 9179 | The Look-Out | cave | inside | 0.98 | zone |
+| 1853 | The Rangers Camp | forest | camp | 0.97 | rules |
+| 2301 | The Dusty Road | forest | field | 0.98 | description |
+| 2302 | The Dusty Road | forest | field | 0.97 | description |
+| 2303 | The Dusty Road | city | field | 1.00 | rules |
+| 8133 | The Ruined Road | field | ruins | 0.90 | rules |
+| 8226 | On The Caravan Road | city | village | 0.99 | rules |
+| 8231 | On The Caravan Road | city | field | 1.00 | rules |
+| 8273 | An Old Road | stones | field | 0.96 | description |
+| 8301 | On The Caravan Road | city | field | 1.00 | rules |
+| 8303 | The Road Crossing | city | field | 0.98 | rules |
+| 8490 | On The Caravan Road | city | field | 1.00 | rules |
+| 8491 | On The Caravan Road | field | swamp | 1.00 | stated |
+| 8494 | On The Caravan Road | city | field | 0.97 | rules |
+| 8600 | The Small Path | forest | garden | 0.99 | rules |
+| 8604 | The King's Road | forest | ruins | 0.91 | rules |
+| 8616 | The King's Road | forest | field | 0.97 | rules |
+| 8681 | On The Trail Of Shadows | forest | ruins | 0.99 | rules |
+| 8682 | On The Trail Of Shadows | forest | ruins | 1.00 | rules |
+| 8683 | The Ruined City | forest | ruins | 0.98 | rules |
+| 8684 | The Ruined City | forest | ruins | 0.96 | rules |
+| 8685 | The Ruined City | forest | ruins | 0.99 | rules |
+| 8687 | In The Ruined City | forest | ruins | 0.96 | rules |
+| 8691 | In The Ruined City | forest | ruins | 0.95 | rules |
+| 8703 | At The Forest Lake | forest | shore | 1.00 | name |
+| 8726 | The Forest Lake | forest | shore | 0.97 | name |
+| 9738 | Rubble and Ruin | hills | ruins | 1.00 | rules |
+| 9790 | Shokogya Street | city | garden | 0.97 | rules |
+| 15061 | Road Through The Plains | hills | field | 0.96 | rules |
+| 15062 | Road Through The Plains | hills | field | 1.00 | rules |
+| 203500 | End Of The King's Road | city | field | 1.00 | rules |
+| 203501 | On The King's Road | city | field | 0.91 | rules |
 
 ## Northern Wilderness (24)
 
@@ -318,85 +216,29 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 6609 | In The Mountains | snow | mountain | 1.00 | description |
 | 6610 | On The Ledge | snow | mountain | 1.00 | neighbours |
 
-## Strange Garden (23)
+## Badlands II (19)
 
 | room | name | drawn | JEV | sure | set by |
 |---|---|---|---|---|---|
-| 4500 | The Garden | field | garden | 1.00 | rules |
-| 4501 | The Garden | field | garden | 1.00 | rules |
-| 4502 | The Garden | field | garden | 1.00 | rules |
-| 4505 | The Garden | field | garden | 1.00 | rules |
-| 4507 | Outside The Greenhouse | field | garden | 0.99 | rules |
-| 4509 | On The Winding Path | field | garden | 1.00 | rules |
-| 4510 | The Path Around The Greenhouse | field | garden | 1.00 | rules |
-| 4511 | The Path Around The Greenhouse | field | garden | 1.00 | rules |
-| 4512 | The Path Around The Greenhouse | field | garden | 1.00 | rules |
-| 4513 | The Plaza | field | garden | 0.98 | rules |
-| 4517 | The Hedge Labyrinth | inside | garden | 0.99 | rules |
-| 4518 | The Hedge Labyrinth | inside | garden | 1.00 | rules |
-| 4519 | The Hedge Labyrinth | inside | garden | 1.00 | rules |
-| 4520 | The Hedge Labyrinth | inside | garden | 1.00 | rules |
-| 4521 | The Hedge Labyrinth | inside | garden | 0.99 | rules |
-| 4522 | The Hedge Labyrinth | inside | garden | 1.00 | rules |
-| 4523 | The Dead End | field | garden | 0.93 | rules |
-| 4527 | In The Greenhouse | field | garden | 0.93 | rules |
-| 4530 | The Rockery | field | garden | 0.99 | rules |
-| 4531 | The Garden | field | garden | 1.00 | rules |
-| 4532 | The Path Under The Trees | forest | garden | 0.98 | name |
-| 4533 | The Pavilion | field | garden | 0.98 | rules |
-| 4534 | The Secret Garden | field | garden | 1.00 | rules |
-
-## New Thalos (22)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 5500 | Underground | cave | dungeon | 0.92 | name |
-| 5553 | The Jail | inside | dungeon | 1.00 | rules |
-| 5568 | Outside The Eastern Gate Of New Thalos | desert | city | 0.96 | stated |
-| 5578 | The Sultan's Garden | field | garden | 1.00 | rules |
-| 5583 | The Garden Gazebo | inside | garden | 1.00 | rules |
-| 5591 | The Jailer's Room | cave | dungeon | 0.98 | neighbours |
-| 5592 | A Tunnel In The Dungeon | cave | dungeon | 1.00 | name |
-| 5593 | A Tunnel In The Dungeon | cave | dungeon | 1.00 | name |
-| 5594 | A Tunnel In The Dungeon | cave | dungeon | 1.00 | name |
-| 5595 | A Tunnel In The Dungeon | cave | dungeon | 1.00 | name |
-| 5596 | The Secret Cell | cave | dungeon | 1.00 | neighbours |
-| 5597 | The Cell | cave | dungeon | 1.00 | neighbours |
-| 5598 | The Cell | cave | dungeon | 1.00 | neighbours |
-| 5599 | The Cell | cave | dungeon | 1.00 | neighbours |
-| 5600 | The Cell | cave | dungeon | 1.00 | neighbours |
-| 5601 | The Cell | cave | dungeon | 1.00 | neighbours |
-| 5602 | The Cell | cave | dungeon | 1.00 | neighbours |
-| 5603 | The Cell | cave | dungeon | 1.00 | neighbours |
-| 5604 | The Cell | cave | dungeon | 1.00 | neighbours |
-| 5616 | On A Road | field | city | 0.99 | rules |
-| 5631 | On A Road | field | city | 1.00 | rules |
-| 5691 | On A Road | desert | field | 1.00 | neighbours |
-
-## Plains (20)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 918 | The Fourth Trial Of Minos | inside | dungeon | 0.93 | rules |
-| 2711 | The Dark Path | field | forest | 0.99 | rules |
-| 2731 | The Dark Path | field | forest | 1.00 | rules |
-| 2732 | The Dead End | field | castle | 0.99 | rules |
-| 4332 | The Small Hill | forest | hills | 0.97 | description |
-| 8135 | The Plains | stones | field | 1.00 | neighbours |
-| 8136 | The Plains | stones | field | 1.00 | neighbours |
-| 8137 | The Plains | stones | field | 1.00 | neighbours |
-| 8138 | The Plains | stones | field | 1.00 | neighbours |
-| 8139 | The Plains | stones | field | 1.00 | neighbours |
-| 8140 | The Plains | stones | field | 0.99 | description |
-| 8142 | The Plains | stones | field | 1.00 | neighbours |
-| 8143 | The Plains | stones | field | 1.00 | neighbours |
-| 8144 | The Plains | stones | field | 0.99 | neighbours |
-| 8145 | The Plains | forest | field | 1.00 | description |
-| 8146 | The Plains | forest | field | 1.00 | description |
-| 8147 | The Plains | forest | field | 1.00 | description |
-| 8148 | The Plains | forest | field | 1.00 | description |
-| 10585 | On a Sultry Trail | field | forest | 0.98 | name |
-| 10587 | On a Sultry Trail | field | forest | 0.97 | name |
+| 8305 | The Black Hills | field | hills | 0.99 | rules |
+| 8306 | The Black Hills | stones | hills | 0.95 | neighbours |
+| 8324 | The Camp | forest | camp | 0.99 | rules |
+| 8337 | The Cellar | cave | dungeon | 1.00 | zone |
+| 8353 | At The Bridge Of Death | field | mountain | 0.97 | rules |
+| 8354 | Crossing A Narrow Stone Bridge | field | mountain | 0.96 | rules |
+| 9100 | The Badlands | field | desert | 0.98 | rules |
+| 9101 | The Badlands | field | desert | 0.95 | rules |
+| 9104 | The Black Hills | stones | terrace | 0.93 | neighbours |
+| 9105 | The Black Hills | field | hills | 0.91 | rules |
+| 9106 | The Black Hills | field | hills | 0.94 | rules |
+| 9109 | The Black Hills | forest | hills | 0.90 | description |
+| 9111 | The Black Hills | field | hills | 0.92 | rules |
+| 9118 | The Black Hills | field | hills | 0.95 | rules |
+| 9120 | The Black Hills | stones | hills | 0.98 | neighbours |
+| 9121 | The Black Hills | stones | hills | 0.94 | description |
+| 9129 | The Rickety-Rope Bridge | snow | mountain | 0.93 | neighbours |
+| 9174 | The Old Gravel Road | field | mountain | 0.92 | rules |
+| 9179 | The Look-Out | cave | inside | 0.98 | zone |
 
 ## The Clockwork Foundry (19)
 
@@ -470,30 +312,6 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 105782 | Wide Road Through the Foothills | field | castle | 0.92 | name |
 | 105783 | Cold Storage | inside | dungeon | 0.98 | rules |
 
-## Orc Tunnels (19)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 13327 | The Frozen Steps | snow | ice_cave | 0.97 | stated |
-| 13328 | At The Bottom Of The Frozen Steps | snow | ice_cave | 0.93 | stated |
-| 13329 | The Cold Tunnels | snow | ice_cave | 0.99 | stated |
-| 13331 | The Cold Tunnels | snow | ice_cave | 0.92 | stated |
-| 13333 | The Cold Tunnels | snow | ice_cave | 0.95 | stated |
-| 13334 | At The Top Of The Subterranean Glacier | cave | ice_cave | 1.00 | stated |
-| 13343 | The Forge Of Power | forest | cave | 0.91 | rules |
-| 13499 | The Lair Of Atlach Nacha | cave | web | 0.99 | stated |
-| 13622 | The Dump | hills | cave | 0.95 | rules |
-| 13688 | Novice Quarters | inside | dungeon | 0.98 | name |
-| 13690 | Priest Quarters | inside | dungeon | 0.99 | name |
-| 13825 | Climbing The North Side Of The Cleft | volcanic | lava_cave | 0.93 | stated |
-| 13827 | South Of The Lava Stream | volcanic | lava_cave | 0.96 | stated |
-| 13833 | In The Streets Of Morkai | necropolis | city | 0.97 | stated |
-| 13835 | In The Streets Of Morkai | necropolis | city | 0.96 | stated |
-| 13842 | In The Streets Of Morkai | necropolis | city | 0.95 | stated |
-| 13843 | The Central Plaza Of Morkai | necropolis | city | 0.93 | stated |
-| 13897 | In The Streets Of Morkai | necropolis | city | 0.96 | stated |
-| 13899 | The Inner Sanctum | crypt | dungeon | 0.95 | stated |
-
 ## The Winterlands (18)
 
 | room | name | drawn | JEV | sure | set by |
@@ -517,29 +335,52 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 3976 | A Large Cavern | cave | ice_cave | 0.99 | stated |
 | 3978 | A Large Cavern | cave | ice_cave | 0.96 | stated |
 
-## Sea of Storms (17)
+## New Thalos (18)
 
 | room | name | drawn | JEV | sure | set by |
 |---|---|---|---|---|---|
-| 5056 | A Nomad Camp | desert | camp | 0.98 | description |
-| 5059 | The Warrior's Tent | desert | camp | 0.94 | neighbours |
-| 5252 | A Secret Cell | inside | dungeon | 1.00 | rules |
-| 8890 | A Room Of Death | inside | crypt | 0.90 | rules |
-| 12027 | The Wealthy Neighborhood | field | city | 0.99 | rules |
-| 12057 | The Dock Of Port Halyon | hills | shore | 0.98 | rules |
-| 12152 | Cell | inside | dungeon | 1.00 | rules |
-| 12167 | Outlay | dungeon | inside | 0.95 | neighbours |
-| 12173 | Outlay | inside | dungeon | 0.97 | rules |
-| 12177 | Outlay | cave | dungeon | 1.00 | neighbours |
-| 12178 | Square | cave | dungeon | 0.92 | neighbours |
-| 12183 | Dark Room | cave | dungeon | 0.96 | neighbours |
-| 12190 | Port By The Forest | forest | shore | 0.96 | name |
-| 15100 | Dock On The Island Of Morvoct | field | shore | 0.93 | rules |
-| 15188 | The Southern Sea Of Storms | inside | cave | 1.00 | rules |
-| 212066 | The Dock Of Port Halyon | city | shore | 0.99 | rules |
-| 212067 | End Of The Ocean Dock | city | shore | 1.00 | rules |
+| 5500 | Underground | cave | dungeon | 0.92 | name |
+| 5553 | The Jail | inside | dungeon | 1.00 | rules |
+| 5568 | Outside The Eastern Gate Of New Thalos | desert | city | 0.96 | stated |
+| 5591 | The Jailer's Room | cave | dungeon | 0.98 | neighbours |
+| 5592 | A Tunnel In The Dungeon | cave | dungeon | 1.00 | name |
+| 5593 | A Tunnel In The Dungeon | cave | dungeon | 1.00 | name |
+| 5594 | A Tunnel In The Dungeon | cave | dungeon | 1.00 | name |
+| 5595 | A Tunnel In The Dungeon | cave | dungeon | 1.00 | name |
+| 5596 | The Secret Cell | cave | dungeon | 1.00 | neighbours |
+| 5597 | The Cell | cave | dungeon | 1.00 | neighbours |
+| 5598 | The Cell | cave | dungeon | 1.00 | neighbours |
+| 5599 | The Cell | cave | dungeon | 1.00 | neighbours |
+| 5600 | The Cell | cave | dungeon | 1.00 | neighbours |
+| 5601 | The Cell | cave | dungeon | 1.00 | neighbours |
+| 5602 | The Cell | cave | dungeon | 1.00 | neighbours |
+| 5603 | The Cell | cave | dungeon | 1.00 | neighbours |
+| 5604 | The Cell | cave | dungeon | 1.00 | neighbours |
+| 5691 | On A Road | desert | field | 1.00 | neighbours |
 
-## Mahn-Tor Keep (16)
+## Orc Tunnels (17)
+
+| room | name | drawn | JEV | sure | set by |
+|---|---|---|---|---|---|
+| 13327 | The Frozen Steps | snow | ice_cave | 0.97 | stated |
+| 13328 | At The Bottom Of The Frozen Steps | snow | ice_cave | 0.93 | stated |
+| 13329 | The Cold Tunnels | snow | ice_cave | 0.99 | stated |
+| 13331 | The Cold Tunnels | snow | ice_cave | 0.92 | stated |
+| 13333 | The Cold Tunnels | snow | ice_cave | 0.95 | stated |
+| 13334 | At The Top Of The Subterranean Glacier | cave | ice_cave | 1.00 | stated |
+| 13499 | The Lair Of Atlach Nacha | cave | web | 0.99 | stated |
+| 13688 | Novice Quarters | inside | dungeon | 0.98 | name |
+| 13690 | Priest Quarters | inside | dungeon | 0.99 | name |
+| 13825 | Climbing The North Side Of The Cleft | volcanic | lava_cave | 0.93 | stated |
+| 13827 | South Of The Lava Stream | volcanic | lava_cave | 0.96 | stated |
+| 13833 | In The Streets Of Morkai | necropolis | city | 0.97 | stated |
+| 13835 | In The Streets Of Morkai | necropolis | city | 0.96 | stated |
+| 13842 | In The Streets Of Morkai | necropolis | city | 0.95 | stated |
+| 13843 | The Central Plaza Of Morkai | necropolis | city | 0.93 | stated |
+| 13897 | In The Streets Of Morkai | necropolis | city | 0.96 | stated |
+| 13899 | The Inner Sanctum | crypt | dungeon | 0.95 | stated |
+
+## Mahn-Tor Keep (15)
 
 | room | name | drawn | JEV | sure | set by |
 |---|---|---|---|---|---|
@@ -548,7 +389,6 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 10144 | The Grand Hall | cave | castle | 0.92 | neighbours |
 | 10146 | A Small Corridor | inside | castle | 0.98 | rules |
 | 10162 | Before The Gates Of Mahn-Tor | mountain | castle | 0.98 | rules |
-| 10164 | Inside The Gates Of Mahn-Tor | city | castle | 0.99 | rules |
 | 10177 | Before The Cave Of Mahn-Tor | cave | castle | 0.93 | name |
 | 10180 | The Hall | cave | castle | 0.98 | neighbours |
 | 10183 | Standing Before The Throne | inside | castle | 0.96 | rules |
@@ -579,76 +419,23 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 15059 | Ergan's Cell | inside | dungeon | 0.92 | rules |
 | 15060 | A Cell | inside | dungeon | 1.00 | rules |
 
-## Mountain Range (14)
+## Sea of Storms (13)
 
 | room | name | drawn | JEV | sure | set by |
 |---|---|---|---|---|---|
-| 4021 | The Hole | forest | cave | 0.97 | rules |
-| 4042 | The Level Foothills | field | hills | 0.90 | rules |
-| 8539 | In The Mountains | snow | mountain | 1.00 | neighbours |
-| 8552 | At The End Of The Foothills | hills | mountain | 1.00 | rules |
-| 8562 | The Edge Of The Chasm | snow | mountain | 1.00 | neighbours |
-| 8565 | In The Mountains | snow | mountain | 0.97 | description |
-| 8566 | In The Mountains | snow | mountain | 1.00 | description |
-| 8567 | In The Mountains | snow | mountain | 0.99 | neighbours |
-| 8568 | In The Mountains | snow | mountain | 0.99 | neighbours |
-| 8569 | Vulture Hill | snow | mountain | 0.91 | neighbours |
-| 8572 | The Hermit's Stone | snow | mountain | 1.00 | neighbours |
-| 9801 | Mountain Trail | snow | mountain | 1.00 | neighbours |
-| 9802 | Mountain Trail | snow | mountain | 1.00 | neighbours |
-| 9803 | Near the Mountain's Peak | snow | mountain | 1.00 | neighbours |
-
-## Drow City (13)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 5101 | A Bend In The City Street | cave | city | 1.00 | zone |
-| 5102 | The City Street | cave | city | 0.97 | neighbours |
-| 5103 | The City Street | inside | city | 0.97 | rules |
-| 5106 | City Street | cave | city | 0.96 | zone |
-| 5114 | A Bend In The City Street | cave | city | 0.93 | neighbours |
-| 5115 | A City Street | cave | city | 0.98 | zone |
-| 5116 | The Clerics' Academy | cave | inside | 0.94 | zone |
-| 5122 | A Slave Chamber | cave | dungeon | 0.99 | zone |
-| 5123 | The City Street | inside | city | 0.98 | rules |
-| 5128 | A Long Hallway | cave | dungeon | 0.91 | zone |
-| 5146 | Slave Cells | cave | dungeon | 1.00 | zone |
-| 5147 | Slave Pen | cave | dungeon | 1.00 | zone |
-| 5149 | The Drow Treasury | cave | dungeon | 0.93 | zone |
-
-## Gondor Island (12)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 10901 | The Ocean Stream near the Rim of the World | inside | shore | 1.00 | rules |
-| 10902 | The Ocean Stream near the Rim of the World | inside | shore | 1.00 | rules |
-| 10903 | The Ocean Stream near the Rim of the World | inside | shore | 0.99 | rules |
-| 10904 | The Ocean Stream near the Rim of the World | inside | shore | 1.00 | rules |
-| 10905 | The Ocean Stream near the Rim of the World | inside | shore | 0.95 | rules |
-| 10906 | The Ocean Stream near the Rim of the World | inside | shore | 1.00 | rules |
-| 10907 | Gulf on Gondor Island | inside | shore | 0.99 | rules |
-| 10908 | The Ruins of an Ancient City | forest | ruins | 1.00 | rules |
-| 10911 | The Ruins of an Ancient City | forest | ruins | 1.00 | rules |
-| 10912 | The Ruins of an Ancient City | forest | ruins | 1.00 | rules |
-| 10913 | Nearing the Rim of the World | inside | shore | 0.99 | rules |
-| 10914 | Nearing the Rim of the World | inside | shore | 0.96 | rules |
-
-## Morvoct (12)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 15103 | Kyor'Glt Bakery | city | inside | 1.00 | rules |
-| 15119 | The Goblin Weaponry | city | inside | 0.99 | rules |
-| 15123 | The Muddy Path | village | swamp | 1.00 | neighbours |
-| 15132 | The Path Narrows | village | forest | 0.99 | description |
-| 15136 | The Palm Covered Path | village | desert | 0.97 | description |
-| 15137 | The Palm Covered Path | village | forest | 0.91 | description |
-| 15138 | A Turn In The Path | village | desert | 0.90 | description |
-| 15167 | Herb Garden | inside | garden | 0.98 | rules |
-| 15172 | Prison | inside | dungeon | 1.00 | name |
-| 15175 | Torture Room | inside | dungeon | 1.00 | rules |
-| 15176 | Caged Animal Room | inside | dungeon | 1.00 | rules |
-| 15178 | The Man Cage | cave | dungeon | 0.99 | stated |
+| 5056 | A Nomad Camp | desert | camp | 0.98 | description |
+| 5059 | The Warrior's Tent | desert | camp | 0.94 | neighbours |
+| 5252 | A Secret Cell | inside | dungeon | 1.00 | rules |
+| 8890 | A Room Of Death | inside | crypt | 0.90 | rules |
+| 12027 | The Wealthy Neighborhood | field | city | 0.99 | rules |
+| 12152 | Cell | inside | dungeon | 1.00 | rules |
+| 12167 | Outlay | dungeon | inside | 0.95 | neighbours |
+| 12173 | Outlay | inside | dungeon | 0.97 | rules |
+| 12177 | Outlay | cave | dungeon | 1.00 | neighbours |
+| 12178 | Square | cave | dungeon | 0.92 | neighbours |
+| 12183 | Dark Room | cave | dungeon | 0.96 | neighbours |
+| 12190 | Port By The Forest | forest | shore | 0.96 | name |
+| 15188 | The Southern Sea Of Storms | inside | cave | 1.00 | rules |
 
 ## Ghenna (11)
 
@@ -666,53 +453,21 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 9980 | A Slimey Footpath | city | swamp | 1.00 | rules |
 | 9994 | The Swarming Lair | cave | web | 0.98 | stated |
 
-## Garathorm Inner City (11)
+## Strange Garden (11)
 
 | room | name | drawn | JEV | sure | set by |
 |---|---|---|---|---|---|
-| 3009 | The Bakery | city | inside | 1.00 | rules |
-| 3037 | Inn Street | inside | city | 0.98 | rules |
-| 3062 | The Post Office | city | inside | 1.00 | rules |
-| 3077 | The Guardian's Vault | sewer | dungeon | 0.99 | neighbours |
-| 3080 | The Threshold of Shadows | sewer | crypt | 0.92 | neighbours |
-| 3081 | The Bone Corridor | sewer | crypt | 0.93 | neighbours |
-| 3086 | The Sanctum Of The Holy Order | city | inside | 1.00 | rules |
-| 3158 | Dark Alley | inside | city | 1.00 | rules |
-| 3159 | Dark Alley | inside | city | 1.00 | rules |
-| 3160 | Dark Alley | inside | city | 1.00 | rules |
-| 203155 | Dark Alley | inside | city | 1.00 | rules |
-
-## Baron Kalveh's Fief (11)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 105804 | Gravel Road at the Settlement | city | village | 1.00 | rules |
-| 105813 | Before the Tower | village | castle | 1.00 | neighbours |
-| 105814 | The Tower Entry Gate | city | castle | 1.00 | rules |
-| 105821 | Towne Road | city | village | 0.98 | rules |
-| 105825 | Towne Road | field | city | 0.93 | name |
-| 105838 | Towne Road | field | city | 0.96 | name |
-| 105840 | Towne Road | field | city | 1.00 | name |
-| 105841 | Northern Square | inside | city | 1.00 | rules |
-| 105847 | A Colorful Park | forest | garden | 1.00 | rules |
-| 105850 | Towne Road | field | city | 1.00 | name |
-| 105882 | Towne Road | field | city | 1.00 | name |
-
-## Aredrel Dwarven (11)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 24709 | Outside The Nothern Watchtower | field | castle | 1.00 | rules |
-| 24711 | Outside The Southern Watchtower | field | castle | 1.00 | rules |
-| 24732 | The Eastern Hallway Through The Shopping District | cave | city | 0.97 | stated |
-| 24733 | The Eastern Shopping Square | cave | city | 0.98 | stated |
-| 24736 | The Bakery Of Aredrel | cave | inside | 1.00 | neighbours |
-| 24739 | The Western Shopping Square | cave | city | 0.98 | stated |
-| 24744 | The Northern Hallway | cave | dungeon | 0.92 | stated |
-| 24762 | A Bend In The Eastern Hallway | cave | mine | 0.90 | stated |
-| 24764 | A Bend In The Eastern Hallway | cave | mine | 0.95 | stated |
-| 24790 | A Trail Through The Rocky Plains | mountain | field | 0.99 | name |
-| 24798 | The Graveyard Of Aredrel Dwarven | forest | necropolis | 0.94 | description |
+| 4507 | Outside The Greenhouse | field | garden | 0.99 | rules |
+| 4509 | On The Winding Path | field | garden | 1.00 | rules |
+| 4510 | The Path Around The Greenhouse | field | garden | 1.00 | rules |
+| 4511 | The Path Around The Greenhouse | field | garden | 1.00 | rules |
+| 4512 | The Path Around The Greenhouse | field | garden | 1.00 | rules |
+| 4513 | The Plaza | field | garden | 0.98 | rules |
+| 4523 | The Dead End | field | garden | 0.93 | rules |
+| 4527 | In The Greenhouse | field | garden | 0.93 | rules |
+| 4530 | The Rockery | field | garden | 0.99 | rules |
+| 4532 | The Path Under The Trees | forest | garden | 0.98 | name |
+| 4533 | The Pavilion | field | garden | 0.98 | rules |
 
 ## Draconian Camp (10)
 
@@ -729,21 +484,6 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 2033 | A Trodden Path | forest | camp | 0.99 | rules |
 | 2034 | A Trodden Path | forest | camp | 1.00 | rules |
 
-## Mount Ravenmist (10)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 16171 | Overlooking A Great View | snow | mountain | 1.00 | description |
-| 16173 | On A Mountain Path | snow | mountain | 1.00 | neighbours |
-| 16176 | On A Mountain Path | snow | mountain | 1.00 | neighbours |
-| 16177 | On A Mountain Path | snow | mountain | 1.00 | neighbours |
-| 16178 | On A Mountain Path | snow | mountain | 1.00 | description |
-| 16179 | On A Mountain Path | snow | mountain | 0.98 | description |
-| 16180 | On A Mountain Path | snow | mountain | 1.00 | neighbours |
-| 16181 | On A Mountain Path | snow | mountain | 1.00 | neighbours |
-| 16182 | On A Mountain Path | snow | mountain | 1.00 | neighbours |
-| 16183 | On A Mountain Path | snow | mountain | 1.00 | neighbours |
-
 ## The Frostspire (10)
 
 | room | name | drawn | JEV | sure | set by |
@@ -758,6 +498,36 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 19026 | The Crystal Cavern | cave | ice_cave | 0.99 | name |
 | 19035 | The Watchtower Basement | inside | dungeon | 0.99 | rules |
 | 19036 | The Deep Storage | inside | dungeon | 0.95 | rules |
+
+## Mountain Range (10)
+
+| room | name | drawn | JEV | sure | set by |
+|---|---|---|---|---|---|
+| 4042 | The Level Foothills | field | hills | 0.90 | rules |
+| 8539 | In The Mountains | snow | mountain | 1.00 | neighbours |
+| 8552 | At The End Of The Foothills | hills | mountain | 1.00 | rules |
+| 8562 | The Edge Of The Chasm | snow | mountain | 1.00 | neighbours |
+| 8565 | In The Mountains | snow | mountain | 0.97 | description |
+| 8566 | In The Mountains | snow | mountain | 1.00 | description |
+| 8567 | In The Mountains | snow | mountain | 0.99 | neighbours |
+| 8568 | In The Mountains | snow | mountain | 0.99 | neighbours |
+| 8569 | Vulture Hill | snow | mountain | 0.91 | neighbours |
+| 8572 | The Hermit's Stone | snow | mountain | 1.00 | neighbours |
+
+## Morvoct (10)
+
+| room | name | drawn | JEV | sure | set by |
+|---|---|---|---|---|---|
+| 15123 | The Muddy Path | village | swamp | 1.00 | neighbours |
+| 15132 | The Path Narrows | village | forest | 0.99 | description |
+| 15136 | The Palm Covered Path | village | desert | 0.97 | description |
+| 15137 | The Palm Covered Path | village | forest | 0.91 | description |
+| 15138 | A Turn In The Path | village | desert | 0.90 | description |
+| 15167 | Herb Garden | inside | garden | 0.98 | rules |
+| 15172 | Prison | inside | dungeon | 1.00 | name |
+| 15175 | Torture Room | inside | dungeon | 1.00 | rules |
+| 15176 | Caged Animal Room | inside | dungeon | 1.00 | rules |
+| 15178 | The Man Cage | cave | dungeon | 0.99 | stated |
 
 ## Castle Of Caboon (9)
 
@@ -787,33 +557,19 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 15217 | The Chambers Of Sorrow | inside | crypt | 0.96 | rules |
 | 15244 | The Honor Room | inside | crypt | 0.97 | rules |
 
-## Stable & Temple (9)
+## Aredrel Dwarven (9)
 
 | room | name | drawn | JEV | sure | set by |
 |---|---|---|---|---|---|
-| 3210 | The Stable Entrance | inside | city | 0.93 | rules |
-| 3211 | On A Path Before A Temple | field | inside | 0.99 | name |
-| 3212 | Behind The Altar | city | inside | 1.00 | rules |
-| 203615 | In A Tunnel | inside | cave | 0.96 | rules |
-| 203616 | A Small Room | cave | inside | 1.00 | neighbours |
-| 203617 | A Dim Hallway | cave | inside | 0.93 | neighbours |
-| 203627 | A Hallway Corner | dungeon | inside | 1.00 | neighbours |
-| 203642 | At A Hallway Turn | dungeon | inside | 0.99 | neighbours |
-| 203647 | A Small Treasury | city | inside | 0.90 | rules |
-
-## Salem's Lot (9)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 6645 | Lower Tudor St. | city | village | 0.90 | rules |
-| 6646 | The Corn Field | forest | field | 1.00 | rules |
-| 6647 | The Corn Field | forest | field | 1.00 | rules |
-| 6648 | The Corn Field | forest | field | 1.00 | rules |
-| 6649 | The Corn Field | forest | field | 1.00 | rules |
-| 6650 | The Corn Field | forest | field | 1.00 | rules |
-| 6679 | The Basement | crypt | dungeon | 0.99 | stated |
-| 206604 | The Cellar | inside | dungeon | 0.99 | rules |
-| 206610 | The Yard | city | garden | 0.93 | rules |
+| 24732 | The Eastern Hallway Through The Shopping District | cave | city | 0.97 | stated |
+| 24733 | The Eastern Shopping Square | cave | city | 0.98 | stated |
+| 24736 | The Bakery Of Aredrel | cave | inside | 1.00 | neighbours |
+| 24739 | The Western Shopping Square | cave | city | 0.98 | stated |
+| 24744 | The Northern Hallway | cave | dungeon | 0.92 | stated |
+| 24762 | A Bend In The Eastern Hallway | cave | mine | 0.90 | stated |
+| 24764 | A Bend In The Eastern Hallway | cave | mine | 0.95 | stated |
+| 24790 | A Trail Through The Rocky Plains | mountain | field | 0.99 | name |
+| 24798 | The Graveyard Of Aredrel Dwarven | forest | necropolis | 0.94 | description |
 
 ## The Orc Enclave (9)
 
@@ -828,6 +584,19 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 6263 | The Laboratory | cave | dungeon | 0.99 | neighbours |
 | 6264 | A Cage | cave | dungeon | 1.00 | neighbours |
 | 6267 | A Cage | cave | dungeon | 1.00 | neighbours |
+
+## Durmandel I (8)
+
+| room | name | drawn | JEV | sure | set by |
+|---|---|---|---|---|---|
+| 13032 | Bolgrim's Way | cave | city | 0.96 | stated |
+| 13033 | Bolgrim's Way | field | city | 0.99 | rules |
+| 13034 | Bolgrim's Way | field | city | 0.97 | rules |
+| 13036 | Bolgrim's Way | field | city | 0.99 | rules |
+| 13037 | Bolgrim's Way | field | city | 1.00 | rules |
+| 13038 | Before The Watchtower | cave | castle | 0.95 | stated |
+| 13061 | North Plaza | cave | city | 1.00 | stated |
+| 13085 | The Prison | inside | dungeon | 0.99 | name |
 
 ## The Great Northern Forest (8)
 
@@ -868,17 +637,17 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 13135 | A Burial Mound | field | crypt | 1.00 | stated |
 | 13144 | The Gryphon's Nest | forest | mountain | 1.00 | rules |
 
-## Mount Olympus (7)
+## Stable & Temple (7)
 
 | room | name | drawn | JEV | sure | set by |
 |---|---|---|---|---|---|
-| 1021 | Inside a Demigod's Abode | city | inside | 1.00 | rules |
-| 1022 | Inside an Angel's House | city | inside | 1.00 | rules |
-| 1029 | Upon Aphrodite's Throne | terrace | inside | 0.93 | stated |
-| 1032 | Upon Dionysus's Throne | terrace | inside | 0.94 | stated |
-| 1033 | Upon Hephaestus's Throne | terrace | inside | 0.97 | stated |
-| 1047 | Traversing The Great Valley | mountain | ruins | 0.98 | rules |
-| 1099 | The Gods' Labyrinth | inside | dungeon | 0.90 | rules |
+| 3211 | On A Path Before A Temple | field | inside | 0.99 | name |
+| 203615 | In A Tunnel | inside | cave | 0.96 | rules |
+| 203616 | A Small Room | cave | inside | 1.00 | neighbours |
+| 203617 | A Dim Hallway | cave | inside | 0.93 | neighbours |
+| 203627 | A Hallway Corner | dungeon | inside | 1.00 | neighbours |
+| 203642 | At A Hallway Turn | dungeon | inside | 0.99 | neighbours |
+| 203647 | A Small Treasury | city | inside | 0.90 | rules |
 
 ## Submerged Temple (7)
 
@@ -904,16 +673,17 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 106252 | Dirt Area | village | camp | 0.99 | stated |
 | 106270 | Narrow Gully | hills | shore | 0.94 | stated |
 
-## Great Eastern Desert (6)
+## Plains (7)
 
 | room | name | drawn | JEV | sure | set by |
 |---|---|---|---|---|---|
-| 3208 | On The River | inside | shore | 0.97 | rules |
-| 5012 | Narrow Bend | mountain | cave | 1.00 | rules |
-| 5064 | The Cavemouth | desert | cave | 1.00 | neighbours |
-| 5065 | The Mysterious Lair | desert | cave | 1.00 | neighbours |
-| 8918 | Behind The Waterfall | inside | cave | 1.00 | rules |
-| 8938 | Inside The Cabin | city | inside | 0.99 | rules |
+| 918 | The Fourth Trial Of Minos | inside | dungeon | 0.93 | rules |
+| 2711 | The Dark Path | field | forest | 0.99 | rules |
+| 2731 | The Dark Path | field | forest | 1.00 | rules |
+| 2732 | The Dead End | field | castle | 0.99 | rules |
+| 4332 | The Small Hill | forest | hills | 0.97 | description |
+| 10585 | On a Sultry Trail | field | forest | 0.98 | name |
+| 10587 | On a Sultry Trail | field | forest | 0.97 | name |
 
 ## The Haunted Monastery (6)
 
@@ -926,28 +696,6 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 23818 | The Armory | crypt | inside | 0.94 | zone |
 | 23819 | The Meditation Garden | stones | garden | 0.99 | description |
 
-## Mishrak (6)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 8012 | Chapel Street | inside | city | 1.00 | rules |
-| 8020 | Chapel Street | inside | city | 0.98 | rules |
-| 8021 | Mishrak Marketplace | field | city | 1.00 | rules |
-| 8064 | A Long Hallway | inside | castle | 0.98 | rules |
-| 8078 | The Cellar | inside | dungeon | 1.00 | rules |
-| 8084 | Outside The Eastern Gate of Mishrak | field | city | 0.94 | stated |
-
-## Phaeton's Academy (6)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 5725 | In the Garden | dungeon | garden | 1.00 | neighbours |
-| 5727 | In the Garden | inside | garden | 1.00 | rules |
-| 5728 | In the Garden | inside | garden | 1.00 | rules |
-| 5729 | In the Garden | inside | garden | 1.00 | rules |
-| 5731 | In the Garden | inside | garden | 1.00 | rules |
-| 5765 | The Marble Pavillion | dungeon | inside | 0.93 | neighbours |
-
 ## Dwarven Kingdom (6)
 
 | room | name | drawn | JEV | sure | set by |
@@ -958,6 +706,17 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 6550 | In The Maze | inside | dungeon | 0.97 | rules |
 | 6552 | At The End Of The Maze | inside | dungeon | 0.92 | rules |
 | 6553 | End of Maze | inside | dungeon | 0.93 | rules |
+
+## Drow City (6)
+
+| room | name | drawn | JEV | sure | set by |
+|---|---|---|---|---|---|
+| 5116 | The Clerics' Academy | cave | inside | 0.94 | zone |
+| 5122 | A Slave Chamber | cave | dungeon | 0.99 | zone |
+| 5128 | A Long Hallway | cave | dungeon | 0.91 | zone |
+| 5146 | Slave Cells | cave | dungeon | 1.00 | zone |
+| 5147 | Slave Pen | cave | dungeon | 1.00 | zone |
+| 5149 | The Drow Treasury | cave | dungeon | 0.93 | zone |
 
 ## Tunnels of Sin (6)
 
@@ -970,28 +729,6 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 5839 | The Great Minotaur's Inner Sanctum | inside | dungeon | 0.98 | rules |
 | 5850 | The Mist | inside | cave | 0.98 | rules |
 
-## Brethrenmere (6)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 20621 | Upstairs In A Miner's House | city | inside | 0.99 | rules |
-| 20626 | Atop the Pedestal | mountain | cave | 0.97 | rules |
-| 20632 | The Treasury | mine | dungeon | 0.96 | zone |
-| 20642 | An Empty House | cave | inside | 0.93 | description |
-| 20655 | The Treasury Master's Office | mine | inside | 0.94 | zone |
-| 20656 | Drapor's Shoe Fayre | city | inside | 1.00 | rules |
-
-## Thalos (6)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 5203 | The Temple Path | ruins | city | 0.94 | neighbours |
-| 5219 | The Guild House | city | inside | 0.92 | rules |
-| 5221 | The Smithy | city | inside | 1.00 | rules |
-| 5229 | An Abandoned Shop | city | inside | 0.91 | rules |
-| 5230 | The Tavern Of The Sun | city | ruins | 0.93 | rules |
-| 5234 | The Private Gardens And Courtyard Of Thalos | ruins | garden | 0.95 | description |
-
 ## Garathorm Cathedral (5)
 
 | room | name | drawn | JEV | sure | set by |
@@ -1001,26 +738,6 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 4410 | The Churchyard | field | necropolis | 0.93 | rules |
 | 4415 | The Antechamber | crypt | inside | 1.00 | zone |
 | 4417 | The Antechamber | crypt | inside | 1.00 | zone |
-
-## Eden (5)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 201504 | Inside The Gate To Eden | field | garden | 1.00 | rules |
-| 201506 | The Line Of Fruit Trees | forest | garden | 1.00 | name |
-| 201509 | The Tree Of The Knowledge Of Good And Evil | forest | garden | 0.99 | name |
-| 201516 | In The Garden | forest | garden | 1.00 | description |
-| 201520 | The Line Of Fruit Trees | forest | garden | 1.00 | name |
-
-## The Necropolis of Eternal Night (5)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 14001 | Avenue of Tombs | crypt | necropolis | 1.00 | name |
-| 14002 | Plaza of Bones | crypt | necropolis | 0.98 | neighbours |
-| 14006 | Mausoleum District | crypt | necropolis | 0.97 | neighbours |
-| 14028 | Execution Square | crypt | necropolis | 0.93 | neighbours |
-| 14030 | Verdant Dragon Lair | crypt | cave | 0.96 | zone |
 
 ## MiNar I (5)
 
@@ -1042,15 +759,33 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 8669 | A Small Rocky Path | mountain | cave | 0.94 | name |
 | 8694 | The Hiding Place | forest | cave | 0.95 | rules |
 
-## The Plane of Eternal Chaos (5)
+## Mount Olympus (5)
 
 | room | name | drawn | JEV | sure | set by |
 |---|---|---|---|---|---|
-| 16008 | Earth-Water Confluence | mountain | swamp | 1.00 | rules |
-| 16009 | Air-Fire Confluence | mountain | volcanic | 1.00 | rules |
-| 16019 | Demon War Camp | mountain | camp | 1.00 | rules |
-| 16024 | Spire Summit | mountain | inside | 0.99 | rules |
-| 16025 | Prismatic Dragon Lair | mountain | cave | 0.96 | rules |
+| 1029 | Upon Aphrodite's Throne | terrace | inside | 0.93 | stated |
+| 1032 | Upon Dionysus's Throne | terrace | inside | 0.94 | stated |
+| 1033 | Upon Hephaestus's Throne | terrace | inside | 0.97 | stated |
+| 1047 | Traversing The Great Valley | mountain | ruins | 0.98 | rules |
+| 1099 | The Gods' Labyrinth | inside | dungeon | 0.90 | rules |
+
+## Mishrak (4)
+
+| room | name | drawn | JEV | sure | set by |
+|---|---|---|---|---|---|
+| 8021 | Mishrak Marketplace | field | city | 1.00 | rules |
+| 8064 | A Long Hallway | inside | castle | 0.98 | rules |
+| 8078 | The Cellar | inside | dungeon | 1.00 | rules |
+| 8084 | Outside The Eastern Gate of Mishrak | field | city | 0.94 | stated |
+
+## Eden (4)
+
+| room | name | drawn | JEV | sure | set by |
+|---|---|---|---|---|---|
+| 201504 | Inside The Gate To Eden | field | garden | 1.00 | rules |
+| 201506 | The Line Of Fruit Trees | forest | garden | 1.00 | name |
+| 201509 | The Tree Of The Knowledge Of Good And Evil | forest | garden | 0.99 | name |
+| 201520 | The Line Of Fruit Trees | forest | garden | 1.00 | name |
 
 ## Fire Grotto (4)
 
@@ -1070,14 +805,14 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 24978 | The Lavaworm's Lair | volcanic | lava_cave | 1.00 | stated |
 | 24993 | A Look Out Point | cave | lava_cave | 0.98 | stated |
 
-## Haunted House (4)
+## Salem's Lot (4)
 
 | room | name | drawn | JEV | sure | set by |
 |---|---|---|---|---|---|
-| 1901 | The Front Yard | inside | garden | 0.92 | rules |
-| 1933 | North-East End of the Carnival | inside | camp | 0.96 | rules |
-| 1938 | The Eastern Carnival Grounds | inside | camp | 0.98 | rules |
-| 1943 | Below the Carnival | inside | dungeon | 1.00 | rules |
+| 6645 | Lower Tudor St. | city | village | 0.90 | rules |
+| 6679 | The Basement | crypt | dungeon | 0.99 | stated |
+| 206604 | The Cellar | inside | dungeon | 0.99 | rules |
+| 206610 | The Yard | city | garden | 0.93 | rules |
 
 ## The Three Of Swords (4)
 
@@ -1096,6 +831,15 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 4206 | A Dark Tunnel | cave | mine | 0.97 | name |
 | 4207 | An Intersection in the Dark Tunnel | cave | mine | 0.97 | name |
 | 4219 | Further Down the Tunnel | cave | mine | 1.00 | name |
+
+## The Plane of Eternal Chaos (4)
+
+| room | name | drawn | JEV | sure | set by |
+|---|---|---|---|---|---|
+| 16008 | Earth-Water Confluence | mountain | swamp | 1.00 | rules |
+| 16009 | Air-Fire Confluence | mountain | volcanic | 1.00 | rules |
+| 16019 | Demon War Camp | mountain | camp | 1.00 | rules |
+| 16025 | Prismatic Dragon Lair | mountain | cave | 0.96 | rules |
 
 ## Shadowspire Citadel (3)
 
@@ -1121,6 +865,14 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 3787 | Beside The River Lethe | crypt | shore | 0.97 | stated |
 | 3788 | Along A Garden Path | crypt | garden | 0.97 | stated |
 
+## Gondor Island (3)
+
+| room | name | drawn | JEV | sure | set by |
+|---|---|---|---|---|---|
+| 10908 | The Ruins of an Ancient City | forest | ruins | 1.00 | rules |
+| 10911 | The Ruins of an Ancient City | forest | ruins | 1.00 | rules |
+| 10912 | The Ruins of an Ancient City | forest | ruins | 1.00 | rules |
+
 ## Troglodyte Mines (3)
 
 | room | name | drawn | JEV | sure | set by |
@@ -1145,6 +897,22 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 23514 | Goblin Market | inside | cave | 0.98 | rules |
 | 23519 | The King's Treasury | cave | dungeon | 0.98 | zone |
 
+## Garathorm Inner City (3)
+
+| room | name | drawn | JEV | sure | set by |
+|---|---|---|---|---|---|
+| 3077 | The Guardian's Vault | sewer | dungeon | 0.99 | neighbours |
+| 3080 | The Threshold of Shadows | sewer | crypt | 0.92 | neighbours |
+| 3081 | The Bone Corridor | sewer | crypt | 0.93 | neighbours |
+
+## Baron Kalveh's Fief (3)
+
+| room | name | drawn | JEV | sure | set by |
+|---|---|---|---|---|---|
+| 105804 | Gravel Road at the Settlement | city | village | 1.00 | rules |
+| 105821 | Towne Road | city | village | 0.98 | rules |
+| 105847 | A Colorful Park | forest | garden | 1.00 | rules |
+
 ## World Of Chaos (3)
 
 | room | name | drawn | JEV | sure | set by |
@@ -1152,6 +920,14 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 16269 | By A Huge Black Pillar | hills | shore | 0.92 | rules |
 | 16275 | By A Huge Black Pillar | hills | shore | 1.00 | rules |
 | 16289 | By A Huge Black Pillar | hills | shore | 0.98 | rules |
+
+## Brethrenmere (3)
+
+| room | name | drawn | JEV | sure | set by |
+|---|---|---|---|---|---|
+| 20632 | The Treasury | mine | dungeon | 0.96 | zone |
+| 20642 | An Empty House | cave | inside | 0.93 | description |
+| 20655 | The Treasury Master's Office | mine | inside | 0.94 | zone |
 
 ## Moria Deep (3)
 
@@ -1168,6 +944,14 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 10012 | Eastern Mining Tunnel | cave | mine | 1.00 | name |
 | 10016 | Collapsed Tunnel | cave | mine | 1.00 | name |
 | 10019 | Spider Den | cave | web | 1.00 | stated |
+
+## Thalos (3)
+
+| room | name | drawn | JEV | sure | set by |
+|---|---|---|---|---|---|
+| 5203 | The Temple Path | ruins | city | 0.94 | neighbours |
+| 5230 | The Tavern Of The Sun | city | ruins | 0.93 | rules |
+| 5234 | The Private Gardens And Courtyard Of Thalos | ruins | garden | 0.95 | description |
 
 ## Minos River Island (3)
 
@@ -1205,6 +989,13 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 2521 | Below The Trapdoor | inside | dungeon | 0.95 | rules |
 | 2527 | A Dark Cell | inside | dungeon | 0.99 | rules |
 
+## The Necropolis of Eternal Night (2)
+
+| room | name | drawn | JEV | sure | set by |
+|---|---|---|---|---|---|
+| 14009 | Vampire's Mausoleum | dungeon | crypt | 0.99 | rules |
+| 14030 | Verdant Dragon Lair | dungeon | cave | 0.96 | rules |
+
 ## Great Pyramid (2)
 
 | room | name | drawn | JEV | sure | set by |
@@ -1240,13 +1031,6 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 18601 | The Beginning Of The Passage | inside | dungeon | 0.91 | rules |
 | 18623 | A Corner In The Hallway | inside | dungeon | 0.97 | rules |
 
-## The Sunken Coast (2)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 6802 | The Smuggler's Dock | city | shore | 1.00 | rules |
-| 6805 | The Outer Pier | field | shore | 1.00 | rules |
-
 ## Outcast Fortress (2)
 
 | room | name | drawn | JEV | sure | set by |
@@ -1275,13 +1059,6 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 2662 | It Is Very Dark Here... | dungeon | inside | 0.97 | neighbours |
 | 2664 | The Inner Chamber | dungeon | inside | 0.96 | neighbours |
 
-## Garathorm School House (2)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 2801 | Inside the School House | city | inside | 1.00 | rules |
-| 2820 | Dirt Track | field | inside | 0.97 | name |
-
 ## Elvandar (2)
 
 | room | name | drawn | JEV | sure | set by |
@@ -1295,20 +1072,6 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 |---|---|---|---|---|---|
 | 7209 | The Crawlway | cave | sewer | 0.96 | name |
 | 7333 | End Of Long Tunnel | cave | sewer | 0.97 | name |
-
-## The Whispering Woods (2)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 27013 | The Ancient Shrine | inside | ruins | 0.96 | rules |
-| 27017 | The Hunter's Camp | field | camp | 0.96 | rules |
-
-## The Black Observatory (2)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 29004 | The Dark Meridian | mountain | inside | 0.93 | rules |
-| 29020 | Lensforge Vault | inside | dungeon | 0.98 | rules |
 
 ## Arachnos (1)
 
@@ -1328,6 +1091,12 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 |---|---|---|---|---|---|
 | 13873 | A Glowing Tunnel | crypt | cave | 0.91 | stated |
 
+## Great Eastern Desert (1)
+
+| room | name | drawn | JEV | sure | set by |
+|---|---|---|---|---|---|
+| 8918 | Behind The Waterfall | inside | cave | 1.00 | rules |
+
 ## The Haunted Swamp (1)
 
 | room | name | drawn | JEV | sure | set by |
@@ -1339,6 +1108,12 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | room | name | drawn | JEV | sure | set by |
 |---|---|---|---|---|---|
 | 3414 | The Warded Labyrinth | inside | dungeon | 0.96 | rules |
+
+## Phaeton's Academy (1)
+
+| room | name | drawn | JEV | sure | set by |
+|---|---|---|---|---|---|
+| 5765 | The Marble Pavillion | dungeon | inside | 0.93 | neighbours |
 
 ## City of Ancients (1)
 
@@ -1388,23 +1163,47 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 |---|---|---|---|---|---|
 | 13901 | In The Entranceway | city | inside | 0.93 | rules |
 
-## Garathorm Housing District (1)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 26021 | Hearth & Home Furnishings | city | inside | 1.00 | rules |
-
 ## The Straight Path (1)
 
 | room | name | drawn | JEV | sure | set by |
 |---|---|---|---|---|---|
 | 1527 | Deliverance | inside | crypt | 0.91 | rules |
 
+## Haunted House (1)
+
+| room | name | drawn | JEV | sure | set by |
+|---|---|---|---|---|---|
+| 1943 | Below the Carnival | inside | dungeon | 1.00 | rules |
+
+## Mount Ravenmist (1)
+
+| room | name | drawn | JEV | sure | set by |
+|---|---|---|---|---|---|
+| 16171 | Overlooking A Great View | snow | mountain | 1.00 | description |
+
+## Garathorm School House (1)
+
+| room | name | drawn | JEV | sure | set by |
+|---|---|---|---|---|---|
+| 2820 | Dirt Track | field | inside | 0.97 | name |
+
+## The Whispering Woods (1)
+
+| room | name | drawn | JEV | sure | set by |
+|---|---|---|---|---|---|
+| 27017 | The Hunter's Camp | field | camp | 0.96 | rules |
+
 ## Elven Village (1)
 
 | room | name | drawn | JEV | sure | set by |
 |---|---|---|---|---|---|
 | 14305 | Cellar. | inside | dungeon | 1.00 | rules |
+
+## The Black Observatory (1)
+
+| room | name | drawn | JEV | sure | set by |
+|---|---|---|---|---|---|
+| 29020 | Lensforge Vault | inside | dungeon | 0.98 | rules |
 
 
 _8,726,069 input tokens over all answers (about $0.37 at $0.042 per million)._

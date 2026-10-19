@@ -6,7 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { creatureLook, subjectOf } from '../../src/web_isometric/world3d/looks.js';
-import { loadMobs, suspects, lookLabel } from '../../tools/qc_bestiary.mjs';
+import { loadMobs, suspects, lookLabel, drawnAs } from '../../tools/qc_bestiary.mjs';
 
 const ART = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../src/web_isometric/art3d');
 const look = (short, o = {}) => creatureLook({ short, name: o.name || short.split(' ').pop(), ...o });
@@ -170,3 +170,22 @@ test('the newer skeletons follow the words too: ogres, minotaurs, scorpions, cob
   assert.equal(k('a fire elemental').form, 'flame');
   assert.equal(k('a giant river frog').form, 'frog');
 });
+
+// what JEV caught (docs/JEV_REVIEW_CREATURES.md): each a creature drawn as something its words are not
+test('the JEV review: orcs of the Skull Clan, ghouls, the Rat King and the rest drawn as they are', () => {
+  const drawn = (short, name = short, long = '') => drawnAs(creatureLook({ short, name, long }));
+  assert.match(drawn('a Skull Clan orc', 'orc grunt warrior skull clan'), /^person:/, 'the Skull Clan are orcs, not floating skulls');
+  assert.equal(drawn('a flameskull'), 'skull', 'a flameskull is still a skull');
+  assert.match(drawn('the mutant orc', 'orc'), /^person:/, 'a mutant orc is an orc');
+  assert.match(drawn('a Banner-Reaver war-chief'), /^person:/, 'a reaver is a raider');
+  assert.equal(drawn('a spine reaver'), 'spider', 'but a spine reaver skitters');
+  assert.equal(drawn('a hungry ghoul', 'ghoul'), 'zombie_m', 'ghouls are the walking dead in their flesh');
+  assert.equal(drawn('the Rat King', 'rat king'), 'rat_king');
+  assert.equal(drawn('a cliff roc'), 'roc');
+  assert.equal(drawn('the baby dragon', 'dragon'), 'q_dragon');
+  assert.equal(drawn('a lizard hatchling'), 'lizard');
+  assert.equal(drawn('Grushka the Bone-Caller', 'grushka shaman ogre bone caller'), 'ogre', 'bone alone does not make an ogre undead');
+  assert.match(drawn('a bone colossus', 'colossus bone giant'), /^undead:/, 'a giant built of skeletons is still the dead');
+  assert.match(drawn('a sworn blade'), /^person:/, 'a sworn blade is a warrior');
+});
+
