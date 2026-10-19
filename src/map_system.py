@@ -3,6 +3,7 @@ Map rendering and coordinate utilities for Misthollow.
 """
 
 import itertools
+import re
 import time
 from typing import Dict, Tuple, Set, List, Optional
 
@@ -800,15 +801,60 @@ WARD_FLAGS = frozenset({
 # a wound over time that is a poison shows as one (the 3D client: green bubbles and haze, wards.js)
 WARD_NAMES = {'barkskin': 'barkskin', 'bless': 'bless', 'poison': 'poisoned', 'knife_poison': 'poisoned',
               'serpent_sting': 'poisoned', 'wound_poison': 'poisoned', 'deadly_poison': 'poisoned', 'plague': 'poisoned'}
+# the harms that hold a body, by their flag (wards.js draws each: an eye band, a sleeper's Zzz...)
+STATUS_FLAGS = {'blind': 'blinded', 'sleeping': 'asleep', 'charmed': 'charmed', 'feared': 'feared',
+                'paralyzed': 'paralyzed', 'diseased': 'weakened'}
+# ...and by what the harm is called: a burn, a bleed, a frost, a curse (wounds over time, and the
+# spells that lower a stat or hold the body)
+_BURN = re.compile(r'burn|ignit|immolat|scorch|combust|flame|fire|pyre|searing|blaze')
+_BLEED = re.compile(r'bleed|rupture|rend|lacerat|hemorr|gore|serrat|garrote(?!_silence)')
+_FROST = re.compile(r'frost|freez|frozen|\bice|ice_|chill|cold|glacia|rime|blizzard')
+_CURSE = re.compile(r'curse|hex|doom|wither|weaken|enfeebl|bane|mistrot|black_arrow|affliction|agony')
+_HOLDS = {'slow', 'stunned', 'paralyzed', 'entangled', 'dex', 'hitroll', 'damroll', 'str', 'armor_class'}
+
+
+def _harm_ward(a):
+    """The ward key a harmful affect shows as (a burn, a bleed, a frost, a curse), or None."""
+    name = str(getattr(a, 'name', '') or '').lower().replace(' ', '_')
+    kind = str(getattr(a, 'type', '') or '')
+    if kind == AffectManager.TYPE_DOT:
+        if _BURN.search(name):
+            return 'burning'
+        if _BLEED.search(name):
+            return 'bleeding'
+        if _FROST.search(name):
+            return 'frozen'
+        if _CURSE.search(name):
+            return 'cursed'
+        return None
+    if kind == AffectManager.TYPE_HOT:
+        return None
+    to = str(getattr(a, 'applies_to', '') or '')
+    try:
+        lowered = float(getattr(a, 'value', 0) or 0) < 0
+    except (TypeError, ValueError):
+        lowered = False
+    harmful = to in ('slow', 'stunned', 'paralyzed', 'entangled') or (to in _HOLDS and lowered)
+    if not harmful:
+        return None
+    if _FROST.search(name):
+        return 'frozen'
+    if _CURSE.search(name) or name == 'weakened':
+        return 'cursed'
+    return None
 
 
 def _wards(entity):
     """What a character wears from spells, for the 3D client: a sorted list of ward keys."""
-    out = set(getattr(entity, 'affect_flags', None) or ()) & WARD_FLAGS
+    flags = set(getattr(entity, 'affect_flags', None) or ())
+    out = flags & WARD_FLAGS
+    out |= {STATUS_FLAGS[f] for f in flags if f in STATUS_FLAGS}
     for a in getattr(entity, 'affects', None) or ():
-        key = WARD_NAMES.get(str(getattr(a, 'name', '') or '').lower().replace(' ', '_'))
+        key = WARD_NAMES.get(str(getattr(a, 'name', '') or '').lower().replace(' ', '_')) or _harm_ward(a)
         if key:
             out.add(key)
+    if (getattr(entity, 'blinded_rounds', 0) or 0) > 0:      # sand in the eyes (Pocket Sand)
+        out.add('blinded')
     return sorted(out)
 
 

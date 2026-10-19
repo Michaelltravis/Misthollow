@@ -175,7 +175,8 @@ export class Actor {
     this.mixer.addEventListener('finished', done);
     return a.getClip().duration / timeScale;
   }
-  update(dt) { this.mixer.update(dt); }
+  // (a harm may slow or stop the body: wards.js sets root.userData.animRate)
+  update(dt) { const r = this.root.userData.animRate; this.mixer.update(r == null ? dt : dt * r); }
 }
 
 export async function spawnCharacter(name, opts = {}) {
