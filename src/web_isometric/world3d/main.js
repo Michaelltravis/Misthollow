@@ -703,16 +703,10 @@ async function runGame() {
     }
   }
 
-  // hero's body is blocked by walls, and by any crossing into another room that is not an
-  // open exit — or any crossing at all while fighting (the server would refuse it)
+  // hero's body is blocked by walls and by any crossing into another room that is not an
+  // open exit. Mid-fight the hero may walk on out (combat.walk_out: a parting blow from each foe)
   function blockedFor(x, z, fx, fz) {
     const from = zone.roomAt(fx, fz);
-    const to = zone.roomAt(x, z);
-    // (into the room the server has the hero in already is never a crossing: a leap's landing)
-    if (from && to !== from && to !== heroRoom && MH.state.inCombat) {
-      if (performance.now() - leashToast > 2500) { leashToast = performance.now(); hud.toast("You're fighting! Flee to escape."); }
-      return true;
-    }
     return zone.blocked(x, z, from);
   }
 
@@ -1660,11 +1654,9 @@ async function runGame() {
       const goal = ctl.goal && ctl.goal.room === heroRoom.vnum ? ctl.goal.dir : null;
       gate.update(heroSpots, { x: p.x - heroRoom.ox, z: p.z - heroRoom.oz }, { idleMs: now - lastActive, goal });
       const ps = zone.passageAt(heroRoom, p, ctl.vel, gate,
-        { viaKeys: ctl.keys.size > 0, viaPath: !!ctl.path, goal, inCombat: MH.state.inCombat, now });
+        { viaKeys: ctl.keys.size > 0, viaPath: !!ctl.path, goal, now });
       if (ps && !ps.blocked) startHop(ps);
-      else if (ps && ps.blocked === 'combat') {
-        if (now - leashToast > 2500) { leashToast = now; hud.toast("You're fighting! Flee to escape."); }
-      } else if (ps && ps.blocked === 'door') pushingDoor(heroRoom, ps.dir, now);
+      else if (ps && ps.blocked === 'door') pushingDoor(heroRoom, ps.dir, now);
       else if (ps && ps.blocked === 'deadly' && now - deadlyToast > 3000) {
         deadlyToast = now;
         hud.toast('Certain death lies beyond. Press E to go on anyway.');

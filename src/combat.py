@@ -2641,6 +2641,35 @@ class CombatHandler:
         return True
 
     @classmethod
+    async def walk_out(cls, player: 'Player') -> bool:
+        """A /play hero walks out of a fight into the next room: each foe fighting them gets a
+        parting blow (one swing) as they turn their back, then the fight is broken off. The foes
+        keep their grudge (a hunter follows; an aggressive creature across the open land may see
+        them and come on: reach.noticed), so it is no free escape, as a flee is. False if the
+        parting blows felled the hero."""
+        c = cls.config.COLORS
+        room = player.room
+        foes = [ch for ch in (room.characters if room else []) if getattr(ch, 'fighting', None) is player and ch.is_alive]
+        if player.fighting and player.fighting not in foes and player.fighting.is_alive:
+            foes.append(player.fighting)
+        for foe in foes:
+            if foe.room is room and getattr(foe, 'fighting', None) is player and foe.is_alive and player.is_alive:
+                await cls.bonus_attack(foe, player)
+        if not player.is_alive or player.hp <= 0:
+            return False
+        for foe in foes:
+            await cls.end_combat(player, foe)
+            if hasattr(foe, 'add_grudge'):
+                foe.add_grudge(player, 1)
+        player.fighting = None
+        if player.position == 'fighting':
+            player.position = 'standing'
+        await player.send(f"{c['yellow']}You break away from the fight.{c['reset']}")
+        if room and foes:
+            await room.send_to_room(f"{player.name} breaks away from the fight.", exclude=[player])
+        return True
+
+    @classmethod
     async def attempt_disengage(cls, player: 'Player') -> bool:
         """Attempt to disengage when not the primary target."""
         if not player.is_fighting:
