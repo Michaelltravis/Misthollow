@@ -74,3 +74,4 @@ world/buildout/parts/*.p[0-9]*.json
 # Blender (bpy) for the 3D art pipeline, and its scratch output
 tools/art3d/.venv/
 tools/art3d/blender/out/
+tools/audit/out/

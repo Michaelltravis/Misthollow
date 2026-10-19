@@ -74,8 +74,20 @@ export function suspects(mobs) {
   return bad;
 }
 
+// what each mob is drawn as, in a word: its creature body, `person:<model>` or `undead:<model>`
+export function drawnAs(look) {
+  const b = look.beast;
+  if (b) return b.body || b.mob || (b.proc && `proc:${b.proc}`) || `prop:${b.prop[1]}`;
+  return /^skeleton/.test(look.model) ? `undead:${look.model}` : `person:${look.model}`;
+}
+
 function main(args) {
   const mobs = loadMobs();
+  if (args.includes('--json')) {
+    // for tools/jev_audit.py: every mob with its words and what it is drawn as
+    console.log(JSON.stringify(mobs.map(m => ({ pv: m.pv, zone: m.zone, name: m.name, short: m.short, long: m.long, drawn: drawnAs(creatureLook(m)) }))));
+    return 0;
+  }
   if (args.includes('--suspects')) {
     const bad = suspects(mobs);
     for (const { m, look } of bad) console.log(`${String(m.pv).padStart(5)}  ${m.short.padEnd(42)} ${lookLabel(look)}`);
