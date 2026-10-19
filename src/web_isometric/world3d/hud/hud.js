@@ -935,14 +935,20 @@ export function createHud() {
     if (!MH.logout()) toast('Finish the fight before you log out.');
   });
   syncSettings();
-  const lootSeg = els.settings.querySelector('[data-set="autoloot"]');
-  const syncLoot = () => lootSeg && lootSeg.querySelectorAll('button').forEach(b =>
-    b.classList.toggle('on', (b.dataset.v === 'on') === !!(MH.state.player && MH.state.player.autoloot)));
-  if (lootSeg) lootSeg.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
-    MH.sendCommand(`autoloot ${b.dataset.v}`);
-    if (MH.state.player) MH.state.player.autoloot = b.dataset.v === 'on';
-    syncLoot();
-  }));
+  // auto-loot (a kill's things) and loot gold (its gold), each the server's own setting
+  const LOOTS = [['autoloot', 'autoloot', 'autoloot'], ['autolootgold', 'autoloot_gold', 'autoloot gold']];
+  const syncLoot = () => LOOTS.forEach(([set, field]) => {
+    const seg = els.settings.querySelector(`[data-set="${set}"]`);
+    if (seg) seg.querySelectorAll('button').forEach(b => b.classList.toggle('on', (b.dataset.v === 'on') === !!(MH.state.player && MH.state.player[field])));
+  });
+  LOOTS.forEach(([set, field, cmd]) => {
+    const seg = els.settings.querySelector(`[data-set="${set}"]`);
+    if (seg) seg.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+      MH.sendCommand(`${cmd} ${b.dataset.v}`);
+      if (MH.state.player) MH.state.player[field] = b.dataset.v === 'on';
+      syncLoot();
+    }));
+  });
   MH.bus.on('map', syncLoot);
 
   // ---- real-time combat: the swing ring on the attack button, a press refused mid-cooldown ----

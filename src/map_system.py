@@ -2111,6 +2111,7 @@ def build_map_payload(player, mode: str = 'full') -> dict:
             'speed': _speed(player),          # the 3D hero runs this much faster (Push 34)
             'position': getattr(player, 'position', 'standing'),
             'autoloot': bool(getattr(player, 'autoloot', False)),
+            'autoloot_gold': bool(getattr(player, 'autoloot_gold', True)),
             'autogold': bool(getattr(player, 'autogold', True)),
             'resource': _class_resource(player),
             'charges': _charges(player),

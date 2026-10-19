@@ -105,6 +105,10 @@ export const SYNTHS = {
   drip: (c, o) => Math.max(tone(c, o, { f: 1700, f2: 700, dur: 0.09, vol: 0.09 }), tone(c, o, { f: 1300, f2: 600, dur: 0.07, vol: 0.05, delay: 0.55 })),
   gust: (c, o) => Math.max(hiss(c, o, { dur: 2.2, vol: 0.08, f: 260, f2: 720, q: 0.7 }), hiss(c, o, { dur: 1.6, vol: 0.04, type: 'highpass', f: 1800, f2: 900, delay: 0.4 })),
   steps: (c, o) => Math.max(...[0, 0.5, 1.0, 1.5].map(d => tone(c, o, { f: 92, f2: 52, type: 'triangle', dur: 0.14, vol: 0.13, delay: d }))),
+  // the hero's own heart when health runs low: lub-dub
+  heartbeat: (c, o) => Math.max(tone(c, o, { f: 62, f2: 44, dur: 0.16, vol: 0.32 }), tone(c, o, { f: 56, f2: 40, dur: 0.14, vol: 0.24, delay: 0.2 })),
+  // a creature notices you: a sharp two-note sting
+  alert: (c, o) => Math.max(tone(c, o, { f: 660, f2: 700, type: 'triangle', dur: 0.09, vol: 0.09 }), tone(c, o, { f: 990, f2: 1050, type: 'triangle', dur: 0.14, vol: 0.09, delay: 0.08 })),
   // a creature charging in from next door (entities.js onCharge): a low snarl
   growl: (c, o) => Math.max(tone(c, o, { f: 96, f2: 68, type: 'sawtooth', dur: 0.62, vol: 0.1, attack: 0.08 }), tone(c, o, { f: 128, f2: 84, type: 'square', dur: 0.5, vol: 0.035, delay: 0.05 }), hiss(c, o, { dur: 0.6, vol: 0.1, type: 'lowpass', f: 420, f2: 180 })),
   rumble: (c, o) => Math.max(hiss(c, o, { dur: 1.2, vol: 0.07, type: 'lowpass', f: 220, f2: 120 }), tone(c, o, { f: 55, f2: 40, dur: 1.1, vol: 0.06 })),

@@ -356,8 +356,12 @@ export class CombatView {
       const crit = e.crit || res === 'crit';
       this.fx.impact(p, school, crit || e.heavy);
       this.fx.flash(dst.root, heroHit ? 0xff2a1a : 0xffe0c0, 0.16);
-      if (dst.actor && !dst.hero && !(dst.ent && dst.ent.dying)) dst.actor.once(Math.random() < 0.5 ? 'Hit_A' : 'Hit_B', 0.05, 1.2);
+      if (dst.actor && !dst.hero && !(dst.ent && dst.ent.dying)) dst.actor.once(Math.random() < 0.5 ? 'Hit_A' : 'Hit_B', 0.05, crit || e.heavy ? 0.85 : 1.2);
       if (dst.hero) this.getHero().ctl.swing(Math.random() < 0.5 ? 'Hit_A' : 'Hit_B', true);
+      // a crit or a heavy blow shoves a creature back (it staggers: the flinch played slower), and
+      // the view darts in when it is the hero's crit or a crit on the hero
+      if ((crit || e.heavy) && dst.ent && !dst.hero && src && src.root) this.ents.knock(dst.ent, src.root.position, crit ? 0.55 : 0.35);
+      if (crit && ((src && src.hero) || heroHit) && this.engine.punch) this.engine.punch(heroHit ? 1.8 : 1.2);
     } else {
       const word = { miss: 'Miss', dodge: 'Dodge', parry: 'Parry', block: 'Block', resist: 'Resist', immune: 'Immune' }[res] || res;
       if (heroHit) this.fx.lane(word, { color: COLORS[res] || COLORS.miss, size: 15 });

@@ -10,7 +10,7 @@ import { creatureLook, hashStr, npcDress } from './looks.js';
 import { makeProc, makeProp } from './proc.js';
 import { makeKin } from './kin.js';
 import { isHostile, conOf, shownName } from './targeting.js';
-import { fallOver, nameKey } from './corpse.js';
+import { deathStyle, remains, fallOver, nameKey } from './corpse.js';
 
 export const CLASS_MODEL = {
   warrior: ['barbarian'], paladin: ['knight'], cleric: ['knight', 0xfff0d0], mage: ['mage'],
@@ -54,6 +54,41 @@ function plateHeight(e) {
   const box = new THREE.Box3().setFromObject(e.root);
   const top = box.max.y - e.root.position.y;
   return Math.max(0.9, Math.min(4, isFinite(top) ? top + 0.35 : 2.75));
+}
+
+// a death that is not a fall, played out on the body over its last two seconds: a spirit fades
+// and rises, a slime swells and pops, a thing of stone or ice is gone in a blink (its shards fly:
+// main.js onDeath), a creature of fire chars, glows and fades to ash
+const ASH = new THREE.Color(0x1a1412);
+function dyingAs(d, dt) {
+  d.t += dt;
+  const root = d.e.root;
+  if (!d.mats) {
+    d.mats = [];
+    root.traverse(o => {
+      if (!o.isMesh || !o.material) return;
+      const one = m => { const c = m.clone(); c.transparent = true; d.mats.push(c); return c; };
+      o.material = Array.isArray(o.material) ? o.material.map(one) : one(o.material);
+    });
+  }
+  if (d.style === 'dissolve') {
+    const k = Math.max(0, 1 - d.t / 1.5);
+    for (const m of d.mats) m.opacity = k;
+    root.position.y += dt * 0.4;
+    if (k <= 0) root.visible = false;
+  } else if (d.style === 'burst') {
+    if (d.t < 0.22) root.scale.setScalar(d.scale * (1 + d.t * 1.6));
+    else root.visible = false;
+  } else if (d.style === 'shatter') {
+    if (d.t > 0.06) root.visible = false;
+  } else if (d.style === 'burn') {
+    const k = Math.min(1, d.t / 1.1);
+    for (const m of d.mats) {
+      if (m.color) m.color.lerp(ASH, Math.min(1, dt * 2.5));
+      if (m.emissive) { m.emissive.setRGB(1, 0.32, 0.05); m.emissiveIntensity = (1 - k) * 0.9; }
+      if (d.t > 1.3) m.opacity = Math.max(0, 1 - (d.t - 1.3) / 0.8);
+    }
+  }
 }
 
 export class Entities {
@@ -293,7 +328,10 @@ export class Entities {
     const want = nameKey(victim);
     const i = this.dying.findIndex(d => nameKey(d.e.data && d.e.data.name) === want);
     if (i >= 0) {
-      const [d] = this.dying.splice(i, 1);
+      const d = this.dying[i];
+      // one that did not fall leaves its remains, and goes on fading, bursting or burning away
+      if (d.style && d.style !== 'fall') { d.claimed = true; return { root: remains(d.style, d.e.root.position.clone().setY(0)), fall: null }; }
+      this.dying.splice(i, 1);
       return { root: d.e.root, fall: d.fall, actor: d.e.actor };
     }
     const j = this.vanished.findIndex(e => e.actor && nameKey(e.data && e.data.name) === want);
@@ -315,8 +353,20 @@ export class Entities {
       else this.vanished.push(e);
       return;
     }
-    // it falls and lies there (corpse.js); unless its corpse claims the body, it is cleared away
-    this.dying.push({ e, left: 2.2, fall: fallOver(e.actor, { ground: 0, side: hashStr(e.key) % 2 ? 1 : -1 }) });
+    // it dies as what it is (corpse.js deathStyle): falls and lies there, or fades, bursts, burns
+    // or shatters; unless its corpse claims the body (or its remains), it is cleared away
+    const style = deathStyle(e.data.name, e.data.short, e.data.body);
+    const fall = style === 'fall' || style === 'burn' ? fallOver(e.actor, { ground: 0, side: hashStr(e.key) % 2 ? 1 : -1 }) : null;
+    this.dying.push({ e, left: 2.2, fall, style, t: 0, scale: e.root.scale.x });
+    if (this.onDeath) this.onDeath(e, style);
+  }
+
+  // a heavy blow or a crit shoves a creature back from whoever struck it (`by`: where they stand)
+  knock(e, by, dist = 0.4) {
+    if (!e || !e.root || e.dying || e.alive === false) return;
+    const dx = e.root.position.x - by.x, dz = e.root.position.z - by.z, d = Math.hypot(dx, dz) || 1;
+    const T = 0.16;
+    e.knock = { x: dx / d * dist / T, z: dz / d * dist / T, t: T };
   }
 
   // a creature that turns on you gets a hostile (red) nameplate
@@ -361,13 +411,20 @@ export class Entities {
     this.vanished.length = 0;
     for (let i = this.dying.length - 1; i >= 0; i--) {
       const d = this.dying[i];
-      d.fall.update(dt);
-      if ((d.left -= dt) <= 0) { this.engine.scene.remove(d.e.root); this.dying.splice(i, 1); }
+      if (d.fall) d.fall.update(dt);
+      if (d.style && d.style !== 'fall') dyingAs(d, dt);
+      if ((d.left -= dt) <= 0) { this.engine.scene.remove(d.e.root); this.dying.splice(i, 1); for (const m of d.mats || []) m.dispose(); }
     }
     for (const e of this.list.values()) {
       if (!e.root) continue;
       // walking to a new room's spot (other players keep up with where they really are:
       // the further behind, the faster they run)
+      // knocked back by a heavy blow: a short shove, easing off
+      if (e.knock) {
+        const k = Math.min(dt, e.knock.t);
+        e.root.position.x += e.knock.x * k; e.root.position.z += e.knock.z * k;
+        if ((e.knock.t -= dt) <= 0) e.knock = null;
+      }
       const held = e.holdUntil && performance.now() < e.holdUntil;
       if (!held && e.holdUntil) e.holdUntil = 0;
       if (e.charging && !held) { e.charging = false; if (e.goal && this.onCharge) this.onCharge(e); }

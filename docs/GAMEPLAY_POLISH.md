@@ -6,7 +6,7 @@ The owner: "What else should we look at to further polish and make the game play
 | Group | What | State |
 |---|---|---|
 | 1 | Every harm drawn on the body | done |
-| 2 | Combat feel | |
+| 2 | Combat feel | done |
 | 3 | A world that feels alive | |
 | 4 | Reasons to keep playing | |
 | 5 | Guidance and quality of life | |
@@ -37,3 +37,24 @@ The strongest glow wins (frost over burn over poison); the slowest pace wins. Ev
 off again when the harm ends (the materials, the lean, the tremble, the band, the pace).
 
 Checks: `node --test tests/web/wards.test.mjs`.
+
+## 2. Combat feel
+
+- **A heavy blow lands** (`combat.js land`): a crit or a heavy blow shoves the creature back from
+  whoever struck it (0.55 m for a crit, 0.35 m heavy: `Entities.knock`) and its flinch plays
+  slower, a stagger; the hero's own crit, or a crit on the hero, darts the view in and lets it
+  ease back (`engine.punch`). The hit-stop and the screen shake by the size of the blow were there.
+- **Each creature dies as what it is** (`corpse.js deathStyle`, played on the body by
+  `entities.js dyingAs`, its particles by `main.js onDeath`): a spirit, a lich or a vampire fades
+  and rises in pale light; a slime or an ooze swells and pops in a green splash; a creature of fire
+  chars, glows and burns to ash in embers and smoke; a golem, a gargoyle or an elemental of stone
+  or ice shatters in shards and dust; anything else falls as before. Those that did not fall
+  leave remains for their corpse (a heap of ash, a puddle of goo, rubble, a faint pool of light).
+- **Health running low** (30%, as the reddened edge already showed): the hero's heart beats, the
+  edge pulsing in time with it; below 15% faster and redder (`main.js`, `hud.css hp-crit`).
+- **A creature notices you** (it attacks you first, or charges in from next door): a "!" over its
+  head and a sharp sting, once in a while each (`main.js notice`).
+- **Loot**: the rarity beams were there; a "Loot gold" setting now sits by Auto-loot (the
+  server's `autoloot gold`, on by default).
+
+Checks: `node --test tests/web/corpse.test.mjs tests/web/wards.test.mjs`.

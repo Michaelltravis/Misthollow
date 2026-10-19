@@ -8,9 +8,11 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #05070b; col
 /* the mist at the edges of sight; it closes in, reddened, when your health runs low */
 #vignette { position: fixed; inset: 0; pointer-events: none; z-index: 2;
   background: radial-gradient(ellipse at 50% 46%, rgba(0,0,0,0) 56%, rgba(6,9,14,.42) 86%, rgba(4,6,10,.7) 100%); transition: background .6s; }
-html.hp-low #vignette { animation: lowmist 1.6s ease-in-out infinite;
+html.hp-low #vignette { animation: lowmist var(--beat, .95s) ease-out infinite;
   background: radial-gradient(ellipse at 50% 46%, rgba(0,0,0,0) 44%, rgba(90,8,6,.38) 78%, rgba(40,2,2,.75) 100%); }
-@keyframes lowmist { 0%, 100% { opacity: .75; } 50% { opacity: 1; } }
+html.hp-crit #vignette { background: radial-gradient(ellipse at 50% 46%, rgba(0,0,0,0) 34%, rgba(120,8,6,.5) 70%, rgba(60,2,2,.88) 100%); }
+/* in time with the heart (main.js): lub, dub, rest */
+@keyframes lowmist { 0% { opacity: .7; } 10% { opacity: 1; } 22% { opacity: .82; } 32% { opacity: 1; } 60%, 100% { opacity: .7; } }
 .hud { position: fixed; z-index: 10; }
 .hidden { display: none !important; }
 button { font: inherit; color: inherit; }

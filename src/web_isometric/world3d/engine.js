@@ -298,6 +298,8 @@ export function createEngine(container, opts = {}) {
     onLateTick: fn => lateTicks.push(fn),
     orbit, snapNorth, setQuality,
     hitStop: ms => { stopUntil = Math.max(stopUntil, performance.now() + ms); },
+    // a crit lands: the view darts in a little and eases back (the rig's own easing)
+    punch: m => { rig.dist = Math.max(rig.minDist * 0.8, rig.dist - m); },
     setMood, placeCamera, MOODS,
     // stop the loop and advance by hand, `n` frames of `dt` each (a slow machine still shows
     // every moment of an effect); setManual(false) starts the loop again
