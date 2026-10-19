@@ -1934,4 +1934,29 @@ Owner: "I have a JEV account, can we leverage JEV for anything in misthollow?"
 - **First run:** 1,620 creatures (2.5M tokens, about $0.10) gave 68 to review. 8,571 rooms (8.7M
   tokens, about $0.37) gave 882. Each answer took about a quarter of a second.
 - `tools/qc_bestiary.mjs --json` lists every mob with what it is drawn as, for the creature run.
+- **Fixes from the review** (owner: "fix the clear creature and room mistakes"):
+  - **Creatures (68 flagged, 20 left, all judgement calls):**
+    - The Skull Clan are orcs, not floating skulls. A reaver is a raider, not a spider (but a
+      spine reaver still skitters). The mutant orc is an orc.
+    - "Bone" alone no longer makes an ogre, troll or orc undead (`looks.js deadWords`). The bone
+      colossus, made of skeletons, stays dead.
+    - Ghouls and the shambling dead wear the zombie body.
+    - Bodies that existed but went unused are now used: the Rat King, rocs, little dragons
+      (dragonets, drakelings, baby dragons), and big cats for tigers.
+    - A lizard's hatchling is a lizard; a sea snake is a snake, not a sea serpent; a gorgon has
+      the medusa's shape; a sworn blade is a warrior.
+    - Nine one-offs, mostly ghosts known only by their keywords or behaviour, are set by prototype
+      (`looks.js BY_PROTO`).
+    - Tests: `tests/web/looks.test.mjs`.
+  - **Rooms (882 flagged, 691 left):** 192 clear errors are pinned in `world/looks.json`, each
+    with its reason:
+    - shops, houses and halls drawn as streets;
+    - streets, alleys and plazas drawn indoors;
+    - gardens and hedge mazes drawn indoors;
+    - meadows, cornfields and plains drawn as forest, snowfield or standing stones;
+    - mountain paths drawn as snowfield; the necropolis's open streets drawn as crypts;
+    - docks, piers and open-sea boat rooms drawn indoors.
+  - **Left for a person:** what remains is mostly near-synonyms (a castle hall or a plain room, a
+    dug tunnel or a cave), plus the city wall-walks, the glacier cracks, the tree city's rooms,
+    and paths just outside gates and cave mouths.
 

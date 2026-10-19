@@ -48,6 +48,14 @@ const TITLES = new Set(('king queen lord lady chief chieftain leader master mist
 // the race words a role word defers to
 const RACES = /\b(goblins?|hobgoblins?|kobolds?|orcs?|half-orcs?|gnolls?|bugbears?|trolls?|ogres?|giants?|skeleton|skeletal|zombies?|ghouls?|undead|vampires?|spectral|ghostly|ghosts?|demons?|imps?|minotaurs?|sahuagin|myconoids?|myconids?)\b/;
 const UNDEAD = /\b(skeleton|skeletons|skeletal|zombie|zombies|ghoul|ghouls|ghast|undead|lich|wight|bone|bones|corpse|mummy|mummies|revenant|vampire|vampires|deathknight|death knight|drowned|risen|ossuary|ribcage|charnel|draugr|undying|dead performers?)\b/;
+// "bone" alone is no proof of the dead when the words name a living kind: Grushka the
+// Bone-Caller is an ogre shaman, Bone Gnasher a troll, a bone-hung shaman an orc
+const LIVING = /\b(ogres?|trolls?|orcs?|goblins?|hobgoblins?|gnolls?|kobolds?|humans?|dwarf|dwarves|elf|elves|barbarians?)\b/;
+function deadWords(text) {
+  const hits = String(text).match(new RegExp(UNDEAD.source, 'g'));
+  if (!hits) return false;
+  return !(hits.every(w => /^bones?$/.test(w)) && LIVING.test(text));
+}
 // an undead creature that is not a person keeps its body, rotten or bare to the bone
 const ROTTEN = /\b(undead|zombie|zombies|zombified|rotting|rotten|drowned|ghoul|plague)\b/;
 const BONY = /\b(skeleton|skeletal|bone|bones)\b/;
@@ -187,8 +195,9 @@ function undead(m, all) {
   const scale = ((m.boss || (m.flags || []).includes('boss')) ? 1.25 : 1) * big;
   const s = scale !== 1 ? scale : undefined, why = 'undead';
   if (/\b(vampire|vampires)\b/.test(all)) return { model: 'rogue_hooded', loadout: ['Knife'], tint: 0x8a6a8a, scale: s, why };
-  // the walking dead in their own flesh (the Quaternius zombies); a woman's body for a woman
-  if (/\b(zombies?|zombified)\b/.test(all) && !/\b(skeleton|skeletal|bones?)\b/.test(all)) {
+  // the walking dead in their own flesh (the Quaternius zombies), ghouls with them; a woman's
+  // body for a woman
+  if (/\b(zombies?|zombified|ghouls?|ghasts?|restless dead|risen)\b/.test(all) && !/\b(skeleton|skeletal|bones?)\b/.test(all)) {
     const she = m.sex === 'female' || /\b(woman|women|girl|maiden|bride|widow|she)\b/.test(all);
     return { beast: { mob: she ? 'zombie_f' : 'zombie_m', h: +(2.1 * scale).toFixed(2), prefer: true }, why };
   }
@@ -236,8 +245,25 @@ function withKin(look, m) {
   return kin ? { ...look, beast: { ...b, kin } } : look;
 }
 
+// creatures whose words no safe rule reads right, by prototype: what they are
+const BY_PROTO = {
+  2500: 'ghost',     // the shadow guardian: a shade that screams a challenge
+  9712: 'ghost',     // the Echo of the Archmage, pacing out her last spell
+  9775: 'ghost',     // a silent echo, the shape of a sound
+  23802: 'ghost',    // a wailing monk drifting through the refectory
+  48204: 'ghost',    // the weeping maid (her keywords say ghost)
+  642905: 'ghost',   // Elder Verun, Keeper of Trials (his keywords say ghost)
+  648002: 'zombie',  // a hollow-eyed farmhand shambling between the rows (a ghoul)
+  650106: 'troll',   // Karrak, the stone troll of the deep shaft
+  47904: 'beetle',   // the undead riding beetle: a dead beetle, not a skeleton
+};
+
 function lookOf(m) {
   const d = describe(m);
+  const by = m.pv != null ? BY_PROTO[+m.pv] : null;
+  if (by === 'zombie') return undead(m, `zombie ${d.all}`);
+  if (by === 'ghost') return creature(beast('ghost'), '', d.all, !!m.boss, 'by prototype');
+  if (by) return creature(beast(by), '', d.all, !!m.boss, 'by prototype');
   let look = choose(m, d);
   // a person by default or by trade whose room line names a creature, a construct or the dead
   if (!look.beast && (look.why === 'person' || look.why === 'role') && m.long) {
@@ -264,10 +290,10 @@ function choose(m, { head, words, all }) {
     const agent = AGENTS.has(head);
     const race = words.slice(0, agent ? -2 : -1).join(' ');
     // ("a death knight": the dead by their whole name, not only their race)
-    if (UNDEAD.test(race) || /\bdeath ?knights?\b/.test(words.join(' '))) return undead(m, all);
+    if (deadWords(race) || /\bdeath ?knights?\b/.test(words.join(' '))) return undead(m, all);
     const rm = race.match(RACES) || (TITLES.has(head) && !agent ? all.match(RACES) : null);   // "King of the Goblins"
     if (rm) {
-      if (UNDEAD.test(rm[0])) return undead(m, all);
+      if (deadWords(rm[0])) return undead(m, all);
       const rb = beast(rm[0]);
       return rb ? creature(rb, '', all, boss, 'race') : person(m, all, 'race');
     }
@@ -278,7 +304,7 @@ function choose(m, { head, words, all }) {
   }
   const hb = beast(head);                                                    // "the giant hornet"
   if (hb) return creature(hb, mods, all, boss, 'head');
-  if (UNDEAD.test(all)) return undead(m, all);
+  if (deadWords(all)) return undead(m, all);
   const fb = beast(all);                                                     // any creature word
   if (fb) return creature(fb, mods, all, boss, 'word');
   return person(m, all);
