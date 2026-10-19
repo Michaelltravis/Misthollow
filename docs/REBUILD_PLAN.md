@@ -1921,3 +1921,17 @@ Owner: "Morkai should be an end game area and themed dark, undead, skeletons, ab
 - `buildout.py`: a creature's `"avoid": [room names]` keeps it out of rooms; the tunnel orcs avoid
   dead Morkai.
 
+### A second opinion from JEV (TypeSafe's decision model)
+Owner: "I have a JEV account, can we leverage JEV for anything in misthollow?"
+- `tools/jev_audit.py rooms|creatures` asks JEV which look each room's own words describe, and
+  which body each creature's words describe. It chooses from the game's own options and says how
+  sure it is.
+- It lists only the cases where JEV is at least 90% sure of another option and gives the drawn
+  one 5% or less: `docs/JEV_REVIEW_ROOMS.md` and `docs/JEV_REVIEW_CREATURES.md`. It changes nothing
+  in the game; each entry is for a person to judge.
+- **The key:** a network secret for `api.typesafe.ai`, or `TYPESAFE_API_KEY`. Answers are cached in
+  `tools/audit/out/` (not committed), so a re-run asks only new questions.
+- **First run:** 1,620 creatures (2.5M tokens, about $0.10) gave 68 to review. 8,571 rooms (8.7M
+  tokens, about $0.37) gave 882. Each answer took about a quarter of a second.
+- `tools/qc_bestiary.mjs --json` lists every mob with what it is drawn as, for the creature run.
+
