@@ -53,7 +53,7 @@ const UNDER_SKY = new Set(['inside', 'web', 'necropolis', 'sewer', 'underwater',
 const WATER_Y = -0.12;
 const params = new URLSearchParams(location.search);
 const pref = k => { try { return localStorage.getItem(k); } catch (_) { return null; } };
-const engine = createEngine($('#stage'), { quality: params.get('q') || pref('mh3d_quality') || 'high' });
+const engine = createEngine($('#stage'), { quality: params.get('q') || pref('mh3d_quality') || pref('mh3d_quality_auto') || 'high' });
 attachPerf(engine, $('#perf'));
 // no graphics card in use (Windows' Basic Render Driver, SwiftShader, llvmpipe): the browser draws
 // the 3D on the CPU, a few frames a second at best. Low quality for this visit (not saved: a
@@ -66,6 +66,26 @@ const softGPU = (() => {
   } catch (_) { return null; }
 })();
 if (softGPU && !params.get('q')) engine.setQuality('low');
+// a machine that cannot keep up (frames slower than ~30 a second for ten seconds even at the
+// screen's own pixel density) steps the graphics down a notch, once in a while, and says so;
+// remembered for next time. Never over a quality the player chose (Settings -> Graphics)
+const LOWER = { high: 'med', med: 'low' };
+const autoQ = { ema: 16.7, last: 0, slow: 0, done: 0 };
+engine.onLateTick(() => {
+  const now = performance.now(), gap = now - autoQ.last;
+  autoQ.last = now;
+  if (params.get('q') || pref('mh3d_quality') || softGPU || gap <= 0 || gap > 250) return;
+  autoQ.ema += (gap - autoQ.ema) * 0.05;
+  const floor = engine.renderer.getPixelRatio() <= 1.01;
+  autoQ.slow = floor && autoQ.ema > 34 ? autoQ.slow + gap : 0;
+  const next = LOWER[engine.quality.name];
+  if (autoQ.slow > 10000 && next && now - autoQ.done > 30000) {
+    autoQ.done = now; autoQ.slow = 0;
+    engine.setQuality(next);
+    try { localStorage.setItem('mh3d_quality_auto', next); } catch (_) {}
+    MH.bus.emit('perf.lowered', next);
+  }
+});
 // how long the start takes, by stage (ms from the page's start; the perf overlay and probes
 // read MH.bootTimes): the art kits fetched and parsed, the title backdrop built, in the world
 const bootTimes = (window.MH = window.MH || {}).bootTimes = {};
@@ -184,6 +204,35 @@ async function runGame() {
     sound.play('quest_done');
     hud.herald({ kicker: 'Achievement unlocked', title: `${e.icon || '★'} ${e.name}`, sub: `${e.desc || ''}${e.title ? ` · new title: ${e.title}` : ''}` });
   });
+  MH.bus.on('perf.lowered', q => hud.toast(`Graphics lowered to ${q === 'low' ? 'Low' : 'Medium'} to keep the game smooth (Settings -> Graphics)`, 5000));
+  // a ping (alt-click on the ground): a ring and a beam where it was put, for you and your group
+  // (commands.py webping; the minimap flashes gold there too)
+  function pingAt(x, z) {
+    const r = zone && zone.roomAt(x, z);
+    if (r) MH.sendCommand(`webping ${r.vnum} ${(x - r.ox).toFixed(1)} ${(z - r.oz).toFixed(1)}`, false);
+  }
+  const beamGeo = new THREE.CylinderGeometry(0.12, 0.3, 1, 10, 1, true).translate(0, 0.5, 0);
+  MH.bus.on('world.ping', e => {
+    const r = zone && zone.rooms.get(e.vnum);
+    mmSmall.ping(e.vnum, 'ping'); mmBig.ping(e.vnum, 'ping');
+    sound.play('quest_stage');
+    if (e.from && e.from !== MH.state.playerName) hud.toast(`${e.from} marks a spot`);
+    if (!r) return;
+    const x = r.ox + e.x, z = r.oz + e.z;
+    for (let i = 0; i < 3; i++) fx.after(i * 0.35, () => sky.ripples.spawn(x, 0, z, { size: 2.4, life: 1.4, color: 0xffd24a, opacity: 0.85 }));
+    const beam = new THREE.Mesh(beamGeo, new THREE.MeshBasicMaterial({ color: 0xffd24a, transparent: true, opacity: 0.55,
+      blending: THREE.AdditiveBlending, depthWrite: false }));
+    beam.position.set(x, 0, z); beam.scale.set(1, 7, 1);
+    engine.scene.add(beam);
+    const t0 = performance.now();
+    const fade = () => {
+      const k = (performance.now() - t0) / 3500;
+      if (k >= 1) { engine.scene.remove(beam); beam.material.dispose(); return; }
+      beam.material.opacity = 0.55 * (1 - k);
+      requestAnimationFrame(fade);
+    };
+    fade();
+  });
   MH.bus.on('world.rare', e => {
     sound.play('ui_offer');
     hud.herald({ kicker: 'A rare creature stirs', title: e.name, sub: `seen near ${e.where}`, tone: 'rare' });
@@ -220,6 +269,9 @@ async function runGame() {
   const cues = new CombatCues({ engine, ents, getHero: () => hero && { actor: hero, ctl }, callout: $('#callout'),
     rangeOf: id => { const r = rangeOf(id, (hud.player && (hud.player.spells || {})[id] != null)); return r || null; },
     // next door, from where the hero stands: pulled in by a shot or a spell, or leapt at
+    // what the quest's step wants (quest_guide.py want): a gold ring under it
+    want: () => (MH.state.player && MH.state.player.quest && MH.state.player.quest.want) || null,
+    loot: () => loot.list,
     canReach: (e, id, r) => {
       if (!id || !heroRoom || !hero || !hero.root || e.vnum === heroRoom.vnum) return false;
       const spell = !!(hud.player && (hud.player.spells || {})[id] != null);
@@ -961,6 +1013,7 @@ async function runGame() {
       else if (e.button === 2) stopAim();
       return;
     }
+    if (e.button === 0 && e.altKey && ctl) { const g = ctl.groundAt(e.clientX, e.clientY); if (g) pingAt(g.x, g.z); return; }
     if (e.button !== 0 || e.ctrlKey || !ctl) return;
     const hit = ents.pick(e.clientX, e.clientY);
     if (hit) { ents.setTarget(hit.key, { byHand: true }); return; }

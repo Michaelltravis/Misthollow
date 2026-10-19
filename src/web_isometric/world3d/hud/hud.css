@@ -722,6 +722,8 @@ html.fallen #vignette { background: radial-gradient(ellipse at 50% 46%, rgba(30,
 .qt-star { color: #ffd86a; }
 .qt-name { flex: 1; font: 700 14px var(--title); color: var(--gold-hi); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .qt-step { font: 700 11.5px var(--label); color: var(--ink-dim); }
+#target-frame .ttot { font: 600 11.5px var(--label); color: #e8d6a8; margin: 1px 0 2px; letter-spacing: .02em; }
+#target-frame .ttot.you { color: #ff8a6a; }
 .qt-hide { background: none; border: 0; padding: 0 2px; margin-left: 2px; color: var(--ink-dim); font: 700 12px var(--label); cursor: pointer; opacity: .55; }
 .qt-hide:hover { opacity: 1; color: var(--gold-hi); }
 .qt-title { font-weight: 700; margin-top: 4px; }

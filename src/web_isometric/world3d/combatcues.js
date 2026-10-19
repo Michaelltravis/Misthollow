@@ -20,8 +20,11 @@ const ring = (inner, outer, color, opacity) => {
 export class CombatCues {
   // rangeOf(id) -> metres or null; onStrike() asks the HUD to light the strongest attack;
   // canReach(entity, id, metres) -> whether the ability reaches that creature next door
-  constructor({ engine, ents, getHero, rangeOf, canReach, callout, onStrike }) {
+  // want() -> the quest step's {t: kill|talk|collect, target}; loot() -> the ground items (loot.js)
+  constructor({ engine, ents, getHero, rangeOf, canReach, want, loot, callout, onStrike }) {
     this.engine = engine; this.ents = ents; this.getHero = getHero; this.rangeOf = rangeOf; this.canReach = canReach;
+    this.want = want; this.loot = loot;
+    this.qmarks = []; this.qmarked = []; this._qClock = 0;
     this.callout = callout; this.onStrike = onStrike;
     const scene = engine.scene;
     // the target ring: a bright edge, a soft fill, four ticks that turn
@@ -74,6 +77,48 @@ export class CombatCues {
     if (this.onStrike) this.onStrike();
   }
   hoverAbility(id) { this.reachWant = id ? this.rangeOf(id) : null; this.reachId = id || null; this._markClock = 0; }
+
+  // what the quest's step wants, picked out in the world: a slow gold ring under each creature to
+  // slay or speak with, and under each thing to pick up (quest_guide.py want)
+  questWanted(e, w) {
+    const target = String(w.target).toLowerCase();
+    if (w.t === 'talk') return e.kind === 'mob' && (String(e.data.pv) === target || String(e.data.name || '').toLowerCase().includes(target));
+    return e.kind === 'mob' && e.alive !== false && [e.data.name, e.data.short].some(n => String(n || '').toLowerCase().includes(target));
+  }
+  updateQuest(dt, t) {
+    if ((this._qClock -= dt) <= 0) {
+      this._qClock = 0.4;
+      this.qmarked = [];
+      const w = this.want && this.want();
+      if (w && w.target) {
+        if (w.t === 'collect') {
+          const target = String(w.target).toLowerCase();
+          for (const l of (this.loot && this.loot().values()) || []) {
+            const it = l.item || {};
+            if (!l.corpse && (String(it.vnum) === target || [it.name, it.short].some(n => String(n || '').toLowerCase().includes(target)))) this.qmarked.push({ root: l.root, size: 0.8 });
+          }
+        } else {
+          for (const e of this.ents.list.values()) {
+            if (e.root && this.questWanted(e, w)) this.qmarked.push({ root: e.root, size: Math.max(0.8, Math.min(2.4, (e.plateY || 2) * 0.42)) });
+            if (this.qmarked.length >= 10) break;
+          }
+        }
+      }
+    }
+    while (this.qmarks.length < this.qmarked.length) {
+      const m = ring(0.78, 0.9, 0xffc84a, 0.7);
+      this.engine.scene.add(m);
+      this.qmarks.push(m);
+    }
+    this.qmarks.forEach((m, i) => {
+      const q = this.qmarked[i];
+      m.visible = !!(q && q.root && q.root.parent);
+      if (!m.visible) return;
+      m.position.set(q.root.position.x, 0.045, q.root.position.z);
+      m.scale.setScalar(q.size * (1.1 + Math.sin(t * 2.2 + i) * 0.08));
+      m.material.opacity = 0.45 + 0.25 * Math.sin(t * 2.2 + i);
+    });
+  }
 
   // the marks under the creatures next door the hovered ability reaches
   updateMarks(dt, t, r) {
@@ -143,6 +188,7 @@ export class CombatCues {
       if (this.reach.material.opacity <= 0) this.reach.visible = false;
     }
     this.updateMarks(dt, t, r);
+    this.updateQuest(dt, t);
     // standing where a marked blow will land?
     let danger = null;
     for (const [key, d] of this.dangers) {

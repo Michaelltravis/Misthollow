@@ -492,9 +492,11 @@ async def main():
     check(came and wolf.room is here and wolf.fighting is seer, 'it charges in and attacks')
     for ch in (wolf, seer):
         ch.fighting = None
-    here.characters.remove(wolf)
-    here.characters.remove(seer)
-    world.npcs.remove(wolf)
+        # (the fight it began may have moved either: a flee, a death)
+        if ch.room is not None and ch in ch.room.characters:
+            ch.room.characters.remove(ch)
+    if wolf in world.npcs:
+        world.npcs.remove(wolf)
     # a herd: its kind idling where it was may follow it
     import random as _random
     proto = next(iter(world.mob_prototypes.values()))
@@ -736,6 +738,34 @@ async def main():
     for i in range(10):
         await journal.JournalManager.discover_creature(reader, f'test{i}', f'creature {i}', 'seen', silent=True)
     check('bestiary_10' in (getattr(reader, 'achievements', None) or {}), 'ten creatures catalogued: the bestiary\'s first milestone, rewarded')
+
+    # guidance (docs/GAMEPLAY_POLISH.md group 5): what the step wants, picked out in the world;
+    # a ping seen by the group
+    hunter2 = Player.create_new(name='Seeker', password=None, race='human', char_class='warrior',
+                                stats={s: 16 for s in ('str', 'int', 'wis', 'dex', 'con', 'cha')}, world=world)
+    hunter2.world, hunter2.room, hunter2.active_quests, hunter2.level = world, world.rooms[3001], [], 20
+    hunter2.send = hear
+    await QuestManager.accept_quest(hunter2, 'bounty_novice')
+    b = quest_guide.guide_block(hunter2)
+    check(b and b.get('want', {}).get('t') == 'kill' and b['want']['target'] == QUEST_DEFINITIONS['bounty_novice']['objectives'][0]['target'],
+          f"the tracker says what the step wants, for /play to ring it in gold ({b and b.get('want')})")
+    got = []
+
+    class _WM:
+        async def notify_event(self, who, ev):
+            got.append((who.name, ev))
+
+        async def notify_player(self, who):
+            pass
+    was_wm = getattr(world, 'web_map', None)
+    world.web_map = _WM()
+    try:
+        await CommandHandler.execute(hunter2, 'webping', ['3001', '12.0', '7.5'])
+        await CommandHandler.execute(hunter2, 'webping', ['3001', '1', '1'])
+    finally:
+        world.web_map = was_wm
+    check(len(got) == 1 and got[0][1]['type'] == 'world_ping' and got[0][1]['vnum'] == 3001,
+          f'a ping goes to the player (and their group), once a second at most ({len(got)})')
 
     print(f"\n{'ALL OK' if not FAILED else f'{len(FAILED)} FAILED'}")
     sys.exit(1 if FAILED else 0)
