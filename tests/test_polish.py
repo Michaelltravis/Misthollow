@@ -767,6 +767,57 @@ async def main():
     check(len(got) == 1 and got[0][1]['type'] == 'world_ping' and got[0][1]['vnum'] == 3001,
           f'a ping goes to the player (and their group), once a second at most ({len(got)})')
 
+    # walking out of a fight in /play (combat.walk_out); telnet still flees. And the buff bar is
+    # told at once when an affect lands (affects._push_affects)
+    from combat import CombatHandler
+    street = world.rooms[3002]
+    way = next(d for d, ex in street.exits.items() if isinstance(ex, dict) and ex.get('room') is not None
+               and not ex.get('door') and street.exits[d]['room'].admits(sayer) if hasattr(street.exits[d]['room'], 'admits'))
+    walker = Player.create_new(name='Walker', password=None, race='human', char_class='warrior',
+                               stats={s: 16 for s in ('str', 'int', 'wis', 'dex', 'con', 'cha')}, world=world)
+    walker.world, walker.room, walker.level, walker.send = world, street, 30, hear
+    walker.hp = walker.max_hp = 5000
+    street.characters.append(walker)
+    brute = create_mob_from_prototype(next(iter(world.mob_prototypes.values())), world)
+    brute.flags = set(f for f in (brute.flags or ()) if f not in ('sentinel', 'boss'))
+    brute.special, brute.owner = None, None
+    brute.room = street
+    street.characters.append(brute)
+    world.npcs.append(brute)
+    walker.fighting, brute.fighting, walker.position, brute.position = brute, walker, 'fighting', 'fighting'
+    walker.web_pos = None
+    await CommandHandler.cmd_move(walker, way)
+    check(walker.room is street and 'Flee' in ' '.join(heard[-2:]), 'a telnet hero in a fight still has to flee')
+    walker.web_pos = (street.vnum, 12.0, 7.5)
+    await CommandHandler.cmd_move(walker, way)
+    check(walker.room is not street and walker.fighting is None and brute.fighting is None,
+          f'a /play hero walks out of the fight into the next room ({way})')
+    check(walker.name in (brute.grudge_list or {}), 'and the foe holds a grudge (it may come after them)')
+    for ch in (walker, brute):
+        if ch.room and ch in ch.room.characters:
+            ch.room.characters.remove(ch)
+    world.npcs.remove(brute)
+    pushed = []
+
+    class _WM2:
+        def has_play(self, who):
+            return True
+
+        async def notify_player(self, who):
+            pushed.append(who.name)
+    was_wm = getattr(world, 'web_map', None)
+    world.web_map = _WM2()
+    try:
+        from affects import AffectManager
+        walker.connection = object()
+        for k in range(3):
+            AffectManager.apply_affect(walker, {'name': 'armor', 'type': AffectManager.TYPE_MODIFY_STAT,
+                                                'applies_to': 'armor_class', 'value': -5, 'duration': 10})
+        await asyncio.sleep(0.3)
+    finally:
+        world.web_map = was_wm
+    check(pushed == ['Walker'], f'a buff landing is sent to /play at once, once for a spell of several affects ({pushed})')
+
     print(f"\n{'ALL OK' if not FAILED else f'{len(FAILED)} FAILED'}")
     sys.exit(1 if FAILED else 0)
 

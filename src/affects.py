@@ -47,6 +47,27 @@ class Affect:
             self.remaining = self.duration
 
 
+def _push_affects(character):
+    """A player's affects changed: /play's buff bar is told at once (the map payload otherwise
+    comes only with a move). Coalesced: a spell that sets several affects sends one payload."""
+    if not hasattr(character, 'connection'):
+        return
+    wm = getattr(getattr(character, 'world', None), 'web_map', None)
+    if wm is None or not hasattr(wm, 'notify_player') or (hasattr(wm, 'has_play') and not wm.has_play(character)):
+        return
+    try:
+        import asyncio
+        loop = asyncio.get_running_loop()
+    except Exception:
+        return
+    if getattr(character, '_affect_push', None) is not None:
+        return
+    def go():
+        character._affect_push = None
+        loop.create_task(wm.notify_player(character))
+    character._affect_push = loop.call_later(0.12, go)
+
+
 def _tick_event(character, affect, amount, heal=False):
     """Show a tick on the 3D client (combat_hooks.tick_event); never let drawing break a tick."""
     try:
@@ -158,6 +179,7 @@ class AffectManager:
 
         # Add to character's affects list
         character.affects.append(affect)
+        _push_affects(character)
 
         logger.debug(f"Applied affect '{affect.name}' to {character.name} "
                     f"({affect.type}: {affect.applies_to} = {affect.value}, "
@@ -225,6 +247,7 @@ class AffectManager:
 
         # Remove from affects list
         character.affects.remove(affect)
+        _push_affects(character)
 
         logger.debug(f"Removed affect '{affect.name}' from {character.name}")
 

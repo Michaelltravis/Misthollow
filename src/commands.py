@@ -429,6 +429,12 @@ class CommandHandler:
             if not player.fighting or player.fighting.hp <= 0 or player.fighting not in player.room.characters:
                 player.fighting = None
                 player.position = 'standing'
+            elif getattr(player, 'web_pos', None) is not None:
+                # /play: walking on out of the fight (combat.walk_out: a parting blow from each foe,
+                # and they may come after you); telnet still flees
+                from combat import CombatHandler
+                if not await CombatHandler.walk_out(player):
+                    return
             else:
                 await player.send("You're fighting! Flee if you want to escape.")
                 return
