@@ -27,6 +27,9 @@ def zone_of(room):
 
 WATER_SECTORS = ('water_swim', 'water_noswim', 'water_surface')
 KEEP_OUT = {'no_mob', 'imm_only'}     # rooms creatures never step into (no creatures; the God Rooms)
+# townsfolk keep a day (docs/GAMEPLAY_POLISH.md, group 3): the streets they walk, the houses they
+# go into at night
+TOWN_LOOKS = {'city', 'village', 'camp', 'garden', 'terrace'}
 # how far (rooms from where the chase began) a hunter follows before it gives up, heals and
 # turns back home (the owner: "after a certain range they should stop chasing")
 LEASH = {'hunter': 3, 'tracker': 5, 'boss': 6}
@@ -1150,7 +1153,18 @@ class Mobile(Character):
                     
         if not valid_exits:
             return
-        
+
+        # townsfolk keep a day: at night they make for a house and stay in; by day they come out
+        routine = self._townsfolk_day(valid_exits)
+        if routine is not None:
+            valid_exits, wander_chance = routine
+            if not valid_exits or random.randint(1, 100) > wander_chance:
+                return
+            direction, target_room = random.choice(valid_exits)
+            # (one that went in for the night comes out again by day; one that came out stays out)
+            self._sheltered = self._indoors(target_room)
+            return await self._wander_to(direction, target_room)
+
         # Determine wander chance based on flags
         # slow_wander = 1% chance (fidos, etc)
         # normal = 3% chance
@@ -1163,7 +1177,42 @@ class Mobile(Character):
             return
             
         direction, target_room = random.choice(valid_exits)
-        
+        await self._wander_to(direction, target_room)
+
+    @staticmethod
+    def _indoors(room):
+        return 'indoors' in (room.flags or ()) or getattr(room, 'look', None) == 'inside'
+
+    def _townsfolk_day(self, valid_exits):
+        """For one of the town's folk (a peaceable creature of the streets): the ways it may take
+        now and how keen it is ([(direction, room)], percent a tick), or None for any other
+        creature. At night one out in the streets makes for a house next door (eagerly) and one
+        indoors stays in; by day one indoors goes back out (now and then)."""
+        flags = self.flags or set()
+        if 'aggressive' in flags or 'sentinel' in flags or getattr(self, 'owner', None) is not None or self.fighting:
+            return None
+        here = self.room
+        if not (self._indoors(here) or getattr(here, 'look', None) in TOWN_LOOKS):
+            return None
+        if not any(getattr(r, 'look', None) in TOWN_LOOKS or self._indoors(r) for _d, r in valid_exits):
+            return None
+        game_time = getattr(getattr(self, 'world', None), 'game_time', None)
+        if game_time is None:
+            return None
+        night = game_time.is_night()
+        inside = self._indoors(here)
+        if night:
+            if inside:
+                return [], 0
+            homes = [(d, r) for d, r in valid_exits if self._indoors(r)]
+            return (homes, 25) if homes else (valid_exits, 3)
+        if inside and getattr(self, '_sheltered', False):
+            out = [(d, r) for d, r in valid_exits if not self._indoors(r)]
+            return (out, 8) if out else None
+        return None
+
+    async def _wander_to(self, direction, target_room):
+        """Walk out of this room the way given, as wandering does (with its herd)."""
         # Leave current room
         old_room = self.room
         await self.room.send_to_room(f"{self.name} leaves {direction}.")

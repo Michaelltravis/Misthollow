@@ -660,6 +660,42 @@ async def main():
     check('canReach: (e, id, r)' in src('main.js') and 'updateMarks(' in src('combatcues.js'),
           'hovering an ability marks the creatures next door it would reach')
 
+    # townsfolk keep a day (docs/GAMEPLAY_POLISH.md group 3): in at night, out by day
+    import random as _rnd
+    street = next(r for r in world.rooms.values() if getattr(r, 'look', None) in _m.TOWN_LOOKS and any(
+        isinstance(ex, dict) and ex.get('room') is not None and _m.Mobile._indoors(ex['room']) and not ex.get('door')
+        and not (_m.KEEP_OUT & ex['room'].flags) for ex in (r.exits or {}).values()))
+    folk = create_mob_from_prototype(next(p for p in world.mob_prototypes.values()
+                                          if 'aggressive' not in (p.get('flags') if isinstance(p, dict) else getattr(p, 'flags', ())) ), world)
+    folk.flags = set(f for f in (folk.flags or ()) if f not in ('sentinel', 'aggressive', 'boss'))
+    folk.special, folk.owner, folk.fighting, folk.home_zone = None, None, None, None
+    folk.room = street
+    street.characters.append(folk)
+    was_hour, was_rand = world.game_time.hour, _rnd.randint
+    _rnd.randint = lambda a, b: a
+    try:
+        world.game_time.hour = 23
+        for _ in range(5):
+            await folk.wander_ai()
+            if folk.room is not street:
+                break
+        check(_m.Mobile._indoors(folk.room), f'at night one of the townsfolk goes into a house ({street.vnum} -> {folk.room.vnum})')
+        home = folk.room
+        await folk.wander_ai()
+        check(folk.room is home, 'and stays in for the night')
+        world.game_time.hour = 12
+        for _ in range(5):
+            await folk.wander_ai()
+            if folk.room is not home:
+                break
+        check(not _m.Mobile._indoors(folk.room), 'by day it comes back out')
+    finally:
+        world.game_time.hour, _rnd.randint = was_hour, was_rand
+        folk.room.characters.remove(folk)
+    sayer.room, sayer.explored_rooms = here, {here.vnum}
+    p_w = map_system.build_map_payload(sayer, mode='zone')
+    check(isinstance(p_w.get('weather'), dict) and 'sky' in p_w.get('weather', {}), 'the payload carries the zone\'s weather for /play to draw')
+
     print(f"\n{'ALL OK' if not FAILED else f'{len(FAILED)} FAILED'}")
     sys.exit(1 if FAILED else 0)
 
