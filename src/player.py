@@ -23,6 +23,10 @@ from regeneration import RegenerationCalculator
 
 logger = logging.getLogger('Misthollow.Player')
 
+
+# the looks a hero may choose beyond their class's own (gear_look.py `style`): the archmage is a mage's
+LOOK_STYLES = {'archmage': ('mage',)}
+
 class Character:
     """Base class for all characters (players and NPCs)."""
     
@@ -503,6 +507,7 @@ class Player(Character):
         self.account_name = None  # Link to account for multi-character
         self.race = "human"
         self.sex = "neutral"  # male, female, or neutral
+        self.look_style = ""  # a mage's look in 3D: "" (classic) or "archmage" (gear_look.py)
         self.char_class = "warrior"
         self.title = "the Adventurer"
         
@@ -1038,7 +1043,7 @@ class Player(Character):
 
     @classmethod
     def create_new(cls, name: str, password: str, race: str, char_class: str, 
-                   stats: Dict[str, int], world: 'World', sex: str = 'neutral') -> 'Player':
+                   stats: Dict[str, int], world: 'World', sex: str = 'neutral', look_style: str = '') -> 'Player':
         """Create a new player character."""
         player = cls(world)
         player.name = name
@@ -1046,6 +1051,7 @@ class Player(Character):
         player.race = race
         player.char_class = char_class
         player.sex = sex if sex in ('male', 'female') else 'neutral'
+        player.look_style = look_style if look_style in LOOK_STYLES else ''
         
         # Set stats (their own: gear comes later and adds while worn)
         for stat in ('str', 'int', 'wis', 'dex', 'con', 'cha'):
@@ -1230,6 +1236,7 @@ class Player(Character):
             'race': self.race,
             'char_class': self.char_class,
             'sex': self.sex,
+            'look_style': self.look_style,
             'title': self.title,
             'level': self.level,
             'exp': self.exp,
@@ -1452,6 +1459,7 @@ class Player(Character):
             player.race = data['race']
             player.char_class = data['char_class']
             player.sex = data.get('sex', 'neutral') if data.get('sex') in ('male', 'female') else 'neutral'
+            player.look_style = data.get('look_style', '') if data.get('look_style') in LOOK_STYLES else ''
             player.title = data.get('title', 'the Adventurer')
             player.level = data['level']
             player.exp = data['exp']

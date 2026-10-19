@@ -320,3 +320,23 @@ test("a masked cowl draws a cloth over the face below the eyes (the assassin's),
   whole(buildAddon('facemask', { p: [0, 1, 0], r: 0.45, rz: 0.4 }, paint), 'facemask');
   assert.ok(!planLook({ v: 1, sig: 'nomask', head: { k: 'hood', c: 'purple', t: 3 } }, 'assassin', kit).addons.some(a => a.kind === 'facemask'), 'a plain hood has none');
 });
+
+// the archmage (gear_look.py style 'archmage', for a mage): the Blender pieces, white hair and
+// brows, its own hat unless a helm is worn, the moon staff for any staff
+test('the archmage: a mage who chose it wears the Blender pieces, white-haired; anyone else does not', async () => {
+  const { ARCHMAGE } = await import('../../src/web_isometric/world3d/gearlook.js');
+  const kit = kitIndex(JSON.parse(fs.readFileSync(path.join(ART, 'chars/equip.json'), 'utf8')));
+  for (const p of [...ARCHMAGE, 'Archmage_Hat', 'Archmage_Staff']) assert.ok(kit.pieces[p], `the kit has ${p}`);
+  const names = plan => plan.props.map(p => p.name);
+  const a = planLook({ ...starterLook('mage'), style: 'archmage', sig: 'a' }, 'mage', kit);
+  for (const p of [...ARCHMAGE, 'Archmage_Hat', 'Archmage_Staff']) assert.ok(names(a).includes(p), `wears ${p}`);
+  assert.ok(!a.procs.some(p => String(p.shape).startsWith('staff')), 'the moon staff, not a staff built in code');
+  const head = a.props.find(p => p.name === 'mage-Head');
+  assert.ok(Object.values(head.remap).some(c => kit.columns[c].name === 'fur_white'), 'white hair and brows');
+  const helm = planLook({ ...starterLook('mage'), style: 'archmage', head: { k: 'helm', m: 'iron', t: 1 }, sig: 'h' }, 'mage', kit);
+  assert.ok(!names(helm).includes('Archmage_Hat') && names(helm).includes('knight-Knight_Helmet'), 'a helm instead of the hat');
+  const classic = planLook({ ...starterLook('mage'), sig: 'c' }, 'mage', kit);
+  assert.ok(!names(classic).some(n => n.startsWith('Archmage')), 'the classic mage is as it was');
+  const warrior = planLook({ ...starterLook('warrior'), style: 'archmage', sig: 'w' }, 'warrior', kit);
+  assert.ok(!names(warrior).some(n => n.startsWith('Archmage')), 'not a mage: no archmage');
+});

@@ -33,6 +33,7 @@ const CLASSES = [
   ['assassin', 'Burst', 'Deadly killer who eliminates targets with precision.', 'DEX'],
 ];
 const SEXES = [['male', 'He, his, him.'], ['female', 'She, her, hers.']];
+const STYLES = [['classic', 'The young mage in a travelling coat.'], ['archmage', 'A tall hat, a long white beard, a robe to the ankles and a moon staff.']];
 const FIRST = new Set(['warrior', 'cleric', 'ranger']);
 // what the hollow's folk say, turning slowly under the login
 const LORE = [
@@ -128,7 +129,8 @@ export function setupLogin() {
   }
   let stage = null, lineage = null, chosenSex = null;
   // the class's starting gear on the race and form just chosen (skin, face and build)
-  const preview = id => (lineage ? { ...starterLook(id), race: lineage, ...(chosenSex ? { sex: chosenSex } : {}), sig: `starter:${id}:${lineage}:${chosenSex || ''}` } : null);
+  const preview = (id, style = '') => (lineage ? { ...starterLook(id), race: lineage, ...(chosenSex ? { sex: chosenSex } : {}), ...(style ? { style } : {}),
+    sig: `starter:${id}:${lineage}:${chosenSex || ''}:${style}` } : null);
   function classes() {
     wizard('STEP 3 OF 4', 'CHOOSE YOUR CALLING', 'Pick a class to see it up close. Three are marked as good first picks.',
       `<div class="split"><div class="grid">${CLASSES.map(([id, role]) =>
@@ -152,6 +154,26 @@ export function setupLogin() {
     create.querySelectorAll('.pick').forEach(el => el.addEventListener('click', () => focus(el.dataset.v)));
     $('#choose-class').addEventListener('click', () => { if (pick) { send(pick); stage.stop(); wizard('', 'FORGE YOUR HERO', 'Rolling the dice of fate…', ''); } });
     focus('warrior');
+  }
+  // a mage's look (server.py show_style_menu): the classic mage or the archmage, each shown
+  function looks() {
+    wizard('A MAGE’S LOOK', 'CHOOSE YOUR LOOK', 'How your mage appears in the world. The appearance command changes it later.',
+      `<div class="split"><div class="grid">${STYLES.map(([id, de]) => `<div class="pick" data-v="${id}"><b>${id}</b><small>${de}</small></div>`).join('')}</div>`
+      + `<div class="focus"><canvas width="520" height="600"></canvas><div class="fn"></div>`
+      + `<button class="btn" id="choose-look" disabled>Choose</button></div></div>`);
+    stage = stage || makeStage();
+    stage.attach(create.querySelector('canvas'));
+    let pick = null;
+    const focus = id => {
+      pick = id;
+      create.querySelectorAll('.pick').forEach(el => el.classList.toggle('on', el.dataset.v === id));
+      create.querySelector('.fn').textContent = id;
+      const b = $('#choose-look'); b.disabled = false; b.textContent = `Choose ${id}`;
+      stage.show('mage', { look: preview('mage', id === 'archmage' ? 'archmage' : '') });
+    };
+    create.querySelectorAll('.pick').forEach(el => el.addEventListener('click', () => focus(el.dataset.v)));
+    $('#choose-look').addEventListener('click', () => { if (pick) { send(pick); stage.stop(); wizard('', 'FORGE YOUR HERO', 'Rolling the dice of fate…', ''); } });
+    focus('archmage');
   }
   // the six rolled stats: drawn once, then each reroll changes only the numbers in place (the
   // server's lines can arrive in pieces; a half roll is held until all six are in, so the panel
@@ -185,6 +207,7 @@ export function setupLogin() {
     if (/choose your race|race name or number/i.test(text)) return races();
     if (/male or female/i.test(text)) return sexes();
     if (/choose your class|class name or number/i.test(text)) return classes();
+    if (/classic or archmage/i.test(text)) return looks();
     if (/accept these stats|to reroll/i.test(text) || /Strength:\s*\d+/.test(text)) return stats(text);
     const note = text.split('\n').map(l => l.trim()).filter(Boolean).slice(-1)[0];
     if (note && /invalid|already|taken|try again|not a valid|must (?:be|contain)|in use/i.test(note)) {

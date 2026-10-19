@@ -93,6 +93,8 @@ const OFFHAND = { sword: 'knight-1H_Sword_Offhand', axe: 'barbarian-1H_Axe_Offha
 const SHIELD = { round: 'knight-Round_Shield', badge: 'knight-Badge_Shield', square: 'knight-Rectangle_Shield', spike: 'knight-Spike_Shield' };
 const SHIELD_PAINTED = { round: 'kit-shield_round_color', badge: 'kit-shield_badge_color', square: 'kit-shield_square_color', spike: 'kit-shield_spikes_color' };
 const HEAD = { helm: 'knight-Knight_Helmet', horned: 'barbarian-Barbarian_Hat', hat: 'mage-Mage_Hat' };
+// the archmage's pieces besides the hat and staff (gear_look.py style 'archmage')
+export const ARCHMAGE = ['Archmage_Robe', 'Archmage_Mantle', 'Archmage_Cuff_L', 'Archmage_Cuff_R', 'Archmage_Sash', 'Archmage_Beard'];
 const CAPE = { knight: 'knight-Knight_Cape', barbarian: 'barbarian-Barbarian_Cape', mage: 'mage-Mage_Cape', rogue: 'rogue-Rogue_Cape' };
 export const WEAPON_KINDS = new Set(['sword', 'axe', 'dagger', 'mace', 'hammer', 'spear', 'polearm', 'scythe', 'pick', 'claw', 'whip', 'staff', 'wand', 'crossbow', 'bow', 'thrown']);
 
@@ -246,14 +248,24 @@ export function planLook(look, cls, kit) {
   // the race's skin (and a dark elf's white hair) on every part of the body
   const race = raceOf(look);
   const flesh = {};
+  // the archmage, a mage who chose that look (gear_look.py `style`): white hair and brows to match
+  // the beard, the robe to the ankles, mantle, cuffs and sash (the Blender pieces,
+  // tools/art3d/blender/models/archmage.py), the tall hat unless a helm, a crown or a hood is worn,
+  // and the moon staff whenever a staff is held
+  const archmage = !look.base && String(look.style || '') === 'archmage' && cls === 'mage';
+  const archHat = archmage && !hooded && !(look.head && ['helm', 'horned', 'crown'].includes(look.head.k));
   const skin = look.tone != null ? TONES[Math.abs(look.tone) % TONES.length] : race.skin;
   if (skin) flesh.skin = skin;
   if (race.hair) flesh.hair = race.hair;
+  if (archmage) flesh.hair = 'fur_white';
   for (const [name, roles] of parts) add(name, { ...roles, ...flesh });
+  if (archmage) for (const piece of ARCHMAGE) add(piece, {});
+  if (archHat) add('Archmage_Hat', {});
 
   // the main hand: a piece from the pack, or a shape built in code; finer ones get a pommel stone
   const m = look.main;
-  if (m && m.k === 'staff') procs.push({ shape: staffShape(m, cls), piece: 'knight-1H_Sword', look: m, roles: weaponRoles(m, cls) });
+  if (m && m.k === 'staff' && archmage) add('Archmage_Staff', {});
+  else if (m && m.k === 'staff') procs.push({ shape: staffShape(m, cls), piece: 'knight-1H_Sword', look: m, roles: weaponRoles(m, cls) });
   else if (m) {
     const shape = procShape(m);
     if (shape) procs.push({ shape, piece: m.k === 'bow' ? 'knight-1H_Sword_Offhand' : 'knight-1H_Sword', look: m, roles: weaponRoles(m, cls) });
@@ -279,7 +291,9 @@ export function planLook(look, cls, kit) {
   // the head: a helm (a crest on a finer one), a hat, a hood, a crown
   const h = look.head;
   const hat = h && h.k === 'hat' ? hatShape(h, cls) : null;
-  if (hat && HAT_ADDON[hat]) {
+  if (archHat && (!h || h.k === 'hat')) {
+    // (the archmage's own hat stands for any hat)
+  } else if (hat && HAT_ADDON[hat]) {
     const c = clothOf(h, cls);
     addons.push({ kind: HAT_ADDON[hat], on: headPart, bone: 'head', spot: 'crown', hat: true,
       roles: { cloth: worn(c, h), trim: trimFor(h) || darkOf(c, h), accent: h.e ? gemFor(h, cls) : PLUME[cls] || 'white' } });
@@ -302,7 +316,7 @@ export function planLook(look, cls, kit) {
   if (look.quiver || (m && m.k === 'bow')) add('kit-quiver', {});
   // the shoulders: pauldrons on fine heavy armour, a mantle from level 35
   const b = look.body;
-  if ((b && b.w >= 2 && (b.t || 0) >= 3) || rn >= 3) {
+  if (!archmage && ((b && b.w >= 2 && (b.t || 0) >= 3) || rn >= 3)) {
     // fine heavy armour in its own metal; else a mantle in the class's colour, trimmed as renown rises
     const mantle = b && b.w >= 2 && b.m && (b.t || 0) >= 3 ? { metal: worn(b.m, b), metal_dark: trimFor(b) || darkOf(b.m, b) }
       : { metal: clothOf(b && (b.s || b.c) ? b : {}, cls), metal_dark: rn >= 4 ? 'gold' : 'silver' };

@@ -14560,6 +14560,30 @@ class CommandHandler:
         await player.save()
 
     @classmethod
+    async def cmd_appearance(cls, player: 'Player', args: List[str]):
+        """How your hero looks in the 3D world, where their class has a choice (a mage: classic or
+        archmage). Usage: appearance [classic|archmage]"""
+        from player import LOOK_STYLES
+        c = player.config.COLORS
+        cls_name = str(getattr(player, 'char_class', '') or '').lower()
+        mine = [s for s, classes in LOOK_STYLES.items() if cls_name in classes]
+        now = getattr(player, 'look_style', '') or 'classic'
+        if not mine:
+            await player.send(f"{c['yellow']}A {cls_name} has one look: the one their gear gives them.{c['reset']}")
+            return
+        if not args:
+            await player.send(f"{c['cyan']}{player.name} has the {now} look.{c['reset']} {c['white']}Usage: appearance "
+                              f"{' | '.join(['classic'] + mine)}{c['reset']}")
+            return
+        want = args[0].lower()
+        if want not in ['classic'] + mine:
+            await player.send(f"{c['yellow']}Choose {' or '.join(['classic'] + mine)}.{c['reset']}")
+            return
+        player.look_style = '' if want == 'classic' else want
+        await player.send(f"{c['green']}{player.name} now has the {want} look.{c['reset']}")
+        await player.save()
+
+    @classmethod
     async def cmd_donate(cls, player: 'Player', args: List[str]):
         """Donate an item to help newbies. Usage: donate <item>"""
         c = player.config.COLORS

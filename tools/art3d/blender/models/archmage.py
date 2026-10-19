@@ -5,12 +5,18 @@ pose around the KayKit mage and bound to its bone (the hat and beard to the head
 chest, the cuffs to the forearms, the sash to the hips, the staff to the right hand); the robe's
 skirt is weighted between the hips and the legs so it swings as they stride.
 
-    tools/art3d/blender/run.sh models/archmage.py --preview [--variant blue|crimson|white]
-    -> out/archmage_<variant>.glb (the pieces on the rig) and out/archmage_<variant>_preview.png
-       (worn by the KayKit mage, at rest and in a few of the heroes' own clips)
+Every colour is a column of the equipment kit's palette (tools/art3d/ramps.json), named in the
+sidecar, so the kit build paints the pieces exactly as the preview shows them.
+
+    tools/art3d/blender/run.sh models/archmage.py --preview --export
+    -> out/archmage_preview.png, out/archmage_closeup.png (worn by the KayKit mage, at rest and in
+       a few of the heroes' own clips) and out/equip/archmage.glb + .json (the pieces on the rig,
+       for build.mjs equip)
 """
+import json
 import math
 import os
+import sys
 
 import bpy
 import bmesh  # (bpy first: as a Python module, bpy brings bmesh with it)
@@ -25,12 +31,22 @@ KAYKIT = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', '.
 # the mage's own parts that the look keeps (its pack hat, cape and props give way to the new ones)
 KEEP = ('Mage_Body', 'Mage_Head', 'Mage_ArmLeft', 'Mage_ArmRight', 'Mage_LegLeft', 'Mage_LegRight')
 
-VARIANTS = {
-    # robe, robe's shadow, trim, sash, beard, the gem and orb's glow
-    'blue': {'robe': '#33418f', 'deep': '#232d66', 'trim': '#d6a542', 'sash': '#8e2a35', 'beard': '#ebe6dc', 'glow': '#62e3ff'},
-    'crimson': {'robe': '#8a2a33', 'deep': '#5a1a22', 'trim': '#d6a542', 'sash': '#2b2b33', 'beard': '#ebe6dc', 'glow': '#ff9a3c'},
-    'white': {'robe': '#e4e0d4', 'deep': '#b8b2a2', 'trim': '#c8ccd6', 'sash': '#3a4a8a', 'beard': '#f4f2ec', 'glow': '#9ad8ff'},
-}
+# each colour the pieces use: the kit's palette column that paints it
+COLS = {'robe': 'archmage_blue', 'deep': 'archmage_blue~dark', 'trim': 'gold', 'sash': 'crimson', 'beard': 'fur_white',
+        'glow': 'arcane~glow', 'leather': 'leather', 'wood': 'wood'}
+RAMPS = json.load(open(os.path.join(os.path.dirname(__file__), '..', '..', 'ramps.json')))
+
+
+def ramp_of(col):
+    """A column's ramp, light to dark, as the kit build makes it (a ~dark one: the ramp's dark end
+    darkened further)."""
+    name = col.split('~')[0]
+    c = RAMPS['authored'][name]['c']
+    if col.endswith('~dark'):
+        h = c[2].lstrip('#')
+        b = [int(h[i:i + 2], 16) for i in (0, 2, 4)]
+        return ['#%02x%02x%02x' % tuple(int(v * k) for v in b) for k in (1, 0.83, 0.66)]
+    return c
 
 
 # ---- shapes: rings of points round an axis, stitched into a shell ----
@@ -359,28 +375,42 @@ def closeup(body, name, out):
 
 def main():
     opts = scene.args()
-    variant = opts['variant'] or 'blue'
-    v = VARIANTS[variant]
     scene.reset()
     bpy.ops.import_scene.gltf(filepath=KAYKIT)
     arm = next(o for o in bpy.data.objects if o.type == 'ARMATURE')
     kay_staff = bpy.data.objects.get('2H_Staff')
-    pal = Palette(f'archmage_{variant}', {
-        'robe': [v['robe'], v['robe'], v['deep']], 'deep': v['deep'], 'trim': v['trim'], 'sash': v['sash'],
-        'beard': [v['beard'], v['beard'], '#b9b2a6'], 'glow': v['glow'], 'leather': '#6a4a2e', 'wood': ['#8a6a44', '#6b4a2e', '#4a3220'],
-    })
+    pal = Palette('archmage', {k: ramp_of(c) for k, c in COLS.items()})
     pieces = {
-        'Archmage_Hat': (hat(pal), 'head'), 'Archmage_Beard': (beard(pal, bpy.data.objects['Mage_Head']), 'head'), 'Archmage_Mantle': (mantle(pal), 'chest'),
-        'Archmage_Cuff_L': (cuff(pal, 1), 'lowerarm.l'), 'Archmage_Cuff_R': (cuff(pal, -1), 'lowerarm.r'),
-        'Archmage_Sash': (sash(pal), 'hips'), 'Archmage_Staff': (staff(pal, kay_staff), 'handslot.r'),
-        'Archmage_Robe': (robe(pal), None),
+        'Archmage_Hat': (hat(pal), 'head'), 'Archmage_Beard': (beard(pal, bpy.data.objects['Mage_Head']), 'head'),
+        'Archmage_Mantle': (mantle(pal), 'chest'), 'Archmage_Cuff_L': (cuff(pal, 1), 'lowerarm.l'),
+        'Archmage_Cuff_R': (cuff(pal, -1), 'lowerarm.r'), 'Archmage_Sash': (sash(pal), 'hips'),
+        'Archmage_Staff': (staff(pal, kay_staff), 'handslot.r'), 'Archmage_Robe': (robe(pal), None),
     }
     for name, (o, bone) in pieces.items():
         bind(o, arm, bone=bone, weights=None if bone else robe_weights)
-        print('PIECE', name, len(o.data.polygons), 'faces', sum(len(p.vertices) - 2 for p in o.data.polygons), 'tris')
+        print('PIECE', name, sum(len(p.vertices) - 2 for p in o.data.polygons), 'tris')
     for o in list(bpy.data.objects):
         if o.type == 'MESH' and o.name not in KEEP and o.name not in pieces:
             bpy.data.objects.remove(o)
+    if '--export' in sys.argv:
+        out = os.path.join(opts['out'], 'equip')
+        os.makedirs(out, exist_ok=True)
+        bpy.ops.object.select_all(action='DESELECT')
+        for o, _ in pieces.values():
+            o.select_set(True)
+        arm.select_set(True)
+        bpy.context.view_layer.objects.active = arm
+        path = os.path.join(out, 'archmage.glb')
+        bpy.ops.export_scene.gltf(
+            filepath=path, export_format='GLB', use_selection=True, export_yup=True, export_apply=False,
+            export_texcoords=True, export_normals=True, export_materials='NONE', export_skins=True,
+            export_def_bones=False, export_animations=False, export_lights=False, export_cameras=False)
+        side = {'name': 'archmage', 'palette': {'cols': pal.cols, 'rows': pal.rows, 'keys': [COLS[k] for k in pal.keys]},
+                'pieces': {n: (b or 'skinned') for n, (o, b) in pieces.items()},
+                'tris': {n: sum(len(p.vertices) - 2 for p in o.data.polygons) for n, (o, b) in pieces.items()}}
+        with open(os.path.join(out, 'archmage.json'), 'w') as f:
+            json.dump(side, f, indent=1)
+        print('exported', path)
     if opts['preview']:
         # worn by the KayKit mage: one object for the camera to frame
         worn = [bpy.data.objects[n] for n in KEEP] + [o for o, _ in pieces.values()]
@@ -399,8 +429,8 @@ def main():
         bpy.ops.object.join()
         body = dup[0]
         poses = (('Idle_Rig', 0), ('Walking_A_Rig', 8), ('Spellcast_Shoot_Rig', 14), ('Spellcasting_Rig', 10), ('Running_A_Rig', 6))
-        preview(arm, body, f'archmage_{variant}', opts['out'], size=360, samples=10, poses=poses)
-        closeup(body, f'archmage_{variant}', opts['out'])
+        preview(arm, body, 'archmage', opts['out'], size=360, samples=10, poses=poses)
+        closeup(body, 'archmage', opts['out'])
 
 
 main()

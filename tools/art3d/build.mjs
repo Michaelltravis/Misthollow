@@ -417,6 +417,51 @@ async function buildEquip(job) {
     pieces[name] = { type: 'prop', model: 'kit', bone: mount.bone, tris: tris(n.getMesh()),
       mount: { t: mount.t, r: mount.r, s: mount.s }, cols: readdress(n.getMesh(), x.tex) };
   }
+  // pieces made in Blender on the same rig (blender/out/equip: a .glb and its sidecar, e.g.
+  // models/archmage.py --export): skinned, every joint found again by name, and every UV a cell of
+  // the model's own small palette, whose kit column the sidecar names
+  const EQUIP_BLEND = path.join(BLEND, 'equip');
+  for (const f of fs.existsSync(EQUIP_BLEND) ? fs.readdirSync(EQUIP_BLEND).filter(f => f.endsWith('.json')).sort() : []) {
+    const side = JSON.parse(fs.readFileSync(path.join(EQUIP_BLEND, f), 'utf8'));
+    const doc = await io.read(path.join(EQUIP_BLEND, `${side.name}.glb`));
+    for (const a of doc.getRoot().listAnimations()) dropAnimation(a);
+    const order = doc.getRoot().listSkins()[0].listJoints().map(j => jointNames.indexOf(j.getName()));
+    if (order.some(i => i < 0)) throw new Error(`equip: ${side.name} has joints the rig lacks`);
+    const { cols: pc, rows: pr, keys } = side.palette;
+    const map = mergeDocuments(base, doc);
+    const kept = new Set();
+    for (const n of doc.getRoot().listNodes()) {
+      if (!n.getMesh() || !n.getSkin()) continue;
+      const node = map.get(n);
+      const used = {};
+      for (const prim of node.getMesh().listPrimitives()) {
+        const J = prim.getAttribute('JOINTS_0'), uv = prim.getAttribute('TEXCOORD_0');
+        const j2 = J.clone(), uv2 = uv.clone(), el = [];
+        for (let i = 0; i < J.getCount(); i++) { J.getElement(i, el); j2.setElement(i, el.map(j => order[j])); }
+        for (let i = 0; i < uv.getCount(); i++) {
+          uv.getElement(i, el);
+          // (glTF's v runs down the image; the Blender palette's rows count up from the bottom)
+          const up = (1 - el[1]) * pr, cx = Math.min(pc - 1, Math.floor(el[0] * pc)), cy = Math.min(pr - 1, Math.floor(up));
+          const name = keys[cy * pc + cx];
+          const col = colOf.get(name);
+          if (col === undefined) throw new Error(`equip: ${side.name} paints with ${name}, which the palette lacks`);
+          used[col] = cols[col].role;
+          const light = Math.min(1, Math.max(0, (up - cy - 0.15) / 0.7));
+          uv2.setElement(i, [(col + 0.5) / N, Math.min(1 - 0.5 / PAL_H, Math.max(0.5 / PAL_H, 1 - light))]);
+        }
+        prim.setAttribute('JOINTS_0', j2).setAttribute('TEXCOORD_0', uv2).setMaterial(mat);
+      }
+      node.getParentNode()?.removeChild(node);
+      rig.addChild(node);
+      node.setSkin(baseSkin);
+      kept.add(node);
+      const bone = side.pieces[n.getName()];
+      pieces[n.getName()] = { type: 'worn', model: side.name, bone: bone === 'skinned' ? null : bone, tris: tris(node.getMesh()), cols: used };
+    }
+    for (const n of doc.getRoot().listNodes()) if (!kept.has(map.get(n))) map.get(n).dispose();
+    for (const sk of doc.getRoot().listSkins()) map.get(sk).dispose();
+    for (const sc of doc.getRoot().listScenes()) map.get(sc).dispose();
+  }
   for (const m of base.getRoot().listMaterials()) if (m !== mat) m.dispose();
   for (const t of base.getRoot().listTextures()) if (t !== palTex && t !== mrTex) t.dispose();
   await base.transform(weld());

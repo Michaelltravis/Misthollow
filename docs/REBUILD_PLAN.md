@@ -1960,3 +1960,38 @@ Owner: "I have a JEV account, can we leverage JEV for anything in misthollow?"
     dug tunnel or a cave), plus the city wall-walks, the glacier cracks, the tree city's rooms,
     and paths just outside gates and cave mouths.
 
+### The archmage: a mage's second look, made in Blender
+Owner: "build the mage look in Blender for free and let me see an example"; then "blue and gold
+is fine. The eyebrows and hair should match the beard color."
+- **The pieces** (`tools/art3d/blender/models/archmage.py`): a tall, crooked, wide-brimmed hat
+  with a gold band, an arcane gem and a star charm; a beard grown from the mage's own jaw and
+  cheeks, with a moustache; a robe to the ankles; a mantle, bell cuffs and a crimson sash; a staff
+  with a gold crescent moon cradling a glowing orb.
+  - Each piece is modelled in the rest pose of the KayKit rig that every hero shares, and bound to
+    a bone: the hat and beard to the head, the robe weighted between the hips and the legs. So
+    every hero clip moves them. About 1,800 triangles.
+  - Its colours are columns of the equipment kit's palette (a new `archmage_blue` ramp in
+    `ramps.json`, plus gold, crimson, `fur_white` and `arcane~glow`), so the preview and the game
+    match.
+  - `run.sh models/archmage.py --preview --export` renders a turntable and a close-up of the face,
+    and writes `blender/out/equip/archmage.glb` with a sidecar naming each colour's column.
+- **Into the kit** (`build.mjs equip`): pieces in `blender/out/equip` join `equip.glb`. Joints are
+  found by name, and every UV is moved to its named palette column. The pieces get a new type,
+  `worn`.
+- **The look** (`gearlook.js`): a mage whose look has `style: 'archmage'` wears the pieces.
+  - Hair and eyebrows turn `fur_white` to match the beard.
+  - The archmage hat stands in for any hat; a helm or crown replaces it.
+  - The moon staff is drawn whenever a staff is held.
+  - The renown shoulder pieces are left off, since the archmage has its own mantle.
+  - The classic mage and every other class are unchanged.
+- **Choosing it:**
+  - **At creation:** after choosing mage, a mage is asked "classic or archmage" (`server.py`). The
+    3D wizard shows both on the hero (`login.js`).
+  - **Later:** `appearance [classic|archmage]` changes it at any time.
+  - **Stored:** it is kept as `Player.look_style` and sent as the look's `style` (`gear_look.py`),
+    for a mage only (`player.py LOOK_STYLES`).
+- **Gallery:** `/play?demo&gallery=gear&only=tiers&cls=mage&style=archmage` shows the archmage at
+  every gear tier.
+- **Tests:** `tests/test_archmage_look.py` (creation, save and load, mage only, `appearance`) and
+  `tests/web/gearlook.test.mjs` (the plan).
+
