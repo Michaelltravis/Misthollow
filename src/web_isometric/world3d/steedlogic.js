@@ -36,15 +36,15 @@ const BACK = { horse: 0.74, deer: 0.74, cat: 0.72, pig: 0.82, llama: 0.64, wolf:
 // and what marks it out (fx: hellfire, celestial, steam, arcane, moon, shadow, embers, leaves;
 // wings; metal; ghost: see-through; plume: a war mount's plume colour)
 export const MOUNT_LOOK = {
-  horse: { body: 'horse', coat: 0x7a4a2a, tack: 'leather', cloth: 0x2a4a7a, trim: 0xc8a050 },
-  warhorse: { body: 'horse', size: 1.1, coat: 0x6e6e74, tack: 'war', cloth: 0x8a1e1e, trim: 0xd8b04a },
-  armored_warhorse: { body: 'horse', size: 1.1, coat: 0xd8d4cc, tack: 'war', plate: true, cloth: 0x1e3a7a, trim: 0xe0c060 },
-  celestial_charger: { body: 'unicorn', size: 1.12, coat: 0xfff8ec, tack: 'war', cloth: 0xf2ead8, trim: 0xffcc40, plume: 0xffffff, glow: 0xffe8a0, fx: 'celestial' },
-  nightmare: { body: 'horse', size: 1.1, coat: 0x141016, tack: 'dark', cloth: 0x1a0e0e, trim: 0xa01a08, fx: 'hellfire', eyes: 0xff5a10 },
-  nightmare_steed: { body: 'horse', size: 1.1, coat: 0x141016, tack: 'dark', cloth: 0x1a0e0e, trim: 0xa01a08, fx: 'hellfire', eyes: 0xff5a10 },
-  clockwork_steed: { body: 'horse', size: 1.05, coat: 0xd0a050, metal: true, tack: 'plate', steel: 0xb88a3a, trim: 0x6a4a2a, fx: 'steam', eyes: 0x6ae0ff },
-  donkey: { body: 'horse', size: 0.84, coat: 0x8a8478, tack: 'pack', cloth: 0x7a5a3a, trim: 0x5a3a2a },
-  pony: { body: 'horse', size: 0.86, coat: 0xd8ccb0, tack: 'leather', cloth: 0x3a7a3a, trim: 0xc8a050 },
+  horse: { body: 'horse', size: 1.15, coat: 0x7a4a2a, tack: 'leather', cloth: 0x2a4a7a, trim: 0xc8a050 },
+  warhorse: { body: 'horse', size: 1.25, coat: 0x6e6e74, tack: 'war', cloth: 0x8a1e1e, trim: 0xd8b04a },
+  armored_warhorse: { body: 'horse', size: 1.25, coat: 0xd8d4cc, tack: 'war', plate: true, cloth: 0x1e3a7a, trim: 0xe0c060 },
+  celestial_charger: { body: 'unicorn', size: 1.25, coat: 0xfff8ec, tack: 'war', cloth: 0xf2ead8, trim: 0xffcc40, plume: 0xffffff, glow: 0xffe8a0, fx: 'celestial' },
+  nightmare: { body: 'horse', size: 1.25, coat: 0x141016, tack: 'dark', cloth: 0x1a0e0e, trim: 0xa01a08, fx: 'hellfire', eyes: 0xff5a10 },
+  nightmare_steed: { body: 'horse', size: 1.25, coat: 0x141016, tack: 'dark', cloth: 0x1a0e0e, trim: 0xa01a08, fx: 'hellfire', eyes: 0xff5a10 },
+  clockwork_steed: { body: 'horse', size: 1.2, coat: 0xd0a050, metal: true, tack: 'plate', steel: 0xb88a3a, trim: 0x6a4a2a, fx: 'steam', eyes: 0x6ae0ff },
+  donkey: { body: 'horse', size: 0.95, coat: 0x8a8478, tack: 'pack', cloth: 0x7a5a3a, trim: 0x5a3a2a },
+  pony: { body: 'horse', size: 0.98, coat: 0xd8ccb0, tack: 'leather', cloth: 0x3a7a3a, trim: 0xc8a050 },
   griffin: { body: 'lion', coat: 0xc89a52, wings: 0xe8d4a8, tack: 'leather', cloth: 0x7a2a22, trim: 0xd8b04a },
   manabound_gryphon: { body: 'lion', coat: 0x5a7ac8, wings: 0xa8c4ff, glow: 0x8ab0ff, tack: 'leather', cloth: 0x2a2a6a, trim: 0x9ab8ff, fx: 'arcane' },
   mana_wyrm: { body: 'dragon', size: 1.05, coat: 0x4a6ad8, ghost: 0.82, glow: 0x9ab8ff, tack: 'leather', cloth: 0x2a2a6a, trim: 0x9ab8ff, fx: 'arcane' },
@@ -59,6 +59,17 @@ export const MOUNT_LOOK = {
   ancient_treant: { body: 'treant', size: 1.0, coat: 0x6a4a2a, tack: 'leather', cloth: 0x3a5a2a, trim: 0x8aa04a, fx: 'leaves' },
 };
 export const mountLook = key => MOUNT_LOOK[key] || MOUNT_LOOK.horse;
+
+// How much a body is thickened as a steed (steed.js inflate), bone by bone: each part pushed out
+// from the bone it rides on by this much. A horse's legs are made sturdy, its barrel deep, its neck
+// heavy, so it carries its rider like a destrier, not a foal.
+const HORSE_BULK = [[/^(hips|spine|chest)$/, 1.35], [/^neck/, 1.38], [/^head$/, 1.12], [/^muzzle$/, 1.1],
+  [/^[fh]l[01]/, 1.75], [/^[fh]l2/, 1.6], [/^[fh]l3/, 1.45], [/^tail/, 1.35]];
+export const BULK = { horse: HORSE_BULK, unicorn: HORSE_BULK };
+export function bulkFor(body, bone) {
+  for (const [re, k] of BULK[body] || []) if (re.test(bone)) return k;
+  return 1;
+}
 
 export function steedSpec(key) {
   const [body, words, tint, height, extra] = STEEDS[key] || DEFAULT;

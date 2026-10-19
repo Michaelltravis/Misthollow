@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { STEEDS, steedSpec, MOUNT_LOOK, mountLook } from '../../src/web_isometric/world3d/steedlogic.js';
+import { STEEDS, steedSpec, MOUNT_LOOK, mountLook, bulkFor } from '../../src/web_isometric/world3d/steedlogic.js';
 import { kinRecipe } from '../../src/web_isometric/world3d/kinrecipe.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -46,13 +46,25 @@ test('every mount has a real animated body, its tack and its marks', () => {
     assert.ok(bodies.has(L.body), `${key}: its body ${L.body} is in bodies/index.json`);
     assert.ok(TACK.has(L.tack), `${key}: its tack ${L.tack}`);
     assert.ok(!L.fx || FX.has(L.fx), `${key}: its marks ${L.fx}`);
-    assert.ok(!L.size || (L.size >= 0.8 && L.size <= 1.2), `${key}: sized beside its rider`);
+    assert.ok(!L.size || (L.size >= 0.8 && L.size <= 1.3), `${key}: sized beside its rider`);
   }
   assert.equal(mountLook('no_such_mount').body, 'horse', 'an unknown mount is a horse');
   const steed = fs.readFileSync(path.join(ROOT, 'src/web_isometric/world3d/steed.js'), 'utf8');
   assert.match(steed, /spawnBody\(/, 'the steed is a real creature body');
   assert.match(steed, /buildTack\(/, 'dressed in its tack');
   assert.match(steed, /kitSteed\(/, 'with the kit steed until the body loads');
+});
+
+test('horses are thickened along their bones, by the names three.js gives them', () => {
+  // three.js drops the dots from glTF names: fl0.L arrives as fl0L
+  for (const b of ['horse', 'unicorn']) {
+    assert.ok(bulkFor(b, 'fl0L') > 1.5 && bulkFor(b, 'hl1R') > 1.5, `${b}: sturdy legs`);
+    assert.ok(bulkFor(b, 'spine') > 1.2 && bulkFor(b, 'neck') > 1.2, `${b}: a deep barrel, a heavy neck`);
+  }
+  assert.equal(bulkFor('wolf', 'fl0L'), 1, 'other bodies keep their own build');
+  const steed = fs.readFileSync(path.join(ROOT, 'src/web_isometric/world3d/steed.js'), 'utf8');
+  assert.match(steed, /new THREE\.Float32BufferAttribute\(Q\.count \* 3, 3\)/, 'packed positions are unpacked before they are pushed out');
+  for (const k of ['horse', 'warhorse', 'nightmare', 'celestial_charger']) assert.ok(MOUNT_LOOK[k].size >= 1.15, `${k}: a big horse`);
 });
 
 test('the hero runs as fast as the server says, and sits while riding', () => {
