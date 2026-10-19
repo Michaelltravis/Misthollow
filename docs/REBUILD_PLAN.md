@@ -1826,6 +1826,15 @@ Owner: "The mounts look pretty basic and silly. Can we make these look amazing s
   - particles: hellfire, celestial sparks, steam, arcane motes, moonlight, shadow, embers and
     leaves, and dust at a run.
 - **The rider** sits just behind the withers and rises and falls with the back.
+- **Bulkier, bigger horses** (owner: "make the horses bulkier and bigger"):
+  - `steed.js inflate` thickens the horse and unicorn along their bones, using `steedlogic.js
+    BULK`. Each vertex is pushed out from the nearest point on the bones it is skinned to, shared by
+    its skin weights, so the bulk bends with the walk and run.
+  - The legs are about 1.5 to 1.75 times as thick, the barrel and neck about 1.35 times.
+  - The bodies' positions are packed 16-bit integers. They are unpacked to floats first, or a
+    vertex pushed past the end wraps round (the muzzle tip ended up behind the tail as a black rod).
+  - Horses are 15–25% bigger beside their riders: horse 1.15, warhorses, nightmare and celestial
+    charger 1.25, clockwork steed 1.2.
 - **Tests:** `tests/web/steeds.test.mjs` checks that every server mount has a look whose body is in
   `bodies/index.json`, with known tack and marks, and that `steed.js` builds the body, the tack and
   the fallback.

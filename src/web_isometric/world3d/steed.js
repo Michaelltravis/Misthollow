@@ -7,7 +7,7 @@
 import * as THREE from 'three';
 import { kinRecipe } from './kinrecipe.js';
 import { makeKin } from './kin.js';
-import { steedSpec, mountLook } from './steedlogic.js';
+import { steedSpec, mountLook, BULK, bulkFor } from './steedlogic.js';
 import { spawnBody } from './assets.js';
 import { feeler, section, buildTack, makeRein } from './tack.js';
 export { STEEDS, steedSpec } from './steedlogic.js';
@@ -90,6 +90,8 @@ async function realSteed(key, riderH) {
     if (look.ghost) { m.transparent = true; m.opacity = look.ghost; m.depthWrite = false; }
     if (look.glow) { m.emissive = new THREE.Color(look.glow); m.emissiveIntensity = 0.22; }
   });
+  // a horse made sturdy: thicker legs, a deeper barrel, a heavier neck
+  if (BULK[look.body]) for (const m of meshes) if (m.isSkinnedMesh) inflate(m, n => bulkFor(look.body, n));
   const holder = new THREE.Group();
   holder.add(a.root);
   const bones = {}, feet = [];
@@ -181,6 +183,70 @@ async function realSteed(key, riderH) {
     },
   };
   return real;
+}
+
+// Thicken a skinned body along its bones, on its own copy of the geometry. Each vertex is pushed
+// out from the nearest point on each bone it rides on, by that bone's factor and in the shares its
+// skin weights give, so the bulk bends with the animation and nothing tears at the joints. A bone
+// runs from its origin to the child that carries on its line. An end bone (a hoof, the muzzle)
+// runs on past its own origin, so it fattens without growing longer.
+function inflate(mesh, factor) {
+  const sk = mesh.skeleton;
+  if (!sk) return;
+  const geo = mesh.geometry = mesh.geometry.clone();
+  const I = geo.attributes.skinIndex, W = geo.attributes.skinWeight;
+  if (!geo.attributes.position || !I || !W) return;
+  // the bodies' positions are packed into 16-bit integers (-1..1); pushed past the end they would
+  // wrap round to the other end of the body, so they are unpacked to plain floats first
+  const Q = geo.attributes.position, P = new THREE.Float32BufferAttribute(Q.count * 3, 3);
+  for (let i = 0; i < Q.count; i++) P.setXYZ(i, Q.getX(i), Q.getY(i), Q.getZ(i));
+  geo.setAttribute('position', P);
+  geo.deleteAttribute('normal');
+  const bones = sk.bones, m = new THREE.Matrix4();
+  const at = bones.map((b, i) => new THREE.Vector3().setFromMatrixPosition(m.copy(sk.boneInverses[i]).invert()));
+  const idx = new Map(bones.map((b, i) => [b, i]));
+  const count = b => { let k = 0; b.traverse(o => { if (idx.has(o)) k++; }); return k; };
+  const A = [], B = [], open = [], K = [];
+  bones.forEach((bone, i) => {
+    const pi = idx.get(bone.parent);
+    const back = pi != null ? at[i].clone().sub(at[pi]).normalize() : null;
+    // the child carrying on the bone's line (for the root, the one with the most below it)
+    let best = null, bestS = -Infinity;
+    for (const c of bone.children) {
+      if (!idx.has(c)) continue;
+      const sc = back ? at[idx.get(c)].clone().sub(at[i]).normalize().dot(back) : count(c);
+      if (sc > bestS) { bestS = sc; best = c; }
+    }
+    if (best) { A.push(at[i]); B.push(at[idx.get(best)]); open.push(false); }
+    else if (pi != null) { A.push(at[pi]); B.push(at[i]); open.push(true); }
+    else { A.push(at[i]); B.push(at[i]); open.push(false); }
+    K.push(factor(bone.name));
+  });
+  const v = new THREE.Vector3(), sum = new THREE.Vector3(), p = new THREE.Vector3(), d = new THREE.Vector3(), ab = new THREE.Vector3();
+  for (let vi = 0; vi < P.count; vi++) {
+    v.fromBufferAttribute(P, vi).applyMatrix4(mesh.bindMatrix);
+    sum.set(0, 0, 0);
+    let ws = 0;
+    for (let c = 0; c < 4; c++) {
+      const w = W.getComponent(vi, c);
+      if (!w) continue;
+      const bi = I.getComponent(vi, c);
+      ab.subVectors(B[bi], A[bi]);
+      const l2 = ab.lengthSq();
+      let t = l2 > 1e-10 ? d.subVectors(v, A[bi]).dot(ab) / l2 : 0;
+      t = Math.max(0, open[bi] ? t : Math.min(1, t));
+      p.copy(A[bi]).addScaledVector(ab, t);
+      d.subVectors(v, p).multiplyScalar(K[bi]);
+      sum.addScaledVector(p.add(d), w);
+      ws += w;
+    }
+    if (ws > 0) v.copy(sum).divideScalar(ws);
+    v.applyMatrix4(mesh.bindMatrixInverse);
+    P.setXYZ(vi, v.x, v.y, v.z);
+  }
+  geo.computeVertexNormals();
+  geo.computeBoundingBox(); geo.computeBoundingSphere();
+  mesh.boundingBox = null; mesh.boundingSphere = null;
 }
 
 // a wing of layered feathers, spreading out to `side`: long pointed flight feathers fanned back
