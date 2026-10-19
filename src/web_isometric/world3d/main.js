@@ -38,7 +38,7 @@ import { musicFor, bedFor, surfaceFor } from './soundtable.js';
 import { interiorKind } from './terrain-town.js';
 import { GroundLoot } from './loot.js';
 import { nameKey, victimOf } from './corpse.js';
-import { mountRider, makeRaft } from './steed.js';
+import { mountRider, makeRaft, setSteedFx } from './steed.js';
 import { groundItems } from './lootlogic.js';
 import { ReactionPrompt, threatens, REACTIONS } from './reactions.js';
 import { createWorldMap } from './hud/worldmap.js';
@@ -174,6 +174,7 @@ async function runGame() {
   } });
   engine.onTick((dt, t) => loot.update(dt, t));
   const fx = new FX(engine, $('#fct'));
+  setSteedFx(fx);              // (a mount's marks as it goes: hellfire, sparkles, steam...)
   // the sky over the hero (weather.js: the server's weather for the zone, under open sky only) and
   // the small life about them (wildlife.js: birds, fireflies, a leaping fish)
   const sky = new WeatherView(engine, fx, sound);

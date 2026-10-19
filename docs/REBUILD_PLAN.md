@@ -1800,6 +1800,36 @@ Owner: "let's find a way to increase character speed? Maybe that's mounts since 
   - The browser probe's `mount` mode buys a horse, mounts it (a steed under the hero, 1.35× the
     run) and dismounts.
 
+### Mounts that look the part
+Owner: "The mounts look pretty basic and silly. Can we make these look amazing somehow?"
+- **Real bodies:** a mount is now the animated creature body (`bodies/*.glb`) with its own walk and
+  run, not a kit model. `steedlogic.js MOUNT_LOOK` gives each mount:
+  - its body: a horse, the unicorn for the celestial charger, a lion with wings for the griffins,
+    a dragon for the mana wyrm and drake, the spider, wolf, camel and treant;
+  - its coat and size;
+  - its tack, cloth and trim colours;
+  - its marks.
+  The kit steed shows until the body loads (`steed.js realSteed`).
+- **Tack fitted to the body** (`tack.js`): rays feel the back, flanks and belly, and every piece is
+  shaped to them and hung on the spine, chest or head bone, so it moves as the body moves.
+  - A blanket under a dished saddle with a pommel, horn and cantle; skirts with gilt studs; a girth;
+    stirrups.
+  - A breastcollar round the chest with a medallion and gem, and a bridle with a browband, bit rings
+    and reins to the rider's hands.
+  - War mounts wear a caparison to the knees. It is a painted cloth with a diamond lattice, a trim
+    border, a crest on each flank and a scalloped hem, and the mount has a plume.
+  - Plate adds a chanfron, crinet and peytral. Pack mounts carry bags and a bedroll.
+  - Metal is half-metallic with a little glow of its own, since there is no environment to reflect.
+- **Marks:**
+  - feathered wings that flap as it runs;
+  - glowing eyes on the nightmare, warg, spider and drake;
+  - particles: hellfire, celestial sparks, steam, arcane motes, moonlight, shadow, embers and
+    leaves, and dust at a run.
+- **The rider** sits just behind the withers and rises and falls with the back.
+- **Tests:** `tests/web/steeds.test.mjs` checks that every server mount has a look whose body is in
+  `bodies/index.json`, with known tack and marks, and that `steed.js` builds the body, the tack and
+  the fallback.
+
 ### Forests, mountains, water, and rooms that join up (Push 33, follow-ups)
 - **Reading:** a room named as open country is drawn as that country whatever it was typed:
   - plains, forest, mountain (from strong words for rooms typed indoors);

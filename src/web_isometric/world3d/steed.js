@@ -7,7 +7,9 @@
 import * as THREE from 'three';
 import { kinRecipe } from './kinrecipe.js';
 import { makeKin } from './kin.js';
-import { steedSpec } from './steedlogic.js';
+import { steedSpec, mountLook } from './steedlogic.js';
+import { spawnBody } from './assets.js';
+import { feeler, section, buildTack, makeRein } from './tack.js';
 export { STEEDS, steedSpec } from './steedlogic.js';
 
 // a kit body `height` tall stands about this much shorter than a rider of that height (it is
@@ -20,78 +22,232 @@ const FLAME_MAT = new THREE.MeshBasicMaterial({ color: new THREE.Color(2.6, 0.9,
 const hash = s => { let h = 2166136261; for (const ch of String(s)) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return h >>> 0; };
 
 
+// the particles a mount's marks are drawn with (main.js sets it: fx.js)
+let FX = null;
+export function setSteedFx(fx) { FX = fx; }
+
 // a steed for a mount key, sized to a rider `riderH` metres tall:
-// { root, actor, saddleY, spec, update(dt, moving, speed) }
+// { root, saddleY, spec, update(dt, moving, speed), bob, onReady }
+// The creature kit's body (kin.js) shows at once; the mount's real body (bodies/*.glb, its look:
+// steedlogic.js MOUNT_LOOK) replaces it when loaded, fitted with its tack (tack.js), and calls
+// onReady (the rider is set at the new saddle's height: mountRider)
 export function makeSteed(key, riderH = 1.7) {
+  const root = new THREE.Group();
+  root.name = `steed_${key}`;
+  const kit = kitSteed(key, riderH);
+  root.add(kit.group);
+  const steed = { root, saddleY: kit.saddleY, spec: kit.spec, bob: 0, onReady: null, real: null, key };
+  steed.update = (dt, moving, speed = 1) => (steed.real ? steed.real.update(dt, moving, speed) : kit.update(dt, moving, speed));
+  realSteed(key, riderH).then(real => {
+    if (!real || !root.parent && root.userData.gone) return;
+    root.remove(kit.group);
+    root.add(real.group);
+    steed.real = real;
+    steed.saddleY = real.saddleY;
+    real.steed = steed;
+    if (steed.onReady) steed.onReady();
+  }).catch(() => {});
+  return steed;
+}
+
+// ---- the creature kit's steed (shown while the real body loads, or if it cannot) ----
+function kitSteed(key, riderH) {
   const base = steedSpec(key);
   const spec = { ...base, height: base.height * riderH * KIN_SCALE };
   const recipe = kinRecipe(spec.body, spec.words, hash(key), spec.tint);
   const actor = makeKin(recipe, { height: spec.height });
   actor.root.rotation.y = FACE;          // the kit's creatures face +z, as a rider does
-  const root = new THREE.Group();
-  root.name = `steed_${key}`;
-  root.add(actor.root);
+  const group = new THREE.Group();
+  group.add(actor.root);
   const saddleY = spec.height * spec.back;
-  // the saddle and its blanket (or barding) on the back
   const blanket = new THREE.Mesh(new THREE.BoxGeometry(spec.height * 0.36, 0.05, spec.height * 0.32),
     new THREE.MeshStandardMaterial({ color: spec.extra.barding || 0x7a2a22, roughness: 0.85 }));
   blanket.position.set(0, saddleY - 0.02, 0);
-  root.add(blanket);
-  if (spec.extra.barding) {
-    for (const side of [-1, 1]) {
-      const flap = new THREE.Mesh(new THREE.BoxGeometry(0.04, spec.height * 0.22, spec.height * 0.46), blanket.material);
-      flap.position.set(side * spec.height * 0.18, saddleY - spec.height * 0.11, 0);
-      root.add(flap);
-    }
-  }
   const saddle = new THREE.Mesh(new THREE.BoxGeometry(spec.height * 0.24, 0.1, spec.height * 0.2), SADDLE_MAT);
   saddle.position.set(0, saddleY + 0.04, 0);
-  const pommel = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.14, 0.06), SADDLE_MAT);
-  pommel.position.set(0, saddleY + 0.12, spec.height * 0.1);
-  root.add(saddle, pommel);
-  // wings at the shoulders (a griffin)
-  const wings = [];
-  if (spec.extra.wings) {
-    const mat = new THREE.MeshStandardMaterial({ color: spec.extra.wings, roughness: 0.8, side: THREE.DoubleSide, flatShading: true });
+  group.add(blanket, saddle);
+  return {
+    group, saddleY, spec,
+    update(dt, moving, speed = 1) {
+      actor.play(moving ? 'Walking_A' : 'Idle');
+      actor.update(dt * (moving ? Math.max(0.8, speed) : 1));
+    },
+  };
+}
+
+// ---- the real body, fitted ----
+const PICK = ['hips', 'spine', 'chest', 'head', 'muzzle', 'thorax', 'abdomen', 'snout', 'belly'];
+async function realSteed(key, riderH) {
+  const look = mountLook(key);
+  let a;
+  try { a = await spawnBody(look.body, { tint: look.coat }); } catch (_) { return null; }
+  const meshes = [];
+  a.root.traverse(o => {
+    if (!o.isMesh) return;
+    meshes.push(o);
+    const m = o.material;
+    if (look.metal) { m.metalness = 0.55; m.roughness = 0.32; m.emissive = new THREE.Color(look.coat).multiplyScalar(0.14); }
+    if (look.ghost) { m.transparent = true; m.opacity = look.ghost; m.depthWrite = false; }
+    if (look.glow) { m.emissive = new THREE.Color(look.glow); m.emissiveIntensity = 0.22; }
+  });
+  const holder = new THREE.Group();
+  holder.add(a.root);
+  const bones = {}, feet = [];
+  a.root.traverse(o => {
+    if (!o.isBone) return;
+    const n = o.name.toLowerCase();
+    if (PICK.includes(n) && !bones[n]) bones[n] = o;
+    if (!bones.neck && /^neck/.test(n)) bones.neck = o;
+    if (/^(fl3|hl3)|^leg\d2|^leg3/.test(n)) feet.push(o);
+  });
+  bones.spine = bones.spine || bones.belly || bones.thorax || bones.hips;
+  bones.chest = bones.chest || bones.thorax || bones.spine;
+  bones.muzzle = bones.muzzle || bones.snout;
+  holder.updateMatrixWorld(true);
+  const at = b => b.getWorldPosition(new THREE.Vector3());
+  // where the rider sits: on the back, just behind the withers (near halfway from the spine to
+  // the chest); the body scaled so that the saddle is at the rider's own seat height (times the
+  // mount's size), then moved so the saddle is over the steed's origin (the rider's)
+  const sp = at(bones.spine), ch = at(bones.chest);
+  const sz = sp.z + (ch.z - sp.z) * (bones.spine === bones.chest ? 0 : 0.45);
+  let feel = feeler(meshes);
+  const back = feel.top(0, sz) ?? (new THREE.Box3().setFromObject(a.root).max.y * 0.7);
+  const want = riderH * 0.58 * (look.size || 1);
+  const k = want / Math.max(0.05, back);
+  a.root.scale.multiplyScalar(k);
+  a.root.position.z = -sz * k;
+  holder.updateMatrixWorld(true);
+  feel = feeler(meshes);
+  const box = new THREE.Box3().setFromObject(a.root);
+  const L = Math.max(0.5, box.max.z - box.min.z);
+  const tack = buildTack(feel, bones, look, { z: 0, y: want }, L);
+  for (const [obj, bone] of tack.parts) { holder.add(obj); obj.castShadow = true; (bone || holder).attach(obj); }
+  // reins from the bit to the rider's hands
+  const reinMat = new THREE.MeshStandardMaterial({ color: look.tack === 'dark' ? 0x1a1414 : 0x3a2414, roughness: 0.7 });
+  const reins = tack.bits.map(() => { const r = makeRein(reinMat); holder.add(r); return r; });
+  // glowing eyes
+  const head = bones.head;
+  if (look.eyes && head) {
+    const hp = at(head), hw = Math.max(0.04, feel.side(hp.y, hp.z, 1) ?? 0.08);
+    const em = new THREE.MeshBasicMaterial({ color: new THREE.Color(look.eyes).multiplyScalar(3) });
     for (const side of [-1, 1]) {
-      const g = new THREE.BufferGeometry();
-      const L = spec.height * 0.55;
-      g.setAttribute('position', new THREE.Float32BufferAttribute([0, 0, 0.15, side * L, 0.25, -0.1, side * L * 0.55, -0.05, -0.45, 0, 0, -0.25], 3));
-      g.setIndex([0, 1, 2, 0, 2, 3]);
-      g.computeVertexNormals();
-      const w = new THREE.Mesh(g, mat);
-      w.position.set(side * spec.height * 0.12, saddleY + 0.05, spec.height * 0.12);
+      const e = new THREE.Mesh(new THREE.SphereGeometry(Math.max(0.02, hw * 0.16), 8, 6), em);
+      e.position.copy(hp).add(new THREE.Vector3(side * hw * 0.62, hw * 0.35, hw * 0.55));
+      holder.add(e); head.attach(e);
+    }
+  }
+  // feathered wings at the shoulders (a griffin, a gryphon)
+  const wings = [];
+  if (look.wings && bones.chest) {
+    const cp = at(bones.chest), cs = section(feel, cp.z) || { top: want, a: L * 0.12 };
+    for (const side of [-1, 1]) {
+      const w = featherWing(look.wings, L * 0.62, side);
+      w.position.set(side * cs.a * 0.55, cs.top - 0.02, cp.z);
+      holder.add(w); bones.chest.attach(w);
+      w.userData.base = w.quaternion.clone();
       w.userData.side = side;
-      root.add(w);
       wings.push(w);
     }
   }
-  // burning hooves (a nightmare)
-  const flames = [];
-  if (spec.extra.flames) {
-    const geo = new THREE.SphereGeometry(0.09, 8, 6);
-    for (const [x, z] of [[-1, 1], [1, 1], [-1, -1], [1, -1]]) {
-      const f = new THREE.Mesh(geo, FLAME_MAT);
-      f.position.set(x * spec.height * 0.12, 0.08, z * spec.height * 0.24);
-      root.add(f);
-      flames.push(f);
+  const restY = at(bones.spine).y;
+  const group = new THREE.Group();
+  group.add(holder);
+  let t = 0, fxT = 0, gait = '';
+  const v = new THREE.Vector3(), hands = new THREE.Vector3(), q = new THREE.Quaternion(), Zx = new THREE.Vector3(0, 0, 1);
+  const real = {
+    group, saddleY: want + 0.02, look, feet,
+    update(dt, moving, speed = 1) {
+      t += dt;
+      const run = moving && speed > 1.45;
+      const g = run ? 'Running_A' : moving ? 'Walking_A' : 'Idle';
+      if (g !== gait) { a.play(g, 0.25); gait = g; }
+      a.update(dt * (moving ? Math.max(0.75, Math.min(1.6, run ? speed / 1.6 : speed)) : 1));
+      holder.updateMatrixWorld(true);
+      // the rider rises and falls with the back
+      if (real.steed) real.steed.bob = holder.worldToLocal(bones.spine.getWorldPosition(v)).y - restY;
+      // the reins: from the bit's rings to the rider's hands (in front of the saddle)
+      reins.forEach((r, i) => {
+        const side = i ? 1 : -1;
+        tack.bits[i].getWorldPosition(v); holder.worldToLocal(v);
+        hands.set(side * riderH * 0.08, want + riderH * 0.24 + (real.steed ? real.steed.bob : 0), riderH * 0.16);
+        r.userData.set(v, hands, 0.05 + riderH * 0.03);
+      });
+      for (const w of wings) {
+        const flap = moving ? Math.sin(t * 7) * 0.5 : 0.1 + Math.sin(t * 1.6) * 0.06;
+        q.setFromAxisAngle(Zx, w.userData.side * flap);
+        w.quaternion.copy(w.userData.base).multiply(q);
+      }
+      if (FX && (fxT -= dt) <= 0) { fxT = 0.05; marks(look, feet, bones, moving, run, holder); }
+    },
+  };
+  return real;
+}
+
+// a wing of layered feathers, spreading out to `side`: long pointed flight feathers fanned back
+// from the shoulder, darker at the tips, under a row of short coverts
+const feather = (w, len) => {
+  const sh = new THREE.Shape();
+  sh.moveTo(0, 0); sh.quadraticCurveTo(w, len * 0.35, w * 0.35, len); sh.lineTo(-w * 0.1, len * 0.96);
+  sh.quadraticCurveTo(-w * 0.9, len * 0.4, 0, 0);
+  return new THREE.ShapeGeometry(sh, 6);
+};
+function featherWing(color, span, side) {
+  const g = new THREE.Group();
+  const base = new THREE.Color(color);
+  const layer = (n, len0, dlen, w, lift, dark) => {
+    for (let i = 0; i < n; i++) {
+      const len = span * (len0 + dlen * i);
+      const m = new THREE.Mesh(feather(span * w, len), new THREE.MeshStandardMaterial({
+        color: base.clone().offsetHSL(0, 0, (i % 2) * 0.05 - dark), roughness: 0.8, side: THREE.DoubleSide }));
+      // fanned out from the shoulder, sweeping back and up
+      m.rotation.order = 'YXZ';
+      m.rotation.z = side * (-0.25 - i * 0.07);
+      m.rotation.x = -0.95 - i * 0.06;
+      m.position.set(side * i * span * 0.025, lift, -i * span * 0.03);
+      g.add(m);
+    }
+  };
+  layer(9, 0.34, 0.075, 0.13, 0, 0.08);
+  layer(6, 0.2, 0.04, 0.12, 0.02, -0.04);
+  return g;
+}
+
+// what marks a mount out as it goes, in particles (a few each twentieth of a second)
+const _p = new THREE.Vector3();
+function marks(look, feet, bones, moving, run, holder) {
+  const fx = look.fx;
+  const foot = () => feet[Math.floor(Math.random() * feet.length)];
+  const atFoot = () => { const f = feet.length ? foot() : bones.hips; return f ? f.getWorldPosition(_p) : null; };
+  if (!FX.near || FX.near(holder.getWorldPosition(_p), 30)) {
+    if (run && feet.length && Math.random() < 0.5) {
+      const p = atFoot(); if (p) FX.p.emit(p.setY(0.15), { count: 1, color: 0xb8a888, bright: 0.7, speed: 0.6, up: 0.3, life: 0.7, size: 0.35, grow: 0.7, drag: 2 });
+    }
+    if (fx === 'hellfire') {
+      for (let i = 0; i < 2; i++) { const p = atFoot(); if (p) FX.p.emit(p, { count: 1, color: Math.random() < 0.5 ? 0xff5a10 : 0xffb030, bright: 2.6, speed: 0.3, up: 1.4, life: 0.5, size: 0.28, grow: -0.3, drag: 1 }); }
+      if (moving) { const p = atFoot(); if (p) FX.p.emit(p, { count: 1, color: 0x3a2a24, bright: 0.5, speed: 0.2, up: 0.6, life: 1.2, size: 0.4, grow: 0.6, drag: 1 }); }
+    } else if (fx === 'celestial') {
+      const p = atFoot(); if (p) FX.p.emit(p, { count: 1, color: Math.random() < 0.5 ? 0xffe8a0 : 0xffffff, bright: 2.2, speed: 0.3, up: 0.8, life: 1.1, size: 0.16, drag: 0.6 });
+      if (Math.random() < 0.4 && bones.spine) FX.glyph(bones.spine.getWorldPosition(_p).add(new THREE.Vector3((Math.random() - 0.5) * 1.2, Math.random() * 0.6, (Math.random() - 0.5) * 1.4)),
+        { glyph: 'star', count: 1, color: 0xffe08a, bright: 2, speed: 0.1, up: 0.4, life: 1.2, size: 0.14, drag: 0.5 });
+    } else if (fx === 'steam') {
+      if (Math.random() < 0.25 && bones.muzzle) FX.p.emit(bones.muzzle.getWorldPosition(_p), { count: 2, color: 0xe8e8ec, bright: 0.9, speed: 0.4, up: 0.6, life: 1.2, size: 0.3, grow: 0.8, drag: 1.2 });
+      if (moving && Math.random() < 0.3) { const p = atFoot(); if (p) FX.p.emit(p, { count: 1, color: 0xffd080, bright: 2, speed: 1.4, up: 1, gravity: 6, life: 0.4, size: 0.08, drag: 0.5 }); }
+    } else if (fx === 'arcane' || fx === 'moon') {
+      const c = fx === 'moon' ? 0xd8e4ff : (look.glow || 0x9ab8ff);
+      const at = bones.spine ? bones.spine.getWorldPosition(_p) : null;
+      if (at && Math.random() < 0.7) FX.p.emit(at.add(new THREE.Vector3((Math.random() - 0.5) * 1.4, (Math.random() - 0.3) * 0.8, (Math.random() - 0.5) * 1.6)),
+        { count: 1, color: c, bright: 2, speed: 0.15, up: 0.35, life: 1.4, size: 0.13, drag: 0.6 });
+      if (moving) { const p = atFoot(); if (p) FX.p.emit(p, { count: 1, color: c, bright: 1.8, speed: 0.2, up: 0.3, life: 0.9, size: 0.16, drag: 0.8 }); }
+    } else if (fx === 'shadow') {
+      const p = atFoot(); if (p) FX.p.emit(p, { count: 1, color: 0x6a3aaa, bright: 0.9, speed: 0.2, up: 0.4, life: 1, size: 0.4, grow: 0.5, drag: 1 });
+    } else if (fx === 'embers') {
+      if (Math.random() < 0.3 && bones.muzzle) FX.p.emit(bones.muzzle.getWorldPosition(_p), { count: 1, color: 0x5a4a44, bright: 0.6, speed: 0.3, up: 0.7, life: 1.4, size: 0.35, grow: 0.7, drag: 1 });
+      if (Math.random() < 0.4) { const p = atFoot(); if (p) FX.p.emit(p, { count: 1, color: 0xff8a2a, bright: 2.4, speed: 0.4, up: 1, life: 0.6, size: 0.12, drag: 0.6 }); }
+    } else if (fx === 'leaves') {
+      if (Math.random() < 0.15 && bones.chest) FX.glyph(bones.chest.getWorldPosition(_p).add(new THREE.Vector3(0, 0.6, 0)),
+        { glyph: 'leaf', count: 1, color: 0x7aa04a, bright: 1, speed: 0.3, up: -0.4, life: 2, size: 0.2, drag: 0.4, spin: 3 });
     }
   }
-  // a faint glow about it (a celestial or arcane mount)
-  if (spec.extra.glow) {
-    const l = new THREE.PointLight(spec.extra.glow, 2.2, 4, 1.6);
-    l.position.set(0, saddleY, 0);
-    root.add(l);
-  }
-  let t = 0;
-  function update(dt, moving, speed = 1) {
-    t += dt;
-    actor.play(moving ? 'Walking_A' : 'Idle');
-    actor.update(dt * (moving ? Math.max(0.8, speed) : 1));
-    for (const w of wings) w.rotation.z = w.userData.side * (0.12 + Math.sin(t * (moving ? 6 : 2)) * (moving ? 0.3 : 0.08));
-    for (const f of flames) f.scale.setScalar(0.8 + Math.sin(t * 12 + f.position.x * 9) * 0.25);
-  }
-  return { root, actor, saddleY, spec, update };
 }
 
 // The riding pose: the rig has no riding clip, so a rider plays their idle (or an attack, a cast)
@@ -156,6 +312,7 @@ export function mountRider(rider, key, prev = null) {
   if (prev && prev.key === key) return prev;
   if (prev) {
     rider.root.remove(prev.steed.root);
+    prev.steed.root.userData.gone = true;
     for (const [c, y] of prev.lifted) c.position.y = y;
   }
   if (!key) return null;
@@ -175,14 +332,26 @@ export function mountRider(rider, key, prev = null) {
     const v = bones.hips.getWorldPosition(new THREE.Vector3());
     hipsH = (v.y - box.min.y) / Math.max(1e-3, rider.root.scale.y || 1);
   }
-  const lift = Math.max(0, steed.saddleY - hipsH + riderH * 0.01);
   // a flyer's hover (wards.js) comes off: the saddle sets the height
   const hover = rider.root.userData.wardLift || 0;
   rider.root.userData.wardLift = 0;
   const lifted = rider.root.children.filter(c => !/^(steed_|raft$|ward_)/.test(String(c.name))).map(c => [c, c.position.y - hover]);
-  for (const [c, y] of lifted) c.position.y = y + lift;
+  const state = { key, steed, lifted, bones, scale: riderH, lift: 0 };
+  // up into the saddle (again when the real body comes, its saddle at its own height), rising and
+  // falling with the steed's back as it goes
+  const seat = () => {
+    state.lift = Math.max(0, steed.saddleY - hipsH + riderH * 0.01);
+    for (const [c, y] of lifted) c.position.y = y + state.lift;
+  };
+  seat();
+  steed.onReady = seat;
   rider.root.add(steed.root);
-  return { key, steed, lifted, bones, scale: riderH, pose: () => ridePose({ bones }, rider.root) };
+  state.pose = () => {
+    const bob = steed.bob || 0;
+    if (bob) for (const [c, y] of lifted) c.position.y = y + state.lift + bob;
+    ridePose({ bones }, rider.root);
+  };
+  return state;
 }
 
 // A raft under the hero on open water (a water room: the server lets only those with a boat or a

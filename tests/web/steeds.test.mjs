@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { STEEDS, steedSpec } from '../../src/web_isometric/world3d/steedlogic.js';
+import { STEEDS, steedSpec, MOUNT_LOOK, mountLook } from '../../src/web_isometric/world3d/steedlogic.js';
 import { kinRecipe } from '../../src/web_isometric/world3d/kinrecipe.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -33,6 +33,26 @@ test("every steed's body is one the creature kit builds, with a saddle on its ba
     assert.ok(s.height >= 0.7 && s.height <= 1.2, `${key}: sized beside its rider (${s.height})`);
   }
   assert.equal(steedSpec('no_such_mount').body, 'horse', 'an unknown mount is drawn as a horse');
+});
+
+test('every mount has a real animated body, its tack and its marks', () => {
+  const index = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/web_isometric/art3d/bodies/index.json'), 'utf8'));
+  const bodies = new Set(Object.keys(index.bodies || index));
+  const TACK = new Set(['leather', 'war', 'dark', 'plate', 'pack']);
+  const FX = new Set(['hellfire', 'celestial', 'steam', 'arcane', 'moon', 'shadow', 'embers', 'leaves']);
+  for (const key of serverMounts()) {
+    const L = MOUNT_LOOK[key];
+    assert.ok(L, `${key}: has a look`);
+    assert.ok(bodies.has(L.body), `${key}: its body ${L.body} is in bodies/index.json`);
+    assert.ok(TACK.has(L.tack), `${key}: its tack ${L.tack}`);
+    assert.ok(!L.fx || FX.has(L.fx), `${key}: its marks ${L.fx}`);
+    assert.ok(!L.size || (L.size >= 0.8 && L.size <= 1.2), `${key}: sized beside its rider`);
+  }
+  assert.equal(mountLook('no_such_mount').body, 'horse', 'an unknown mount is a horse');
+  const steed = fs.readFileSync(path.join(ROOT, 'src/web_isometric/world3d/steed.js'), 'utf8');
+  assert.match(steed, /spawnBody\(/, 'the steed is a real creature body');
+  assert.match(steed, /buildTack\(/, 'dressed in its tack');
+  assert.match(steed, /kitSteed\(/, 'with the kit steed until the body loads');
 });
 
 test('the hero runs as fast as the server says, and sits while riding', () => {
