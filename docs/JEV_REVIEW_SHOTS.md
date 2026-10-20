@@ -220,6 +220,258 @@ Judged the wrong place or style, but the look JEV would draw is the one drawn: w
 | 24274 | Machk-Gyi's Inner Treasury | inside | Machk-Gyi's treasury vault in the Fire Grotto (JEV unsure, 0.63) |
 | 6680 | The Pegasi Deck | city | Salem's Lot's Pegasi Deck: a balcony of the town (JEV unsure, 0.54) |
 
+## Bare: what the words name that the picture lacks
+
+| room | name | look | missing | drawn features |
+|---|---|---|---|---|
+| 10002 | Hall of the Mountain King | mine | pillar 0.53 | statue, pillar |
+| 10015 | The Crystal Cave | cave | crystal 0.99 | crystal |
+| 10109 | Mahn-Tor Market Square | city | other 0.31 (building 0.68) | pole, banner, barrel, crate |
+| 1013 | The Gods' Labyrinth | inside | other 0.57 (other 0.80) | statue |
+| 10162 | Before The Gates Of Mahn-Tor | castle | banner 0.67 | banner |
+| 1016 | Walking The White Marble Streets | city | pillar 0.28 | pillar, fountain |
+| 10194 | Nasturn's Humble Abode | inside | bed 0.52 | bed |
+| 10198 | Dorgar's Dismal Domicile | dungeon | lantern 0.76 | lantern |
+| 1027 | Upon Apollo's Throne | terrace | throne 0.94 | throne, table |
+| 1042 | Upon Zeus's Mighty Throne | inside | throne 0.99 | throne, ash |
+| 1043 | The Tomb of Kronos, Lord of the Titans | crypt | chains 0.99 | chains |
+| 10522 | Quickstream Faded | water_swim | other 0.81 (boat 0.79) | - |
+| 1052 | Traversing The Great Valley | mountain | statue 0.51 | statue |
+| 10545 | The South-Eastern Mira Retrum | water_noswim | other 0.86 (ice 0.73) | lantern |
+| 105712 | The Grand Ballroom | inside | candle 0.58 | candle |
+| 105783 | Cold Storage | dungeon | shelf 0.49 | shelf, barrel |
+| 105806 | Gravel Road | field | other 0.46 (trees 0.32) | - |
+| 105811 | Before a Large Barn | village | other 0.82 (building 0.67) | - |
+| 10583 | On a Sultry Trail | field | other 0.77 (roots 0.41) | - |
+| 105841 | Northern Square | city | well 0.47 | well, banner, ash |
+| 105855 | Town Gardens | garden | bench 0.79 | bench, bed |
+| 105857 | Main Hall | inside | banner 0.50 | pillar, brazier, banner, ash |
+| 10588 | Along the Ocean Shore | shore | other 0.83 (roots 0.79) | - |
+| 10601 | On the Ocean Shore | shore | other 0.74 (boat 0.38) | pillar, brazier, ash |
+| 106214 | Garden | garden | other 0.47 (other 0.80) | pole, banner |
+| 106237 | Lookout Post | forest | other 0.85 (other 0.58) | - |
+| 106247 | At a Tepid Pond's Shore | shore | other 0.51 (reeds 0.93) | - |
+| 106249 | Encampment | camp | stake 0.69 | brazier, stake, ash |
+| 106253 | Community Gathering Area | village | other 0.37 (fire 0.62) | pole, ash |
+| 10625 | On Mira Retrum | water_noswim | pole 0.85 | pole, bones |
+| 10728 | The Southern Mira Retrum | water_swim | other 0.90 (boat 0.64) | - |
+| 107308 | Chamber of Fear | dungeon | other 0.45 (other 0.66) | - |
+| 107359 | Death's Kiss | ice_cave | other 0.65 (ice 0.75) | - |
+| 107383 | Entering the Chamber | cave | other 0.63 (other 0.71) | rug, chains |
+| 10787 | The Quiet Bay beyond the Ice Wall | shore | bones 0.67 | standing_stone, bones |
+| 10821 | The Ridge of Death | cave | bones 0.99 | bones |
+| 10834 | The Snare of Despair | dungeon | chains 0.61 | bones, chains |
+| 10900 | The Ocean Stream near the Rim of the World | water_swim | other 0.81 (river 0.39) | - |
+| 1135 | A Submerged Bend | water_noswim | other 0.93 (gate 0.98) | - |
+| 12042 | The Mage's Shop | inside | other 0.57 (mist 0.81) | shelf, ash |
+| 12110 | Vice Hill | hills | other 0.77 (building 0.81) | - |
+| 12141 | Cliff Road | mountain | chains 0.96 | drum, chains |
+| 12146 | The Tapestry Room | dungeon | other 0.76 (other 0.58) | banner, blood |
+| 12325 | The Gallows | inside | cage 0.95 | cage, chains |
+| 12335 | The Inner Ward | castle | other 0.88 (other 0.91) | brazier |
+| 12451 | A Small Cave | cave | other 0.74 (ice 0.47) | - |
+| 12456 | A Narrow Mountain Path | mountain | shelf 0.68 | shelf |
+| 12464 | A Large Cluster Of Trees | forest | other 0.87 (ice 0.83) | - |
+| 13008 | The Ancient Gateway | underwater | other 0.72 (gate 0.93) | pillar |
+| 13085 | The Prison | dungeon | pole 0.46 | table, chains |
+| 13115 | At The End Of A Long Hallway | dungeon | lantern 0.64 | banner, lantern |
+| 13131 | A Burial Mound | field | mushroom 0.61 | grave, mushroom |
+| 13142 | A Rocky Ledge | mountain | other 0.69 (mist 0.41) | shelf |
+| 13252 | Halls Of Green Glass | cave | other 0.62 (mirrors 0.76) | - |
+| 13381 | The Mine-Tunnels Of The Second Deep | mine | other 0.51 (lake 0.81) | - |
+| 13624 | Before The Gates | cave | other 0.60 (gate 0.96) | cage, torch |
+| 13770 | Underground Lake | water_swim | blood 0.65 | - |
+| 13823 | The Broken Bridge | volcanic | other 0.67 (bridge 0.52) | - |
+| 13841 | The High Seat Of Morkai | crypt | throne 0.66 | banner, skull, bones, throne |
+| 13865 | A Glowing Tunnel | cave | other 0.75 (mist 0.99) | - |
+| 13903 | In The Courtyard | city | bench 0.83 | bench |
+| 13920 | High Priests Quarters | inside | brazier 0.68 | brazier, shelf, bed, rug |
+| 14004 | The Pauper's Field | field | bones 0.64 | bones, grave |
+| 14011 | Underground Burial Chambers | crypt | mushroom 0.54 | bones, mushroom |
+| 14017 | The Black Library | dungeon | shelf 0.39 | cage, shelf |
+| 1433 | The East Side Of The Common Platform | forest | lantern 0.93 | lantern |
+| 14852 | Outside The Great Forest Of MiNar | ruins | other 0.81 (building 0.62) | brazier, ash |
+| 1500 | A Road Leading From The Bank | hills | other 0.87 (river 0.95) | - |
+| 15057 | The Prison | dungeon | other 0.51 (other 0.81) | cage, torch |
+| 15108 | The Shore | shore | other 0.61 (boat 0.66) | bones |
+| 15117 | Ancient Ruins | water_swim | other 0.40 (wall 0.64) | pillar, rubble |
+| 15130 | The Ruined Path | ruins | other 0.64 (wall 0.28) | rubble |
+| 15161 | A Waterfall | mountain | other 0.88 (waterfall 0.86) | - |
+| 15168 | Hall Of The Conquered | dungeon | skull 0.81 | pillar, banner, skull |
+| 15206 | The Halls Of Victory | inside | other 0.61 (other 0.70) | - |
+| 15313 | A Small Study Room | crypt | shelf 0.52 | candle, table, shelf |
+| 15323 | An Odd Passageway | crypt | other 0.43 (roots 0.96) | coffin |
+| 16024 | Spire Summit | inside | other 0.38 (other 0.38) | crystal |
+| 1613 | The Way of Heroes | ruins | weapons 0.33 | brazier, weapons, ash |
+| 1618 | The Walkway of Bones | necropolis | other 0.56 (wall 0.49) | standing_stone, bones |
+| 16208 | In A Room Filled With Mirrors | inside | other 0.69 (mirrors 0.99) | - |
+| 16221 | On A Path Of Bones | necropolis | other 0.51 (other 0.85) | bones |
+| 16224 | A Baffling Sight | city | pillar 0.93 | pillar, bones |
+| 16264 | On The Lake Of Blood | water_swim | blood 0.51 | blood |
+| 16271 | On The Rocky Shore Of The Lake Of Blood | shore | blood 0.59 | blood |
+| 16323 | Where The Mountain Bends | mountain | flowers 0.80 | flowers |
+| 16391 | On An Underground River | water_swim | other 0.95 (reeds 0.99) | - |
+| 18009 | The Ancient Standing Stones | stones | other 0.65 (ice 0.91) | standing_stone |
+| 18012 | A Bandit's Ambush Point | snow | bones 0.71 | bones, ash |
+| 18020 | Inside the Ranger's Cabin | inside | other 0.86 (fire 0.96) | brazier, table, bed |
+| 18636 | A Branch To The South | cave | mushroom 0.35 | mushroom |
+| 19034 | The Signal Room | inside | brazier 0.98 | brazier |
+| 1920 | The End Of The Hall | inside | other 0.91 (mirrors 0.96) | - |
+| 1933 | North-East End of the Carnival | camp | tent 0.39 | tent, cage, banner |
+| 2010 | A Narrow Tunnel | cave | other 0.64 (fire 0.33) | chest |
+| 2012 | A Trodden Path | camp | ash 0.50 | brazier, pole, bones, ash, chains |
+| 2014 | A Trodden Path | forest | pole 0.80 | pole, banner |
+| 201503 | Outside The Gate To Eden | field | other 0.91 (gate 0.97) | flowers |
+| 201507 | In The Garden | garden | other 0.58 (river 0.36) | banner |
+| 201520 | The Line Of Fruit Trees | garden | other 0.90 (trees 0.98) | - |
+| 20307 | Meat Locker | dungeon | other 0.52 (other 0.81) | - |
+| 203635 | A Dirty, Narrow Corridor | inside | other 0.28 (nothing 0.27) | - |
+| 205072 | An Underground Lake | water_noswim | shelf 0.88 | shelf |
+| 20528 | The Small Cave | cave | bones 0.61 | bones, ash |
+| 20549 | A Shored-Up Tunnel | mine | torch 0.47 | torch |
+| 205509 | Dragon Lung | cave | other 0.43 (fire 0.82) | bones, chest |
+| 205547 | Dragon's Tail | forest | other 0.67 (path 0.55) | candle |
+| 205554 | Cold Storage | crypt | blood 0.58 | barrel, blood |
+| 205555 | Kennel Of The Demised | dungeon | chains 0.66 | chains |
+| 20560 | The Bone Tunnel | cave | other 0.42 (other 0.63) | bones |
+| 20562 | A Store Room | dungeon | crate 0.90 | barrel, crate |
+| 20571 | The Crystal Cavern | ice_cave | crystal 0.81 | drum, crystal |
+| 20596 | The End Of The Tunnel To Hell | lava_cave | drum 0.62 | drum, ash |
+| 20604 | The Tunnels Of Darkness | mine | lantern 0.74 | lantern, rubble |
+| 20708 | Gomel's Hole | cave | other 0.57 (gate 0.90) | - |
+| 21132 | The Tunnel Of Sticks | cave | other 0.59 (roots 0.88) | - |
+| 213015 | The Gate To The Stronghold | castle | banner 0.61 | banner |
+| 21735 | The Royal Nursery | inside | chains 0.47 | lantern, bed, rug, chains |
+| 21739 | The Streets of Leisure | cave | other 0.52 (stairs 0.53) | banner, lantern |
+| 22114 | Ocam's Reach | dungeon | throne 0.99 | throne, rubble |
+| 2215 | Before the Dark Cave | cave | cairn 0.48 | cairn, skull |
+| 2230 | The Turn in the Swampy Path | swamp | other 0.77 (mist 0.58) | - |
+| 2232 | Lost in the Mist | stones | other 0.83 (mist 0.97) | - |
+| 2243 | Inside the Gates | village | other 0.63 (gate 0.80) | brazier |
+| 2251 | The Frigid Wastelands | snow | other 0.44 (path 0.67) | - |
+| 2315 | In The Vegetable Garden | garden | pole 0.54 | pole, bed |
+| 23505 | A Narrow Crevice | cave | mushroom 0.62 | mushroom |
+| 23509 | Deep Mushroom Groves | forest | mushroom 1.00 | mushroom |
+| 23514 | Goblin Market | cave | weapons 0.76 | tent, weapons |
+| 23519 | The King's Treasury | dungeon | weapons 0.84 | chest, crate, weapons |
+| 23800 | The Monastery Gates | ruins | statue 0.46 | statue, rubble |
+| 23805 | The Belfry | inside | other 0.88 (bell 0.98) | - |
+| 23808 | The Ossuary | crypt | pillar 0.68 | pillar, skull, bones |
+| 23811 | The Monk's Cells | inside | bed 0.63 | table, bed |
+| 23819 | The Meditation Garden | garden | other 0.54 (other 0.62) | standing_stone |
+| 24008 | Kelp Forest Chamber | underwater | other 0.77 (sea_life 0.66) | - |
+| 2400 | A Cluttered Beach | shore | lantern 0.48 | lantern, barrel |
+| 2415 | A Curve In The Caves | cave | other 0.83 (river 0.49) | - |
+| 24277 | On The Dangerous Ledge | cave | other 0.59 (fire 0.54) | - |
+| 24286 | The Prison | dungeon | other 0.45 (gate 0.60) | ash, chains |
+| 24511 | Feeding Pit | dungeon | chains 0.93 | chains |
+| 24528 | Shadow Dungeon Cells | dungeon | chains 0.69 | chains |
+| 24604 | In The Manigua Thicket | forest | cairn 0.45 | cairn |
+| 24670 | The Great Altar Of The Eclipse | inside | altar 0.83 | altar |
+| 24694 | Cell Block | dungeon | chains 0.28 | chains |
+| 24737 | The Water Shop of Aredrel | inside | other 0.71 (other 0.59) | shelf, barrel |
+| 24768 | A Bend In The Mining District | mine | pillar 0.53 | pillar, candle, lantern, crate |
+| 24798 | The Graveyard Of Aredrel Dwarven | necropolis | dead_tree 0.84 | grave, dead_tree |
+| 24809 | Coolant Chamber | foundry | other 0.88 (other 0.64) | - |
+| 24817 | Officer's Quarters | foundry | other 0.82 (other 0.90) | - |
+| 24898 | The Lost Cave | cave | bones 0.38 | bones, candle, ash |
+| 24914 | A Dead End Inside The Sarcofag | crypt | altar 0.91 | altar, candle |
+| 24952 | The Top Of The Magical Bridge | lava_cave | pillar 0.52 | pillar |
+| 24975 | The Underground Tunnel | cave | other 0.52 (wall 0.34) | ash |
+| 2571 | A Small Office | inside | candle 0.81 | candle, table |
+| 26007 | Residential Lane - Plot #7 | city | other 0.71 (building 0.91) | - |
+| 2663 | A Torture Chamber | dungeon | other 0.43 (other 0.73) | table |
+| 27021 | Bear's Den | cave | bones 0.98 | bones |
+| 27022 | The Heart of Corruption | forest | other 0.52 (other 0.85) | altar |
+| 2744 | Telgar's Tomb | crypt | coffin 0.53 | banner, coffin, flowers |
+| 2760 | The Tunnel Of Death | dungeon | chains 1.00 | torch, blood, ash, chains |
+| 28014 | Blistered Ridge | volcanic | ash 0.51 | ash |
+| 2817 | Behind The School House | city | barrel 0.63 | barrel |
+| 2819 | Dirt Track | field | other 0.63 (other 0.67) | - |
+| 2826 | Mathematics Classroom | inside | other 0.79 (other 0.90) | pillar |
+| 28512 | Brine-Swept Cloister | underwater | other 0.69 (wall 0.56) | rubble |
+| 30004 | Imperial Barricades | castle | blood 0.36 | rubble |
+| 30027 | Throne Approach - Rifted Arcade | inside | other 0.50 (other 0.77) | throne |
+| 3030 | The Dump | field | other 0.48 (machine 0.57) | - |
+| 3081 | The Bone Corridor | crypt | skull 0.73 | skull, bones, candle |
+| 3354 | A Private Home | inside | other 0.40 (fire 0.45) | brazier |
+| 3366 | Near The Peak | mountain | other 0.90 (other 0.38) | - |
+| 3423 | The Enchanter's Corridor | inside | other 0.76 (other 0.78) | - |
+| 3427 | Approaching the White Gold Altar | inside | pillar 0.79 | altar, pillar |
+| 3467 | A Well Used Path | inside | other 0.43 (path 0.48) | well, banner, lantern |
+| 3621 | A White Square | city | other 0.72 (other 0.37) | - |
+| 3702 | Along The Southern Island Shore | shore | cairn 0.82 | cairn, dead_tree |
+| 3791 | Facing a Fury | crypt | blood 0.43 | blood, ash |
+| 3795 | An Icy Door | ice_cave | other 0.44 (fire 0.36) | crystal |
+| 3908 | Around the Winterland Monument | snow | other 0.43 (other 0.44) | chains |
+| 3952 | A Massive Hallway | dungeon | pillar 0.83 | pillar |
+| 3958 | A Large Cavern | ice_cave | cairn 0.99 | cairn |
+| 4104 | The Long Tunnel | cave | other 0.80 (other 0.52) | - |
+| 4216 | A Dead End Chamber | mine | other 0.72 (other 0.50) | rubble |
+| 4223 | A Re-Animation Chamber | crypt | blood 0.29 | bones, shelf, blood |
+| 4310 | The Field By The Waterhole | field | other 0.67 (reeds 0.53) | - |
+| 4311 | The Small Clump | forest | ash 0.46 | ash |
+| 4440 | By The Huge Organ | inside | other 0.90 (machine 0.63) | table |
+| 4506 | The Field Of Crab Grass | field | other 0.79 (wall 0.77) | - |
+| 4533 | The Pavilion | garden | lantern 0.86 | tent, lantern, table, bed, flowers |
+| 4655 | The Cave | ice_cave | bones 0.57 | bones |
+| 4679 | On The Underground Lake | water_swim | other 0.66 (light 0.64) | - |
+| 49423 | In a Tube | cave | other 0.70 (fire 0.46) | - |
+| 49451 | On the Crater Floor | volcanic | other 0.62 (wall 0.47) | crate |
+| 5013 | A Large Cave | cave | other 0.79 (other 0.94) | - |
+| 5250 | The Temple Of Thalos | inside | altar 0.44 | altar, bench |
+| 5303 | Climbing The Great Pyramid | desert | other 0.70 (other 0.32) | - |
+| 5531 | The Mercenaries Guild | inside | other 0.32 (other 0.48) | - |
+| 5630 | On A Road | city | other 0.83 (building 0.44) | - |
+| 5700 | Entrance to the Academy | field | other 0.65 (stairs 0.88) | lantern |
+| 5720 | The Slave Quarters | inside | other 0.70 (other 0.65) | bed |
+| 5726 | In the Garden | garden | other 0.84 (other 0.40) | table, barrel |
+| 5834 | The Bottom Of The Minotaur's Stairway | cave | chains 0.98 | chains |
+| 5866 | The Skeleton Cathedral | crypt | skull 0.55 | pillar, skull, bones |
+| 5884 | A Large Pillar | cave | pillar 0.98 | statue, pillar |
+| 6032 | Midway To The Top Of The Large Oak | mountain | other 0.80 (trees 0.31) | - |
+| 6204 | In The Forest | forest | other 0.68 (light 0.33) | rug |
+| 6215 | The River's Edge | shore | other 0.84 (trees 0.71) | - |
+| 6436 | Doorway | inside | bones 0.65 | bones |
+| 6548 | In The Maze | dungeon | nothing 0.35 | - |
+| 6606 | On The Taiga | snow | other 0.86 (trees 0.98) | - |
+| 6654 | The Grazing Field | field | other 0.88 (other 0.33) | - |
+| 6809 | Reef Shallows | water_swim | other 0.96 (sea_life 1.00) | crystal |
+| 6811 | The Cliff Tavern | inside | lantern 0.46 | lantern |
+| 7304 | Cave Turning-point | cave | other 0.71 (other 0.64) | - |
+| 7306 | The Mudhole | water_swim | other 0.93 (sea_life 0.88) | chest |
+| 7351 | The Feeding Chamber | cave | other 0.30 (other 0.79) | bones |
+| 7905 | The Sitting Room Of Naris | inside | other 0.88 (other 0.66) | - |
+| 7915 | The Chain Where It Is Too Windy | mountain | chains 0.85 | chains |
+| 8002 | The Dragon's Gate | cave | pillar 0.66 | pillar, bones, ash |
+| 8012 | Chapel Street | city | other 0.83 (other 0.50) | lantern |
+| 8060 | The Guest Closet | inside | shelf 0.49 | shelf |
+| 8119 | The Never Ending Plains | field | other 0.72 (lake 0.92) | - |
+| 8273 | An Old Road | field | standing_stone 0.90 | standing_stone |
+| 8312 | The Hill Of The Hanged Man | hills | other 0.92 (other 0.86) | - |
+| 8324 | The Camp | camp | ash 0.45 | standing_stone, tent, ash |
+| 8325 | Deep In Spirit Wood | forest | bones 0.81 | bones |
+| 8467 | The Tunnel | cave | other 0.89 (lake 0.42) | - |
+| 8477 | The Entrance To The Longboat | crypt | other 0.74 (boat 0.59) | bones, ash |
+| 8483 | A Dark Hallway | inside | other 0.47 (other 0.28) | - |
+| 8504 | At The Old Mine | mine | other 0.60 (building 0.34) | - |
+| 8525 | The Illuminated Ravine | mountain | crystal 0.95 | crystal |
+| 8666 | A Small Rocky Path | forest | other 0.76 (rocks 0.85) | - |
+| 8682 | On The Trail Of Shadows | ruins | dead_tree 0.43 | dead_tree |
+| 8705 | On The Muddy Path | hills | other 0.91 (other 0.38) | bed |
+| 8737 | The Dead Marshes | swamp | other 0.65 (lake 0.54) | - |
+| 8906 | The Northern Branch Of The River | water_swim | dead_tree 0.61 | dead_tree |
+| 8937 | The Small Island | field | other 0.94 (building 0.66) | flowers |
+| 9002 | Grove of Dead Trees | forest | other 0.85 (other 0.72) | dead_tree, rug, ash |
+| 9006 | Stagnant Pool | swamp | other 0.87 (lake 0.28) | - |
+| 9018 | Inside the Witch's Hut | inside | bones 0.58 | bones, shelf |
+| 9153 | The Prison | dungeon | chains 0.35 | shelf, bed, blood, chains |
+| 9157 | The Frozen Trail | snow | other 0.91 (ice 0.37) | - |
+| 926 | The Pit of Minos | dungeon | bones 0.93 | bones |
+| 9521 | At a north-south current in the ocean | water_swim | other 0.82 (mist 0.92) | - |
+| 9704 | Stonewalk Way | city | other 0.84 (other 0.37) | chains |
+| 9932 | A Labyrinth Of Bodies | inside | other 0.57 (other 0.60) | - |
+
 ## All
 
 | verdict | sure | zone | room | name | look | JEV would draw |
