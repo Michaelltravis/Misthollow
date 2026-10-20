@@ -162,7 +162,7 @@ function fountain() {
     { geometry: new THREE.CylinderGeometry(0.42, 0.15, 0.18, 10).translate(0, 1.2, 0), material: mat(STONE) },
   ]);
 }
-function throne(color) {
+export function throne(color) {
   return made(`throne_${color || ''}`, () => {
     const m = mat(color === 'gold' ? 0xc89a3a : color === 'black' ? 0x2a2626 : STONE_DARK, color === 'gold' ? { metalness: 0.6, roughness: 0.4 } : {});
     return [
@@ -222,7 +222,7 @@ export function drawFeatures(c) {
   const feats = layout.features || [];
   if (!feats.length) return;
   const D = kits.dungeon, N = kits.nature, T = kits.town, F = kits.furniture, G = kits.graveyard;
-  const indoor = ['inside', 'dungeon', 'crypt', 'castle', 'sewer', 'cave', 'mine', 'drow'].includes(layout.theme);
+  const indoor = ['inside', 'dungeon', 'crypt', 'castle', 'sewer', 'cave', 'mine', 'drow', 'foundry'].includes(layout.theme);
   const has = k => feats.some(f => f.k === k);
   const put = (model, x, z, yaw, s, opts) => { if (model) b.add(model, trs(x, 0, z, yaw, s), opts); };
   const putY = (model, x, y, z, yaw, s, opts) => { if (model) b.add(model, trs(x, y, z, yaw, s), opts); };
@@ -282,7 +282,9 @@ export function drawFeatures(c) {
       case 'lantern': if (G) put(G.get('lantern_standing'), cx, cz, yaw, 1); break;
       case 'drum': put(blocker(drum()), cx, cz, yaw, 1); break;
       case 'throne': put(blocker(throne(layout.theme === 'drow' ? 'black' : f.c)), cx, cz, Math.round(yaw / (Math.PI / 2)) * Math.PI / 2, main ? 1.25 : 1); break;
-      case 'table': if (D) put(blocker(D.get('table_long_decorated_A')), cx, cz, Math.round(yaw / (Math.PI / 2)) * Math.PI / 2, 0.9); break;
+      // (a wizard's, a temple's, a haunted or elven hall's table is a plain one, not a feast)
+      case 'table': if (F && layout.tone && ['arcane', 'holy', 'haunted', 'elven', 'infernal'].includes(layout.tone.interior)) put(blocker(F.get('table_medium')), cx, cz, Math.round(yaw / (Math.PI / 2)) * Math.PI / 2, 0.85);
+        else if (D) put(blocker(D.get('table_long_decorated_A')), cx, cz, Math.round(yaw / (Math.PI / 2)) * Math.PI / 2, 0.9); break;
       case 'bench': if (G) put(G.get(v === 0 ? 'bench_decorated' : 'bench'), cx, cz, yaw, 1); break;
       case 'shelf': if (F) put(blocker(F.get(v === 0 ? 'shelf_B_large_decorated' : 'shelf_A_big')), cx, cz, yaw, 1); else if (D) put(blocker(D.get('shelves')), cx, cz, yaw, 1); break;
       case 'bed': if (F) put(blocker(F.get('bed_single_A')), cx, cz, yaw, 1); break;

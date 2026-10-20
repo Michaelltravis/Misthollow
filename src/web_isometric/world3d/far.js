@@ -11,7 +11,7 @@ import { ROOM_W, ROOM_H, GROUND } from './terrain.js';
 // how many rooms out the stand-ins reach, and how much further the outdoor haze lies, by quality
 export const FAR = { low: { range: 6, sight: 1.25 }, med: { range: 8, sight: 1.45 }, high: { range: 10, sight: 1.65 } };
 
-const UNDER = new Set(['cave', 'mine', 'ice_cave', 'lava_cave', 'sewer', 'dungeon', 'crypt', 'underwater', 'web', 'drow']);
+const UNDER = new Set(['cave', 'mine', 'ice_cave', 'lava_cave', 'sewer', 'dungeon', 'crypt', 'underwater', 'web', 'drow', 'foundry']);
 const TOWN = new Set(['city', 'castle', 'village', 'camp', 'necropolis', 'ruins', 'garden', 'terrace']);
 const WATER = new Set(['water_swim', 'water_noswim', 'shore']);
 

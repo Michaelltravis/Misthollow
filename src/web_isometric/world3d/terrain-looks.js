@@ -65,7 +65,7 @@ const SLIME_MAT = new THREE.MeshStandardMaterial({ color: 0x4a6a1e, emissive: 0x
 const DRIP_MAT = new THREE.MeshStandardMaterial({ color: 0x6a7a58, roughness: 0.1, metalness: 0.1, transparent: true, opacity: 0.55, depthWrite: false });
 const ICE_MAT = new THREE.MeshStandardMaterial({ color: 0xcfe8ff, roughness: 0.08, metalness: 0.1, transparent: true, opacity: 0.7,
   polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
-const WEB_MAT = (() => {
+export const WEB_MAT = (() => {
   if (typeof document === 'undefined') return null;
   const c = document.createElement('canvas'); c.width = c.height = 128;
   const g = c.getContext('2d');
@@ -419,9 +419,35 @@ export function outdoorEdge(theme, kits, layout) {
   if (theme === 'water_swim' || theme === 'water_noswim') return { trees: ['CommonTree_1', 'CommonTree_3', 'Pine_1'].map(k => N.get(k)), treeP: 0.18, rock: k => N.get(k), bush: null, banks: true };
   if (theme === 'mountain') return { trees: ['Pine_1', 'Pine_2'].map(k => tinted(N.get(k), 0x8aa08a, 'alpine')), treeP: 0.12, rock: k => tinted(N.get(k), MOUNTAIN_ROCK, 'mtnrock'), bush: null, cliffs: true };
   // under the sea (Atal'narath): tall dark kelp for trees, blue-grey rock, no grass
-  if (theme === 'underwater') return { trees: ['Pine_2', 'Pine_1'].map(k => tinted(N.get(k), new THREE.Color(0.75, 1.05, 0.8), 'kelp')), treeP: 0.3, rock: k => tinted(N.get(k), SEA_ROCK, 'searock'), bush: null };
+  if (theme === 'underwater') return { trees: [kelp(0), kelp(1), kelp(2), kelp(1)], treeP: 0.45, rock: k => tinted(N.get(k), SEA_ROCK, 'searock'), bush: null };
   return null;
 }
+
+// kelp: a few tall swaying stalks with ribbon leaves, built here (the kit has no sea plants; its
+// pines tinted green read as a forest on dry land)
+const KELP_MAT = new THREE.MeshStandardMaterial({ color: 0x4a7a3a, emissive: 0x0c2410, roughness: 0.7, side: THREE.DoubleSide, flatShading: true });
+const kelpCache = new Map();
+function kelp(v) {
+  if (kelpCache.has(v)) return kelpCache.get(v);
+  const parts = [];
+  const stalks = 3 + v;
+  for (let s = 0; s < stalks; s++) {
+    const h = 3.2 + ((s * 37 + v * 11) % 10) / 6, ox = Math.cos(s * 2.4 + v) * 0.35, oz = Math.sin(s * 2.4 + v) * 0.35;
+    for (let k = 0; k < 6; k++) {
+      const y0 = (k / 6) * h, seg = h / 6, sway = Math.sin(k * 0.9 + s) * 0.18;
+      parts.push({ geometry: new THREE.CylinderGeometry(0.035, 0.05, seg, 5).translate(ox + sway, y0 + seg / 2, oz), material: KELP_MAT });
+      parts.push({ geometry: new THREE.PlaneGeometry(0.18, 0.55).rotateZ(0.6 * (k % 2 ? 1 : -1)).rotateY(s + k).translate(ox + sway, y0 + seg * 0.7, oz), material: KELP_MAT });
+    }
+  }
+  const box = new THREE.Box3();
+  for (const p of parts) { p.geometry.computeBoundingBox(); box.union(p.geometry.boundingBox); }
+  const m = { name: `kelp${v}`, box, parts };
+  kelpCache.set(v, m);
+  return m;
+}
+// rising bubbles and light falling from the surface far above
+const BUBBLE_MAT = new THREE.MeshStandardMaterial({ color: 0xd8f4ff, emissive: 0x2a5a6a, roughness: 0.1, transparent: true, opacity: 0.55, depthWrite: false });
+const SEA_SHAFT = new THREE.MeshBasicMaterial({ color: 0x9ae8ff, transparent: true, opacity: 0.09, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide });
 
 // under the sea: the kit's dark rock lifted to a pale blue-grey; coral bright, faintly glowing
 const SEA_ROCK = new THREE.Color(1.15, 1.35, 1.5);
@@ -504,6 +530,17 @@ export function outdoorDress(c, theme) {
       else if (r < 0.09) b.add(tinted(N.get('Pebble_Round_1'), 0x2a2420, 'ash'), trs(px, 0, pz, yaw, 1.5), { shadow: false });
     }
   }
+  // under the sea: streams of bubbles, and shafts of light from the surface
+  if (theme === 'underwater') {
+    const bubbles = [], shafts = [];
+    for (let i = 0; i < 7; i++) {
+      const bx = ox + 2 + rng() * (W - 4), bz = oz + 2 + rng() * (H - 4);
+      for (let k = 0; k < 6; k++) bubbles.push(new THREE.IcosahedronGeometry(0.05 + rng() * 0.07, 1).translate(bx + (rng() - 0.5) * 0.3, 0.4 + k * 0.55 + rng() * 0.2, bz + (rng() - 0.5) * 0.3));
+    }
+    for (const [fx, fz] of [[0.25, 0.4], [0.62, 0.3], [0.8, 0.7]]) shafts.push(new THREE.CylinderGeometry(0.8, 1.6, 7, 10, 1, true).translate(ox + W * fx, 3.5, oz + H * fz));
+    addMerged(c, bubbles, BUBBLE_MAT, { shadow: false });
+    addMerged(c, shafts, SEA_SHAFT, { shadow: false });
+  }
   addMerged(c, solid, PLANT_MAT);
   addMerged(c, glow, CRYSTAL_MATS.lava, { shadow: false });
   // snow: the prose's ice as glassy patches
@@ -555,7 +592,7 @@ export const LOOK_GROUND = {
   water_swim: { a: 0x6f8a4a, b: 0x8aa060, path: 0x8a7a58, wet: 0x2e5a6a },
   water_noswim: { a: 0x6a8448, b: 0x86985c, path: 0x8a7a58, wet: 0x22485a },
   // the seabed: pale sand, lighter where currents sweep the ways through
-  underwater: { a: 0x8e8a6e, b: 0xa69c78, path: 0xbcae86, wet: 0x2a5a66 },
+  underwater: { a: 0x4e7c7a, b: 0x6a9a8e, path: 0x8ab0a0, wet: 0x1e4a5a },   // a seabed, blue-green under the water
 };
 
 // a drowned city (the room's name says temple, plaza, palace, throne, vault, gate, quarter, ruin,

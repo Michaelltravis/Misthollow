@@ -151,7 +151,7 @@ export function surfaceFor({ theme, zoneKey, snowy, icy, interior } = {}) {
   if (theme === 'desert' || theme === 'shore') return 'step_dirt';
   if (theme === 'inside') return interior === 'tavern' || interior === 'house' || interior === 'bedroom' || interior === 'library' ? 'step_wood'
     : interior === 'throne' || interior === 'temple' ? 'step_carpet' : 'step_stone';
-  if (theme === 'city' || theme === 'castle' || theme === 'necropolis' || theme === 'drow' || theme === 'dungeon' || theme === 'cave' || theme === 'mountain') return 'step_stone';
+  if (theme === 'city' || theme === 'castle' || theme === 'necropolis' || theme === 'drow' || theme === 'foundry' || theme === 'dungeon' || theme === 'cave' || theme === 'mountain') return 'step_stone';
   if (theme === 'forest' || theme === 'field' || theme === 'hills' || theme === 'village' || theme === 'camp' || theme === 'garden' || theme === 'stones' || zoneKey === 'meadow' || zoneKey === 'elven') return 'step_grass';
   return 'step_dirt';
 }
@@ -164,7 +164,7 @@ const TOWN = new Set(['midgaard', 'rome', 'sandstone', 'castle', 'temple', 'ches
 export function musicFor({ theme, zoneKey, dark, interior } = {}) {
   if (theme === 'inside' && interior === 'tavern') return 'inn';
   if (theme === 'crypt' || theme === 'volcanic' || theme === 'web' || theme === 'necropolis' || theme === 'drow') return 'dark';
-  if (theme === 'cave' || theme === 'mine' || theme === 'sewer') return 'dungeon';
+  if (theme === 'cave' || theme === 'mine' || theme === 'sewer' || theme === 'foundry') return 'dungeon';
   if (DARK.has(zoneKey)) return 'dark';
   if (theme === 'castle') return 'town';
   if (DUNGEON.has(zoneKey) || dark || theme === 'dungeon' || theme === 'cave') return 'dungeon';
@@ -207,7 +207,7 @@ const BED_OF_THEME = { forest: 'forest', field: 'meadow', hills: 'meadow', swamp
   water_noswim: 'sunken', underwater: 'sunken' };
 // a room's look (room_looks.py) says more than its zone's old theme
 export const LOOK_BED = { cave: 'mines', mine: 'mines', sewer: 'sewer', crypt: 'necropolis', dungeon: 'sewer',
-  snow: 'frozen', desert: 'desert', volcanic: 'volcanic', shore: 'sunken', stones: 'meadow', village: 'meadow', camp: 'meadow', garden: 'meadow', ruins: 'desert', terrace: 'castle', ice_cave: 'frozen', lava_cave: 'volcanic', swamp: 'swamp', web: 'darkforest', castle: 'castle', necropolis: 'necropolis', drow: 'drow' };
+  snow: 'frozen', desert: 'desert', volcanic: 'volcanic', shore: 'sunken', stones: 'meadow', village: 'meadow', camp: 'meadow', garden: 'meadow', ruins: 'desert', terrace: 'castle', ice_cave: 'frozen', lava_cave: 'volcanic', swamp: 'swamp', web: 'darkforest', castle: 'castle', necropolis: 'necropolis', drow: 'drow', foundry: 'mines' };
 export function bedFor({ theme, zoneKey } = {}) {
   if (LOOK_BED[theme]) return LOOK_BED[theme];
   if (theme === 'inside') return 'castle';                     // indoors: a quiet room tone

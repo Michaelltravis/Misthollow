@@ -6,7 +6,14 @@ hall's walls the same grey under the same light. Here each zone's rooms are read
 of their stone and the colour of their light; where the words agree often enough the zone gets a
 tone, and /play tints its stone and its light by it:
 
-  {'stone': 'black' | 'white' | 'red' | 'green' | 'blue' | 'gold' | 'brown', 'light': 'ghost' | 'moon' | 'fire'}
+  {'stone': 'black' | 'white' | 'red' | 'green' | 'blue' | 'gold' | 'brown', 'light': 'ghost' | 'moon' | 'fire',
+   'interior': 'castle' | 'arcane' | 'holy' | 'infernal' | 'haunted' | 'dwarven' | 'elven'}
+
+A zone's tone can also be stated by hand (world/looks.json 'tones': Ghenna, a hell, has red stone
+and firelight whatever its words say). The interior style is not read from the words but stated per
+zone in world/looks.json 'interiors'
+(the art audit, tools/jev_audit.py zones): its indoor rooms are drawn in that style
+(world3d/terrain-interiors.js) and not as a homely house.
 
 Nothing is saved: tones are read at load (World.load -> annotate), sent with each room in the zone
 map (`tone`).
@@ -67,9 +74,16 @@ def annotate(world):
     for room in world.rooms.values():
         z = getattr(getattr(room, 'zone', None), 'number', None)
         by_zone[z].append(room)
+    from room_looks import load_overrides
+    ov = load_overrides()
+    interiors, stated = ov.get('interiors', {}), ov.get('tones', {})
     tones = {}
     for z, rooms in by_zone.items():
         tone = read([f"{r.name}. {r.description or ''}" for r in rooms]) if len(rooms) >= MIN_ROOMS else None
+        if stated.get(z):
+            tone = {**(tone or {}), **stated[z]}
+        if interiors.get(z):
+            tone = {**(tone or {}), 'interior': interiors[z]}
         if tone:
             tones[z] = tone
         for r in rooms:

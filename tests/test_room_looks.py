@@ -34,7 +34,9 @@ async def main():
     wrong = []
     for r in rooms.values():
         own, why = rl._own_look(r)
-        if own and why == 'name' and r.look != own and r.look_why != 'stated':
+        # (a cave whose words fill it with ice or lava is still the cave its name says)
+        refined = own == 'cave' and r.look in ('ice_cave', 'lava_cave')
+        if own and why == 'name' and r.look != own and r.look_why != 'stated' and not refined:
             wrong.append((r.vnum, r.name, r.look))
     check(not wrong, f'every room looks like what its name says ({len(wrong)} do not: {wrong[:4]})')
 
@@ -100,6 +102,20 @@ async def main():
     drow = [r for r in rooms.values() if getattr(getattr(r, 'zone', None), 'number', None) == 51]
     other = [(r.vnum, r.name, r.look) for r in drow if r.look != 'drow']
     check(drow and not other, f'every room of the Drow City has the drow look ({other[:4]})')
+    # the art audit (tools/jev_audit.py zones): the Clockwork Foundry is steel and furnaces, not a
+    # cave; a castle's, a tower's, a temple's indoor rooms are drawn in its style (zone_tone.py sends
+    # it as tone.interior); a castle's halls are not made caves by the caves under it
+    zn = lambda r: getattr(getattr(r, 'zone', None), 'number', None)
+    foundry = [(r.vnum, r.name, r.look) for r in rooms.values() if zn(r) == 248 and r.look != 'foundry']
+    check(not foundry, f'every room of the Clockwork Foundry has the foundry look ({foundry[:4]})')
+    styled = {z: st for z, st in ov['interiors'].items()}
+    unstyled = [(r.vnum, r.name) for r in rooms.values() if zn(r) in styled and (r.tone or {}).get('interior') != styled[zn(r)]]
+    check(styled and not unstyled, f'the rooms of every styled zone carry its interior style ({unstyled[:3]})')
+    check(rooms[15039].tone['interior'] == 'castle' and rooms[2571].tone['interior'] == 'arcane',
+          "Welmar's guest suite is a castle's, the High Tower's office a wizard's")
+    check(rooms[8371].look == 'inside' and rooms[2702].look == 'inside', "Ostragoth's and Caboon's hallways are castle halls, not caves")
+    check(rooms[3943].look == 'ice_cave' and rooms[2901].look == 'castle', 'the Winterlands cavern of ice pillars is an ice cave, the city wall a rampart')
+    check(all(rooms[v].tone and rooms[v].tone.get('stone') == 'red' for v in (9919, 9944)), 'Ghenna is red stone under firelight')
     # filler the look contradicts is gone ("Bird calls echo through the canopy." down a sewer pipe)
     wrong = [(r.vnum, line) for r in rooms.values() for kind, lines in rl.FILLER.items() if r.look not in rl.FILLER_FITS[kind]
              for line in lines if line in rl._norm(r.description)]

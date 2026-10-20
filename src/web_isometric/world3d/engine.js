@@ -34,11 +34,14 @@ export const MOODS = {
   desert: { sky: 0xfff0d0, ground: 0x8a6a40, hemi: 1.2, sun: 0xffe8b8, sunI: 2.9, fog: 0xe8d4b0, near: 30, far: 85, exposure: 1.0, bg: 1.0 },
   snow: { sky: 0xe4eeff, ground: 0x8a96a8, hemi: 1.15, sun: 0xf4f8ff, sunI: 2.2, fog: 0xd8e4f0, near: 26, far: 75, exposure: 0.95, bg: 1.0 },
   // under the sea: green-blue light from above, the far distance lost in deep water
-  underwater: { sky: 0x9ae0ec, ground: 0x2a5a60, hemi: 1.5, sun: 0xc0f0ff, sunI: 1.6, fog: 0x2a7890, near: 14, far: 48, exposure: 1.3, bg: 0.75 },
+  // (deep and blue: the fog close, the light from above cold; the old haze read as a dry field)
+  underwater: { sky: 0x7ad0e8, ground: 0x1a4a5a, hemi: 1.4, sun: 0xa8e8ff, sunI: 1.3, fog: 0x1a6a86, near: 7, far: 34, exposure: 1.15, bg: 0.75 },
   // a spider's lair: grey-green gloom under a webbed canopy
   web: { sky: 0xa8b8a4, ground: 0x3a3a2c, hemi: 1.35, sun: 0xd8e4c8, sunI: 1.15, fog: 0x3a4236, near: 18, far: 56, exposure: 1.3, bg: 0.6 },
   // a dead city (Morkai): grave-green ghost-light in a cavern, dark but readable
   // the drow city's cavern: black overhead, a violet gloom lit by faerie fire (terrain-drow.js)
+  // the Clockwork Foundry: soot overhead, the glow of furnaces and the haze of steam (terrain-interiors.js)
+  foundry: { sky: 0x8a6a4a, ground: 0x2a2018, hemi: 1.0, sun: 0xffb070, sunI: 0.8, fog: 0x1e1610, near: 20, far: 58, exposure: 1.35, bg: 0.3 },
   drow: { sky: 0x6a5a9a, ground: 0x1c1428, hemi: 1.05, sun: 0x9a8ad8, sunI: 0.7, fog: 0x0e0a18, near: 22, far: 62, exposure: 1.45, bg: 0.25 },
   necropolis: { sky: 0x8a9c98, ground: 0x262a24, hemi: 1.15, sun: 0xb4d4c0, sunI: 0.95, fog: 0x1a2622, near: 20, far: 60, exposure: 1.4, bg: 0.4 },
   // a sewer: sickly green-brown gloom off the water, close and dank, the lamps the only warmth

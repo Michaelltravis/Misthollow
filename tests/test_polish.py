@@ -148,7 +148,8 @@ async def main():
     check(zone_tone.read(['A hall of black stone.'] * 8) == {'stone': 'black'}, 'a zone of black stone is black')
     check(zone_tone.read(['A dark room.'] * 8 + ['White marble.']) is None, 'a stray mention is no tone')
     check(zone_tone.read(['Green ghost-fire burns.'] * 6) == {'light': 'ghost'}, 'ghost-fire is a ghost light')
-    toned = [r for r in world.rooms.values() if getattr(r, 'tone', None)]
+    # (a stone or a light: a zone's interior style, stated in world/looks.json, is not read from words)
+    toned = [r for r in world.rooms.values() if {'stone', 'light'} & set(getattr(r, 'tone', None) or {})]
     check(0 < len(toned) < len(world.rooms) / 4, f'some zones have a tone, most none ({len(toned)} rooms)')
     sp = setpieces.load()
     throne = world.rooms[24527]

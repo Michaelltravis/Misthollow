@@ -32,10 +32,17 @@ LOOKS = ('cave', 'mine', 'crypt', 'sewer', 'dungeon', 'desert', 'snow', 'shore',
          'necropolis', 'stones', 'village', 'camp', 'garden', 'ruins', 'terrace', 'ice_cave', 'lava_cave',
          # a drow city in its cavern (the Drow City, zone 51: world/looks.json underground_zones);
          # the client tells its streets, houses, tunnels, bridges and temple apart by their names
-         'drow')
+         'drow',
+         # the Clockwork Foundry (zone 248): steel, pipes, gears and furnaces, not the cave its
+         # tunnels' words read as (world/looks.json underground_zones; the art audit)
+         'foundry')
 UNDERGROUND = {'cave', 'mine', 'crypt', 'sewer', 'dungeon', 'ice_cave', 'lava_cave'}
+# a zone look that holds for every room of its zone, whatever a room's own words say
+ZONE_WIDE = {'drow', 'foundry'}
 # a hand override (world/looks.json) may also keep a room as plain country or a plain room
-OVERRIDE_LOOKS = LOOKS + ('field', 'forest', 'hills', 'mountain', 'city', 'inside')
+OVERRIDE_LOOKS = LOOKS + ('field', 'forest', 'hills', 'mountain', 'city', 'inside',
+                          # (a room under the water its words say it is: Underwater In The Sewer)
+                          'underwater')
 OUTDOOR = {'desert', 'snow', 'volcanic', 'swamp', 'web', 'stones', 'village', 'camp', 'garden', 'ruins', 'terrace'}   # (a shore is an edge: it doesn't spread)
 # a sacred ring or a field of standing stones (the Stone Circle): turf and flagstones under the sky,
 # a ring of standing stones for walls. Old imports typed such places 'city' (paved, walled), so a
@@ -190,10 +197,14 @@ def load_overrides(path=OVERRIDES):
         with open(path, encoding='utf-8') as f:
             data = json.load(f)
     except FileNotFoundError:
-        return {'rooms': {}, 'zones': {}, 'underground': {}}
+        return {'rooms': {}, 'zones': {}, 'underground': {}, 'interiors': {}, 'tones': {}}
     return {'rooms': {int(k): v for k, v in (data.get('rooms') or {}).items()},
             'zones': {int(k): v for k, v in (data.get('zones') or {}).items()},
-            'underground': {int(k): v for k, v in (data.get('underground_zones') or {}).items()}}
+            'underground': {int(k): v for k, v in (data.get('underground_zones') or {}).items()},
+            # the style a zone's indoor rooms are drawn in (castle, arcane, holy...: zone_tone.py)
+            'interiors': {int(k): v for k, v in (data.get('interiors') or {}).items()},
+            # a zone's stone and light stated by hand, over what zone_tone.py reads from its words
+            'tones': {int(k): v for k, v in (data.get('tones') or {}).items()}}
 
 
 def _zone(room):
@@ -493,7 +504,7 @@ def classify(world, overrides=None):
         under = (ov.get('underground') or {}).get(_zone(room))
         # (the drow city is drow throughout: its tunnels, bridges and the dwellings carved in the
         # stalagmites too; terrain-drow.js tells them apart by their names)
-        if under and (under == 'drow' or not look or look not in UNDERGROUND) and sector not in WATER_SECTORS:
+        if under and (under in ZONE_WIDE or not look or look not in UNDERGROUND) and sector not in WATER_SECTORS:
             room.look, room.look_why = under, 'stated'      # (world/looks.json states it)
             continue
         if not look and _trees(room):
@@ -535,6 +546,10 @@ def classify(world, overrides=None):
     for room in rooms.values():
         zones.setdefault(_zone(room), []).append(room)
     for zn, members in zones.items():
+        # (a castle's, a tower's, a temple's halls are drawn in its interior style, never made a cave
+        # by the caves under it: those keep the look their own words give them)
+        if zn in (ov.get('interiors') or {}):
+            continue
         enclosed = [r for r in members if (getattr(r, 'sector_type', '') or 'inside') in ENCLOSED_SECTORS]
         named = Counter(r.look for r in enclosed if r.look_why is not None and r.look in UNDERGROUND)
         if not named:
@@ -546,7 +561,21 @@ def classify(world, overrides=None):
             # (never a room plainly a building's: a watchtower's chamber, a lodge, a cellar)
             if r.look_why is None and not INTERIOR_RE.search(f'{r.name} {r.description}') and not reads_building(r.description):
                 r.look, r.look_why = look, 'zone'
+    # a cave of ice or of fire by its own words (two or more mentions): the Winterlands' caverns of
+    # ice pillars and icicles, a tunnel with lava in its cracks (not a room pinned by hand)
+    for room in rooms.values():
+        if room.look != 'cave' or room.vnum in ov['rooms']:
+            continue
+        text = f'{room.name} {room.description}'
+        if len(ICE_WORDS.findall(text)) >= 2:
+            room.look, room.look_why = 'ice_cave', 'description'
+        elif len(LAVA_WORDS.findall(text)) >= 2:
+            room.look, room.look_why = 'lava_cave', 'description'
     return Counter(r.look for r in rooms.values())
+
+
+ICE_WORDS = re.compile(r'\b(ice|icy|icicles?|frost(?:ed|y)?|frozen|glaciers?|rime)\b', re.I)
+LAVA_WORDS = re.compile(r'\b(lava|magma|molten)\b', re.I)
 
 
 def summary(world):

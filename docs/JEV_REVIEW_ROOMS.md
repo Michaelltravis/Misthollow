@@ -1,6 +1,6 @@
 # JEV review: room looks
 
-JEV judged 8571 rooms against the look the game draws. Listed: the 691 where it
+JEV judged 8571 rooms against the look the game draws. Listed: the 663 where it
 is at least 90% sure of another look and gives the drawn one 5% or less.
 Nothing is changed by this list; `stated` rooms were set by hand or by the build-out.
 
@@ -239,30 +239,6 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 9129 | The Rickety-Rope Bridge | snow | mountain | 0.93 | neighbours |
 | 9174 | The Old Gravel Road | field | mountain | 0.92 | rules |
 | 9179 | The Look-Out | cave | inside | 0.98 | zone |
-
-## The Clockwork Foundry (19)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 24800 | Foundry Entrance - Blast Doors | cave | inside | 0.98 | neighbours |
-| 24801 | Intake Corridor | cave | inside | 0.91 | neighbours |
-| 24802 | Gear Room Alpha | cave | inside | 0.98 | neighbours |
-| 24804 | Maintenance Bay | cave | inside | 1.00 | neighbours |
-| 24805 | Assembly Line Alpha | cave | inside | 1.00 | neighbours |
-| 24806 | Lever Room Alpha | cave | inside | 0.99 | neighbours |
-| 24807 | Scrap Heap | cave | inside | 0.94 | neighbours |
-| 24808 | Assembly Line Beta | cave | inside | 1.00 | neighbours |
-| 24809 | Coolant Chamber | cave | inside | 0.99 | neighbours |
-| 24811 | Central Junction | cave | inside | 1.00 | neighbours |
-| 24813 | Tesla Corridor | cave | inside | 0.98 | neighbours |
-| 24814 | Power Core Observation | cave | inside | 0.98 | neighbours |
-| 24815 | Weapons Testing Range | cave | inside | 0.99 | neighbours |
-| 24816 | Pneumatic Shortcut | cave | inside | 0.92 | neighbours |
-| 24824 | Gear Room Beta | cave | inside | 0.96 | neighbours |
-| 24825 | Prototype Laboratory | cave | inside | 1.00 | neighbours |
-| 24826 | Exhaust Vents | cave | inside | 0.92 | neighbours |
-| 24828 | Compression Chamber | cave | inside | 0.95 | neighbours |
-| 24829 | Control Room | cave | inside | 1.00 | neighbours |
 
 ## Castle of Ostragoth (19)
 
@@ -707,17 +683,6 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 6552 | At The End Of The Maze | inside | dungeon | 0.92 | rules |
 | 6553 | End of Maze | inside | dungeon | 0.93 | rules |
 
-## Drow City (6)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 5116 | The Clerics' Academy | cave | inside | 0.94 | zone |
-| 5122 | A Slave Chamber | cave | dungeon | 0.99 | zone |
-| 5128 | A Long Hallway | cave | dungeon | 0.91 | zone |
-| 5146 | Slave Cells | cave | dungeon | 1.00 | zone |
-| 5147 | Slave Pen | cave | dungeon | 1.00 | zone |
-| 5149 | The Drow Treasury | cave | dungeon | 0.93 | zone |
-
 ## Tunnels of Sin (6)
 
 | room | name | drawn | JEV | sure | set by |
@@ -952,14 +917,6 @@ Nothing is changed by this list; `stated` rooms were set by hand or by the build
 | 5203 | The Temple Path | ruins | city | 0.94 | neighbours |
 | 5230 | The Tavern Of The Sun | city | ruins | 0.93 | rules |
 | 5234 | The Private Gardens And Courtyard Of Thalos | ruins | garden | 0.95 | description |
-
-## Minos River Island (3)
-
-| room | name | drawn | JEV | sure | set by |
-|---|---|---|---|---|---|
-| 928 | The Pit of Minos | inside | dungeon | 0.99 | rules |
-| 931 | The Pit of Minos | inside | dungeon | 0.97 | rules |
-| 933 | The Pit of Minos | inside | dungeon | 0.96 | rules |
 
 ## The Shattered Throne (2)
 
