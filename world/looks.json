@@ -918,7 +918,6 @@
   "5242": "inside",
   "15168": "inside",
   "16395": "cave",
-  "6680": "castle",
   "13903": "castle"
  },
  "zones": {
@@ -1887,7 +1886,6 @@
   "5242": "Thalos: the commoners' bath house, one wall fallen, drawn as a room (art audit round 4, JEV shots)",
   "15168": "Morvoct: Hall of the Conquered, a pillared hall hung with skulls, drawn as a hall (art audit round 4, JEV shots)",
   "16395": "Outcast Fortress: a dark, damp tunnel, drawn as cave (art audit round 4, JEV shots)",
-  "6680": "Salem's Lot: the Pegasi Deck, a balcony of the great house with stalls for winged horses, drawn as a castle rampart (art audit round 4, JEV shots)",
   "13903": "Orcus Temple: the temple courtyard under its walls, drawn as a fortress courtyard (art audit round 4, JEV shots)"
  },
  "underground_zones": {
