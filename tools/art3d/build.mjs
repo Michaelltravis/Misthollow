@@ -19,6 +19,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import { spawnSync } from 'node:child_process';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { NodeIO, getBounds, TextureInfo } from '@gltf-transform/core';
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
 import { dedup, prune, weld, resample, meshopt, textureCompress, mergeDocuments, unpartition } from '@gltf-transform/functions';
@@ -27,8 +28,9 @@ import sharp from 'sharp';
 
 const BLEND_ONLY = process.argv[2] === 'blend';
 const CACHE = path.resolve(BLEND_ONLY ? '.cache' : (process.argv[2] || '.cache'));
-const BLEND = path.resolve(path.dirname(new URL(import.meta.url).pathname), 'blender/out');
-const OUT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '../../src/web_isometric/art3d');
+const HERE = path.dirname(fileURLToPath(import.meta.url));
+const BLEND = path.resolve(HERE, 'blender/out');
+const OUT = path.resolve(HERE, '../../src/web_isometric/art3d');
 
 const ADV = 'kaykit-adventurers/addons/kaykit_character_pack_adventures/Characters/gltf';
 const SKEL = 'kaykit-skeletons/addons/kaykit_character_pack_skeletons/Characters/gltf';
@@ -504,7 +506,7 @@ for (const [dst, src] of Object.entries(LICENCES)) {
 }
 
 // ---- animated creatures from FBX ----
-const FBX2GLTF = path.resolve(path.dirname(new URL(import.meta.url).pathname),
+const FBX2GLTF = path.resolve(HERE,
   'node_modules/fbx2gltf/bin', process.platform === 'darwin' ? 'Darwin' : process.platform === 'win32' ? 'Windows_NT' : 'Linux',
   process.platform === 'win32' ? 'FBX2glTF.exe' : 'FBX2glTF');
 

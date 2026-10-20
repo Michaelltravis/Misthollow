@@ -8,6 +8,7 @@ import { cutout } from './cutout.js';
 import { townStreet, furnish, interiorKind, interiorFloorKey, graveyard, isGraveyard, townHouse } from './terrain-town.js';
 import { castleWalls, castleYard, zoneGates } from './terrain-castle.js';
 import { drawFeatures, featureCells } from './terrain-features.js';
+import { skirtPatches } from './skirt.js';
 import { drowKind, drowDress, drowHallKind, bridgeCells, DROW_OPEN } from './terrain-drow.js';
 import { interiorStyle, styleFloor, styleWall, dressInterior, STYLES } from './terrain-interiors.js';
 import { underground, dressHall, outdoorEdge, outdoorDress, mountainCliffs, sunkenRuins, webDress, tinted, RUIN_RE, LOOK_GROUND, UNDERGROUND, SNOW_WOOD } from './terrain-looks.js';
@@ -443,6 +444,8 @@ const FILL = {
   default: { trees: 0.03, bushes: 0.04, rocks: 0.01, grass: 0.08 },
   town: { houses: true },
 };
+// how far south of the hero the camera stands at most (engine.js rig: 19-34 m away at 46-58°)
+const CAMERA_BACK = 20;
 function fillerLand(c, theme) {
   const { layout, ox, oz, kits, b, rng, occ, owned, group, room } = c;
   const { W, H } = layout;
@@ -455,26 +458,14 @@ function fillerLand(c, theme) {
   const trees = (edge ? edge.trees : theme === 'swamp' ? ['DeadTree_1', 'DeadTree_2'].map(k => N.get(k))
     : ['CommonTree_1', 'CommonTree_2', 'CommonTree_3', 'Pine_1', 'Pine_2'].map(k => N.get(k))).filter(Boolean);
   const rockOf = k => edge && edge.rock ? edge.rock(k) : N.get(k);
-  // half the empty cell (a room on its far side fills the other half); in an opened zone
-  // (wilds.py) the land at the zone's edge runs on a cell and a half, into the fog
-  const wild = !!room.zoneRef.wild;
-  const far = (dx, dy) => (wild && empty(2 * dx, 2 * dy) ? 1.5 : 0.5);
-  const HWx = dx => W * far(dx, 0), HHy = dy => H * far(0, dy);
-  // the patches to fill, in world metres: [x0, z0, w, d, outward axis ('x'|'z'), outward sign]
-  const patches = [];
-  if (empty(0, -1)) patches.push([ox, oz - HHy(-1), W, HHy(-1), 'z', -1]);
-  if (empty(0, 1)) patches.push([ox, oz + H, W, HHy(1), 'z', 1]);
-  if (empty(-1, 0)) patches.push([ox - HWx(-1), oz, HWx(-1), H, 'x', -1]);
-  if (empty(1, 0)) patches.push([ox + W, oz, HWx(1), H, 'x', 1]);
-  for (const [dx, dy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
-    if (empty(dx, dy) && empty(dx, 0) && empty(0, dy)) {
-      const cw = Math.min(HWx(dx), wild && empty(2 * dx, 2 * dy) ? HWx(dx) : W / 2), cd = Math.min(HHy(dy), wild && empty(2 * dx, 2 * dy) ? HHy(dy) : H / 2);
-      patches.push([dx < 0 ? ox - cw : ox + W, dy < 0 ? oz - cd : oz + H, cw, cd, 'c', 0]);
-    }
-  }
+  // the empty cells round the room to fill, and how far (skirt.js)
+  const patches = skirtPatches({ ox, oz, W, H, wild: !!room.zoneRef.wild, empty });
   if (!patches.length) return;
   const cA = new THREE.Color(pal.a), cB = new THREE.Color(pal.b), col = new THREE.Color();
-  for (const [x0, z0, w, d, axis, sign] of patches) {
+  for (const [x0, z0, w, d, axis, sign, [bx, bz, bw, bd]] of patches) {
+    // how far out from the room a point lies (0 at its edge, 1 at the patch's far edge), on the
+    // whole patch this piece is cut from (skirt.js: where it meets another room's land)
+    const outAt = (px, pz) => axis === 'z' ? (sign < 0 ? (bz + bd - pz) / bd : (pz - bz) / bd) : axis === 'x' ? (sign < 0 ? (bx + bw - px) / bw : (px - bx) / bw) : 1;
     if (spec.water) {
       const m = new THREE.Mesh(WATER_GEO, WATER_MAT);
       m.scale.set(w, 1, d); m.position.set(x0 + w / 2, -0.12, z0 + d / 2);
@@ -491,7 +482,7 @@ function fillerLand(c, theme) {
       const n = fbm(wx * 0.18, wz * 0.18);
       col.copy(cA).lerp(cB, THREE.MathUtils.smoothstep(n, 0.3, 0.75)).multiplyScalar(0.92);
       arr[i * 3] = col.r; arr[i * 3 + 1] = col.g; arr[i * 3 + 2] = col.b;
-      const out = axis === 'z' ? (sign < 0 ? (z0 + d - wz) / d : (wz - z0) / d) : axis === 'x' ? (sign < 0 ? (x0 + w - wx) / w : (wx - x0) / w) : 1;
+      const out = outAt(wx, wz);
       pos.setY(i, (n - 0.5) * 0.12 - 0.02 + (spec.cliff ? out * out * 2.5 : 0));
     }
     geo.setAttribute('color', new THREE.BufferAttribute(arr, 3));
@@ -517,11 +508,15 @@ function fillerLand(c, theme) {
     const area = w * d, step = 1.0;
     for (let gz = z0 + 0.5; gz < z0 + d; gz += step) for (let gx = x0 + 0.5; gx < x0 + w; gx += step) {
       const px = gx + (rng() - 0.5) * 0.9, pz = gz + (rng() - 0.5) * 0.9, yaw = rng() * 6.28;
-      const out = axis === 'z' ? (sign < 0 ? (z0 + d - pz) / d : (pz - z0) / d) : axis === 'x' ? (sign < 0 ? (x0 + w - px) / w : (px - x0) / w) : 1;
+      const out = outAt(px, pz);
       const y = spec.cliff ? out * out * 2.5 : 0;
       const r = rng();
       // thinner the further out (beyond the fog's reach it is only a haze anyway)
       let acc = (spec.trees || 0) * (1 - 0.65 * Math.min(1, out));
+      // none in the land just south of the room, where the camera stands (13-18 m back): their
+      // crowns would fill the view and bury the hero (A Leader Strand, in the webbed woods)
+      const front = pz > oz + H && pz < oz + H + CAMERA_BACK && px > ox - 1 && px < ox + W + 1;
+      if (r < acc && front) continue;
       if (r < acc && trees.length) { b.add(occ(trees[Math.floor(rng() * trees.length)]), trs(px, y, pz, yaw, 0.55 + rng() * 0.35), { shadow: false }); continue; }
       acc += spec.rocks || 0;
       if (r < acc) {

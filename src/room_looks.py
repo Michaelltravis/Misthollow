@@ -582,7 +582,7 @@ def classify(world, overrides=None):
 
 # snow in a wood and snow on a mountainside: the client draws trees through the first and cliffs
 # round the second (terrain-looks.js SNOW_WOOD, SNOW_PEAK; the same words)
-SNOW_WOOD = re.compile(r'\b(trees?|forest|woods?|woodland|pines?|firs?|spruces?|taiga|birch(?:es)?|groves?)\b', re.I)
+SNOW_WOOD = re.compile(r'\b(trees?|forest|woods?|woodland|winterwood|pines?|firs?|spruces?|taiga|birch(?:es)?|groves?|fallen trunks?|root plates?)\b', re.I)
 SNOW_PEAK = re.compile(r'\b(mountains?|mountainside|peaks?|summit|cliffs?|crags?|ridges?|slopes?|mountain pass)\b', re.I)
 ICE_WORDS = re.compile(r'\b(ice|icy|icicles?|frost(?:ed|y)?|frozen|glaciers?|rime)\b', re.I)
 LAVA_WORDS = re.compile(r'\b(lava|magma|molten)\b', re.I)

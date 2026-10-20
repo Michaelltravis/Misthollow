@@ -2122,10 +2122,95 @@ zones as a whole as well as rooms, and looks at the rooms as they are drawn.
   Note for the probe: a mood blends in over a few seconds of game time, and a software-rendered
   browser runs a frame a second, so a shot must snap the mood (`engine.setMood({}, true)`) or it
   shows the last room's light (the sunken zones first read as daylight that way).
-  - Left as they are, by judgement: the Great Eastern Desert (named a desert, it is a river and a
-    mountain's caves, and drawn as such), the Winterwood's snowy paths (snow, JEV would have them
-    forest), mountain snowfields.
-- **Gallery:** `/play?demo&gallery=rooms&only=icastle,ithrone,ibedroom,iarcane,iholy,iinfernal,ihaunted,idwarven,ielven,foundry,foundry2`.
+  - (Round three left the Great Eastern Desert's name, the Winterwood's paths and the snowfields as
+    they were; round four settles them, below.)
+- **Round four: the bare rooms, and no judgement call left unchecked.** 247 of the 611 shots were
+  "bare": the right kind of place with nothing its words name in view. JEV was asked, for each, what
+  the words name that the picture lacks, first from the features the client draws and then (for
+  those it called "something else") from a list of scenery.
+  - **Most were drawn, just too small to see** (99 of the 115 that named a feature): a throne was a
+    grey block, chains a thread by a post, crystals finger-sized, a lantern a speck. The models are
+    remade at the size the camera reads (`terrain-features.js`): a throne on a stepped dais with a
+    high back, a red cushion and a gilded crest (facing the camera); chains hanging from a beam
+    between two posts to manacles; crystals as a glowing cluster to head height; a heap of bones
+    round a ribcage and skull; braziers with flames; lanterns that light; a stand of giant mushrooms
+    underground or in woods; and the thing a room is named for is drawn bigger and with more of it
+    round it (a store room's crates, sacks and barrels; a crystal cave's clusters).
+  - **A real bug:** the town kit's props are built small (the town draws them at x4-5), and the
+    feature layer drew them at x1: crates, sacks, weapon racks, wells and fences were specks.
+  - **Scenery the looks did not draw** is read and drawn now (`room_features.py`, 11 new kinds):
+    gates, trees standing in a non-forest room (fruit trees, a lone oak, pines), reeds, roots and
+    vines down a wall, boats drawn up on a shore, low mist, ice formations, open fires, mirrors (and
+    walls of glass), a bell in its frame, a waterfall; an indoor hearth is a fireplace in the north
+    wall with a chair drawn up to it. And words that only seemed to name a thing no longer do: a bed
+    of gravel is not a bed (nor its gravel a grave), incense sticks are not roots; a pump is a well,
+    a colonnade pillars, a whale's ribs bones.
+  - **The Great Eastern Desert is renamed The Desert River and Caverns.** The atlas's area of that
+    name is the desert's river, its gorge and waterfall and the caves under the mountain; the sands
+    themselves went to the Sea of Storms with their rooms still named The Great Eastern Desert. The
+    zone's name now says what it is (`world/atlas/overrides.json` `zone_names`, applied by
+    `tools/atlas/build_world.py`), and JEV judges it right.
+  - **Every exception gets JEV's second opinion.** Each room, zone and shot let stand in
+    `tools/audit/accepted.json` is shown to JEV with its reason ("does the reason hold?"); one it
+    does not hold fair goes back on the list to fix. Of the rooms' 36 it upheld 31: the other five
+    are fixed (Fameland's memorial chambers and the Straight Path's Deliverance are crypts, MiNar's
+    grassland seen from a mouse's height is field, the Winterwood's path has its trees). The Newbie
+    Zone's training rooms are dungeon, not cave.
+  - **The full pass, from a fresh clone** (no answers cached, so JEV was asked everything afresh;
+    shot on a GPU at about 7 s a room). 51 rooms take a new look (`world/looks.json`, each with its
+    reason):
+    - **Rooms:** of 8,438 judged by their words, 30 were listed. 28 are drawn as JEV picks: tunnels
+      the zone's mountain wording made mountain are caves, a lane of cottages is a village not a
+      street, the Webless Path is not webs, a glacier crack is an ice cave, a ruined city's square
+      is ruins. Two keep their look with their words quoted (a basement yard open to the sky, a
+      frozen marsh). None left open.
+    - **Zones:** five were listed, all at low confidence (the Mindflayer's Lair, both cathedrals,
+      the Sewer, Salem's Lot); each is accepted with its reason and JEV upholds all five.
+    - **Shots:** all 611 shot, twice (the second time after the land fixes below: good 213, bare
+      193, the wrong place 149, the wrong style 55, unreadable 1). 22 rooms take the look JEV picks
+      from the shot and words (and The Mountain Pass, which its pinned neighbour would have made
+      volcanic, its words' mountain); 178 are "the look confirmed", 3 accepted and upheld.
+      **23 stay listed, each kept by its own words** (quoted in `accepted.json`), each reason not
+      upheld: the boats on the Styx, the open sea and the Ocean Stream, the dry corridor of the
+      Submerged Temple, the Docks of Garathorm, the bottom of a well where you float, two
+      courtyards, homes inside the Elder Oak, a guild hall, a market under a cavern roof, a leafy
+      "underground" path, the vaulted river under the city, the pegasi deck, the Sewer's Mudhole
+      (JEV would draw a swamp, but water stays water)... JEV's pick from a picture swings: rooms moved to its pick were judged wrong again
+      with the old look picked (the greenhouse: inside 0.56, then garden 0.95, then inside 0.61),
+      and a fresh shot of the same room gets a fresh low-confidence verdict, so these are left to a
+      person rather than chased.
+    - **Bare:** 198. Of the things their words name that the game draws, JEV sees all in 58, some in
+      49, none in 38. Looked at by hand, most "none" are misses (the Crystal Spire's crystals and the
+      Great Valley's statue are plainly there), but one was a real fault: **Before The Gates Of
+      Mahn-Tor** (10162) was buried under cliffs. They were the land round On The Cliffside (2261),
+      a cell across and two up: in an opened zone a corner of that land runs on a cell and a half,
+      and it did so over a room. A corner now runs on only over empty cells (`world3d/skirt.js`,
+      `tests/web/skirt.test.mjs`; 49 rooms in all were overdrawn so). The gates are seen now and
+      JEV confirms them (castle, 0.96).
+    - Of the same family: **A Leader Strand** (6327, Arachnos) was hidden behind tall trees that
+      the land round A Road Crossing (6326) grew in the empty cell south of it, between the camera
+      and the hero (JEV: "unreadable"). Two rooms at right angles to one empty cell both filled it;
+      over the world, neighbours' land lay on the same ground everywhere. Now no two rooms' land
+      overlaps: where it would, the room nearer that ground keeps it, and, as near, the land north
+      or south of a room before the land east or west of it, so the strip in front of the camera is
+      the room's behind it (`skirt.js` `yields`). A piece cut so keeps the whole patch it came from,
+      so a mountain's land still rises from its own room. All 611 rooms were shot again after it.
+      Drawn as the web it is (its name had read as a beach), A Leader Strand was buried again, by
+      its own land: the webbed woods grow tall trees close, and the camera stands 13-18 m south
+      of the hero, inside their crowns. No tree grows now in the land just south of a room, 20 m
+      out across its width (`terrain.js` `CAMERA_BACK`); the 118 rooms shot with open land to the
+      south were shot again. It and the Ethereal Web's other rooms are seen now.
+    - The atlas index still named zone 50 The Great Eastern Desert (`docs/world/ATLAS_INDEX.md`).
+    - Tests (on Windows): the web suites pass (190); of the offline Python suites, all but
+      `test_atlas`'s zones.json check pass (it writes `world\zones\...` on Windows), with
+      `PYTHONUTF8=1` for `test_spells_audit`. The live suites fail the same 35 checks with these
+      changes as without them (a second account, Unix file modes, timing): none is the art's.
+- **Shooting the rooms yourself:** `node tools/audit/shoot_rooms.js tools/audit/rooms_audit.json OUT`
+  (every room the audit has shot; `rooms_round4.json` is round four's) with the server running, then
+  `python3 tools/jev_audit.py shots OUT` (needs `TYPESAFE_API_KEY`). A cloud container renders in
+  software at 20-60 s a room (`SOFTWARE_GL=1`); a machine with a GPU takes a second or two.
+- **Gallery:** `/play?demo&gallery=rooms&only=icastle,ithrone,ibedroom,iarcane,iholy,iinfernal,ihaunted,idwarven,ielven,foundry,foundry2`;
+  the round-four features: `only=fthrone,fstore,fcrystal,fhall,fshore,fgate`.
 - **Tests:** `tests/test_room_looks.py` (the Foundry is foundry throughout, every styled zone's rooms
   carry its style, Ostragoth's halls are halls, the Winterlands' cavern an ice cave, the city wall
   a rampart, Ghenna red stone), `tests/web/roomlooks.test.mjs` (`foundry` is a walkable look with
