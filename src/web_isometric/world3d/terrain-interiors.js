@@ -34,6 +34,8 @@ export const STYLES = {
 };
 // the uses whose own furniture stays (furnish draws it); the rest are halls the style dresses
 export const FURNISHED = new Set(['bedroom', 'library', 'tavern', 'shop', 'bank', 'guild']);
+// the uses whose walls are their furniture (shelves, counters, casks): they keep it in any style
+export const OWN_WALLS = new Set(['library', 'tavern', 'shop', 'bank']);
 // the styles a house rug suits (not a wizard's floor of runes, a temple's marble or a hell's)
 export const RUGS = new Set(['castle', 'haunted', 'dwarven', 'elven']);
 
@@ -59,6 +61,9 @@ const LEAVES = new THREE.MeshStandardMaterial({ color: 0x8ac070, roughness: 0.8,
 const BRASS = new THREE.MeshStandardMaterial({ color: 0xb08a40, metalness: 0.75, roughness: 0.35, flatShading: true });
 const STEAM = new THREE.MeshBasicMaterial({ color: 0xe8e4dc, transparent: true, opacity: 0.08, depthWrite: false });
 const SPARK = glow(0.6, 1.6, 3.2);
+const SHEET = new THREE.MeshStandardMaterial({ color: 0xd8d8d0, roughness: 0.95, flatShading: true });
+const WISP = glow(0.9, 2.2, 1.3);
+const HOLE = new THREE.MeshBasicMaterial({ color: 0x050505 });
 const SHAFT = new THREE.MeshBasicMaterial({ color: 0xfff2c8, transparent: true, opacity: 0.1, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide });
 const at3 = (geo, x, y, z, yaw = 0) => geo.applyMatrix4(new THREE.Matrix4().compose(new THREE.Vector3(x, y, z),
   new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), yaw), new THREE.Vector3(1, 1, 1)));
@@ -179,8 +184,10 @@ export function dressInterior(c, style, kind) {
   for (let x = 3; x < W - 3; x += 4) if (at(x, 1) === FLOOR && at(x + 1, 1) === FLOOR && !lane(x, 1)) wallSpots.push(x);
   const sideSpots = [];
   for (const [x, yaw] of [[1, Math.PI / 2], [W - 2, -Math.PI / 2]]) for (let y = 3; y < H - 3; y += 4) if (at(x, y) === FLOOR && !lane(x, y)) sideSpots.push([x, y, yaw]);
-  if (!furnished) {
+  {
     for (const x of wallSpots) {
+      // (a furnished room's wall keeps room for its own furniture: only hung things there)
+      if (furnished && (OWN_WALLS.has(kind) || style === 'arcane' || style === 'elven' || style === 'haunted')) continue;
       const wx = ox + x + 1, wz = oz + 1.05;
       if (style === 'castle') put(D, ['banner_patternA_red', 'banner_patternB_blue', 'banner_shield_white'][(x >> 2) % 3], wx, oz + 0.8, 0, 0.65);
       else if (style === 'arcane') { put(F, 'shelf_B_large_decorated', wx, wz + 0.3, 0, 0.85, { occ: true }); block(x, 1); block(x + 1, 1); }
@@ -190,7 +197,7 @@ export function dressInterior(c, style, kind) {
       else if (style === 'elven' && N) put(N, rng() < 0.5 ? 'Fern_1' : 'Bush_Common_Flowers', wx, wz + 0.2, rng() * 6.28, 1.1, { shadow: false });
       else if (style === 'haunted' && F) put(F, rng() < 0.5 ? 'pictureframe_large_A' : 'cabinet_medium', wx, wz + 0.3, rng() < 0.4 ? 0.25 : 0, 0.85, { occ: true, y: 0 });
     }
-    for (const [x, y, yaw] of sideSpots) {
+    for (const [x, y, yaw] of furnished ? [] : sideSpots) {
       if (rng() < 0.35) continue;
       const sx = ox + x + 0.5 + (x === 1 ? -0.2 : 0.2), sz = oz + y + 0.5;
       if (style === 'castle' || style === 'dwarven') { if (T) { put(T, 'weaponrack', sx, sz, yaw, 4.5); block(x, y); } }
@@ -213,13 +220,15 @@ export function dressInterior(c, style, kind) {
       if (o.big) { put(F, 'table_medium', x, z, yaw, 0.8, { occ: true }); put(F, 'book_set', x, z, rng() * 6.28, 0.8, { shadow: false, y: 0.85 }); }
       else { crystal(P, x, 1.1 + rng() * 0.4, z, 1); }
     } else if (style === 'holy') {
-      if (o.big) { put(stone(STYLES.holy.tint, 'holy'), 'pillar', x, z, 0, 0.9, { occ: true }); goldBand(P, x, z, 0.5, 0.6); goldBand(P, x, z, 2.9, 0.5); }
+      if (o.big) { put(stone(C(2.6, 2.55, 2.45), 'holy'), 'pillar', x, z, 0, 0.9, { occ: true }); goldBand(P, x, z, 0.5, 0.6); goldBand(P, x, z, 2.9, 0.5); }
       else put(G, 'candle_triple', x, z, 0, 1);
     } else if (style === 'infernal') {
       if (o.big) { put(stone(C(0.5, 0.22, 0.2), 'hell'), 'pillar', x, z, yaw, 0.9, { occ: true }); }
       else { put(D, 'torch_lit', x, z, 0, 1.6, { y: 0.4, shadow: false }); light(c, x, z, 0xff4a1a, 2, 10); }
     } else if (style === 'haunted') {
-      if (o.big) fallen(F, r < 0.5 ? 'table_medium' : 'cabinet_medium', x, z, 0.85);
+      // furniture under dust sheets, or knocked over; a skull in the dust
+      if (o.big && r < 0.55) { P.add(SHEET, at3(new THREE.BoxGeometry(1.6, 0.9, 1.1).translate(0, 0.45, 0), x, 0, z, rng())); P.add(SHEET, at3(new THREE.SphereGeometry(0.62, 7, 4, 0, Math.PI * 2, 0, Math.PI / 2).scale(1.3, 0.5, 0.9), x, 0.9, z)); }
+      else if (o.big) fallen(F, r < 0.8 ? 'table_medium' : 'cabinet_medium', x, z, 0.85);
       else if (r < 0.5) fallen(F, 'chair_A_wood', x, z, 0.8); else put(G, 'skull', x, z, rng() * 6.28, 1);
     } else if (style === 'dwarven') {
       if (o.big && r < 0.3) forge(P, x - 0.4, z);
@@ -250,7 +259,16 @@ export function dressInterior(c, style, kind) {
   }
   if (style === 'holy') for (const [fx, fz] of [[0.3, 0.35], [0.7, 0.6]]) shaft(P, ox + W * fx, oz + H * fz);
   if (style === 'infernal') for (let i = 0; i < 6; i++) lavaCrack(P, ox + 2 + rng() * (W - 4), oz + 2 + rng() * (H - 4), rng);
-  if (style === 'haunted' && WEB_MAT) for (const [wx, wz, yaw] of [[1, 1, 0], [W - 1, 1, -Math.PI / 2], [1, H - 1, Math.PI / 2], [W - 1, H - 1, Math.PI]]) {
+  if (style === 'haunted') {
+    // ghostly wisps drifting at head height; holes broken through the boards
+    for (let i = 0; i < 5; i++) P.add(WISP, at3(new THREE.IcosahedronGeometry(0.12 + rng() * 0.08, 1), ox + 2 + rng() * (W - 4), 1.3 + rng() * 1.2, oz + 2 + rng() * (H - 4)));
+    for (let i = 0; i < 4; i++) {
+      const hx = 2 + Math.floor(rng() * (W - 4)), hy = 2 + Math.floor(rng() * (H - 4));
+      if (lane(hx, hy) || at(hx, hy) !== FLOOR) continue;
+      P.add(HOLE, at3(new THREE.PlaneGeometry(0.7 + rng() * 0.5, 0.4 + rng() * 0.4).rotateX(-Math.PI / 2), ox + hx + 0.5, 0.012, oz + hy + 0.5, rng() * 3));
+    }
+  }
+  if (style === 'haunted' && WEB_MAT) for (const [wx, wz, yaw] of [[1, 1, 0], [W - 1, 1, -Math.PI / 2], [1, H - 1, Math.PI / 2], [W - 1, H - 1, Math.PI], [W / 2 - 3, 1, 0], [W / 2 + 3, 1, -Math.PI / 2]]) {
     const g = new THREE.PlaneGeometry(1.8, 1.8);
     g.translate(0.9, -0.9, 0); g.rotateY(Math.PI / 4); g.rotateY(yaw);
     g.translate(ox + wx, 2.55, oz + wz);

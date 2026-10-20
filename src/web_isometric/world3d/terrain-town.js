@@ -11,7 +11,7 @@
 import * as THREE from 'three';
 import { trs } from './assets.js';
 import { tinted } from './terrain-looks.js';
-import { interiorStyle, FURNISHED, RUGS } from './terrain-interiors.js';
+import { interiorStyle, FURNISHED, OWN_WALLS, RUGS } from './terrain-interiors.js';
 
 const BLOCK = 1, FLOOR = 0;
 const CARD = { north: [0, -1], south: [0, 1], east: [1, 0], west: [-1, 0] };
@@ -263,7 +263,7 @@ export function furnish(c, kind) {
   };
 
   // along the north wall (the one the camera faces by default) and the side walls
-  const wallPieces = drow || style ? [] : WALL_PIECES[kind] || [];
+  const wallPieces = drow || (style && !OWN_WALLS.has(kind)) ? [] : WALL_PIECES[kind] || [];
   if (wallPieces.length) {
     for (let x = 2; x < W - 2; x += 3) {
       if (at(x, 1) !== FLOOR || at(x + 1, 1) !== FLOOR || lane(x, 1) || lane(x + 1, 1)) continue;
