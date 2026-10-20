@@ -148,6 +148,10 @@ def main():
     scene.reset()
     bpy.ops.import_scene.gltf(filepath=KAYKIT)
     arm = next(o for o in bpy.data.objects if o.type == 'ARMATURE')
+    # the importer leaves the rig posed in a clip's first frame (an attack): measure the piece the
+    # new one stands in for at rest, where the kit binds it, or it hangs where a swinging hand is
+    arm.data.pose_position = 'REST'
+    bpy.context.view_layer.update()
     like = bpy.data.objects[kit['like']]
     before = set(bpy.data.objects)
     bpy.ops.import_scene.gltf(filepath=src)
@@ -191,6 +195,7 @@ def main():
     # stood where the KayKit piece stands: foot to foot, head to head, at its length, turned so their
     # flat sides agree
     P, L = world_points(piece), world_points(like)
+    arm.data.pose_position = 'POSE'
     pc, pa = axes(P)
     lc, la = axes(L)
     pf, ph = foot_head(P, pc, pa[0])
