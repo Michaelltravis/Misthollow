@@ -399,6 +399,16 @@ def shots_mode(folder):
     bare = {k: v for k, v in items.items() if k in answers and answers[k]['choice'] == 'bare'}
     lacking = run(bare, '`screenshot` is the room as the game draws it now. Of the things this room\'s own words name, '
                   'which one is most plainly missing from the picture?', things, 'jev_shots_missing.json', workers=4)
+    # and the plain question for each one judged bare: of the things its words name that the game
+    # draws (room_features.py), does the picture show them? (bare is a judgement of the whole;
+    # this says whether the room's own things are there to be seen)
+    shown_q = {'all': 'every one of them can be seen in the picture', 'some': 'some can be seen, some cannot',
+               'none': 'none of them can be seen'}
+    named = {k: v for k, v in bare.items() if getattr(room_of[int(k.split('@')[0])][2], 'features', None)}
+    shown = run({k: {**v, 'things its words name': ', '.join(f['k'].replace('_', ' ') for f in room_of[int(k.split('@')[0])][2].features)}
+                 for k, v in named.items()},
+                '`screenshot` is the room as the game draws it. Can the things listed in `things its words name` be seen in it?',
+                shown_q, 'jev_shots_shown.json', workers=4)
     # and for those whose missing thing is none of the features: which piece of scenery it is
     scenery = {'trees': 'trees or woods', 'rocks': 'rocks, boulders or cliffs', 'river': 'a river, stream or flowing water',
                'waterfall': 'a waterfall', 'lake': 'a lake, pool or still water', 'bridge': 'a bridge', 'boat': 'a boat, ship or dock',
@@ -453,16 +463,18 @@ def shots_mode(folder):
               'those it did not are under To fix.', '', '| room | name | look | why |', '|---|---|---|---|']
     lines += [f'| {r[4]} | {r[5]} | {r[6]} | {accepted[str(r[4])]} |' for r in taken]
     lines += ['', '## Bare: what the words name that the picture lacks', '',
-              '| room | name | look | missing | drawn features |', '|---|---|---|---|---|']
+              'Last column: whether JEV can see, in the picture, the things the room\'s words name that the game draws.', '',
+              '| room | name | look | missing | drawn features | shown |', '|---|---|---|---|---|---|']
     feats = {r.vnum: [f['k'] for f in (getattr(r, 'features', None) or [])] for _z, _n, r in room_of.values()}
     for key in sorted(bare):
         m = lacking.get(key)
         if not m:
             continue
         v = int(key.split('@')[0])
+        sh = shown.get(key)
         u = unlisted.get(key)
         miss = f"{m['choice']} {m.get('confidence') or 0:.2f}" + (f" ({u['choice']} {u.get('confidence') or 0:.2f})" if u else '')
-        lines.append(f"| {v} | {room_of[v][2].name} | {room_of[v][2].look} | {miss} | {', '.join(feats.get(v, [])) or '-'} |")
+        lines.append(f"| {v} | {room_of[v][2].name} | {room_of[v][2].look} | {miss} | {', '.join(feats.get(v, [])) or '-'} | {sh['choice'] if sh else '-'} |")
     lines += ['', '## All', '', head, '|---|---|---|---|---|---|---|']
     lines += [f'| {r[0]} | {r[1]:.2f} | {r[2]} {r[3]} | {r[4]} | {r[5]} | {r[6]} | {r[7]} |' for r in rows]
     return report('SHOTS', lines, answers, todo)

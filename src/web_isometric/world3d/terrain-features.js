@@ -460,7 +460,7 @@ export function drawFeatures(c) {
         if (D) for (const dx of [-0.6, 0.6]) putY(D.get('candle_triple'), cx + dx * (main ? 1.2 : 1), top, cz, 0, 0.7, { shadow: false });
         break;
       }
-      case 'statue': put(blocker(statue()), cx, cz, yaw, s * (main ? 1.3 : 1)); break;
+      case 'statue': put(blocker(statue()), cx, cz, yaw, s * (main ? 1.6 : 1.3)); break;
       case 'obelisk': put(blocker(obelisk()), cx, cz, yaw, s); break;
       case 'pillar': if (layout.theme === 'drow') put(blocker(drowPillar()), cx, cz, 0, 1); else if (D) put(blocker(D.get(v === 0 ? 'pillar_decorated' : 'column')), cx, cz, 0, 1); break;
       // (the town kit is built small: its props stand at x4-5, its wells at x2.6, as terrain-town.js has them)
@@ -534,11 +534,11 @@ export function drawFeatures(c) {
       case 'dead_tree': if (N) put(blocker(N.get(v === 0 ? 'DeadTree_1' : 'DeadTree_2')), cx, cz, yaw, 0.6 + rng() * 0.25); break;
       case 'rubble': if (D) put(D.get(v === 0 ? 'rubble_large' : 'rubble_half'), cx, cz, yaw, 0.8, { shadow: false }); break;
       case 'cairn': put(cairn(v), cx, cz, yaw, s * (0.8 + v * 0.15)); break;
-      case 'skull': if (G) { put(G.get(v === 2 ? 'skull_candle' : 'skull'), cx, cz, yaw, 1.5, { shadow: false }); heap(() => G.get('skull'), main ? 5 : 1, 1.4, 1.3); } break;
+      case 'skull': if (G) { put(G.get(v === 2 ? 'skull_candle' : 'skull'), cx, cz, yaw, 0.8, { shadow: false }); heap(() => G.get('skull'), main ? 5 : 1, 1.4, 0.7); } break;
       case 'bones': if (G) {
         // a heap, not a lone bone: a ribcage, a skull, long bones round them
-        put(G.get('ribcage'), cx, cz, yaw, 1.4, { shadow: false });
-        put(G.get('skull'), cx + 0.45, cz + 0.2, yaw + 1, 1.4, { shadow: false });
+        put(G.get('ribcage'), cx, cz, yaw, 1.0, { shadow: false });
+        put(G.get('skull'), cx + 0.45, cz + 0.2, yaw + 1, 0.75, { shadow: false });
         heap(i => G.get(i % 2 ? 'bone_A' : 'bone_B'), main ? 8 : 4, 1.5, 1.3);
       } break;
       case 'mushroom': if (N) {

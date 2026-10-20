@@ -556,8 +556,11 @@
           const dc = Math.hypot(x + w / 2 - midX, y + h / 2 - midY);
           if (where === 'main') return Math.abs(dc - 3.5);
           if (where === 'centre') return Math.abs(dc - 4.5) + rng() * 2;
-          if (where === 'edge') return (nearWall(x, y) ? 0 : 4) + rng() * 3;
-          return rng() * 6;
+          // (and within the view of one standing in the middle: a room is wider than the camera
+          // sees, and a thing by a far wall is lost off the edge or behind the rocks and trees)
+          const far = Math.max(0, dc - 5.5) * 1.5;
+          if (where === 'edge') return (nearWall(x, y) ? 0 : 4) + rng() * 3 + far;
+          return rng() * 6 + far;
         };
         const cands = [];
         for (let y = 2; y < H - 2; y++) for (let x = 2; x < W - 2; x++) if (free(x, y, w, h, block)) cands.push([score(x, y), x, y]);
