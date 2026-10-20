@@ -2156,6 +2156,10 @@ zones as a whole as well as rooms, and looks at the rooms as they are drawn.
     are fixed (Fameland's memorial chambers and the Straight Path's Deliverance are crypts, MiNar's
     grassland seen from a mouse's height is field, the Winterwood's path has its trees). The Newbie
     Zone's training rooms are dungeon, not cave.
+- **Shooting the rooms yourself:** `node tools/audit/shoot_rooms.js tools/audit/rooms_audit.json OUT`
+  (every room the audit has shot; `rooms_round4.json` is round four's) with the server running, then
+  `python3 tools/jev_audit.py shots OUT` (needs `TYPESAFE_API_KEY`). A cloud container renders in
+  software at 20-60 s a room (`SOFTWARE_GL=1`); a machine with a GPU takes a second or two.
 - **Gallery:** `/play?demo&gallery=rooms&only=icastle,ithrone,ibedroom,iarcane,iholy,iinfernal,ihaunted,idwarven,ielven,foundry,foundry2`;
   the round-four features: `only=fthrone,fstore,fcrystal,fhall,fshore,fgate`.
 - **Tests:** `tests/test_room_looks.py` (the Foundry is foundry throughout, every styled zone's rooms
