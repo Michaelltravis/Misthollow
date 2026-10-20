@@ -5,6 +5,7 @@
 // room is legal only through an open exit — the zone decides).
 import * as THREE from 'three';
 import { toWorld } from './orbit.js';
+import { postureChange } from './posture.js';
 
 const RADIUS = 0.36;
 const RUN = 5.2, WALK = 2.4;            // m/s
@@ -27,6 +28,8 @@ export class Controller {
     this.onArrive = null;
     this.speedMul = 1;                   // how much faster than on foot (a mount, haste: the payload's speed)
     this.mounted = false;                // riding: the body sits; the steed walks (steed.js)
+    this.position = 'standing';          // the server's posture (payload.player.position)
+    this.pose = null;                    // the loop it is held in: sat down resting, lying asleep (posture.js)
     const down = e => {
       if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
       const k = e.key.toLowerCase();
@@ -70,6 +73,18 @@ export class Controller {
     this.vel.set(0, 0);
     this.dashing = null;
     this.actor.play(this.actor.idle || 'Idle', 0.15);
+  }
+
+  // rest, sit, sleep, wake: get down (or up) once, then hold the pose; moving cuts it short
+  setPosture(position) {
+    const ch = postureChange(this.position, position || 'standing');
+    this.position = position || 'standing';
+    if (!ch) return;
+    this.pose = ch.loop;
+    if (ch.once && !this.mounted) {
+      const d = this.actor.once(ch.once, 0.2);
+      if (d) { this.lock = d * 0.9; this.soft = true; }
+    }
   }
 
   // can the body move from tile (ax, az) to the next tile (bx, bz)? (for path search)
@@ -196,6 +211,7 @@ export class Controller {
     else if (this.lock === 0) {
       if (speed > 3.2) this.actor.play('Running_A', 0.15, speed / (RUN * (this.speedMul || 1)) * 1.05 * Math.sqrt(this.speedMul || 1));
       else if (speed > 0.25) this.actor.play('Walking_A', 0.15, Math.max(0.6, speed / WALK));
+      else if (this.pose) this.actor.play(this.pose, 0.35);
       else this.actor.play(this.actor.idle || 'Idle', 0.25);
     }
     return speed;

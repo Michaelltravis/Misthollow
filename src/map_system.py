@@ -1770,6 +1770,8 @@ def _room_entities(room, vnum, player):
                     'char_class': getattr(entity, 'char_class', ''),
                     'hp': getattr(entity, 'hp', 0),
                     'maxHp': getattr(entity, 'max_hp', 1),
+                    # resting, sleeping...: others see them sat down or lying (world3d/posture.js)
+                    'position': getattr(entity, 'position', 'standing'),
                     # where they stand (3D clients), and whether they are in your group
                     **_pos_fields(entity),
                     'groupmate': bool(getattr(player, 'group', None)) and getattr(entity, 'group', None) is getattr(player, 'group', None),

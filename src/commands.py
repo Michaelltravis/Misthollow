@@ -1356,28 +1356,39 @@ class CommandHandler:
         await result(ok, '' if ok else (said[-1] if said else "Nothing happens."), **extra)
 
     @classmethod
+    async def typed_move(cls, player: 'Player', direction: str):
+        """A direction typed as a command. In /play you walk instead (WASD, the arrow keys or a
+        click, sent as `webmove`): a typed `n` would jump the hero across the room. Telnet, and the
+        plain web page, still move by typing."""
+        conn = getattr(player, 'connection', None)
+        if getattr(conn, 'is_web', False) and getattr(player, 'web_pos', None) is not None:
+            await player.send("In the world you walk: use WASD or the arrow keys, or click where you want to go.")
+            return
+        await cls.cmd_move(player, direction)
+
+    @classmethod
     async def cmd_north(cls, player: 'Player', args: List[str]):
-        await cls.cmd_move(player, 'north')
-        
+        await cls.typed_move(player, 'north')
+
     @classmethod
     async def cmd_south(cls, player: 'Player', args: List[str]):
-        await cls.cmd_move(player, 'south')
-        
+        await cls.typed_move(player, 'south')
+
     @classmethod
     async def cmd_east(cls, player: 'Player', args: List[str]):
-        await cls.cmd_move(player, 'east')
-        
+        await cls.typed_move(player, 'east')
+
     @classmethod
     async def cmd_west(cls, player: 'Player', args: List[str]):
-        await cls.cmd_move(player, 'west')
-        
+        await cls.typed_move(player, 'west')
+
     @classmethod
     async def cmd_up(cls, player: 'Player', args: List[str]):
-        await cls.cmd_move(player, 'up')
-        
+        await cls.typed_move(player, 'up')
+
     @classmethod
     async def cmd_down(cls, player: 'Player', args: List[str]):
-        await cls.cmd_move(player, 'down')
+        await cls.typed_move(player, 'down')
     
     # ==================== INFORMATION ====================
     
