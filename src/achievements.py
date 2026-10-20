@@ -601,6 +601,14 @@ class AchievementManager:
 
     # ----------------------------- progress helpers -----------------------------
 
+    @staticmethod
+    def _ensure_player_fields(player):
+        """The fields `achievements` reads (cmd_achievements; an older save may lack them)."""
+        if not isinstance(getattr(player, 'achievements', None), dict):
+            player.achievements = {}
+        if not isinstance(getattr(player, 'achievement_progress', None), dict):
+            player.achievement_progress = {}
+
     @classmethod
     def _get_progress(cls, player: 'Player', key: str) -> int:
         """Return current progress value for a given key."""

@@ -14249,7 +14249,7 @@ class CommandHandler:
             return
         
         try:
-            with open(updates_file) as f:
+            with open(updates_file, encoding='utf-8') as f:     # (its dashes are UTF-8: not the system's code page)
                 data = json.load(f)
         except Exception as e:
             await player.send(f"{c['red']}Error reading updates.{c['reset']}")
@@ -17067,8 +17067,9 @@ class CommandHandler:
         show_progress = args and args[0].lower() == 'progress'
         
         earned = player.achievements or {}
-        total_points = sum(ACHIEVEMENTS.get(ach_id, {}).get('points', 0) for ach_id in earned)
-        max_points = sum(a.get('points', 0) for a in ACHIEVEMENTS.values())
+        # (ACHIEVEMENTS holds Achievement objects: their name, points and description)
+        total_points = sum(ACHIEVEMENTS[ach_id].points for ach_id in earned if ach_id in ACHIEVEMENTS)
+        max_points = sum(a.points for a in ACHIEVEMENTS.values())
         
         await player.send(f"\r\n{c['bright_cyan']}═══════════════════ ACHIEVEMENTS ═══════════════════{c['reset']}")
         await player.send(f"{c['yellow']}Points: {c['bright_yellow']}{total_points}/{max_points}{c['reset']}  |  "
@@ -17101,20 +17102,19 @@ class CommandHandler:
         if earned:
             await player.send(f"\r\n{c['bright_green']}✓ Earned:{c['reset']}")
             for ach_id in earned:
-                info = ACHIEVEMENTS.get(ach_id, {})
-                title = info.get('title', ach_id)
-                points = info.get('points', 0)
+                info = ACHIEVEMENTS.get(ach_id)
+                title = info.name if info else ach_id
+                points = info.points if info else 0
                 await player.send(f"  {c['bright_green']}★{c['reset']} {title} {c['yellow']}({points} pts){c['reset']}")
         
         # Show unearned if requested
         if show_all:
-            unearned = [a for a in ACHIEVEMENTS if a not in earned]
+            unearned = [a for a, info in ACHIEVEMENTS.items() if a not in earned and not info.hidden]
             if unearned:
                 await player.send(f"\r\n{c['white']}○ Not yet earned:{c['reset']}")
                 for ach_id in unearned[:10]:  # Limit to avoid spam
-                    info = ACHIEVEMENTS.get(ach_id, {})
-                    title = info.get('title', ach_id)
-                    desc = info.get('description', '')
+                    info = ACHIEVEMENTS[ach_id]
+                    title, desc = info.name, info.description
                     await player.send(f"  {c['white']}○{c['reset']} {title} - {c['white']}{desc}{c['reset']}")
                 if len(unearned) > 10:
                     await player.send(f"  {c['white']}... and {len(unearned) - 10} more{c['reset']}")

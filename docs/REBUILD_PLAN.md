@@ -2130,3 +2130,29 @@ zones as a whole as well as rooms, and looks at the rooms as they are drawn.
   carry its style, Ostragoth's halls are halls, the Winterlands' cavern an ice cave, the city wall
   a rampart, Ghenna red stone), `tests/web/roomlooks.test.mjs` (`foundry` is a walkable look with
   its sounds and mood).
+
+### The menus and dialogue in /play's dress (owner, 2026-10-20)
+Owner: "work on all the text menus ... fix every menu in the game to ensure the UI and dialogue is
+clean and matches the rest of the game." Talking to Sage Aldric showed the gap: the window printed
+the server's telnet frames (`╔══╗ ║ TUTORIAL COMPLETE ║`, `+===+ | *NPC* Notable figure |`) and its
+telnet hints (`(type "talk aldric")`) as they came. Some 300 places in the server draw their own
+boxes; telnet keeps them, and /play now draws them in its own dress instead:
+- **`hud/frames.js`** reads framed text: a little box round a title or two (a tutorial step done, a
+  discovery, a level gained) is a banner; a bigger box (score, weather, the journal, skills) is a
+  panel whose rows stay in step, its frame the panel's edge, its inner rules hairlines, its column
+  bars faint; a rule alone is the diamond rule; a title on a rule, or between two, a heading;
+  a progress bar (`[█████░░░░░]`, or a bare run of blocks) a meter of the same width. The chat log
+  gathers a box as its lines stream in; the talk window and help use the same.
+- **The talk window** sets what happened to you apart from what they say: rewards, quest steps
+  and journal notes as notes, the tutorial's box a banner; a quest's progress line and a tip that
+  comes while they speak are left out; "They have nothing to say" when they don't.
+- **The server speaks /play's words to /play** (`quest_guide.web_line`, in `Connection.send` for a
+  web connection): `(type "talk aldric")` becomes ": right-click them, then Talk", "Type 'journal'
+  to ..." becomes "Open your Journal (L) to ...", a shopkeeper's "Type LIST" the Shop; `/quests`
+  (the journal and offers) likewise. A discovery is one line there ("New in your journal: ...").
+- **Typed `help` and `map`** open the Help (at the topic) and Map windows, not a paged index or a
+  map in letters. The server no longer echoes a web page's commands (each showed twice).
+- **Fixed on the way:** `achievements` failed outright (it read its definitions as dicts); the
+  updates list read its file in the system's code page (dashes came out as "â€”" on Windows).
+- **Tests:** `tests/web/frames.test.mjs` (frames, banners, panels, meters, the talk window),
+  `tests/test_web_menus.py` (web_line, the web send path, the discovery line, `achievements`).

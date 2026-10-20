@@ -28,8 +28,16 @@ WEB_HOW = {
     'rest': 'right-click yourself, then Rest', 'stand': 'right-click yourself, then Stand up',
     'eat': 'open your Bags (I), pick some food, then Eat', 'talk': 'right-click them, then Talk',
     'kill': 'Tab to target it, F to attack', 'channel': 'type "channel list" in the chat box',
+    'journal': 'open your Journal (L)', 'map': 'open the Map (M)', 'help': 'open Help (H)',
+    'look': 'right-click it, then Look', 'examine': 'right-click it, then Look',
 }
 TYPED = re.compile(r'\s*\((?:type|try) "(\w+)[^)]*\)')
+# the same in any line the server sends /play: '(type "x")' or "(type 'x')" anywhere in it, and a
+# sentence "Type 'journal' to view your discoveries." where /play opens a window for it instead
+TYPED_ANY = re.compile(r"""\s*\((?:[Tt]ype|[Tt]ry) (["'])(\w+)[^)]*?\1\)""")
+TYPE_TO = re.compile(r"""\b[Tt]ype (["'])(\w+)\1( to [^.!\n\x1b]+)""")
+# and a shopkeeper's "Type LIST to see my wares" (the command in capitals, no quotes)
+TYPE_CAPS = re.compile(r"""\b[Tt]ype ([A-Z]{2,})( to [^.!'"\n\x1b]+)""")
 
 
 def for_player(player, text):
@@ -44,6 +52,31 @@ def web_text(text):
     if not m or m.group(1).lower() not in WEB_HOW:
         return text
     return f"{text[:m.start()]}: {WEB_HOW[m.group(1).lower()]}{text[m.end():]}"
+
+
+def web_line(text):
+    """Any line the server sends /play (server.Connection.send), its telnet hints in /play's
+    words: a '(type "x")' after what to do becomes how to do it with the HUD, and "Type 'x' to
+    ..." becomes "Open your ... to ..." where a window does it. A hint /play has no other way
+    for stays as it is (the chat box takes commands)."""
+    if not text or ('ype ' not in text and 'ry ' not in text and 'YPE ' not in text):
+        return text
+
+    def paren(m):
+        how = WEB_HOW.get(m.group(2).lower())
+        return f": {how}" if how else m.group(0)
+
+    def sentence(m):
+        how = WEB_HOW.get(m.group(2).lower())
+        if not how or not how.startswith('open '):
+            return m.group(0)
+        return f"{how[0].upper()}{how[1:]}{m.group(3)}"
+
+    def caps(m):
+        how = WEB_HOW.get(m.group(1).lower())
+        return f"{how[0].upper()}{how[1:]}{m.group(2)}" if how else m.group(0)
+
+    return TYPE_CAPS.sub(caps, TYPE_TO.sub(sentence, TYPED_ANY.sub(paren, text)))
 
 
 def _words(s):
