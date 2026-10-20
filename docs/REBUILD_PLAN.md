@@ -2045,3 +2045,54 @@ art for the zone."
 - **Tests:** `tests/test_room_looks.py` (every Drow City room is drow) and
   `tests/web/roomlooks.test.mjs` (`drow` is a walkable look with its sounds and moods).
 
+
+### The art audit: every zone drawn to its theme
+Owner: "audit the rooms and use JEV as you see fit to ensure all the game art is correct and to theme
+of each zone." The drow city had shown the gap: every room of it read right by its own words (a
+cave, a hall), and the city of the dark elves was still drawn as plain tunnels. So the audit judges
+zones as a whole as well as rooms, and looks at the rooms as they are drawn.
+- **Three passes with JEV** (`tools/jev_audit.py`; answers cached in `tools/audit/out/`, reports in
+  `docs/JEV_REVIEW_*.md`):
+  - `zones`: for each zone, its setting (a castle, a wizard's tower, a hell, a dwarven hold...) and
+    whether the looks its rooms are drawn with show it (right, partly, generic, wrong).
+  - `rooms`: each room's look against its own words (the earlier pass, run again).
+  - `shots DIR`: screenshots of rooms in /play, sent as image assets (the
+    `TypeSafe-Danger-Zone-Images` header; a data: URI in the state is read as text and never
+    seen), judged against the room's words and its zone's setting: good, the wrong kind of place,
+    the wrong style, bare, unreadable.
+- **What it found, and the fixes:**
+  - **Every indoor room was a homely house** (plank floors, beds, standing lamps, pictures),
+    whether in Welmar's Castle, the High Tower of Magic, the White Gold Cathedral, the halls of the
+    gods or Orcus's temple. A zone now states the style of its interiors (`world/looks.json`
+    `interiors`, sent as the rooms' `tone.interior` by `zone_tone.py`), and
+    `world3d/terrain-interiors.js` draws it: **castle** (flagstones, banners, weapon racks, long
+    tables, standing torches, a throne with a high gilded back), **arcane** (slate-blue stone,
+    bookshelves, a glowing rune circle, floating crystals), **holy** (white marble, white pillars
+    banded in gold, an altar, candles, shafts of light), **infernal** (cracked red stone with lava
+    in the cracks, braziers, skulls, a burning pentagram), **haunted** (rotten boards, cobwebs,
+    furniture knocked over, lanterns, ghost light), **dwarven** (granite, gold-banded pillars, a
+    forge and anvil, kegs, axes and shields), **elven** (pale living wood, trees growing through the
+    hall, flowers, lanterns). A room's use still gets its furniture (a bedroom its beds, a library
+    its shelves). 33 zones have a style.
+  - **The Clockwork Foundry was a cave** (its tunnels' words): it has its own look, `foundry`, with
+    steel plate, pipes along the walls, great gears in them, machines, conveyors, furnaces where a
+    room's name says so, sparks in the Tesla corridor, steam, and a foundry mood.
+  - **Castles' halls were made caves** by the caves under them (the zone-wide "plainly underground"
+    rule): a zone with an interior style keeps its halls (Ostragoth, Caboon, Mahn-Tor).
+  - **Caverns of ice were plain caves** (the Winterlands' halls of ice pillars and icicles): a cave
+    whose words name ice twice or more is an ice cave, lava twice or more a lava cave.
+  - **Ghenna, a hell, was a grey town**, and Orcus's temple likewise: a zone's tone can be stated
+    (`world/looks.json` `tones`): red stone under firelight.
+  - **228 rooms** JEV was sure of and that read so are pinned (`world/looks.json` `rooms`, each
+    with its reason): cells, cellars and prisons as dungeons, spider lairs as webs, mine tunnels as
+    mines, ice caves, gardens, ruins, camps, the Submerged Temple's marble halls as halls, and the
+    Garathorm city wall as ramparts.
+  - The Pit of Minos is a dungeon and the Mindflayer's Lair a cave, not a house's rooms.
+  - Left as they are, by judgement: the Great Eastern Desert (named a desert, it is a river and a
+    mountain's caves, and drawn as such), the Winterwood's snowy paths (snow, JEV would have them
+    forest), mountain snowfields.
+- **Gallery:** `/play?demo&gallery=rooms&only=icastle,ithrone,ibedroom,iarcane,iholy,iinfernal,ihaunted,idwarven,ielven,foundry,foundry2`.
+- **Tests:** `tests/test_room_looks.py` (the Foundry is foundry throughout, every styled zone's rooms
+  carry its style, Ostragoth's halls are halls, the Winterlands' cavern an ice cave, the city wall
+  a rampart, Ghenna red stone), `tests/web/roomlooks.test.mjs` (`foundry` is a walkable look with
+  its sounds and mood).

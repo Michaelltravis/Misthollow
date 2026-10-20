@@ -162,7 +162,7 @@ function fountain() {
     { geometry: new THREE.CylinderGeometry(0.42, 0.15, 0.18, 10).translate(0, 1.2, 0), material: mat(STONE) },
   ]);
 }
-function throne(color) {
+export function throne(color) {
   return made(`throne_${color || ''}`, () => {
     const m = mat(color === 'gold' ? 0xc89a3a : color === 'black' ? 0x2a2626 : STONE_DARK, color === 'gold' ? { metalness: 0.6, roughness: 0.4 } : {});
     return [
@@ -222,7 +222,7 @@ export function drawFeatures(c) {
   const feats = layout.features || [];
   if (!feats.length) return;
   const D = kits.dungeon, N = kits.nature, T = kits.town, F = kits.furniture, G = kits.graveyard;
-  const indoor = ['inside', 'dungeon', 'crypt', 'castle', 'sewer', 'cave', 'mine', 'drow'].includes(layout.theme);
+  const indoor = ['inside', 'dungeon', 'crypt', 'castle', 'sewer', 'cave', 'mine', 'drow', 'foundry'].includes(layout.theme);
   const has = k => feats.some(f => f.k === k);
   const put = (model, x, z, yaw, s, opts) => { if (model) b.add(model, trs(x, 0, z, yaw, s), opts); };
   const putY = (model, x, y, z, yaw, s, opts) => { if (model) b.add(model, trs(x, y, z, yaw, s), opts); };

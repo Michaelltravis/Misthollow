@@ -10,7 +10,7 @@ const SECTOR = {
   water_noswim: '#2f66a0', underwater: '#2a5a8a', flying: '#a8c8e8', default: '#7d8a70',
   // the room looks (room_looks.py)
   mine: '#7a6450', crypt: '#5e5868', sewer: '#5a6a4a', snow: '#e4ecf4', shore: '#e0cc94', volcanic: '#7a3a2a',
-  web: '#5a5e4a', stones: '#7c8a68', village: '#9a8a5e', camp: '#8a7a56', garden: '#5e9a4a', ruins: '#a49c88', terrace: '#e0dacc', ice_cave: '#a8c8e0', lava_cave: '#5a2a1a', castle: '#9a948a', necropolis: '#4c5650', drow: '#4a3a5e',
+  web: '#5a5e4a', stones: '#7c8a68', village: '#9a8a5e', camp: '#8a7a56', garden: '#5e9a4a', ruins: '#a49c88', terrace: '#e0dacc', ice_cave: '#a8c8e0', lava_cave: '#5a2a1a', castle: '#9a948a', necropolis: '#4c5650', drow: '#4a3a5e', foundry: '#5a4a3a',
 };
 const CW = 22, CH = 14;      // css px per cell (keeps the 24:15 room shape)
 export const ZOOM_MIN = 0.3, ZOOM_MAX = 3;

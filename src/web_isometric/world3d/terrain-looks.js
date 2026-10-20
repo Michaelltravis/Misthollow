@@ -65,7 +65,7 @@ const SLIME_MAT = new THREE.MeshStandardMaterial({ color: 0x4a6a1e, emissive: 0x
 const DRIP_MAT = new THREE.MeshStandardMaterial({ color: 0x6a7a58, roughness: 0.1, metalness: 0.1, transparent: true, opacity: 0.55, depthWrite: false });
 const ICE_MAT = new THREE.MeshStandardMaterial({ color: 0xcfe8ff, roughness: 0.08, metalness: 0.1, transparent: true, opacity: 0.7,
   polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
-const WEB_MAT = (() => {
+export const WEB_MAT = (() => {
   if (typeof document === 'undefined') return null;
   const c = document.createElement('canvas'); c.width = c.height = 128;
   const g = c.getContext('2d');

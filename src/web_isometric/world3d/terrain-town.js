@@ -11,6 +11,7 @@
 import * as THREE from 'three';
 import { trs } from './assets.js';
 import { tinted } from './terrain-looks.js';
+import { interiorStyle, FURNISHED, RUGS } from './terrain-interiors.js';
 
 const BLOCK = 1, FLOOR = 0;
 const CARD = { north: [0, -1], south: [0, 1], east: [1, 0], west: [-1, 0] };
@@ -248,6 +249,9 @@ export function furnish(c, kind) {
   // a drow hall keeps only its altar or throne, benches and candles: its pillars, statues and
   // faerie fire come from drowDress, not a human hall's lamps, banners, rugs and pictures
   const drow = layout.theme === 'drow';
+  // an interior in its zone's style keeps only the furniture of its use; terrain-interiors.js
+  // dresses its walls, halls and light
+  const style = interiorStyle(layout), styled = style && !FURNISHED.has(kind);
   const lane = laneTest(layout);
   const at = (x, y) => grid[y * W + x];
   const block = (x, y) => { if (x > 0 && y > 0 && x < W - 1 && y < H - 1) grid[y * W + x] = BLOCK; };
@@ -259,7 +263,7 @@ export function furnish(c, kind) {
   };
 
   // along the north wall (the one the camera faces by default) and the side walls
-  const wallPieces = drow ? [] : WALL_PIECES[kind] || [];
+  const wallPieces = drow || style ? [] : WALL_PIECES[kind] || [];
   if (wallPieces.length) {
     for (let x = 2; x < W - 2; x += 3) {
       if (at(x, 1) !== FLOOR || at(x + 1, 1) !== FLOOR || lane(x, 1) || lane(x + 1, 1)) continue;
@@ -280,7 +284,7 @@ export function furnish(c, kind) {
   }
 
   // centrepieces on roomgen's obstacles (already blocked)
-  for (const o of drow ? [] : layout.obstacles || []) {
+  for (const o of drow || styled ? [] : layout.obstacles || []) {
     const cx = ox + o.x + (o.big ? 1 : 0.5), cz = oz + o.y + (o.big ? 1 : 0.5);
     const yaw = Math.floor(rng() * 4) * Math.PI / 2;
     if (kind === 'tavern') {
@@ -312,15 +316,15 @@ export function furnish(c, kind) {
   // the middle of the room: a rug (temples: a runner up the aisle) and an altar or throne
   const mx = W / 2, my = H / 2;
   if (kind === 'temple' || kind === 'throne') {
-    if (!drow) put(F, 'rug_rectangle_stripes_A', ox + mx, oz + my + 1, Math.PI / 2, 1.2, { shadow: false, receive: true });
+    if (!drow && !style) put(F, 'rug_rectangle_stripes_A', ox + mx, oz + my + 1, Math.PI / 2, 1.2, { shadow: false, receive: true });
     if (!layout.gaps.north) {
       if (kind === 'temple') put(G, 'shrine_candles', ox + mx, oz + 2.2, 0, 0.75);
-      else if (!drow) put(F, 'armchair_pillows', ox + mx, oz + 2.2, 0, 1.0);   // a drow throne is drowDress's
+      else if (!drow && !style) put(F, 'armchair_pillows', ox + mx, oz + 2.2, 0, 1.0);   // a drow throne is drowDress's, a styled one dressInterior's
       block(Math.floor(mx), 2); block(Math.floor(mx) - 1, 2);
       torches.push(new THREE.Vector3(ox + mx, 1.6, oz + 2.6));
     }
     // banners on the north wall
-    if (!drow) for (let x = 3; x < W - 3; x += 5) if (!layout.gaps.north || Math.abs(x - mx) > 5)
+    if (!drow && !style) for (let x = 3; x < W - 3; x += 5) if (!layout.gaps.north || Math.abs(x - mx) > 5)
       put(D, ['banner_patternA_red', 'banner_patternB_blue', 'banner_shield_white'][x % 3], ox + x, oz + 0.8, 0, 0.65);
     // benches facing the altar on both sides of the aisle
     if (kind === 'temple') for (let y = 5; y < H - 3; y += 2) for (const x of [mx - 5, mx + 5]) {
@@ -331,17 +335,17 @@ export function furnish(c, kind) {
     }
   } else {
     const rug = ['rug_rectangle_A', 'rug_oval_A', 'rug_rectangle_B', 'rug_oval_B'][Math.floor(rng() * 4)];
-    put(F, rug, ox + mx, oz + my, rng() < 0.5 ? 0 : Math.PI / 2, 1, { shadow: false });
+    if (!style || RUGS.has(style)) put(F, rug, ox + mx, oz + my, rng() < 0.5 ? 0 : Math.PI / 2, 1, { shadow: false });
   }
   // lamps in the corners light the room
-  for (const [x, y] of drow ? [] : [[1.6, 1.6], [W - 1.6, 1.6]]) {
+  for (const [x, y] of drow || style ? [] : [[1.6, 1.6], [W - 1.6, 1.6]]) {
     if (at(Math.floor(x), Math.floor(y)) !== FLOOR) continue;
     put(F, 'lamp_standing', ox + x, oz + y, 0, 0.7);
     block(Math.floor(x), Math.floor(y));
     torches.push(new THREE.Vector3(ox + x, 1.7, oz + y));
   }
   // small things on the props (walk-through)
-  for (const p of layout.props || []) {
+  for (const p of styled ? [] : layout.props || []) {
     const key = kind === 'library' ? 'book_set' : kind === 'tavern' ? 'chair_stool_wood' : kind === 'temple' ? 'candle_triple' : 'book_single';
     put(kind === 'temple' ? G : F, key, ox + p.x + 0.5, oz + p.y + 0.5, rng() * 6.28, 0.6, { shadow: false });
   }

@@ -49,7 +49,7 @@ import { FAR, farKind } from './far.js';
 const $ = s => document.querySelector(s);
 const WATER_TILE = 4;   // zone.js / terrain.js tile kinds
 // where no sky reaches: no weather, no birds (weather.js, wildlife.js)
-const UNDER_SKY = new Set(['inside', 'web', 'necropolis', 'drow', 'sewer', 'underwater', 'ice_cave', 'lava_cave', 'cave', 'mine', 'dungeon', 'crypt']);
+const UNDER_SKY = new Set(['inside', 'web', 'necropolis', 'drow', 'foundry', 'sewer', 'underwater', 'ice_cave', 'lava_cave', 'cave', 'mine', 'dungeon', 'crypt']);
 const WATER_Y = -0.12;
 const params = new URLSearchParams(location.search);
 const pref = k => { try { return localStorage.getItem(k); } catch (_) { return null; } };
@@ -751,7 +751,7 @@ async function runGame() {
     const dark = L.dark || ['dungeon', 'crypt', 'sewer'].includes(L.theme);
     const night = hour >= 20 || hour < 5, dusk = hour >= 18 || hour < 7;
     // (a spider's lair is dark by its flags, but its own gloom is dark enough: the webs must show)
-    const mood = rock ? 'cave' : L.theme === 'web' ? 'web' : L.theme === 'necropolis' ? 'necropolis' : L.theme === 'drow' ? 'drow' : L.theme === 'sewer' ? 'sewer' : dark ? 'crypt' : L.theme === 'inside' ? 'interior'
+    const mood = rock ? 'cave' : L.theme === 'web' ? 'web' : L.theme === 'necropolis' ? 'necropolis' : L.theme === 'drow' ? 'drow' : L.theme === 'foundry' ? 'foundry' : L.theme === 'sewer' ? 'sewer' : dark ? 'crypt' : L.theme === 'inside' ? 'interior'
       : L.theme === 'volcanic' ? 'volcanic' : L.theme === 'underwater' ? 'underwater' : night ? 'night' : dusk ? 'dusk'
       : L.theme === 'desert' ? 'desert' : L.theme === 'snow' ? 'snow' : L.theme === 'forest' ? 'forest' : 'day';
     engine.setMood(mood);

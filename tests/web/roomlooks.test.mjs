@@ -18,7 +18,7 @@ for (const f of ['world3d/hud-shim.js', 'shared/themes-zones.js', 'shared/roomge
 }
 const MH = globalThis.MH;
 const LOOKS = ['cave', 'mine', 'crypt', 'sewer', 'dungeon', 'desert', 'snow', 'shore', 'volcanic', 'swamp', 'web', 'castle', 'necropolis',
-  'stones', 'village', 'camp', 'garden', 'ruins', 'terrace', 'drow'];
+  'stones', 'village', 'camp', 'garden', 'ruins', 'terrace', 'drow', 'foundry'];
 
 function sampleRooms(n = 60) {
   const out = [];
@@ -87,7 +87,7 @@ test('every look has its footsteps, ambience and music', () => {
 
 test('every look has its terrain branch, mood and minimap colour', () => {
   const src = f => fs.readFileSync(path.join(ROOT, 'src/web_isometric/world3d', f), 'utf8');
-  const terrain = src('terrain.js') + src('terrain-looks.js') + src('terrain-castle.js'), engine = src('engine.js'), main = src('main.js'), mini = src('hud/minimap.js');
+  const terrain = src('terrain.js') + src('terrain-looks.js') + src('terrain-castle.js') + src('terrain-interiors.js'), engine = src('engine.js'), main = src('main.js'), mini = src('hud/minimap.js');
   for (const look of LOOKS) assert.ok(new RegExp(`'${look}'|${look}:`).test(terrain), `terrain draws ${look}`);
   for (const mood of ['cave', 'desert', 'snow', 'volcanic', 'web', 'necropolis']) assert.ok(new RegExp(`\\b${mood}: \\{`).test(engine), `mood ${mood}`);
   assert.ok(/mood = rock \? 'cave'/.test(main), 'the hero in a cave gets the cave mood');
