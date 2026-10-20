@@ -58,7 +58,8 @@ const sideOfRun = (run, W, H) => run.horiz ? (run.line === 0 ? 'north' : 'south'
 
 // ---- a gateway over a gap: two pillars, a lintel; merlons, a portcullis, banners, fires ----
 // gap: { a, b } the open tiles along the side (inclusive). opts: height, merlons, portcullis,
-// banners, fires, plaque (a canvas texture of the name), stone (a tinted pair)
+// banners, fires, plaque (a canvas texture of the name), stone (a tinted pair), column (plain
+// pillars, not a knight's shields: the drow's)
 export function gateway(c, side, gap, opts = {}) {
   const { layout, ox, oz, kits, b, occ, torches } = c;
   const D = kits.dungeon;
@@ -74,7 +75,7 @@ export function gateway(c, side, gap, opts = {}) {
   const horiz = side === 'north' || side === 'south';
   const left = gap.a - 0.5, right = gap.b + 1.5;       // the pillars' centres along the side
   const mid = (gap.a + gap.b + 1) / 2, span = right - left;
-  const pillar = stone(D.get('pillar_decorated'));
+  const pillar = stone(D.get(opts.column ? 'column' : 'pillar_decorated'));
   const ps = sizeOf(pillar);
   for (const along of [left, right]) {
     const [x, z] = onSide(side, along, ox, oz, W, H);
@@ -278,7 +279,7 @@ function standingGate(c, cx, cz, opts = {}) {
   const D = kits.dungeon;
   const height = opts.height || 3.8, LT = 0.8, half = 2.7;
   const stone = m => (opts.stone && m ? tinted(m, opts.stone[0], opts.stone[1]) : m);
-  const pillar = stone(D.get('pillar_decorated'));
+  const pillar = stone(D.get(opts.column ? 'column' : 'pillar_decorated'));
   const ps = sizeOf(pillar);
   for (const x of [cx - half, cx + half]) stand(b, occ(pillar), x, 0, cz, 0, 1.2 / (ps.x || 2.2), height / (ps.y || 4), 1.1 / (ps.z || 1.7));
   stand(b, occ(stone(D.get('wall'))), cx, height - LT, cz, 0, (2 * half + 1.3) / 4, LT / 4, 1.1);
@@ -311,6 +312,9 @@ export function zoneGates(c, theme) {
   const gaps = gapsOf(layout);
   const underground = theme === 'cave' || theme === 'mine';
   const indoor = theme === 'inside' || theme === 'dungeon' || theme === 'crypt' || theme === 'sewer';
+  // the drow's: black stone, plain columns, no banners or torches (their light is faerie fire)
+  const drow = theme === 'drow';
+  const look = drow ? { stone: [0x2a2434, 'drowgate'], column: true, banners: null, fires: false } : {};
   for (const [side, e] of Object.entries(room.data.exits)) {
     if (!e || e.kind !== 'zone') continue;
     // stairs up or down into another region: an arch over them, its name toward the camera
@@ -324,6 +328,7 @@ export function zoneGates(c, theme) {
         banners: indoor || underground ? null : [BANNERS[seed % 3], BANNERS[(seed + 1) % 3]],
         fires: true,
         plaque: name ? plaqueTexture(name, c.owned) : null,
+        ...look,
       });
       continue;
     }
@@ -339,11 +344,12 @@ export function zoneGates(c, theme) {
     const seed = MH.hashStr(name);
     gateway(c, side, gap, {
       height: indoor ? 3.4 : underground ? 3.8 : 5.2,
-      merlons: !indoor && !underground,
+      merlons: !indoor && !underground && !drow,
       stone: underground ? [0x8a7a68, 'gate_rock'] : null,
       banners: indoor || underground ? null : [BANNERS[seed % 3], BANNERS[(seed + 1) % 3]],
       fires: true,
       plaque: name ? plaqueTexture(name, c.owned) : null,
+      ...look,
     });
   }
 }

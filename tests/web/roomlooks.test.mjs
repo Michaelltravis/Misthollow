@@ -18,7 +18,7 @@ for (const f of ['world3d/hud-shim.js', 'shared/themes-zones.js', 'shared/roomge
 }
 const MH = globalThis.MH;
 const LOOKS = ['cave', 'mine', 'crypt', 'sewer', 'dungeon', 'desert', 'snow', 'shore', 'volcanic', 'swamp', 'web', 'castle', 'necropolis',
-  'stones', 'village', 'camp', 'garden', 'ruins', 'terrace'];
+  'stones', 'village', 'camp', 'garden', 'ruins', 'terrace', 'drow'];
 
 function sampleRooms(n = 60) {
   const out = [];

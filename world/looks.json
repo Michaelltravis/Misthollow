@@ -209,13 +209,6 @@
   "10909": "ruins",
   "1900": "ruins",
   "6623": "forest",
-  "5101": "city",
-  "5102": "city",
-  "5106": "city",
-  "5114": "city",
-  "5115": "city",
-  "5103": "city",
-  "5123": "city",
   "8262": "city",
   "13027": "city",
   "13029": "city",
@@ -621,13 +614,6 @@
   "10909": "a roofless ruin: a broken tower floor, a mound among ruins, a gate in crumbling brick",
   "1900": "a roofless ruin: a broken tower floor, a mound among ruins, a gate in crumbling brick",
   "6623": "a treehouse among the great limbs",
-  "5101": "streets, alleys and plazas (JEV review)",
-  "5102": "streets, alleys and plazas (JEV review)",
-  "5106": "streets, alleys and plazas (JEV review)",
-  "5114": "streets, alleys and plazas (JEV review)",
-  "5115": "streets, alleys and plazas (JEV review)",
-  "5103": "streets, alleys and plazas (JEV review)",
-  "5123": "streets, alleys and plazas (JEV review)",
   "8262": "streets, alleys and plazas (JEV review)",
   "13027": "streets, alleys and plazas (JEV review)",
   "13029": "streets, alleys and plazas (JEV review)",
@@ -812,9 +798,11 @@
   "16183": "a mountain path or trail (JEV review)",
   "1933": "carnival grounds among tents (JEV review)",
   "1938": "carnival grounds among tents (JEV review)",
-  "27013": "a ruined shrine open to the sky (JEV review)"
+  "27013": "a ruined shrine open to the sky (JEV review)",
+  "underground_zones:51": "The Drow City: a city of the drow in a vast cavern, after Menzoberranzan (spire houses carved from stalagmites, faerie fire, silk bridges, Narbondel, Lolth's spider temple): every room of it, streets, houses, tunnels and bridges alike, drawn by the 'drow' look (terrain-drow.js)"
  },
  "underground_zones": {
-  "72": "sewer"
+  "72": "sewer",
+  "51": "drow"
  }
 }

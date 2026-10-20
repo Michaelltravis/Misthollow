@@ -174,6 +174,17 @@ function throne(color) {
     ];
   });
 }
+// the drow's pillar: black stone ringed with faerie fire (the dungeon kit's has a knight's shields)
+function drowPillar() {
+  return made('drow_pillar', () => {
+    const fire = mat(0x9a5aff, { emissive: 0xb070ff, emissiveIntensity: 1.6 });
+    return [
+      { geometry: new THREE.CylinderGeometry(0.42, 0.52, 3.4, 8).translate(0, 1.7, 0), material: mat(0x1c1822, { roughness: 0.35, metalness: 0.4 }) },
+      { geometry: new THREE.TorusGeometry(0.58, 0.05, 3, 12).rotateX(Math.PI / 2).translate(0, 0.4, 0), material: fire },
+      { geometry: new THREE.TorusGeometry(0.48, 0.05, 3, 12).rotateX(Math.PI / 2).translate(0, 2.4, 0), material: fire },
+    ];
+  });
+}
 function crystal(color) {
   return made(`crystal_${color || ''}`, () => {
     const c = COLOUR[color] || 0x8a6ae0;
@@ -211,7 +222,7 @@ export function drawFeatures(c) {
   const feats = layout.features || [];
   if (!feats.length) return;
   const D = kits.dungeon, N = kits.nature, T = kits.town, F = kits.furniture, G = kits.graveyard;
-  const indoor = ['inside', 'dungeon', 'crypt', 'castle', 'sewer', 'cave', 'mine'].includes(layout.theme);
+  const indoor = ['inside', 'dungeon', 'crypt', 'castle', 'sewer', 'cave', 'mine', 'drow'].includes(layout.theme);
   const has = k => feats.some(f => f.k === k);
   const put = (model, x, z, yaw, s, opts) => { if (model) b.add(model, trs(x, 0, z, yaw, s), opts); };
   const putY = (model, x, y, z, yaw, s, opts) => { if (model) b.add(model, trs(x, y, z, yaw, s), opts); };
@@ -235,7 +246,7 @@ export function drawFeatures(c) {
       }
       case 'statue': put(blocker(statue()), cx, cz, yaw, s * (main ? 1.3 : 1)); break;
       case 'obelisk': put(blocker(obelisk()), cx, cz, yaw, s); break;
-      case 'pillar': if (D) put(blocker(D.get(v === 0 ? 'pillar_decorated' : 'column')), cx, cz, 0, 1); break;
+      case 'pillar': if (layout.theme === 'drow') put(blocker(drowPillar()), cx, cz, 0, 1); else if (D) put(blocker(D.get(v === 0 ? 'pillar_decorated' : 'column')), cx, cz, 0, 1); break;
       case 'well': if (T) put(blocker(T.get(['building_well_blue', 'building_well_green', 'building_well_red'][v])), cx, cz, yaw, 0.9); break;
       case 'fountain': put(blocker(fountain()), cx, cz, 0, main ? 1.25 : 1); break;
       case 'brazier': {
@@ -270,7 +281,7 @@ export function drawFeatures(c) {
       }
       case 'lantern': if (G) put(G.get('lantern_standing'), cx, cz, yaw, 1); break;
       case 'drum': put(blocker(drum()), cx, cz, yaw, 1); break;
-      case 'throne': put(blocker(throne(f.c)), cx, cz, Math.round(yaw / (Math.PI / 2)) * Math.PI / 2, main ? 1.25 : 1); break;
+      case 'throne': put(blocker(throne(layout.theme === 'drow' ? 'black' : f.c)), cx, cz, Math.round(yaw / (Math.PI / 2)) * Math.PI / 2, main ? 1.25 : 1); break;
       case 'table': if (D) put(blocker(D.get('table_long_decorated_A')), cx, cz, Math.round(yaw / (Math.PI / 2)) * Math.PI / 2, 0.9); break;
       case 'bench': if (G) put(G.get(v === 0 ? 'bench_decorated' : 'bench'), cx, cz, yaw, 1); break;
       case 'shelf': if (F) put(blocker(F.get(v === 0 ? 'shelf_B_large_decorated' : 'shelf_A_big')), cx, cz, yaw, 1); else if (D) put(blocker(D.get('shelves')), cx, cz, yaw, 1); break;

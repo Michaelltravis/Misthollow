@@ -1995,3 +1995,53 @@ is fine. The eyebrows and hair should match the beard color."
 - **Tests:** `tests/test_archmage_look.py` (creation, save and load, mage only, `appearance`) and
   `tests/web/gearlook.test.mjs` (the plan).
 
+### The drow city, as D&D draws one
+Owner: "The drow city doesn't look like a drow city. research DnD and then create the appropriate
+art for the zone."
+- **What D&D says** (Menzoberranzan, the archetypal drow city, Forgotten Realms sources):
+  - It fills a vast dark cavern.
+  - Its homes are carved into great stalagmites and stalactites, the biggest formations being the
+    noble houses' castles, joined by bridges of hardened spider silk.
+  - Every house is outlined in permanent faerie fire (violet, blue and green), with spiders carved
+    everywhere for Lolth.
+  - Narbondel, a great pillar the Archmage heats each day, tells the time; Arach-Tinilith, the
+    temple of Lolth, is shaped as a spider.
+- **The look:** every room of the Drow City (zone 51) has the new `drow` look
+  (`world/looks.json` `underground_zones`, and absolute there, so even its tunnels and bridges
+  have it). The JEV pins that drew its streets as a surface town are gone.
+- **The drawing** (`world3d/terrain-drow.js`, called from `terrain.js buildRoom`):
+  - Each room's kind is read from its name: street, Narbondel ("The Center Of The Drow City"),
+    temple ("Entrance To The Temple Of Lloth"), bridge (the Thin Underground Bridges, the Ornate
+    Walkway), fungus forest, tunnel or hall (the noble houses, academies, barracks).
+  - **Streets:** dark obsidian flagstones. Where no room is next door, rows of spire houses stand
+    beyond the edge, each ringed and ribbed in faerie fire, with lit window slits, a glowing door
+    arch and a spider sigil over it. Houses carved in stalactites hang further back, with silk
+    bridges strung between the spires. In the street: giant glowing mushrooms, spider statues,
+    faerie crystals and faerie-fire braziers.
+  - **Narbondel:** a dark pillar in the plaza's north-east, red-hot at its foot, with hour-rings up
+    its height and a web of faerie fire inlaid in the floor.
+  - **The temple:** a great spider crouching over the plaza on eight legs, its body high enough to
+    walk under, its eyes red.
+  - **Bridges:** only the way across is floor, with silk rails and glowing strands along its
+    edges; the rest is the abyss, with the city's spires far below.
+  - **The fungus forest:** thick with glowing mushrooms.
+  - **Tunnels:** the cave rock, with fungus and crystals.
+  - **Halls:** dark stone walls with faerie fire along their tops and feet, spiders carved on them,
+    and a web in the floor of throne rooms and temples. Every hall gets spider statues,
+    faerie-ringed obsidian pillars and crystals. A temple keeps its altar, benches and candles; a
+    throne room gets a matron's throne of black stone, crowned with eight spider legs. Neither
+    gets a human hall's lamps, banners, rugs or knightly pillars (`furnish` skips them for drow),
+    and a pillar named in a room's text is drawn the drow way. No warm torches: each room gets two
+    faerie-fire lights instead.
+  - **Gateways** into another region are black stone with plain columns, with no banners or
+    torches.
+  - **People:** a priestess who keeps a door (the Temple Warden of Lloth) is robed, not a knight
+    (`looks.js`: priests are read before guards).
+  - Everything is procedural geometry merged by material, with the see-through cut, so a spire or
+    the pillar never hides the hero.
+- **Mood:** a black cavern with violet gloom (`engine.js` `drow`); no sky or weather; the dark
+  music and the drow ambient bed; the minimap colour.
+- **Gallery:** `/play?demo&gallery=rooms&only=drow,drowcenter,drowtemple,drowbridge,drowfungus,drowhouse`.
+- **Tests:** `tests/test_room_looks.py` (every Drow City room is drow) and
+  `tests/web/roomlooks.test.mjs` (`drow` is a walkable look with its sounds and moods).
+

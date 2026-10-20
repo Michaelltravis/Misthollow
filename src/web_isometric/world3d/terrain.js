@@ -8,6 +8,7 @@ import { cutout } from './cutout.js';
 import { townStreet, furnish, interiorKind, interiorFloorKey, graveyard, isGraveyard, townHouse } from './terrain-town.js';
 import { castleWalls, castleYard, zoneGates } from './terrain-castle.js';
 import { drawFeatures, featureCells } from './terrain-features.js';
+import { drowKind, drowDress, drowHallKind, bridgeCells, DROW_OPEN } from './terrain-drow.js';
 import { underground, dressHall, outdoorEdge, outdoorDress, mountainCliffs, sunkenRuins, webDress, tinted, RUIN_RE, LOOK_GROUND, UNDERGROUND } from './terrain-looks.js';
 
 export const ROOM_W = 24, ROOM_H = 15;
@@ -27,7 +28,7 @@ const TONE_STONE = {
   green: new THREE.Color(0.82, 1.12, 0.86), blue: new THREE.Color(0.86, 0.96, 1.32), gold: new THREE.Color(1.45, 1.22, 0.82),
   brown: new THREE.Color(1.08, 0.9, 0.74),
 };
-const PAVED = new Set(['inside', 'dungeon', 'crypt', 'sewer', 'city', 'castle', 'necropolis']);
+const PAVED = new Set(['inside', 'dungeon', 'crypt', 'sewer', 'city', 'castle', 'necropolis', 'drow']);
 const CARD = { north: [0, -1], south: [0, 1], east: [1, 0], west: [-1, 0] };
 
 // ---- deterministic noise (world-space, so neighbouring rooms join seamlessly) ----
@@ -97,7 +98,9 @@ function runs(grid, W, H) {
 // room owns (to dispose when it is released).
 export function buildRoom(layout, ox, oz, kits, room) {
   const { grid, W, H } = layout;
-  const theme = layout.theme;
+  // the drow city (terrain-drow.js): its tunnels are rock, the rest its own stone and spires
+  const drowAs = layout.theme === 'drow' ? drowKind(layout, room) : null;
+  const theme = drowAs === 'tunnel' ? 'cave' : layout.theme;
   const owned = [];
   const rng = MH.mulberry32((layout.vnum * 2246822519) ^ 0x3d);
   const group = new THREE.Group();
@@ -118,34 +121,41 @@ export function buildRoom(layout, ox, oz, kits, room) {
     groundSheet(layout, ox, oz, GROUND[theme], group, owned, { paths: theme === 'mine' });
     waterSurface(layout, ox, oz, group);
     underground(ctx(), theme);
+    if (drowAs) drowDress(ctx(), drowAs);
   } else if (PAVED.has(theme)) {
     // (a dead city is a town's streets in black stone, terrain-town.js)
     const town = theme === 'city' || theme === 'necropolis', castle = theme === 'castle';
     const toneStone = layout.tone && TONE_STONE[layout.tone.stone];
-    const kind = theme === 'inside' ? interiorKind(layout) : null;
+    const drow = theme === 'drow', drowOpen = drow && DROW_OPEN.has(drowAs);
+    // (a drow house is furnished only as a throne room or a temple; its other halls get statues,
+    // crystals and faerie fire, terrain-drow.js)
+    const kind = theme === 'inside' ? interiorKind(layout) : drow && !drowOpen ? drowHallKind(layout) : null;
+    const abyss = drowAs === 'bridge' ? bridgeCells(layout) : null;
     // ---- floor: KayKit stone tiles at 1 m ----
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
       // under everything but the wall ring (obstacles stand ON the floor)
       if (at(x, y) === BLOCK && (x === 0 || y === 0 || x === W - 1 || y === H - 1)) continue;
       if (at(x, y) === WATER) continue;   // a sewer's channel (terrain-looks.js draws its water)
+      if (abyss && !abyss.has(y * W + x)) continue;   // a drow bridge: nothing but the ways across
       const r = rng();
       const key = theme === 'necropolis' ? (r < 0.5 ? 'floor_tile_small_broken_A' : 'floor_tile_small')
+        : drow ? (r < 0.12 ? 'floor_tile_small_broken_A' : 'floor_tile_small')
         : town ? (r < 0.1 ? 'floor_tile_small_weeds_A' : 'floor_tile_small_broken_A')
         : theme === 'sewer' ? (r < 0.35 ? 'floor_tile_small_weeds_A' : r < 0.55 ? 'floor_tile_small_broken_A' : 'floor_tile_small')
         : (kind && interiorFloorKey(kind, r, layout.vnum))
         || (r < 0.07 ? 'floor_tile_small_broken_A' : r < 0.13 ? 'floor_tile_small_weeds_A' : 'floor_tile_small');
       // a dead city's paving is dark and grave-cold; a zone whose words say its stone is black,
       // white marble, red sandstone... has its floors in that stone (zone_tone.py)
-      const tile = theme === 'necropolis' ? tinted(D.get(key), 0x6a6872, 'necro') : toneStone ? tinted(D.get(key), toneStone, `tone_${layout.tone.stone}`) : D.get(key);
+      const tile = theme === 'necropolis' ? tinted(D.get(key), 0x6a6872, 'necro') : drow ? tinted(D.get(key), 0x4a4058, 'drow') : toneStone ? tinted(D.get(key), toneStone, `tone_${layout.tone.stone}`) : D.get(key);
       b.add(tile, trs(ox + x + 0.5, -0.05, oz + y + 0.5, Math.floor(rng() * 4) * Math.PI / 2, 0.5, 0.5, 0.5), { shadow: false });
     }
     // ---- walls: border runs as stretched KayKit wall pieces (in the zone's stone) ----
-    const wall = asOccluder(toneStone ? tinted(D.get('wall'), toneStone, `tone_${layout.tone.stone}`) : D.get('wall'));
+    const wall = asOccluder(drow ? tinted(D.get('wall'), 0x4a4060, 'drowwall') : toneStone ? tinted(D.get('wall'), toneStone, `tone_${layout.tone.stone}`) : D.get('wall'));
     const WALL_H = 2.6;
     if (town && kits.town) townStreet(ctx());
     // a castle: tall walls with merlons, corner towers, gatehouses (terrain-castle.js)
     if (castle) castleWalls(ctx());
-    for (const run of (town && kits.town) || castle ? [] : runs(grid, W, H)) {
+    for (const run of (town && kits.town) || castle || drowOpen ? [] : runs(grid, W, H)) {
       const L = run.b - run.a + 1;
       const n = Math.max(1, Math.round(L / 4)), w = L / n;
       for (let i = 0; i < n; i++) {
@@ -155,7 +165,7 @@ export function buildRoom(layout, ox, oz, kits, room) {
         b.add(piece, trs(x, 0, z, yaw, w / 4, WALL_H / 4, 1));
       }
       // torches on the north wall, facing into the room, every ~6 m
-      if (!town && run.horiz && run.line === 0 && L >= 4) {
+      if (!town && !drow && run.horiz && run.line === 0 && L >= 4) {
         for (let tx = run.a + 2; tx <= run.b - 1; tx += 6) {
           if (at(tx, 1) === BLOCK) continue;
           b.add(D.get('torch_mounted'), trs(ox + tx + 0.5, 1.55, oz + 1.0, 0, 1), { shadow: false });
@@ -166,7 +176,9 @@ export function buildRoom(layout, ox, oz, kits, room) {
     // ---- interior obstacles (they block in the grid) ----
     if (kind && kits.furniture) furnish(ctx(), kind);
     // a crypt's coffins and bones, a sewer's channel and pipes (terrain-looks.js)
-    const dressed = castle ? (castleYard(ctx()), true) : !town && !kind && dressHall(ctx(), theme);
+    // the drow city's own dressing: spires, faerie fire, fungus, its landmarks (terrain-drow.js)
+    if (drow) { drowDress(ctx(), drowAs); torches.length = 0; }   // (faerie fire, never warm torchlight)
+    const dressed = castle ? (castleYard(ctx()), true) : drow ? true : !town && !kind && dressHall(ctx(), theme);
     for (const o of (kind && kits.furniture) || (town && kits.town) || dressed ? [] : layout.obstacles || []) {
       if (o.big) {
         const key = town ? ['crates_stacked', 'barrel_large', 'keg'][Math.floor(rng() * 3)]
