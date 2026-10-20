@@ -19,9 +19,11 @@ notes in `docs/REBUILD_PLAN.md` ("The art audit").
 ## Since done (from a fresh clone, on Windows with a GPU)
 - The full screenshot pass (all 611 rooms) and JEV's shots, rooms and zones verdicts over them;
   the numbers and what was fixed are in `docs/REBUILD_PLAN.md` ("The full pass, from a fresh clone").
-- Left for a person: the 15 shots still listed under "To fix" in `docs/JEV_REVIEW_SHOTS.md` (each
-  kept by its own words; JEV's pick from the picture swings for them), and Before The Gates Of
-  Mahn-Tor (10162), where the cliffs of the room below rise through the room.
+- Before The Gates Of Mahn-Tor (10162) was buried by the land round a room a cell across and two
+  up; fixed in `world3d/skirt.js` (a corner of the land runs on only over empty cells).
+- Left for a person: 15 shots still listed under "To fix" in `docs/JEV_REVIEW_SHOTS.md`, each kept
+  by its own words (JEV's pick from the picture swings for them), and A Leader Strand (6327), hidden
+  behind trees a neighbour's land grows in the empty cell south of it.
 
 ## Not done
 - Nothing from this list.

@@ -1,9 +1,9 @@
 # JEV review: rooms as drawn
 
 JEV looked at 611 screenshots of rooms in /play, each against its own words and its zone's setting
-({'wrong_place': 143, 'wrong_style': 48, 'bare': 198, 'unreadable': 2, 'good': 220}). Nothing is changed by this list.
+({'wrong_place': 145, 'wrong_style': 48, 'bare': 197, 'unreadable': 1, 'good': 220}). Nothing is changed by this list.
 
-## To fix (15)
+## To fix (16)
 
 | verdict | sure | zone | room | name | look | JEV would draw |
 |---|---|---|---|---|---|---|
@@ -19,11 +19,12 @@ JEV looked at 611 screenshots of rooms in /play, each against its own words and 
 | wrong_place | 0.33 | 508 Durmandel II | 13115 | At The End Of A Long Hallway | dungeon | castle 0.95 |
 | wrong_place | 0.33 | 72 Sewer | 7306 | The Mudhole | water_swim | swamp 0.60 |
 | wrong_place | 0.27 | 501 Aredrel Dwarven | 24728 | The Middle Of The Shopping District | cave | dungeon 0.42 |
+| wrong_place | 0.20 | 63 Arachnos | 6327 | A Leader Strand | shore | web 0.51 |
 | wrong_style | 0.64 | 479 Ancalador | 205557 | Guild Hall | inside | dungeon 0.61 |
 | wrong_style | 0.39 | 447 Mahn-Tor Keep | 10134 | Mahn-Tor Ice Temple | inside | ice_cave 0.49 |
 | wrong_style | 0.20 | 100 The Dwarven Mines of Khaz-Durum | 10004 | Foreman's Office | inside | mine 0.47 |
 
-## The look confirmed (171)
+## The look confirmed (172)
 
 Judged the wrong place or style, but the look JEV would draw is the one drawn: what it wants is detail.
 
@@ -130,6 +131,7 @@ Judged the wrong place or style, but the look JEV would draw is the one drawn: w
 | wrong_place | 0.37 | 521 The Winterwood | 12451 | A Small Cave | cave | cave 0.70 |
 | wrong_place | 0.37 | 491 Morvoct | 15130 | The Ruined Path | ruins | ruins 1.00 |
 | wrong_place | 0.37 | 190 The Frostspire | 19021 | The Ice-Bound Mine | mine | mine 0.72 |
+| wrong_place | 0.37 | 447 Mahn-Tor Keep | 10162 | Before The Gates Of Mahn-Tor | castle | castle 0.96 |
 | wrong_place | 0.36 | 491 Morvoct | 15161 | A Waterfall | mountain | mountain 0.52 |
 | wrong_place | 0.36 | 186 Newbie Zone | 18608 | An Open Field By The Great Field | field | field 0.99 |
 | wrong_place | 0.35 | 470 Castle of Ostragoth | 8366 | The Entrance To Castle N'Kai | castle | castle 0.98 |
@@ -224,7 +226,6 @@ Last column: whether JEV can see, in the picture, the things the room's words na
 | 10109 | Mahn-Tor Market Square | city | banner 0.92 | pole, banner, barrel, crate | some |
 | 1013 | The Gods' Labyrinth | inside | other 0.59 (other 0.89) | statue | all |
 | 10144 | The Grand Hall | inside | banner 0.97 | pillar, banner | some |
-| 10162 | Before The Gates Of Mahn-Tor | castle | gate 0.79 | banner, gate | none |
 | 1016 | Walking The White Marble Streets | city | other 0.23 (gate 0.33) | pillar, fountain | some |
 | 10194 | Nasturn's Humble Abode | inside | other 0.87 (other 0.88) | bed | all |
 | 10198 | Dorgar's Dismal Domicile | dungeon | lantern 0.63 | lantern | all |
@@ -533,6 +534,7 @@ Last column: whether JEV can see, in the picture, the things the room's words na
 | wrong_place | 0.37 | 521 The Winterwood | 12451 | A Small Cave | cave | cave 0.70 |
 | wrong_place | 0.37 | 491 Morvoct | 15130 | The Ruined Path | ruins | ruins 1.00 |
 | wrong_place | 0.37 | 190 The Frostspire | 19021 | The Ice-Bound Mine | mine | mine 0.72 |
+| wrong_place | 0.37 | 447 Mahn-Tor Keep | 10162 | Before The Gates Of Mahn-Tor | castle | castle 0.96 |
 | wrong_place | 0.36 | 491 Morvoct | 15161 | A Waterfall | mountain | mountain 0.52 |
 | wrong_place | 0.36 | 186 Newbie Zone | 18608 | An Open Field By The Great Field | field | field 0.99 |
 | wrong_place | 0.35 | 470 Castle of Ostragoth | 8366 | The Entrance To Castle N'Kai | castle | castle 0.98 |
@@ -561,6 +563,7 @@ Last column: whether JEV can see, in the picture, the things the room's words na
 | wrong_place | 0.24 | 235 The Goblin Warrens | 23506 | Spider Nest Cavern | web | web 0.98 |
 | wrong_place | 0.24 | 30 Garathorm Inner City | 3030 | The Dump | city | sewer 0.51 |
 | wrong_place | 0.21 | 512 Orc Tunnels | 13335 | Climbing A Narrow Ramp | ice_cave | ice_cave 0.64 |
+| wrong_place | 0.20 | 63 Arachnos | 6327 | A Leader Strand | shore | web 0.51 |
 | wrong_place | 0.19 | 441 King's Forest | 8694 | The Hiding Place | cave | cave 0.91 |
 | wrong_place | 0.19 | 418 Garathorm Vineyard | 209007 | In the wine cellar | dungeon | dungeon 0.99 |
 | wrong_place | 0.16 | 419 Mishrak | 8012 | Chapel Street | city | city 0.93 |
@@ -698,7 +701,6 @@ Last column: whether JEV can see, in the picture, the things the room's words na
 | bare | 0.50 | 512 Orc Tunnels | 13770 | Underground Lake | water_swim | cave 0.93 |
 | bare | 0.50 | 465 Below Moria | 20571 | The Crystal Cavern | ice_cave | ice_cave 0.70 |
 | bare | 0.50 | 250 Bedlam Arena | 25003 | The Arena Slide | stones | stones 0.37 |
-| bare | 0.49 | 447 Mahn-Tor Keep | 10162 | Before The Gates Of Mahn-Tor | castle | castle 0.94 |
 | bare | 0.49 | 408 Trade Road | 2315 | In The Vegetable Garden | garden | garden 1.00 |
 | bare | 0.49 | 416 Castle Of Caboon | 2744 | Telgar's Tomb | crypt | crypt 1.00 |
 | bare | 0.49 | 454 Caverns of the Pale Man | 107359 | Death's Kiss | ice_cave | ice_cave 0.99 |
@@ -811,7 +813,6 @@ Last column: whether JEV can see, in the picture, the things the room's words na
 | bare | 0.15 | 40 Mountain Range | 8525 | The Illuminated Ravine | mountain | mountain 0.66 |
 | bare | 0.14 | 32 Stable & Temple | 203635 | A Dirty, Narrow Corridor | inside | inside 0.63 |
 | bare | 0.09 | 54 New Thalos | 5595 | A Tunnel In The Dungeon | dungeon | dungeon 1.00 |
-| unreadable | 0.69 | 63 Arachnos | 6327 | A Leader Strand | shore | field 0.63 |
 | unreadable | 0.45 | 61 Haon-Dor (Dark) | 6132 | Up In The Tree | web | web 0.96 |
 | good | 0.97 | 270 The Whispering Woods | 27012 | Rocky Outcropping | mountain |  |
 | good | 0.96 | 63 Arachnos | 6321 | Above The Ravine | web |  |
@@ -828,10 +829,8 @@ Last column: whether JEV can see, in the picture, the things the room's words na
 | good | 0.90 | 442 Outcast Fortress | 16322 | Along The Mountain Wall | city |  |
 | good | 0.89 | 461 Tombs of Atuan | 10821 | The Ridge of Death | cave |  |
 | good | 0.89 | 471 Badlands II | 8308 | The Black Hills | hills |  |
-| good | 0.87 | 419 Mishrak | 8081 | The Hole | cave |  |
 | good | 0.86 | 54 New Thalos | 5658 | In The Mountains | mountain |  |
 | good | 0.86 | 200 Forest of Shadows | 20004 | Spider's Hollow | web |  |
-| good | 0.86 | 238 The Haunted Monastery | 23805 | The Belfry | inside |  |
 | good | 0.85 | 431 Garathorm Cathedral | 4409 | The Churchyard | field |  |
 | good | 0.85 | 60 Plains | 6131 | A Huge, Nasty Spider Web | web |  |
 | good | 0.85 | 63 Arachnos | 6332 | Through The Trees | forest |  |
@@ -849,6 +848,7 @@ Last column: whether JEV can see, in the picture, the things the room's words na
 | good | 0.81 | 30 Garathorm Inner City | 3114 | The Pond | water_swim |  |
 | good | 0.81 | 435 MiNar I | 14648 | The Great Forest Of MiNar | web |  |
 | good | 0.81 | 442 Outcast Fortress | 16338 | Inside The Church Of Outcasts | inside |  |
+| good | 0.81 | 238 The Haunted Monastery | 23805 | The Belfry | inside |  |
 | good | 0.80 | 514 Morkai | 13853 | The Fire Vein | lava_cave |  |
 | good | 0.79 | 30 Garathorm Inner City | 3116 | Eastern Park Entrance | garden |  |
 | good | 0.79 | 419 Mishrak | 8078 | The Cellar | dungeon |  |
@@ -951,7 +951,6 @@ Last column: whether JEV can see, in the picture, the things the room's words na
 | good | 0.45 | 25 High Tower Of Magic I | 2592 | Inside The Energy Field | inside |  |
 | good | 0.45 | 90 The Haunted Swamp | 9002 | Grove of Dead Trees | forest |  |
 | good | 0.45 | 426 Troglodyte Mines | 20326 | More Tunnels In The Mine | mine |  |
-| good | 0.45 | 238 The Haunted Monastery | 23819 | The Meditation Garden | garden |  |
 | good | 0.44 | 40 Mountain Range | 8529 | Middle Of The Carved Stairs | cave |  |
 | good | 0.44 | 457 Castle Of The Apocalypse I | 14180 | Ragged Walkway Atop The Castle | castle |  |
 | good | 0.44 | 424 Castle Catacombs | 15323 | An Odd Passageway | crypt |  |
@@ -982,6 +981,7 @@ Last column: whether JEV can see, in the picture, the things the room's words na
 | good | 0.39 | 522 The Winterlands | 3958 | A Large Cavern | ice_cave |  |
 | good | 0.39 | 507 Lost Crypt II | 24975 | The Underground Tunnel | lava_cave |  |
 | good | 0.39 | 270 The Whispering Woods | 27004 | The Moonlit Pool | water_swim |  |
+| good | 0.39 | 419 Mishrak | 8081 | The Hole | cave |  |
 | good | 0.37 | 445 Ogre Village | 2215 | Before the Dark Cave | cave |  |
 | good | 0.37 | 51 Drow City | 5181 | The Entrance To The Third House | drow |  |
 | good | 0.37 | 471 Badlands II | 8347 | On A Small Landing | mountain |  |
@@ -1004,6 +1004,7 @@ Last column: whether JEV can see, in the picture, the things the room's words na
 | good | 0.31 | 110 Elven Village | 11001 | Guard chiefs bed room. | inside |  |
 | good | 0.31 | 474 Cave Elf Kingdom | 21766 | In the Dungeon | dungeon |  |
 | good | 0.31 | 295 Crown of Bone | 29524 | The Bone Bastion | crypt |  |
+| good | 0.31 | 238 The Haunted Monastery | 23819 | The Meditation Garden | garden |  |
 | good | 0.30 | 65 Dwarven Kingdom | 6548 | In The Maze | dungeon |  |
 | good | 0.30 | 419 Mishrak | 8023 | A Ruined House | ruins |  |
 | good | 0.30 | 455 Gondor Island | 10901 | The Ocean Stream near the Rim of the World | shore |  |
@@ -1034,4 +1035,4 @@ Last column: whether JEV can see, in the picture, the things the room's words na
 | good | 0.14 | 474 Cave Elf Kingdom | 21703 | Stairwell to the Upper Floor | dungeon |  |
 | good | 0.10 | 502 Draconian Camp | 2004 | In The Dark | dungeon |  |
 
-_1,060,080 input tokens over all answers (about $0.04 at $0.042 per million)._
+_1,068,401 input tokens over all answers (about $0.04 at $0.042 per million)._

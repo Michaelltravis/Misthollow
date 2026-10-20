@@ -8,6 +8,7 @@ import { cutout } from './cutout.js';
 import { townStreet, furnish, interiorKind, interiorFloorKey, graveyard, isGraveyard, townHouse } from './terrain-town.js';
 import { castleWalls, castleYard, zoneGates } from './terrain-castle.js';
 import { drawFeatures, featureCells } from './terrain-features.js';
+import { skirtPatches } from './skirt.js';
 import { drowKind, drowDress, drowHallKind, bridgeCells, DROW_OPEN } from './terrain-drow.js';
 import { interiorStyle, styleFloor, styleWall, dressInterior, STYLES } from './terrain-interiors.js';
 import { underground, dressHall, outdoorEdge, outdoorDress, mountainCliffs, sunkenRuins, webDress, tinted, RUIN_RE, LOOK_GROUND, UNDERGROUND, SNOW_WOOD } from './terrain-looks.js';
@@ -455,23 +456,8 @@ function fillerLand(c, theme) {
   const trees = (edge ? edge.trees : theme === 'swamp' ? ['DeadTree_1', 'DeadTree_2'].map(k => N.get(k))
     : ['CommonTree_1', 'CommonTree_2', 'CommonTree_3', 'Pine_1', 'Pine_2'].map(k => N.get(k))).filter(Boolean);
   const rockOf = k => edge && edge.rock ? edge.rock(k) : N.get(k);
-  // half the empty cell (a room on its far side fills the other half); in an opened zone
-  // (wilds.py) the land at the zone's edge runs on a cell and a half, into the fog
-  const wild = !!room.zoneRef.wild;
-  const far = (dx, dy) => (wild && empty(2 * dx, 2 * dy) ? 1.5 : 0.5);
-  const HWx = dx => W * far(dx, 0), HHy = dy => H * far(0, dy);
-  // the patches to fill, in world metres: [x0, z0, w, d, outward axis ('x'|'z'), outward sign]
-  const patches = [];
-  if (empty(0, -1)) patches.push([ox, oz - HHy(-1), W, HHy(-1), 'z', -1]);
-  if (empty(0, 1)) patches.push([ox, oz + H, W, HHy(1), 'z', 1]);
-  if (empty(-1, 0)) patches.push([ox - HWx(-1), oz, HWx(-1), H, 'x', -1]);
-  if (empty(1, 0)) patches.push([ox + W, oz, HWx(1), H, 'x', 1]);
-  for (const [dx, dy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
-    if (empty(dx, dy) && empty(dx, 0) && empty(0, dy)) {
-      const cw = Math.min(HWx(dx), wild && empty(2 * dx, 2 * dy) ? HWx(dx) : W / 2), cd = Math.min(HHy(dy), wild && empty(2 * dx, 2 * dy) ? HHy(dy) : H / 2);
-      patches.push([dx < 0 ? ox - cw : ox + W, dy < 0 ? oz - cd : oz + H, cw, cd, 'c', 0]);
-    }
-  }
+  // the empty cells round the room to fill, and how far (skirt.js)
+  const patches = skirtPatches({ ox, oz, W, H, wild: !!room.zoneRef.wild, empty });
   if (!patches.length) return;
   const cA = new THREE.Color(pal.a), cB = new THREE.Color(pal.b), col = new THREE.Color();
   for (const [x0, z0, w, d, axis, sign] of patches) {

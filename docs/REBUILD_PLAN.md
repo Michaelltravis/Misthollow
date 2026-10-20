@@ -2166,9 +2166,10 @@ zones as a whole as well as rooms, and looks at the rooms as they are drawn.
       frozen marsh). None left open.
     - **Zones:** five were listed, all at low confidence (the Mindflayer's Lair, both cathedrals,
       the Sewer, Salem's Lot); each is accepted with its reason and JEV upholds all five.
-    - **Shots:** all 611 shot (good 220, bare 198, the wrong place 143, the wrong style 48,
-      unreadable 2). 16 rooms take the look JEV picks from the shot and words; 171 are "the look
-      confirmed", 5 accepted and upheld. **15 stay listed**, each kept by its own words (in
+    - **Shots:** all 611 shot (good 220, bare 197, the wrong place 145, the wrong style 48,
+      unreadable 1). 16 rooms take the look JEV picks from the shot and words; 172 are "the look
+      confirmed", 5 accepted and upheld. **16 stay listed**: A Leader Strand (below), and 15
+      each kept by its own words (in
       `accepted.json`, quoted) and each reason not upheld: the boat on the Styx, the dry corridor
       of the Submerged Temple, the Docks of Garathorm, the bottom of a well where you float, a
       courtyard, a home inside the Elder Oak, a guild hall, a market under a cavern roof, and the
@@ -2178,9 +2179,17 @@ zones as a whole as well as rooms, and looks at the rooms as they are drawn.
       back and left to a person.
     - **Bare:** 198. Of the things their words name that the game draws, JEV sees all in 58, some in
       49, none in 38. Looked at by hand, most "none" are misses (the Crystal Spire's crystals and the
-      Great Valley's statue are plainly there), but one is a real fault: at **Before The Gates Of
-      Mahn-Tor** (10162) the cliffs of the mountain room below it (On The Cliffside, 2261, down)
-      rise through the room and bury the hero, the gate and the banners.
+      Great Valley's statue are plainly there), but one was a real fault: **Before The Gates Of
+      Mahn-Tor** (10162) was buried under cliffs. They were the land round On The Cliffside (2261),
+      a cell across and two up: in an opened zone a corner of that land runs on a cell and a half,
+      and it did so over a room. A corner now runs on only over empty cells (`world3d/skirt.js`,
+      `tests/web/skirt.test.mjs`; 49 rooms in all were overdrawn so). The gates are seen now and
+      JEV confirms them (castle, 0.96).
+    - Still open, of the same family: **A Leader Strand** (6327, Arachnos) is hidden behind tall
+      trees that the land round The Tether Path (6325's neighbour 6326) grows in the empty cell
+      south of it, between the camera and the hero (JEV: "unreadable" before the fix, now the wrong
+      place). Two rooms at right angles to one empty cell both fill it; which should give way is a
+      choice for the owner.
     - The atlas index still named zone 50 The Great Eastern Desert (`docs/world/ATLAS_INDEX.md`).
     - Tests (on Windows): the web suites pass (183); of the offline Python suites, all but
       `test_atlas`'s zones.json check pass (it writes `world\zones\...` on Windows), with
