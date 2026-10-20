@@ -483,7 +483,8 @@ export function drawFeatures(c) {
       }
       case 'tent': if (T) put(blocker(T.get('tent')), cx, cz, yaw, sized(T.get('tent'), 2.2)); break;
       case 'cage': put(blocker(cage()), cx, cz, yaw, main ? 1.35 : 1.15); break;
-      case 'chains': put(blocker(chains()), cx, cz, Math.round(yaw / (Math.PI / 2)) * Math.PI / 2, main ? 1.2 : 1); break;
+      // (a frame, a gate, a bell's frame face the camera: turned side-on they read as a post)
+      case 'chains': put(blocker(chains()), cx, cz, 0, main ? 1.2 : 1); break;
       case 'stake': if (G) put(G.get('post'), cx, cz, yaw, sized(G.get('post'), 1.4) * 0.9); break;
       case 'pole': if (G) put(G.get(has('skull') ? 'post_skull' : 'post'), cx, cz, yaw, sized(G.get('post'), 2.4)); break;
       case 'banner': {
@@ -555,7 +556,7 @@ export function drawFeatures(c) {
         if (main) heap(() => crystal(f.c), 3, 1.8, 0.45);
         break;
       case 'rug': if (F) put(F.get(v === 0 ? 'rug_rectangle_A' : 'rug_oval_A'), cx, cz, Math.round(yaw / (Math.PI / 2)) * Math.PI / 2, 1, { shadow: false }); break;
-      case 'gate': put(blocker(gate()), cx, cz, Math.round(yaw / (Math.PI / 2)) * Math.PI / 2, main ? 1.2 : 1); break;
+      case 'gate': put(blocker(gate()), cx, cz, 0, main ? 1.2 : 1); break;
       case 'tree': if (N) {
         const pine = ['snow', 'mountain', 'hills'].includes(layout.theme) || /pine|spruce|fir|larch|taiga/i.test(`${layout.name} ${layout.description}`);
         const tm = N.get(pine ? (v ? 'Pine_1' : 'Pine_2') : ['CommonTree_1', 'CommonTree_2', 'CommonTree_3'][v]);
@@ -573,7 +574,7 @@ export function drawFeatures(c) {
       case 'ice': put(blocker(crystal('ice')), cx, cz, yaw, s * (main ? 1.6 : 1.25), { shadow: false }); break;
       case 'flames': if (indoor && has('brazier')) break; put(blocker(flames(v)), cx, cz, yaw, main ? 1.4 : 1, { shadow: false }); if (torches) torches.push(new THREE.Vector3(cx, 0.9, cz)); break;
       case 'mirror': put(blocker(mirror()), cx, cz, wallYaw(f), 1); break;
-      case 'bell': put(blocker(bell()), cx, cz, Math.round(yaw / (Math.PI / 2)) * Math.PI / 2, main ? 1.25 : 1); break;
+      case 'bell': put(blocker(bell()), cx, cz, 0, main ? 1.25 : 1); break;
       case 'waterfall': put(blocker(waterfall()), cx, cz, wallYaw(f), main ? 1.2 : 1); break;
       case 'blood': case 'ash': case 'stake_holes': put(decal(f.k, v), cx, cz, yaw, 1, { shadow: false, receive: false }); break;
       default: break;

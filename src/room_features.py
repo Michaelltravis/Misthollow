@@ -27,7 +27,7 @@ FEATURES = [
                        # ("the tall stone." but not "rain strikes the stone.")
                        r'(?:tall|broad|lopsided|weathered|carved|great|grand|squat|nearest|fire-blackened) stone(?=[,.;])', 4, 'edge'),
     ('altar', r'altars?|offering stones?|slaughter stone|sacrificial stones?', 2, 'centre'),
-    ('statue', r'statues?|idols?|effig(?:y|ies)|carved figures?|hunched old man|plinths?', 2, 'centre'),
+    ('statue', r'statues?|idols?|effig(?:y|ies)|carved figures?|hunched old man|plinths?|monuments?\b|memorial stones?', 2, 'centre'),
     ('obelisk', r'obelisks?', 1, 'centre'),
     ('pillar', r'pillars?|columns?|colonnades?', 4, 'edge'),
     ('well', r'\b(?:a|the|an old|stone|deep|village|town) well\b|\b(?:a|the|village|town|iron) pump\b', 1, 'centre'),
