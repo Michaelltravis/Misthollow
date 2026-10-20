@@ -621,7 +621,8 @@
   "205555": "dungeon",
   "205557": "inside",
   "206604": "dungeon",
-  "209007": "dungeon"
+  "209007": "dungeon",
+  "7216": "underwater"
  },
  "zones": {
   "465": "cave",
@@ -1292,7 +1293,8 @@
   "206604": "Salem's Lot: The Cellar reads as dungeon, not inside (art audit, JEV)",
   "209007": "Garathorm Vineyard: In the wine cellar reads as dungeon, not inside (art audit, JEV)",
   "tones:481": "Ghenna: a hell; its streets and halls are red stone under firelight, not a town's grey (art audit)",
-  "tones:515": "Orcus Temple: the demon prince's temple, red stone under firelight (art audit)"
+  "tones:515": "Orcus Temple: the demon prince's temple, red stone under firelight (art audit)",
+  "7216": "Sewer: Underwater In The Sewer is under the water, holding your breath, not a dry tunnel (art audit, JEV shot)"
  },
  "underground_zones": {
   "72": "sewer",

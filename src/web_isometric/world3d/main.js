@@ -752,7 +752,9 @@ async function runGame() {
     const night = hour >= 20 || hour < 5, dusk = hour >= 18 || hour < 7;
     // (a spider's lair is dark by its flags, but its own gloom is dark enough: the webs must show)
     const mood = rock ? 'cave' : L.theme === 'web' ? 'web' : L.theme === 'necropolis' ? 'necropolis' : L.theme === 'drow' ? 'drow' : L.theme === 'foundry' ? 'foundry' : L.theme === 'sewer' ? 'sewer' : dark ? 'crypt' : L.theme === 'inside' ? 'interior'
-      : L.theme === 'volcanic' ? 'volcanic' : L.theme === 'underwater' ? 'underwater' : night ? 'night' : dusk ? 'dusk'
+      : L.theme === 'volcanic' ? 'volcanic' : L.theme === 'underwater' ? 'underwater'
+      // (snow keeps its cold light at dawn and dusk: the warm dusk sun made a snowfield sand)
+      : L.theme === 'snow' && !night ? 'snow' : night ? 'night' : dusk ? 'dusk'
       : L.theme === 'desert' ? 'desert' : L.theme === 'snow' ? 'snow' : L.theme === 'forest' ? 'forest' : 'day';
     engine.setMood(mood);
     // a zone's light (zone_tone.py): green ghost-fire, cold moonlight, the warmth of torches

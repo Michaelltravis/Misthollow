@@ -40,7 +40,9 @@ UNDERGROUND = {'cave', 'mine', 'crypt', 'sewer', 'dungeon', 'ice_cave', 'lava_ca
 # a zone look that holds for every room of its zone, whatever a room's own words say
 ZONE_WIDE = {'drow', 'foundry'}
 # a hand override (world/looks.json) may also keep a room as plain country or a plain room
-OVERRIDE_LOOKS = LOOKS + ('field', 'forest', 'hills', 'mountain', 'city', 'inside')
+OVERRIDE_LOOKS = LOOKS + ('field', 'forest', 'hills', 'mountain', 'city', 'inside',
+                          # (a room under the water its words say it is: Underwater In The Sewer)
+                          'underwater')
 OUTDOOR = {'desert', 'snow', 'volcanic', 'swamp', 'web', 'stones', 'village', 'camp', 'garden', 'ruins', 'terrace'}   # (a shore is an edge: it doesn't spread)
 # a sacred ring or a field of standing stones (the Stone Circle): turf and flagstones under the sky,
 # a ring of standing stones for walls. Old imports typed such places 'city' (paved, walled), so a
