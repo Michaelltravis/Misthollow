@@ -3,17 +3,35 @@
 // and the finished quests you can hand in (Turn in: `quest complete <id>`). The words are the
 // server's own reply to `talk`; the offers and the finished quests come from /quests.
 
+import { formatLines, noteKind, PROMPT_AT } from './frames.js';
+
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-// the instructions a telnet player needs and a window replaces with buttons
+// the instructions a telnet player needs and a window replaces with buttons; a quest's progress
+// (the tracker shows it) and a tip that happens to come while they speak
 const HINTS = [/^Use 'talk <npc> <number>' to respond\.?$/i, /^Use 'quest accept <quest_id>' to accept a quest\.?$/i,
-  /^\(quest accept [\w-]+\)$/i, /^Responses:$/i, /^\[Hint\]/i];
+  /^\(quest accept [\w-]+\)$/i, /^Responses:$/i, /^\[Hint\]/i, /^Quest Progress:/i, /^Tip:/i, /^💡/];
+
+// what they say, drawn: their words as lines of the book, what happened to you (a reward, a quest
+// step, the journal) as notes, the server's boxes as banners (frames.js)
+export function talkHtml(says) {
+  const parts = formatLines(says.map(t => ({ text: t, html: esc(t) })));
+  const html = parts.map(o => {
+    if (o.box) return o.html;
+    const k = noteKind(o.text);
+    return k ? `<p class="tx-note ${k}">${o.html}</p>` : `<p>${o.html}</p>`;
+  }).join('');
+  // (no word from them and nothing done, only a journal note: say so first)
+  const spoke = parts.some(o => o.box || noteKind(o.text) !== 'journal');
+  return spoke ? html : `<p class="tk-quiet">They have nothing to say.</p>${html}`;
+}
 
 // what a reply to `talk` says: {says: [lines], choices: [{n, text}], offers: [quest ids]}. Only
 // what follows "You greet ..." is theirs (before it: your command's echo, the world going on);
 // the prompt, the echo of a command and the offers' own lines (the window lists the offers) go.
 export function readTalk(text) {
-  let lines = String(text || '').replace(/\r/g, '').split('\n').map(l => l.trim()).filter(Boolean);
+  // (a line's leading prompt goes, the rest stays: what they say can follow it on the same line)
+  let lines = String(text || '').replace(/\r/g, '').split('\n').map(l => l.replace(PROMPT_AT, '').trim()).filter(Boolean);
   const greet = lines.findIndex(l => /^You greet /.test(l));
   if (greet >= 0) lines = lines.slice(greet + 1);
   const says = [], choices = [], offers = [];
@@ -73,7 +91,7 @@ export function createTalk(root, { send, listen, fetchQuests, sound }) {
   function render() {
     if (!open) return;
     root.querySelector('.tk-who').textContent = who || 'Conversation';
-    const words = reply.says.length ? reply.says.map(l => `<p>${esc(l)}</p>`).join('') : `<p class="tk-quiet">${waiting ? '…' : 'They have nothing to say.'}</p>`;
+    const words = reply.says.length ? talkHtml(reply.says) : `<p class="tk-quiet">${waiting ? '…' : 'They have nothing to say.'}</p>`;
     const choices = reply.choices.map(c => `<button class="tk-choice" data-n="${c.n}">${esc(c.text)}</button>`).join('');
     const offers = quests.offers.map(o => `<div class="tk-quest">
         <div class="sb-main"><div class="sb-name">${esc(o.name)}</div><div class="sb-cost">${esc(o.description || '')}</div></div>

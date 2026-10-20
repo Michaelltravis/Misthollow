@@ -2215,3 +2215,73 @@ zones as a whole as well as rooms, and looks at the rooms as they are drawn.
   carry its style, Ostragoth's halls are halls, the Winterlands' cavern an ice cave, the city wall
   a rampart, Ghenna red stone), `tests/web/roomlooks.test.mjs` (`foundry` is a walkable look with
   its sounds and mood).
+
+### The menus and dialogue in /play's dress (owner, 2026-10-20)
+Owner: "work on all the text menus ... fix every menu in the game to ensure the UI and dialogue is
+clean and matches the rest of the game." Talking to Sage Aldric showed the gap: the window printed
+the server's telnet frames (`╔══╗ ║ TUTORIAL COMPLETE ║`, `+===+ | *NPC* Notable figure |`) and its
+telnet hints (`(type "talk aldric")`) as they came. Some 300 places in the server draw their own
+boxes; telnet keeps them, and /play now draws them in its own dress instead:
+- **`hud/frames.js`** reads framed text: a little box round a title or two (a tutorial step done, a
+  discovery, a level gained) is a banner; a bigger box (score, weather, the journal, skills) is a
+  panel whose rows stay in step, its frame the panel's edge, its inner rules hairlines, its column
+  bars faint; a rule alone is the diamond rule; a title on a rule, or between two, a heading;
+  a progress bar (`[█████░░░░░]`, or a bare run of blocks) a meter of the same width. The chat log
+  gathers a box as its lines stream in; the talk window and help use the same.
+- **The talk window** sets what happened to you apart from what they say: rewards, quest steps
+  and journal notes as notes, the tutorial's box a banner; a quest's progress line and a tip that
+  comes while they speak are left out; "They have nothing to say" when they don't.
+- **The server speaks /play's words to /play** (`quest_guide.web_line`, in `Connection.send` for a
+  web connection): `(type "talk aldric")` becomes ": right-click them, then Talk", "Type 'journal'
+  to ..." becomes "Open your Journal (L) to ...", a shopkeeper's "Type LIST" the Shop; `/quests`
+  (the journal and offers) likewise. A discovery is one line there ("New in your journal: ...").
+- **Typed `help` and `map`** open the Help (at the topic) and Map windows, not a paged index or a
+  map in letters. The server no longer echoes a web page's commands (each showed twice).
+- **Every menu, swept.** Of the server's 533 commands, the ones that show something (not the class
+  abilities, the emotes, an immortal's tools, or what acts: quit, rent, drop, a toggle...) were run
+  on a web connection where each shows (a shop's list at a shop, mail at the post office, the
+  auction house, the stable, the arena, the housing district, a trainer), 104 of them, drawn as
+  /play draws them and read; and every window of the HUD opened and looked at.
+  - A list the server lines up with spaces (the stable's mounts, the housing plots, settings,
+    levels, arena rewards, the command list) is drawn fixed-width, so it lines up again; a row
+    set one space apart amid it is one of its rows.
+  - A line that begins with a prompt ("20/20hp ...> the pilgrim leaves north") loses the prompt
+    and keeps the rest (the talk window dropped such a line whole); the help index is not paged
+    on a web page ("Press ENTER to continue" there was a dead end).
+  - A menu's bars were taken for the fight's health bar (msgkind.py) and hidden from the log's
+    All tab with the fight, reputation's whole list among them: the health bar is ten cells,
+    and a row of a box is the menu's.
+  - The windows' descriptions (a shop's, the stable's, a quest offered, the Legend's) were set in
+    small capitals and read as shouting: the body face. The Talents window said "type doctrine":
+    the Legend's Doctrine page (G). A shop called a bottle "drinkcon": a drink. A mount for sale
+    said its speed twice.
+- **Fixed on the way:** `achievements` failed outright (it read its definitions as dicts); the
+  updates list read its file in the system's code page (dashes came out as "â€”" on Windows);
+  `inspect`, `minimap`, `protect` and `drink_alt` failed outright (two `@classmethod`s), and so did
+  the rent an item adds (`@classmethod` on a `@staticmethod`); `social` alone failed (the emotes'
+  helper answered to it: it lists the emotes now); `arena top` failed (the online players are a
+  dict).
+- **Then read in /play itself, and every command.** The 104 menus typed into /play's own chat box
+  and read from its log; then all 520 of the server's commands but the 13 that stop the server,
+  write the world's files or end the session (shutdown, zsave, zreset, redit, oedit, medit,
+  backup, restore, purge, slay, quit, rent, dc): emotes, abilities with no one to use them on,
+  the immortals' tools, the toggles. Checked for a frame's characters left outside /play's
+  frames, a terminal code, a broken character, paging, a typing hint, a prompt, a failure.
+  - The web bridge sent what it read in pieces, cut mid colour code, mid box character or mid
+    line: it keeps each whole now. A terminal's other codes (`clear`'s clear-screen) go; typed
+    `clear` empties the log. A hint right after a colour code was never rewritten (the code's m
+    hid the word's edge). `move` alone failed (it took the words typed for a direction).
+  - Lists in columns line up (emotes, commands, settings, the housing plots' heading, arena and
+    auction help); `minimap` opens the Map.
+  - The 13 left out were then run too, against a throwaway copy of the game (each that ends the
+    session in a login of its own): each answers plainly, and `redit`'s builders' menu (which
+    takes every line after it until Q) is drawn as a list in step ("1) Name        : ...").
+- **Every frame the server draws** (`tools/audit/frame_lines.py`: 528 lines in 27 files, from the
+  source, fields filled with a sample; box characters and rules of = - ~ *) is checked against
+  `frames.js`: none is left a line of text with the frame's characters in it. Styles it lacked: a
+  box's empty row (a lone ║, the talent trees'), a heading with words after it ("═══ DUEL OVER ═══
+  Ann defeats Bo!"), and a rule of asterisks (the prestige banner). The two ASCII-art logos are
+  the telnet's welcome, which /play's own sign-in page stands in for.
+- **Tests:** `tests/web/frames.test.mjs` (frames, banners, panels, meters, the talk window),
+  `tests/test_web_menus.py` (web_line, the web send path, the discovery line, `achievements`,
+  the bridge, `move`, and every frame in the source).

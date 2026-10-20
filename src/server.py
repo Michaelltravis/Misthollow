@@ -5,6 +5,7 @@ Handles network connections and player sessions.
 """
 
 import msgkind
+import quest_guide
 import asyncio
 import logging
 import re
@@ -138,11 +139,12 @@ class Connection:
                 return
             # Word-wrap for a telnet terminal (a web page wraps its own text); a web page is
             # told what kind each line is (msgkind.py: the blow-by-blow, a kill's reward), so
-            # /play can keep its log for what isn't drawn
+            # /play can keep its log for what isn't drawn, and is told how to do a thing with
+            # its windows, not what to type (quest_guide.web_line)
             if not self.is_web:
                 message = _wrap_text(message, 80)
             elif self.state == self.STATE_PLAYING:
-                message = msgkind.mark(message)
+                message = msgkind.mark(quest_guide.web_line(message))
             # Convert all newlines to \r\n for telnet compatibility
             message = message.replace('\r\n', '\n').replace('\n', '\r\n')
             if newline and not message.endswith('\r\n'):
@@ -1430,10 +1432,14 @@ class Connection:
         # (named in full: 'web' alone is a spell)
         web_internal = line.startswith(('webmove ', 'webdoor ', 'webbar ', 'webattack', 'webpull ', 'webping ', 'webtrack ', 'uiseen '))
         secret = self._secret_line(line)
+        # (a web page shows what was typed itself, as it was typed: /play's log, the web
+        # client's echo setting; the server's echo there was each command twice, and the ones
+        # its windows send for you besides)
         if secret:
             web_internal = True
-            await self.send(f"{c['cyan']}> {secret}{c['reset']}\r\n")
-        if not web_internal:
+            if not self.is_web:
+                await self.send(f"{c['cyan']}> {secret}{c['reset']}\r\n")
+        if not web_internal and not self.is_web:
             await self.send(f"{c['cyan']}> {line}{c['reset']}\r\n")
 
         # Handle ! to repeat last command

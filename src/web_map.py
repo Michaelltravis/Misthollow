@@ -1217,9 +1217,11 @@ class WebMapServer:
                             active.append(mq_entry)
                     except Exception as e:
                         logger.debug(f"/quests marquee: {e}")
+                    # (in /play's words, not a telnet's: quest_guide.web_line)
+                    from quest_guide import web_line
                     for q in getattr(player, 'active_quests', []) or []:
                         objs = [{
-                            'description': o.description,
+                            'description': web_line(o.description),
                             'current': int(getattr(o, 'current', 0)),
                             'required': int(getattr(o, 'required', 1)),
                             'completed': bool(getattr(o, 'completed', False)),
@@ -1231,7 +1233,7 @@ class WebMapServer:
                             elapsed = (datetime.now() - q.started_at).total_seconds() / 60
                             remaining = max(0, int(q.time_limit - elapsed))
                         active.append({
-                            'id': q.quest_id, 'name': q.name, 'description': q.description,
+                            'id': q.quest_id, 'name': q.name, 'description': web_line(q.description),
                             'objectives': objs, 'rewards': q.rewards,
                             'complete': q.is_complete(), 'remaining_min': remaining,
                             'tracked': __import__('quest_guide').tracked(player, q),
@@ -1254,7 +1256,7 @@ class WebMapServer:
                                 qd = QUEST_DEFINITIONS.get(qid, {})
                                 offers.append({
                                     'id': qid, 'name': qd.get('name', qid),
-                                    'description': qd.get('description', ''),
+                                    'description': web_line(qd.get('description', '')),
                                     'level_min': qd.get('level_min', 1),
                                     'level_max': qd.get('level_max', 99),
                                     'rewards': qd.get('rewards', {}),
