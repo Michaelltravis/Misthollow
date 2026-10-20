@@ -7,22 +7,21 @@ For each zone as a whole, JEV judged whether the looks its rooms are drawn with 
 |---|---|---|---|---|---|---|
 | generic | 0.15 | 62 | The Orc Enclave | 68 | orc | forest 34, cave 15, dungeon 9, shore 5 |
 | partly | 0.65 | 447 | Mahn-Tor Keep | 90 | castle | inside 60, city 23, castle 3, mountain 2 |
+| partly | 0.55 | 452 | Submerged Temple | 65 | sunken | cave 29, inside 22, dungeon 7, water_noswim 6 |
+| partly | 0.52 | 120 | Sea of Storms | 350 | sea | water_noswim 89, water_swim 48, inside 48, city 47 |
 | partly | 0.52 | 470 | Castle of Ostragoth | 111 | castle | inside 51, cave 30, crypt 12, castle 11 |
 | partly | 0.49 | 458 | Castle Varok | 84 | castle | inside 46, hills 25, field 6, castle 6 |
 | partly | 0.48 | 512 | Orc Tunnels | 450 | orc | cave 254, mine 51, city 26, water_swim 23 |
 | partly | 0.47 | 478 | Fire Grotto | 96 | fire | cave 60, mine 11, dungeon 11, inside 9 |
 | partly | 0.45 | 32 | Stable & Temple | 50 | temple | inside 34, cave 5, city 4, forest 4 |
-| partly | 0.45 | 452 | Submerged Temple | 65 | sunken | cave 29, inside 23, dungeon 7, water_noswim 6 |
 | partly | 0.44 | 60 | Plains | 187 | wilds | forest 110, field 42, water_noswim 14, inside 5 |
-| partly | 0.44 | 120 | Sea of Storms | 350 | sea | water_noswim 89, water_swim 48, inside 48, city 46 |
 | partly | 0.41 | 476 | Stone Circle | 94 | temple | stones 65, inside 13, forest 8, cave 4 |
 | partly | 0.40 | 220 | Castle Of The Apocalypse II | 122 | castle | inside 63, castle 30, city 20, dungeon 9 |
+| partly | 0.37 | 63 | Arachnos | 53 | wilds | web 33, field 7, forest 7, cave 3 |
 | partly | 0.37 | 160 | The Plane of Eternal Chaos | 26 | plane | volcanic 13, mountain 6, cave 2, swamp 1 |
-| partly | 0.32 | 491 | Morvoct | 86 | sea | inside 30, village 11, water_swim 9, dungeon 9 |
-| partly | 0.31 | 63 | Arachnos | 53 | wilds | web 32, field 7, forest 7, cave 4 |
 | partly | 0.31 | 501 | Aredrel Dwarven | 99 | dwarf | cave 42, inside 26, mine 12, field 11 |
-| partly | 0.24 | 186 | Newbie Zone | 41 | dungeon | dungeon 37, cave 2, city 1, field 1 |
-| partly | 0.16 | 250 | Bedlam Arena | 18 | arena | inside 14, dungeon 2, field 1, water_swim 1 |
+| partly | 0.28 | 250 | Bedlam Arena | 18 | arena | inside 14, dungeon 2, stones 1, water_swim 1 |
+| partly | 0.20 | 186 | Newbie Zone | 41 | dungeon | dungeon 36, cave 3, city 1, field 1 |
 | right | 0.99 | 238 | The Haunted Monastery | 25 | temple | inside 16, crypt 6, ruins 2, garden 1 |
 | right | 0.96 | 180 | The Great Northern Forest | 26 | wilds | snow 13, forest 9, stones 1, inside 1 |
 | right | 0.95 | 285 | The Drowned Reliquary | 36 | sunken | underwater 36 |
@@ -74,7 +73,7 @@ For each zone as a whole, JEV judged whether the looks its rooms are drawn with 
 | right | 0.69 | 509 | Durmandel Mines I | 151 | dungeon | mine 149, cave 1, water_noswim 1 |
 | right | 0.69 | 515 | Orcus Temple | 29 | temple | inside 21, castle 6, city 2 |
 | right | 0.67 | 475 | World Of Chaos | 90 | plane | inside 29, shore 21, necropolis 20, water_swim 14 |
-| right | 0.67 | 507 | Lost Crypt II | 84 | tomb | crypt 42, cave 33, volcanic 5, lava_cave 4 |
+| right | 0.67 | 507 | Lost Crypt II | 84 | tomb | crypt 42, cave 32, volcanic 5, lava_cave 5 |
 | right | 0.65 | 482 | Haunted House | 49 | haunted | inside 44, camp 2, ruins 1, garden 1 |
 | right | 0.64 | 467 | Moria Deep | 22 | dwarf | mine 9, cave 6, dungeon 4, crypt 2 |
 | right | 0.63 | 449 | Leper Island | 80 | jungle | forest 30, village 15, inside 12, shore 4 |
@@ -113,12 +112,12 @@ For each zone as a whole, JEV judged whether the looks its rooms are drawn with 
 | right | 0.40 | 15 | The Straight Path | 41 | plane | inside 34, field 5, hills 1, crypt 1 |
 | right | 0.40 | 33 | The Three Of Swords | 76 | wilds | cave 31, mountain 21, inside 7, city 5 |
 | right | 0.40 | 61 | Haon-Dor (Dark) | 5 | dungeon | web 3, cave 1, inside 1 |
-| right | 0.40 | 65 | Dwarven Kingdom | 49 | dwarf | inside 22, field 7, mine 6, dungeon 5 |
 | right | 0.40 | 73 | The Mindflayer's Lair | 3 | underdark | cave 3 |
+| right | 0.40 | 503 | Durmandel I | 114 | dwarf | city 42, inside 36, cave 22, field 5 |
 | right | 0.39 | 481 | Ghenna | 86 | hell | inside 33, city 20, cave 19, garden 4 |
 | right | 0.39 | 519 | White Gold Cathedral | 100 | temple | inside 97, forest 1, dungeon 1, field 1 |
-| right | 0.37 | 503 | Durmandel I | 114 | dwarf | city 42, inside 37, cave 22, field 5 |
 | right | 0.36 | 53 | Great Pyramid | 59 | desert | cave 30, crypt 18, desert 11 |
+| right | 0.36 | 65 | Dwarven Kingdom | 49 | dwarf | inside 22, field 7, mine 6, dungeon 5 |
 | right | 0.36 | 248 | The Clockwork Foundry | 30 | machine | foundry 30 |
 | right | 0.36 | 442 | Outcast Fortress | 102 | castle | cave 63, forest 17, field 6, mountain 5 |
 | right | 0.33 | 72 | Sewer | 196 | town | sewer 175, cave 15, water_swim 3, mine 1 |
@@ -126,31 +125,31 @@ For each zone as a whole, JEV judged whether the looks its rooms are drawn with 
 | right | 0.31 | 245 | Shadowspire Citadel | 30 | castle | inside 24, dungeon 5, castle 1 |
 | right | 0.31 | 431 | Garathorm Cathedral | 73 | temple | inside 30, crypt 24, field 15, necropolis 3 |
 | right | 0.31 | 479 | Ancalador | 55 | dungeon | cave 46, crypt 4, forest 2, hills 1 |
+| right | 0.29 | 491 | Morvoct | 86 | sea | inside 29, village 10, water_swim 9, dungeon 9 |
 | right | 0.20 | 480 | Salem's Lot | 82 | town | inside 30, field 20, city 19, garden 4 |
 
-## Accepted as they are (18)
+## Accepted as they are (17)
 
-JEV was shown each with its reason and held it fair (18 of 18).
+JEV was shown each with its reason and held it fair (17 of 17).
 
 | zone | name | verdict | why |
 |---|---|---|---|
 | 62 | The Orc Enclave | generic 0.15 | The Orc Enclave: woods, caves and the river, drawn so |
 | 447 | Mahn-Tor Keep | partly 0.65 | Mahn-Tor's streets, market and squares are a city's (city), its halls the castle style |
+| 452 | Submerged Temple | partly 0.55 | The Submerged Temple's dry caves and halls, walked not swum |
+| 120 | Sea of Storms | partly 0.52 | The Sea of Storms holds sea, islands, ports, a desert and Carcosa, each drawn as its own words say |
 | 470 | Castle of Ostragoth | partly 0.52 | Ostragoth's halls are the castle style; the caves and crypts under it are drawn as caves and crypts |
 | 458 | Castle Varok | partly 0.49 | Castle Varok's halls are the castle style; the foothills round it are hills |
 | 512 | Orc Tunnels | partly 0.48 | The Orc Tunnels: tunnels, mines and the orc town, drawn so |
 | 478 | Fire Grotto | partly 0.47 | The Fire Grotto's steamy caverns and halls; its fiery rooms are lava caves |
 | 32 | Stable & Temple | partly 0.45 | The Royal Stables and the temple: indoor rooms, tunnels and the street |
-| 452 | Submerged Temple | partly 0.45 | The Submerged Temple's dry caves and halls, walked not swum |
 | 60 | Plains | partly 0.44 | The Plains are woods, fields and rivers, drawn so |
-| 120 | Sea of Storms | partly 0.44 | The Sea of Storms holds sea, islands, ports, a desert and Carcosa, each drawn as its own words say |
 | 476 | Stone Circle | partly 0.41 | The Stone Circle's stones, with its city of sacrifice and caves |
 | 220 | Castle Of The Apocalypse II | partly 0.40 | Castle of the Apocalypse: castle walls and the castle style inside, its city and dungeons |
+| 63 | Arachnos | partly 0.37 | Arachnos: webbed lairs and the woods and fields round them |
 | 160 | The Plane of Eternal Chaos | partly 0.37 | The Plane of Chaos: each confluence drawn as its element (fire, mountain, rock, swamp) |
-| 491 | Morvoct | partly 0.32 | Morvoct: its village and houses, its waters, and its prison, guard rooms and cages as dungeons (JEV unsure, 0.28) |
-| 63 | Arachnos | partly 0.31 | Arachnos: webbed lairs and the woods and fields round them |
 | 501 | Aredrel Dwarven | partly 0.31 | Aredrel: the dwarven hold's cavern streets, its halls in the dwarven style, its mines |
-| 186 | Newbie Zone | partly 0.24 | The Newbie Zone: a training dungeon, drawn as dungeon (37 of its 41 rooms); its entrance off the city street and the field it looks out on are drawn as those (JEV unsure, 0.24) |
-| 250 | Bedlam Arena | partly 0.16 | Bedlam Arena: its pits and platforms, drawn as built halls and open ground |
+| 250 | Bedlam Arena | partly 0.28 | Bedlam Arena: its pits and platforms, drawn as built halls and open ground |
+| 186 | Newbie Zone | partly 0.20 | The Newbie Zone: a training dungeon, drawn as dungeon (37 of its 41 rooms); its entrance off the city street and the field it looks out on are drawn as those (JEV unsure, 0.24) |
 
-_335,008 input tokens over all answers (about $0.01 at $0.042 per million)._
+_335,094 input tokens over all answers (about $0.01 at $0.042 per million)._
