@@ -415,6 +415,12 @@ class CommandHandler:
     @classmethod
     async def cmd_move(cls, player: 'Player', direction: str):
         """Move in a direction."""
+        # (typed as a command, `move north`, it comes with the words typed: `move` alone failed)
+        if isinstance(direction, list):
+            if not direction:
+                await player.send("Move which way? (north, south, east, west, up or down)")
+                return
+            direction = cls.ALIASES.get(direction[0].lower(), direction[0].lower())
         if not player.room:
             await player.send("You are nowhere!")
             return

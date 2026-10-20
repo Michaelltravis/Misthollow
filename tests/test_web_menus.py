@@ -145,6 +145,47 @@ out = asyncio.run(bridged([b'You are carry', b'ing:\r\n'], gap=0.01))
 check('You are carrying:' in out and bridged.messages == 1, f'a line cut in two goes as one message ({bridged.messages}: {out!r})')
 out = asyncio.run(bridged([b'20/20hp> '], gap=0.2))
 check('20/20hp&gt;' in out or '20/20hp>' in out, f'a prompt, which ends no line, still goes ({out!r})')
+p = P(True)
+p.room, p.position = None, 'standing'
+asyncio.run(CommandHandler.cmd_move(p, []))
+check(p.said and 'which way' in p.said[-1], f'`move` alone asks which way (it failed: a list for a direction) ({p.said})')
+p = P(True); p.room, p.position = None, 'standing'
+asyncio.run(CommandHandler.cmd_move(p, ['n']))
+check(p.said == ['You are nowhere!'], f'`move n` goes on to move north ({p.said})')
+html = web_client.ansi_to_html('\x1b[2J\x1b[Hhi \x1b[31mred\x1b[0m')
+check(html == 'hi <span class="ansi-red">red</span>', f"a terminal's other codes (`clear`'s) go; colours stay ({html!r})")
+
+# every frame the server draws (tools/audit/frame_lines.py: some 500 lines in some 30 files) is
+# one /play draws in its own dress (hud/frames.js classify): a rule, a heading, a row of a box, or
+# a list in columns; never a line of text with the frame's characters left in it
+import json  # noqa: E402
+import re  # noqa: E402
+import shutil  # noqa: E402
+import subprocess  # noqa: E402
+import tempfile  # noqa: E402
+ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
+sys.path.insert(0, os.path.join(ROOT, 'tools', 'audit'))
+from frame_lines import frame_lines, BOX  # noqa: E402
+
+lines = frame_lines()
+# (a tree's branch in a list, "  └ Bo", is the list's, not a frame's)
+lines = [x for x in lines if not re.match(r'^\s*[└├]\s+\S', x['text'])]
+node = shutil.which('node')
+check(len(lines) > 400, f'the frames found in the source ({len(lines)})')
+if node:
+    with tempfile.TemporaryDirectory() as tmp:
+        src = os.path.join(tmp, 'lines.json')
+        json.dump([x['text'] for x in lines], open(src, 'w', encoding='utf-8'), ensure_ascii=False)
+        frames = 'file:///' + os.path.abspath(os.path.join(ROOT, 'src', 'web_isometric', 'world3d', 'hud', 'frames.js')).replace('\\', '/')
+        script = (f"const {{classify}} = await import({json.dumps(frames)}); const fs = await import('node:fs');"
+                  f"const xs = JSON.parse(fs.readFileSync({json.dumps(src)}, 'utf8'));"
+                  "console.log(JSON.stringify(xs.map(t => classify(t).t)));")
+        res = subprocess.run([node, '--input-type=module', '-e', script], capture_output=True, text=True, encoding='utf-8')
+        kinds = json.loads(res.stdout or '[]')
+    raw = [f"{x['file']}:{x['line']} {x['text'][:60]!r}" for x, k in zip(lines, kinds) if k in ('text', 'cols') and BOX.search(x['text'])]
+    check(len(kinds) == len(lines) and not raw, f'every frame in the source is drawn in /play\'s dress ({len(raw)} left raw: {raw[:5]})')
+else:
+    print('skip the frames check: no node')
 
 print(f"\n{'ALL OK' if not failures else f'{len(failures)} FAILED'}")
 sys.exit(1 if failures else 0)

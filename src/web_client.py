@@ -41,6 +41,9 @@ ANSI_COLORS = {
 
 def ansi_to_html(text: str) -> str:
     """Convert ANSI escape codes to HTML spans."""
+    # a terminal's other codes (clear the screen, move the cursor: `clear` sends "\x1b[2J\x1b[H")
+    # mean nothing to a page: they go, rather than show as text
+    text = re.sub(r'\x1b\[[0-9;?]*[A-La-ln-z]', '', text)
     # Pattern for ANSI escape sequences
     ansi_pattern = re.compile(r'\x1b\[([0-9;]*)m')
     

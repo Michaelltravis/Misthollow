@@ -917,6 +917,8 @@ export function createHud() {
       if (asked) { help.show(asked[1] || ''); st.history.unshift(raw); }
       // `map` and `minimap`: the Map window (M), not the telnet's map drawn in letters
       else if (v && /^(?:mini)?map$/i.test(v)) { MH.bus.emit('hud.map'); st.history.unshift(raw); }
+      // `clear` / `cls`: the log emptied (a terminal's clear-screen code means nothing here)
+      else if (v && /^(?:clear|cls)$/i.test(v)) { els.log.innerHTML = ''; box = null; cols = null; st.history.unshift(raw); }
       else if (v) { MH.sendCommand(v); if (!MH.secretLine(raw)) { st.history.unshift(raw); st.history.length = Math.min(st.history.length, 50); } }
       st.hi = -1;
       els.input.value = '';

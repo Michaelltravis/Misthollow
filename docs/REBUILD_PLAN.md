@@ -2176,5 +2176,22 @@ boxes; telnet keeps them, and /play now draws them in its own dress instead:
   the rent an item adds (`@classmethod` on a `@staticmethod`); `social` alone failed (the emotes'
   helper answered to it: it lists the emotes now); `arena top` failed (the online players are a
   dict).
+- **Then read in /play itself, and every command.** The 104 menus typed into /play's own chat box
+  and read from its log; then all 520 of the server's commands but the 13 that stop the server,
+  write the world's files or end the session (shutdown, zsave, zreset, redit, oedit, medit,
+  backup, restore, purge, slay, quit, rent, dc): emotes, abilities with no one to use them on,
+  the immortals' tools, the toggles. Checked for a frame's characters left outside /play's
+  frames, a terminal code, a broken character, paging, a typing hint, a prompt, a failure.
+  - The web bridge sent what it read in pieces, cut mid colour code, mid box character or mid
+    line: it keeps each whole now. A terminal's other codes (`clear`'s clear-screen) go; typed
+    `clear` empties the log. A hint right after a colour code was never rewritten (the code's m
+    hid the word's edge). `move` alone failed (it took the words typed for a direction).
+  - Lists in columns line up (emotes, commands, settings, the housing plots' heading, arena and
+    auction help); `minimap` opens the Map.
+- **Every frame the server draws** (`tools/audit/frame_lines.py`: 526 lines in 27 files, from the
+  source, fields filled with a sample) is checked against `frames.js`: none is left a line of text
+  with the frame's characters in it. Two styles it lacked: a box's empty row (a lone ║, the talent
+  trees') and a heading with words after it ("═══ DUEL OVER ═══ Ann defeats Bo!").
 - **Tests:** `tests/web/frames.test.mjs` (frames, banners, panels, meters, the talk window),
-  `tests/test_web_menus.py` (web_line, the web send path, the discovery line, `achievements`).
+  `tests/test_web_menus.py` (web_line, the web send path, the discovery line, `achievements`,
+  the bridge, `move`, and every frame in the source).

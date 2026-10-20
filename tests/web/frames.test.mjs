@@ -146,3 +146,14 @@ test("a sentence between two rules stays a sentence; a status strung with ' | ' 
   assert.ok(!out.some(o => /tx-head/.test(o.html)), 'no heading made of a sentence');
   assert.equal(classify('  Kills: 0  |  Rooms explored: 627  |  Secrets: 0').t, 'text');
 });
+
+test("a box's empty row (a lone ║) and a heading with words after it", async () => {
+  const { classify, renderLine } = await import('../../src/web_isometric/world3d/hud/frames.js');
+  assert.deepEqual(classify('║'), { t: 'row', text: '' });
+  assert.deepEqual(classify('  │  '), { t: 'row', text: '' });
+  assert.equal(classify('|').t, 'text', "a map's lone path is not a box");
+  const k = classify('═══ DUEL OVER ═══ Ann defeats Bo!');
+  assert.deepEqual(k, { t: 'titled', title: 'DUEL OVER', rest: 'Ann defeats Bo!' });
+  assert.equal(renderLine({ text: '═══ DUEL ═══ Ann vs Bo!' }), '<div class="tx-head">DUEL</div><div>Ann vs Bo!</div>');
+  assert.equal(classify('the -- dash -- in prose').t, 'text');
+});

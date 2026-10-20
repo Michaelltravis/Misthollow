@@ -11,6 +11,9 @@ const RULE_CH = '═─━=\\-~*';
 const RULE = new RegExp(`^\\s*[╔╚╠╟╞╒╘┌└├+]?[${RULE_CH}+╦╩╤╧┬┴┼╬]{4,}[╗╝╣╢╡╕╛┐┘┤+]?\\s*$`);
 // a title on a rule: "═══ QUEST COMPLETE ═══", "---- Spells ----", "== Shop ==" (letters inside)
 const TITLED = new RegExp(`^\\s*[╔╚╠+]?[${RULE_CH}]{2,}\\s*([^${RULE_CH}║│|].*?)\\s*[${RULE_CH}]{2,}[╗╝╣+]?\\s*$`);
+// a title on a rule with words after it: "═══ DUEL OVER ═══ Ann defeats Bo!" (box rules only:
+// "-- a --" in prose is not one)
+const TITLED_REST = /^\s*[═━─]{2,}\s*([^═━─║│|]+?)\s*[═━─]{2,}\s+(\S.*)$/;
 // a row in a box: a bar at each end (or at the start of a box's row)
 const ROW = /^\s*[║│|]\s?(.*?)\s*[║│|]?\s*$/;
 const BAR = /[║│|]/;
@@ -22,7 +25,11 @@ export function classify(text) {
   if (RULE.test(t) && /[═─━=\-~]{3}/.test(t)) return { t: 'rule', inner: /^\s*[╠╟╞├]/.test(t) || /^\s*\+-/.test(t) };
   const m = t.match(TITLED);
   if (m && /[A-Za-z]/.test(m[1]) && !BAR.test(m[1])) return { t: 'titled', title: m[1].replace(/^[\s★☆✦✧•*]+|[\s★☆✦✧•*]+$/g, '') };
-  // (a lone "|" is a map's path, not a box: a row has room inside its bars)
+  const r = t.match(TITLED_REST);
+  if (r && /[A-Za-z]/.test(r[1])) return { t: 'titled', title: r[1].trim(), rest: r[2] };
+  // (a lone "|" is a map's path, not a box: a row has room inside its bars; a lone ║ is a box's
+  // empty row, as the talent trees draw them)
+  if (/^\s*[║│]\s*$/.test(t)) return { t: 'row', text: '' };
   if ((/^\s*[║│]/.test(t) || (/^\s*\|/.test(t) && /\|\s*$/.test(t))) && t.trim().length >= 3) return { t: 'row', text: t.match(ROW)[1] };
   if (columns(t)) return { t: 'cols' };
   return { t: 'text' };
@@ -135,7 +142,7 @@ export function renderBox(lines) {
 export function renderLine(line) {
   const k = classify(line.text);
   if (k.t === 'rule') return '<div class="tx-rule"></div>';
-  if (k.t === 'titled') return `<div class="tx-head">${esc(k.title)}</div>`;
+  if (k.t === 'titled') return `<div class="tx-head">${esc(k.title)}</div>${k.rest ? `<div>${esc(k.rest)}</div>` : ''}`;
   return null;
 }
 
