@@ -152,6 +152,7 @@ export const LOOK_SAMPLES = [
   { look: 'inside', sector: 'inside', key: 'ihaunted', tone: { interior: 'haunted' }, name: 'The Parlour', description: 'Dust and cobwebs cover the furniture; something moves in the dark.' },
   { look: 'inside', sector: 'inside', key: 'idwarven', tone: { interior: 'dwarven' }, name: 'The Great Hall Of The King', description: 'Carved pillars of granite hold up the hall of the dwarf king.' },
   { look: 'inside', sector: 'inside', key: 'ielven', tone: { interior: 'elven' }, name: 'A Hall Of Living Wood', description: 'Trees grow through the hall of the elves.' },
+  { look: 'underwater', sector: 'underwater', key: 'underwater', name: 'Kelp Forest Chamber', description: 'Kelp sways in the green water and fish dart among the coral.' },
   { look: 'foundry', sector: 'inside', key: 'foundry', name: 'Assembly Line Alpha', description: 'Conveyor belts carry parts past clanking machines.' },
   { look: 'foundry', sector: 'inside', key: 'foundry2', name: 'The Furnace Core', description: 'The great furnace roars; the heat is terrible.' },
   { look: 'castle', sector: 'city', name: 'The Castle Yard', description: 'High walls ring the yard; banners hang from the battlements.' },
