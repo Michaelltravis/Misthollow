@@ -438,14 +438,23 @@ def shots_mode(folder):
     acc_path = os.path.join(HERE, 'audit', 'accepted.json')
     accepted = (json.load(open(acc_path)).get('shots') or {}) if os.path.exists(acc_path) else {}
     wrong = [r for r in rows if r[0] in ('wrong_place', 'wrong_style')]
-    confirmed = [r for r in wrong if r[7] and r[7].split()[0] == r[6]]
+    # (an indoor room of a castle-styled zone is drawn as a castle's hall: zone_tone.py interior)
+    def drawn_as(r):
+        rm = room_of[r[4]][2]
+        if r[6] == 'necropolis':
+            return {'necropolis', 'city'}            # (a city of the dead is drawn with its own city look)
+        return {r[6], 'castle'} if r[6] == 'inside' and (getattr(rm, 'tone', None) or {}).get('interior') == 'castle' else {r[6]}
+    confirmed = [r for r in wrong if r[7] and r[7].split()[0] in drawn_as(r)]
     taken = [r for r in wrong if r not in confirmed and str(r[4]) in accepted]
     # a second opinion on each one accepted: JEV sees the shot with the reason it was let stand
     keyed = {k: v for k, v in items.items() if int(k.split('@')[0]) in {r[4] for r in taken}}
-    fair = run({k: {**v, 'why it is drawn so': accepted[k.split('@')[0]]} for k, v in keyed.items()},
+    # (keyed by the reason too: a reason reworded is asked again)
+    import hashlib
+    rkey = lambda k: f"{k}#{hashlib.md5(accepted[k.split('@')[0]].encode()).hexdigest()[:6]}"
+    fair = run({rkey(k): {**v, 'why it is drawn so': accepted[k.split('@')[0]]} for k, v in keyed.items()},
                '`screenshot` is the room as the game draws it; `why it is drawn so` is a reviewer\'s reason for letting it stand. '
                'Does the reason hold?', FAIR, 'jev_shots_fair.json', workers=4)
-    unfair = {int(k.split('@')[0]) for k, a in fair.items() if k in keyed and a['choice'] == 'unfair'}
+    unfair = {int(k.split('@')[0]) for k, a in fair.items() if k in {rkey(x) for x in keyed} and a['choice'] == 'unfair'}
     todo = [r for r in wrong if r not in confirmed and (r not in taken or r[4] in unfair)]
     taken = [r for r in taken if r[4] not in unfair]
     head = '| verdict | sure | zone | room | name | look | JEV would draw |'

@@ -73,11 +73,11 @@ FEATURES = [
     # the scenery a room names that its look alone does not draw (the art audit's bare rooms)
     ('gate', r'\b(?:tall|great|high|heavy|huge|iron|black|ancient|massive|bronze|wooden|stone|double|main) gates?\b(?! (?:lies|leads))|\bgates? (?:stands?|rises?|fills?|looms?|of [a-z]+)|gateways?|great archway|portcullis', 1, 'edge'),
     ('tree', r'fruit trees?|(?:apple|pear|cherry|plum|olive|fig|orange|lemon|almond) trees?|orchard|'
-             r'\b(?:a|the) (?:lone|single|great|huge|old|tall|gnarled|twisted|ancient|large|mighty|towering) (?:oak|tree|pine|elm|willow|yew|beech|cedar)\b|'
+             r'\b(?:a|the) (?:lone|single|great|huge|old|tall|gnarled|twisted|ancient|large|mighty|towering) (?:oak|tree|pine|elm|willow|yew|beech|cedar)\b(?! (?:doors?|tables?|chests?|beams?|panels?|benches|bench|chairs?|shutters?|planks?|boards?))|'
              r'\b(?:pines|spruces|firs|larches|alders|birches|willows?)\b|forest\'s edge|edge of the forest', 3, 'scatter'),
     ('reeds', r'\breeds?\b|bulrushes|\brushes\b|cattails?|sedges?', 3, 'scatter'),
     ('roots', r'\broots\b|tree roots|vines\b|creepers|tendrils|(?<!incense )(?<!joss )\bsticks\b', 3, 'edge'),
-    ('boat', r'rowboats?|row-boats?|\bskiffs?\b|canoes?|longboats?|fishing boats?|(?:a|an|the|old|small|upturned|beached|moored|wrecked) boats?\b|boathouse|slipways?|(?:a|the|wooden|log) raft\b', 1, 'edge'),
+    ('boat', r'rowboats?|row-boats?|\bskiffs?\b|canoes?|longboats?|fishing boats?|(?:a|an|the|old|small|upturned|beached|moored|wrecked) boats?\b|boathouse|slipways?|(?:a|the|wooden|log) raft\b|boats (?:bob|rock|lie|are moored)|wooden docks|\bwharf\b|\bjett(?:y|ies)\b', 1, 'edge'),
     ('mist', r'\bmists?\b|\bfog\b|\bhaze\b|\bvapou?rs?\b|\bsteam\b|\bsmoke (?:hangs|drifts|curls|fills|wreathes)|wreathed in smoke', 1, 'ground'),
     ('ice', r'icicles?|(?:shards?|spires?|pillars?|columns?|blocks?|formations?|walls?|sheets?) of ice|ice (?:pillars?|columns?|formations?|spires?|shards?|crystals?)', 3, 'scatter'),
     ('flames', r'\bflames?\b|roaring fire|crackling fire|\bfires? (?:burns?|roars?|crackles?|blazes?|smoulders?)|fireplace is going|\bblaz(?:e|ing)\b|lava|magma', 2, 'scatter'),
