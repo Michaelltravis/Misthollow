@@ -209,11 +209,12 @@ def run(items, question, criteria, cache_name, workers=8):
 def disagreements(items, answers, current):
     out = []
     for k, now in current.items():
+        nows = now if isinstance(now, set) else {now}     # (a room drawn as more than one look at once)
         a = answers.get(str(k))
-        if not a or a['choice'] == now:
+        if not a or a['choice'] in nows:
             continue
-        if (a['confidence'] or 0) >= SURE and a['p'].get(now, 0) <= UNLIKELY:
-            out.append((k, now, a['choice'], a['confidence']))
+        if (a['confidence'] or 0) >= SURE and all(a['p'].get(n, 0) <= UNLIKELY for n in nows):
+            out.append((k, '/'.join(sorted(nows)), a['choice'], a['confidence']))
     return out
 
 
@@ -236,9 +237,26 @@ def rooms_mode(zone, limit):
                       'description': ' '.join(str(r.description or '').split())[:900]} for r in rooms}
     answers = run(items, 'Which of these looks should this room be drawn with, going by its own name and description?',
                   LOOKS, 'jev_rooms.json')
-    current = {r.vnum: r.look for r in rooms}
+    # (an indoor room of a castle-styled zone is drawn as a castle's: zone_tone.py interior)
+    # (and a snowfield whose words name a wood or a mountainside is drawn with trees through it or
+    # cliffs round it: room_looks.py SNOW_WOOD, SNOW_PEAK)
+    from room_looks import SNOW_WOOD, SNOW_PEAK
+
+    def drawn(r):
+        text = f'{r.name} {r.description}'
+        if r.look == 'inside' and (getattr(r, 'tone', None) or {}).get('interior') == 'castle':
+            return {'inside', 'castle'}
+        if r.look == 'snow':
+            return {'snow'} | ({'forest'} if SNOW_WOOD.search(text) else set()) | ({'mountain'} if SNOW_PEAK.search(text) else set())
+        return {r.look}
+    current = {r.vnum: drawn(r) for r in rooms}
     why = {r.vnum: getattr(r, 'look_why', None) for r in rooms}
     bad = disagreements(items, answers, current)
+    # reviewed and accepted as they are, each with its reason (tools/audit/accepted.json)
+    acc_path = os.path.join(HERE, 'audit', 'accepted.json')
+    accepted = (json.load(open(acc_path)).get('rooms') or {}) if os.path.exists(acc_path) else {}
+    taken = [b for b in bad if str(b[0]) in accepted]
+    bad = [b for b in bad if str(b[0]) not in accepted]
     by_zone = collections.defaultdict(list)
     for k, now, pick, conf in bad:
         by_zone[items[k]['zone']].append((k, now, pick, conf))
@@ -254,6 +272,8 @@ def rooms_mode(zone, limit):
         for k, now, pick, conf in sorted(rows):
             lines.append(f'| {k} | {items[k]["room"]} | {now} | {pick} | {conf:.2f} | {why[k] or "rules"} |')
         lines.append('')
+    lines += [f'## Accepted as they are ({len(taken)})', '', '| room | name | drawn | JEV | why |', '|---|---|---|---|---|']
+    lines += [f'| {k} | {items[k]["room"]} | {now} | {pick} | {accepted[str(k)]} |' for k, now, pick, conf in sorted(taken)]
     return report('ROOMS', lines, answers, bad)
 
 
@@ -288,27 +308,41 @@ def zone_state(name, rooms):
 def zones_mode(zone):
     by = asyncio.run(load_zones(zone))
     by = {k: v for k, v in by.items() if len(v) >= 3 and k[0] not in (0, 12)}   # not Limbo or the God Rooms
-    items = {f'{n}': zone_state(name, rooms) for (n, name), rooms in by.items()}
+    # (keyed by what is drawn too: a zone whose looks change is asked again)
+    import hashlib
+    states = {n: zone_state(name, rooms) for (n, name), rooms in by.items()}
+    for (n, name), rooms in by.items():
+        styles = collections.Counter((getattr(r, 'tone', None) or {}).get('interior') for r in rooms if r.look == 'inside')
+        if styles and next(iter(styles)) is not None:
+            states[n]['indoor rooms drawn in the style of'] = f'{next(iter(styles))} (not a plain house)'
+    items = {f'{n}@' + hashlib.md5(json.dumps(st, sort_keys=True).encode()).hexdigest()[:8]: st for n, st in states.items()}
+    key_of = {n: k for k in items for n in [int(k.split('@')[0])]}
     fit = run(items, 'Do the looks this zone\'s rooms are drawn with show its setting? Judge the zone as a whole, '
               'by its name, its rooms\' names and words, against what is drawn.', ZONE_FIT, 'jev_zones_fit.json')
     setting = run(items, "What is this zone's setting?", SETTINGS, 'jev_zones_setting.json')
     rows = []
     for (n, name), rooms in sorted(by.items()):
-        f, st = fit.get(str(n)), setting.get(str(n))
+        f, st = fit.get(key_of.get(n, '')), setting.get(key_of.get(n, ''))
         if not f:
             continue
         top = ', '.join(f'{k} {c}' for k, c in collections.Counter(r.look for r in rooms).most_common(4))
         rows.append((f['choice'], f.get('confidence') or 0, n, name, len(rooms), st and st['choice'], top))
     order = {'wrong': 0, 'generic': 1, 'partly': 2, 'right': 3}
     rows.sort(key=lambda r: (order[r[0]], -r[1]))
+    # reviewed and accepted as they are, each with its reason (tools/audit/accepted.json)
+    acc_path = os.path.join(HERE, 'audit', 'accepted.json')
+    accepted = (json.load(open(acc_path)).get('zones') or {}) if os.path.exists(acc_path) else {}
     lines = ['# JEV review: zones', '',
              'For each zone as a whole, JEV judged whether the looks its rooms are drawn with show its setting',
              f'({len(rows)} zones). Worst first. Nothing is changed by this list.', '',
              '| verdict | sure | zone | name | rooms | setting | drawn (top looks) |', '|---|---|---|---|---|---|---|']
     for v, c, n, name, k, st, top in rows:
         lines.append(f'| {v} | {c:.2f} | {n} | {name} | {k} | {st} | {top} |')
-    answers = {**{'f' + k: v for k, v in fit.items()}, **{'s' + k: v for k, v in setting.items()}}
-    return report('ZONES', lines, answers, [r for r in rows if r[0] != 'right'])
+    taken = [r for r in rows if r[0] != 'right' and str(r[2]) in accepted]
+    lines += ['', f'## Accepted as they are ({len(taken)})', '', '| zone | name | verdict | why |', '|---|---|---|---|']
+    lines += [f'| {r[2]} | {r[3]} | {r[0]} {r[1]:.2f} | {accepted[str(r[2])]} |' for r in taken]
+    answers = {**{'f' + k: v for k, v in fit.items() if k in items}, **{'s' + k: v for k, v in setting.items() if k in items}}
+    return report('ZONES', lines, answers, [r for r in rows if r[0] != 'right' and str(r[2]) not in accepted])
 
 
 def shots_mode(folder):
@@ -317,6 +351,8 @@ def shots_mode(folder):
     room_of = {r.vnum: (n, name, r) for (n, name), rooms in by.items() for r in rooms}
     setting_cache = os.path.join(OUT, 'jev_zones_setting.json')
     setting = json.load(open(setting_cache)) if os.path.exists(setting_cache) else {}
+    # (keys are 'zone@state'; any answer for the zone will do: its setting doesn't change with its looks)
+    setting = {**{k.split('@')[0]: v for k, v in setting.items()}, **{k: v for k, v in setting.items() if '@' not in k}}
     items = {}
     for v, path in shots.items():
         if v not in room_of:
@@ -329,22 +365,47 @@ def shots_mode(folder):
                     '_image': path}
     answers = run(items, '`screenshot` is the room as the game draws it, seen from above (the small figure is the player). '
                   'Does the picture show this room, in keeping with its zone?', SHOT_FIT, 'jev_shots.json', workers=4)
+    # for every shot not judged good: the look JEV would draw the room with, from the picture and
+    # the words together (the report's last column; a pin in world/looks.json is the fix)
+    looks = {**LOOKS, 'underwater': MORE_LOOKS['underwater'], 'foundry': 'a clockwork foundry: machines, pipes, furnaces'}
+    unsure = {k: v for k, v in items.items() if k in answers and answers[k]['choice'] != 'good'}
+    better = run(unsure, '`screenshot` is the room as the game draws it now. Going by its own name and description, '
+                 'which of these looks should it be drawn with?', looks, 'jev_shots_look.json', workers=4)
     rows = []
     for key, a in answers.items():
         if key not in items:
             continue              # an older shot of the room
         v = int(key.split('@')[0])
         zn, zname, r = room_of[v]
-        rows.append((a['choice'], a.get('confidence') or 0, zn, zname, v, r.name, r.look))
+        b = better.get(key)
+        rows.append((a['choice'], a.get('confidence') or 0, zn, zname, v, r.name, r.look,
+                     f"{b['choice']} {b.get('confidence') or 0:.2f}" if b else ''))
     order = {k: i for i, k in enumerate(['wrong_place', 'wrong_style', 'bare', 'unreadable', 'good'])}
     rows.sort(key=lambda r: (order.get(r[0], 9), -r[1]))
+    # what is left to fix: a shot judged the wrong place or style, unless JEV's own pick of a look
+    # is the one drawn (the look is right: what it wants is more detail) or it was reviewed and
+    # accepted (tools/audit/accepted.json, with the reason)
+    acc_path = os.path.join(HERE, 'audit', 'accepted.json')
+    accepted = (json.load(open(acc_path)).get('shots') or {}) if os.path.exists(acc_path) else {}
+    wrong = [r for r in rows if r[0] in ('wrong_place', 'wrong_style')]
+    confirmed = [r for r in wrong if r[7] and r[7].split()[0] == r[6]]
+    taken = [r for r in wrong if r not in confirmed and str(r[4]) in accepted]
+    todo = [r for r in wrong if r not in confirmed and r not in taken]
+    head = '| verdict | sure | zone | room | name | look | JEV would draw |'
     lines = ['# JEV review: rooms as drawn', '',
-             f'JEV looked at {len(rows)} screenshots of rooms in /play, each against its own words and its zone\'s setting.',
-             'Worst first. Nothing is changed by this list.', '',
-             '| verdict | sure | zone | room | name | look |', '|---|---|---|---|---|---|']
-    for v, c, zn, zname, vn, name, look in rows:
-        lines.append(f'| {v} | {c:.2f} | {zn} {zname} | {vn} | {name} | {look} |')
-    return report('SHOTS', lines, answers, [r for r in rows if r[0] != 'good'])
+             f'JEV looked at {len(rows)} screenshots of rooms in /play, each against its own words and its zone\'s setting',
+             f'({dict(collections.Counter(r[0] for r in rows))}). Nothing is changed by this list.', '',
+             f'## To fix ({len(todo)})', '', head, '|---|---|---|---|---|---|---|']
+    lines += [f'| {r[0]} | {r[1]:.2f} | {r[2]} {r[3]} | {r[4]} | {r[5]} | {r[6]} | {r[7]} |' for r in todo]
+    lines += ['', f'## The look confirmed ({len(confirmed)})', '',
+              "Judged the wrong place or style, but the look JEV would draw is the one drawn: what it wants is detail.", '',
+              head, '|---|---|---|---|---|---|---|']
+    lines += [f'| {r[0]} | {r[1]:.2f} | {r[2]} {r[3]} | {r[4]} | {r[5]} | {r[6]} | {r[7]} |' for r in confirmed]
+    lines += ['', f'## Accepted as they are ({len(taken)})', '', '| room | name | look | why |', '|---|---|---|---|']
+    lines += [f'| {r[4]} | {r[5]} | {r[6]} | {accepted[str(r[4])]} |' for r in taken]
+    lines += ['', '## All', '', head, '|---|---|---|---|---|---|---|']
+    lines += [f'| {r[0]} | {r[1]:.2f} | {r[2]} {r[3]} | {r[4]} | {r[5]} | {r[6]} | {r[7]} |' for r in rows]
+    return report('SHOTS', lines, answers, todo)
 
 
 def creatures_mode(limit):

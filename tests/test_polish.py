@@ -665,7 +665,8 @@ async def main():
 
     # townsfolk keep a day (docs/GAMEPLAY_POLISH.md group 3): in at night, out by day
     import random as _rnd
-    street = next(r for r in world.rooms.values() if getattr(r, 'look', None) in _m.TOWN_LOOKS and any(
+    # (a town's street: a garden or a village lane may be ringed by rooms flagged indoors)
+    street = next(r for r in world.rooms.values() if getattr(r, 'look', None) == 'city' and any(
         isinstance(ex, dict) and ex.get('room') is not None and _m.Mobile._indoors(ex['room']) and not ex.get('door')
         and not (_m.KEEP_OUT & ex['room'].flags) for ex in (r.exits or {}).values()))
     folk = create_mob_from_prototype(next(p for p in world.mob_prototypes.values()

@@ -408,7 +408,9 @@ export function outdoorEdge(theme, kits, layout) {
   const N = kits.nature, G = kits.graveyard;
   // a village, a camp, a garden, ruins (terrain-places.js)
   if (PLACES.has(theme)) return { ...placeEdge(theme, kits, layout), rock: k => N.get(k), bush: null };
-  if (theme === 'snow') return { trees: ['Pine_1', 'Pine_2'].map(k => tinted(N.get(k), 0xdfe8f0, 'frost')), treeP: 0.35, rock: k => tinted(N.get(k), 0xe8eef4, 'snowrock'), bush: null };
+  // (a snowy mountainside's walls are snow-capped cliffs, like a mountain's: SNOW_PEAK)
+  if (theme === 'snow') return { trees: ['Pine_1', 'Pine_2'].map(k => tinted(N.get(k), 0xdfe8f0, 'frost')), treeP: 0.35, rock: k => tinted(N.get(k), 0xe8eef4, 'snowrock'), bush: null,
+    cliffs: SNOW_PEAK.test(`${layout.name || ''} ${layout.description || ''}`) };
   if (theme === 'volcanic') return { trees: ['DeadTree_1', 'DeadTree_2'].map(k => tinted(N.get(k), 0x2a2420, 'scorch')), treeP: 0.12, rock: k => tinted(N.get(k), 0x3a302c, 'basalt'), bush: null };
   if (theme === 'web') return { trees: ['DeadTree_1', 'DeadTree_2', 'TwistedTree_1', 'DeadTree_1'].map(k => tinted(N.get(k), 0xa4a496, 'webbed')).filter(Boolean), treeP: 0.7, rock: k => tinted(N.get(k), 0x5a5648, 'lairrock'), bush: null };
   if (theme === 'shore') return { trees: [], treeP: 0, rock: k => N.get(k), bush: null };
@@ -455,15 +457,20 @@ const CORAL = [[new THREE.Color(2.6, 1.0, 0.75), 0x401008], [new THREE.Color(1.9
 // a mountain's rock: the kit's dark mossy rock lifted to a weathered grey-brown
 const MOUNTAIN_ROCK = new THREE.Color(1.35, 1.28, 1.22);
 
+// snow on a mountain (its words name peaks, cliffs, slopes) and snow in a wood (trees, pines,
+// taiga): the snowfield alone read as neither (JEV: "forest", "mountain")
+export const SNOW_PEAK = /\b(mountains?|mountainside|peaks?|summit|cliffs?|crags?|ridges?|slopes?|mountain pass)\b/i;
+export const SNOW_WOOD = /\b(trees?|forest|woods?|woodland|pines?|firs?|spruces?|taiga|birch(?:es)?|groves?)\b/i;
+
 // a mountain: its walls are cliffs (every BLOCK cell a boulder pile, tall at the room's edge and
 // lower inside, under open sky), with a hardy pine here and there in the clefts
-export function mountainCliffs(c) {
+export function mountainCliffs(c, snowy = false) {
   const { layout, ox, oz, kits, b, rng, occ } = c;
   const { W, H, grid } = layout;
   const N = kits.nature;
   const at = (x, y) => (x < 0 || y < 0 || x >= W || y >= H) ? BLOCK : grid[y * W + x];
-  const rocks = [1, 2, 3].map(i => tinted(N.get(`Rock_Medium_${i}`), MOUNTAIN_ROCK, 'mtnrock')).filter(Boolean);
-  const pines = ['Pine_1', 'Pine_2'].map(k => tinted(N.get(k), 0x8aa08a, 'alpine')).filter(Boolean);
+  const rocks = [1, 2, 3].map(i => (snowy ? tinted(N.get(`Rock_Medium_${i}`), 0xe8eef4, 'snowrock') : tinted(N.get(`Rock_Medium_${i}`), MOUNTAIN_ROCK, 'mtnrock'))).filter(Boolean);
+  const pines = ['Pine_1', 'Pine_2'].map(k => (snowy ? tinted(N.get(k), 0xdfe8f0, 'frost') : tinted(N.get(k), 0x8aa08a, 'alpine'))).filter(Boolean);
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     if (at(x, y) !== BLOCK) continue;
     const edge = x === 0 || y === 0 || x === W - 1 || y === H - 1;
