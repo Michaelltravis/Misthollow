@@ -964,7 +964,14 @@
   "16323": "field",
   "21778": "dungeon",
   "24274": "lava_cave",
-  "107383": "dungeon"
+  "107383": "dungeon",
+  "6153": "inside",
+  "6327": "web",
+  "8002": "volcanic",
+  "8937": "forest",
+  "14004": "necropolis",
+  "5700": "garden",
+  "8001": "mountain"
  },
  "zones": {
   "465": "cave",
@@ -1978,7 +1985,14 @@
   "16323": "Outcast Fortress: a meadow of wildflowers and tall grass where the mountain bends, drawn as field (art audit round 4, JEV shots)",
   "21778": "Cave Elf Kingdom: the cobwebbed corner of the balcony over the arena, drawn as dungeon (art audit round 4, JEV shots)",
   "24274": "Fire Grotto: Machk-Gyi's treasure vault, everything glowing with the heat, drawn as lava_cave (art audit round 4, JEV shots)",
-  "107383": "Caverns of the Pale Man: a lofty antechamber, a painted ceiling, a tiled floor and an iron chandelier, drawn as dungeon (art audit round 4, JEV shots)"
+  "107383": "Caverns of the Pale Man: a lofty antechamber, a painted ceiling, a tiled floor and an iron chandelier, drawn as dungeon (art audit round 4, JEV shots)",
+  "6153": "Plains: inside the hollowed Great Tree, steps leading down into the dark, drawn as inside (art audit round 4, JEV shots)",
+  "6327": "Arachnos: a strand of the web that shimmers as you step on it, moving through ether between the web's other rooms; its name read as a beach's strand, drawn as web (art audit round 4, JEV shots)",
+  "8002": "The Dragon's Domain: before the lair, the ground scorched black, heat coming from within, drawn as volcanic (art audit round 4, JEV shots)",
+  "8937": "The Desert River and Caverns: a small island of grass ringed by dark trees, the canopy overhead, drawn as forest (art audit round 4, JEV shots)",
+  "14004": "The Necropolis of Eternal Night: the paupers' mass graves, the dead dragging themselves out, drawn as necropolis (art audit round 4, JEV shots)",
+  "5700": "Phaeton's Academy: a forecourt of raked gravel, clipped box hedges and urns of rosemary, drawn as garden (art audit round 4, JEV shots)",
+  "8001": "The Dragon's Domain: the mountain pass up to the dragon's gate, drawn as mountain (art audit round 4, JEV words; its neighbours would make it volcanic)"
  },
  "underground_zones": {
   "72": "sewer",

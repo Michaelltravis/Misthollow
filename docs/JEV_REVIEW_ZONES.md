@@ -8,19 +8,19 @@ For each zone as a whole, JEV judged whether the looks its rooms are drawn with 
 | generic | 0.32 | 73 | The Mindflayer's Lair | 3 | underdark | cave 3 |
 | generic | 0.17 | 62 | The Orc Enclave | 68 | orc | forest 34, cave 15, dungeon 9, shore 5 |
 | partly | 0.65 | 447 | Mahn-Tor Keep | 90 | castle | inside 60, city 23, castle 3, mountain 2 |
+| partly | 0.51 | 60 | Plains | 187 | wilds | forest 109, field 42, water_noswim 14, inside 5 |
 | partly | 0.51 | 512 | Orc Tunnels | 450 | orc | cave 254, mine 51, city 26, water_swim 23 |
 | partly | 0.49 | 458 | Castle Varok | 84 | castle | inside 46, hills 25, field 6, castle 6 |
 | partly | 0.49 | 476 | Stone Circle | 94 | temple | stones 65, inside 13, forest 8, cave 4 |
-| partly | 0.48 | 60 | Plains | 187 | wilds | forest 110, field 42, water_noswim 14, inside 4 |
 | partly | 0.48 | 470 | Castle of Ostragoth | 111 | castle | inside 51, cave 30, crypt 12, castle 11 |
 | partly | 0.47 | 452 | Submerged Temple | 65 | sunken | cave 29, inside 22, dungeon 7, water_noswim 6 |
 | partly | 0.44 | 120 | Sea of Storms | 350 | sea | water_noswim 89, water_swim 48, inside 48, city 47 |
 | partly | 0.44 | 220 | Castle Of The Apocalypse II | 122 | castle | inside 63, castle 30, city 20, dungeon 9 |
 | partly | 0.43 | 32 | Stable & Temple | 50 | temple | inside 33, cave 6, city 4, forest 4 |
 | partly | 0.43 | 478 | Fire Grotto | 96 | fire | cave 60, mine 11, dungeon 11, inside 8 |
-| partly | 0.39 | 63 | Arachnos | 53 | wilds | web 32, field 7, forest 7, cave 3 |
 | partly | 0.39 | 160 | The Plane of Eternal Chaos | 26 | plane | volcanic 13, mountain 6, cave 2, swamp 1 |
 | partly | 0.37 | 519 | White Gold Cathedral | 100 | temple | inside 97, forest 1, dungeon 1, field 1 |
+| partly | 0.36 | 63 | Arachnos | 53 | wilds | web 33, field 7, forest 7, cave 3 |
 | partly | 0.35 | 72 | Sewer | 196 | town | sewer 175, cave 15, water_swim 3, mine 1 |
 | partly | 0.32 | 501 | Aredrel Dwarven | 99 | dwarf | cave 42, inside 26, mine 12, field 11 |
 | partly | 0.31 | 431 | Garathorm Cathedral | 73 | temple | inside 30, crypt 24, field 15, necropolis 3 |
@@ -72,6 +72,7 @@ For each zone as a whole, JEV judged whether the looks its rooms are drawn with 
 | right | 0.71 | 449 | Leper Island | 80 | jungle | forest 30, village 15, inside 11, shore 4 |
 | right | 0.71 | 454 | Caverns of the Pale Man | 100 | dungeon | cave 93, dungeon 3, mine 3, ice_cave 1 |
 | right | 0.68 | 67 | The Eastern Highlands | 14 | wilds | mountain 5, hills 5, ruins 2, forest 1 |
+| right | 0.68 | 140 | The Necropolis of Eternal Night | 31 | tomb | dungeon 17, crypt 8, necropolis 5, cave 1 |
 | right | 0.68 | 436 | Baron Kalveh's Fief | 95 | town | inside 61, field 12, city 11, village 6 |
 | right | 0.68 | 488 | Tunnels of Sin | 85 | dungeon | cave 72, web 4, dungeon 4, crypt 4 |
 | right | 0.68 | 496 | Isle of Lag | 22 | wilds | cave 9, forest 6, mountain 3, hills 2 |
@@ -84,7 +85,6 @@ For each zone as a whole, JEV judged whether the looks its rooms are drawn with 
 | right | 0.65 | 515 | Orcus Temple | 29 | temple | inside 21, castle 6, city 2 |
 | right | 0.63 | 414 | Strange Garden | 34 | garden | garden 25, field 7, forest 1, inside 1 |
 | right | 0.63 | 465 | Below Moria | 97 | dungeon | cave 58, mine 15, ice_cave 10, lava_cave 6 |
-| right | 0.60 | 140 | The Necropolis of Eternal Night | 31 | tomb | dungeon 17, crypt 8, necropolis 4, field 1 |
 | right | 0.60 | 403 | Garathorm Wall | 50 | castle | castle 38, city 12 |
 | right | 0.59 | 64 | Rand's Tower | 38 | tower | inside 38 |
 | right | 0.59 | 100 | The Dwarven Mines of Khaz-Durum | 25 | dwarf | mine 15, cave 8, inside 1, web 1 |
@@ -92,11 +92,11 @@ For each zone as a whole, JEV judged whether the looks its rooms are drawn with 
 | right | 0.57 | 424 | Castle Catacombs | 47 | tomb | crypt 36, cave 10, inside 1 |
 | right | 0.57 | 441 | King's Forest | 11 | wilds | forest 4, cave 3, mountain 2, dungeon 1 |
 | right | 0.56 | 300 | The Shattered Throne | 40 | castle | inside 19, castle 15, mountain 6 |
+| right | 0.56 | 499 | Phaeton's Academy | 53 | tower | inside 31, dungeon 11, garden 10, field 1 |
 | right | 0.56 | 522 | The Winterlands | 80 | ice | snow 42, ice_cave 31, cave 4, dungeon 2 |
 | right | 0.55 | 150 | Welmar's Castle | 58 | castle | inside 53, dungeon 4, castle 1 |
 | right | 0.55 | 464 | Brethrenmere | 62 | dwarf | inside 22, cave 15, mine 12, city 12 |
 | right | 0.55 | 471 | Badlands II | 118 | wilds | field 31, forest 23, hills 21, mountain 17 |
-| right | 0.55 | 499 | Phaeton's Academy | 53 | tower | inside 31, dungeon 11, garden 9, field 2 |
 | right | 0.55 | 518 | Necromancer Mines | 52 | dungeon | mine 29, inside 7, cave 7, dungeon 6 |
 | right | 0.55 | 520 | Warded Castle | 77 | castle | inside 41, castle 32, cave 2, dungeon 2 |
 | right | 0.53 | 439 | Mount Olympus | 66 | olympus | inside 33, mountain 20, terrace 5, city 4 |
@@ -104,7 +104,7 @@ For each zone as a whole, JEV judged whether the looks its rooms are drawn with 
 | right | 0.52 | 509 | Durmandel Mines I | 151 | dungeon | mine 148, cave 1, dungeon 1, water_noswim 1 |
 | right | 0.51 | 210 | Tunnel Of Sticks | 101 | dungeon | cave 101 |
 | right | 0.51 | 474 | Cave Elf Kingdom | 113 | elf | inside 59, cave 31, dungeon 19, water_swim 3 |
-| right | 0.49 | 50 | The Desert River and Caverns | 105 | dungeon | water_swim 41, water_noswim 26, cave 20, mountain 9 |
+| right | 0.49 | 80 | The Dragon's Domain | 5 | plane | volcanic 2, flying 2, cave 1 |
 | right | 0.49 | 416 | Castle Of Caboon | 49 | castle | inside 28, cave 9, crypt 7, field 3 |
 | right | 0.48 | 248 | The Clockwork Foundry | 30 | machine | foundry 30 |
 | right | 0.47 | 245 | Shadowspire Citadel | 30 | castle | inside 24, dungeon 5, castle 1 |
@@ -113,7 +113,6 @@ For each zone as a whole, JEV judged whether the looks its rooms are drawn with 
 | right | 0.45 | 481 | Ghenna | 86 | hell | inside 33, city 20, cave 19, garden 5 |
 | right | 0.45 | 495 | Island Of The Dead | 98 | tomb | crypt 45, shore 27, forest 16, cave 4 |
 | right | 0.44 | 25 | High Tower Of Magic I | 98 | tower | inside 83, forest 12, dungeon 2, cave 1 |
-| right | 0.44 | 80 | The Dragon's Domain | 5 | plane | cave 2, flying 2, mountain 1 |
 | right | 0.43 | 15 | The Straight Path | 41 | plane | inside 34, field 5, hills 1, crypt 1 |
 | right | 0.41 | 442 | Outcast Fortress | 102 | castle | cave 56, forest 17, field 7, dungeon 7 |
 | right | 0.40 | 61 | Haon-Dor (Dark) | 5 | dungeon | web 3, cave 1, inside 1 |
@@ -121,6 +120,7 @@ For each zone as a whole, JEV judged whether the looks its rooms are drawn with 
 | right | 0.39 | 418 | Garathorm Vineyard | 3 | wilds | dungeon 2, inside 1 |
 | right | 0.37 | 54 | New Thalos | 285 | town | city 85, inside 76, water_noswim 51, dungeon 22 |
 | right | 0.37 | 503 | Durmandel I | 114 | dwarf | city 42, inside 36, cave 22, field 5 |
+| right | 0.36 | 50 | The Desert River and Caverns | 105 | dungeon | water_swim 41, water_noswim 26, cave 20, mountain 9 |
 | right | 0.36 | 79 | Redferne's Residence | 20 | plane | inside 15, mountain 5 |
 | right | 0.36 | 479 | Ancalador | 55 | dungeon | cave 46, crypt 4, forest 2, hills 1 |
 | right | 0.35 | 65 | Dwarven Kingdom | 49 | dwarf | inside 21, field 7, mine 6, castle 5 |
@@ -137,19 +137,19 @@ JEV was shown each with its reason and held it fair (22 of 22).
 | 73 | The Mindflayer's Lair | generic 0.32 | The Mindflayer's Lair: three cave rooms under the earth, drawn as caves |
 | 62 | The Orc Enclave | generic 0.17 | The Orc Enclave: woods, caves and the river, drawn so |
 | 447 | Mahn-Tor Keep | partly 0.65 | Mahn-Tor's streets, market and squares are a city's (city), its halls the castle style |
+| 60 | Plains | partly 0.51 | The Plains are woods, fields and rivers, drawn so |
 | 512 | Orc Tunnels | partly 0.51 | The Orc Tunnels: tunnels, mines and the orc town, drawn so |
 | 458 | Castle Varok | partly 0.49 | Castle Varok's halls are the castle style; the foothills round it are hills |
 | 476 | Stone Circle | partly 0.49 | The Stone Circle's stones, with its city of sacrifice and caves |
-| 60 | Plains | partly 0.48 | The Plains are woods, fields and rivers, drawn so |
 | 470 | Castle of Ostragoth | partly 0.48 | Ostragoth's halls are the castle style; the caves and crypts under it are drawn as caves and crypts |
 | 452 | Submerged Temple | partly 0.47 | The Submerged Temple's dry caves and halls, walked not swum |
 | 120 | Sea of Storms | partly 0.44 | The Sea of Storms holds sea, islands, ports, a desert and Carcosa, each drawn as its own words say |
 | 220 | Castle Of The Apocalypse II | partly 0.44 | Castle of the Apocalypse: castle walls and the castle style inside, its city and dungeons |
 | 32 | Stable & Temple | partly 0.43 | The Royal Stables and the temple: indoor rooms, tunnels and the street |
 | 478 | Fire Grotto | partly 0.43 | The Fire Grotto's steamy caverns and halls; its fiery rooms are lava caves |
-| 63 | Arachnos | partly 0.39 | Arachnos: webbed lairs and the woods and fields round them |
 | 160 | The Plane of Eternal Chaos | partly 0.39 | The Plane of Chaos: each confluence drawn as its element (fire, mountain, rock, swamp) |
 | 519 | White Gold Cathedral | partly 0.37 | The White Gold Cathedral: its halls drawn in the holy style (white marble, gold-banded pillars, an altar) |
+| 63 | Arachnos | partly 0.36 | Arachnos: webbed lairs and the woods and fields round them |
 | 72 | Sewer | partly 0.35 | The Sewer: its tunnels drawn as sewer (175 of 196 rooms), its caves as caves |
 | 501 | Aredrel Dwarven | partly 0.32 | Aredrel: the dwarven hold's cavern streets, its halls in the dwarven style, its mines |
 | 431 | Garathorm Cathedral | partly 0.31 | Garathorm Cathedral: its halls in the holy style, its crypts as crypts, its grounds as open ground |
@@ -157,4 +157,4 @@ JEV was shown each with its reason and held it fair (22 of 22).
 | 250 | Bedlam Arena | partly 0.23 | Bedlam Arena: its pits and platforms, drawn as built halls and open ground |
 | 186 | Newbie Zone | partly 0.21 | The Newbie Zone: a training dungeon, drawn as dungeon (37 of its 41 rooms); its entrance off the city street and the field it looks out on are drawn as those (JEV unsure, 0.24) |
 
-_335,374 input tokens over all answers (about $0.01 at $0.042 per million)._
+_335,248 input tokens over all answers (about $0.01 at $0.042 per million)._

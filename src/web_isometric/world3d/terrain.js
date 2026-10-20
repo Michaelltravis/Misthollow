@@ -460,7 +460,10 @@ function fillerLand(c, theme) {
   const patches = skirtPatches({ ox, oz, W, H, wild: !!room.zoneRef.wild, empty });
   if (!patches.length) return;
   const cA = new THREE.Color(pal.a), cB = new THREE.Color(pal.b), col = new THREE.Color();
-  for (const [x0, z0, w, d, axis, sign] of patches) {
+  for (const [x0, z0, w, d, axis, sign, [bx, bz, bw, bd]] of patches) {
+    // how far out from the room a point lies (0 at its edge, 1 at the patch's far edge), on the
+    // whole patch this piece is cut from (skirt.js: where it meets another room's land)
+    const outAt = (px, pz) => axis === 'z' ? (sign < 0 ? (bz + bd - pz) / bd : (pz - bz) / bd) : axis === 'x' ? (sign < 0 ? (bx + bw - px) / bw : (px - bx) / bw) : 1;
     if (spec.water) {
       const m = new THREE.Mesh(WATER_GEO, WATER_MAT);
       m.scale.set(w, 1, d); m.position.set(x0 + w / 2, -0.12, z0 + d / 2);
@@ -477,7 +480,7 @@ function fillerLand(c, theme) {
       const n = fbm(wx * 0.18, wz * 0.18);
       col.copy(cA).lerp(cB, THREE.MathUtils.smoothstep(n, 0.3, 0.75)).multiplyScalar(0.92);
       arr[i * 3] = col.r; arr[i * 3 + 1] = col.g; arr[i * 3 + 2] = col.b;
-      const out = axis === 'z' ? (sign < 0 ? (z0 + d - wz) / d : (wz - z0) / d) : axis === 'x' ? (sign < 0 ? (x0 + w - wx) / w : (wx - x0) / w) : 1;
+      const out = outAt(wx, wz);
       pos.setY(i, (n - 0.5) * 0.12 - 0.02 + (spec.cliff ? out * out * 2.5 : 0));
     }
     geo.setAttribute('color', new THREE.BufferAttribute(arr, 3));
@@ -503,7 +506,7 @@ function fillerLand(c, theme) {
     const area = w * d, step = 1.0;
     for (let gz = z0 + 0.5; gz < z0 + d; gz += step) for (let gx = x0 + 0.5; gx < x0 + w; gx += step) {
       const px = gx + (rng() - 0.5) * 0.9, pz = gz + (rng() - 0.5) * 0.9, yaw = rng() * 6.28;
-      const out = axis === 'z' ? (sign < 0 ? (z0 + d - pz) / d : (pz - z0) / d) : axis === 'x' ? (sign < 0 ? (x0 + w - px) / w : (px - x0) / w) : 1;
+      const out = outAt(px, pz);
       const y = spec.cliff ? out * out * 2.5 : 0;
       const r = rng();
       // thinner the further out (beyond the fog's reach it is only a haze anyway)

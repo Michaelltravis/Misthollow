@@ -21,9 +21,10 @@ notes in `docs/REBUILD_PLAN.md` ("The art audit").
   the numbers and what was fixed are in `docs/REBUILD_PLAN.md` ("The full pass, from a fresh clone").
 - Before The Gates Of Mahn-Tor (10162) was buried by the land round a room a cell across and two
   up; fixed in `world3d/skirt.js` (a corner of the land runs on only over empty cells).
-- Left for a person: 15 shots still listed under "To fix" in `docs/JEV_REVIEW_SHOTS.md`, each kept
-  by its own words (JEV's pick from the picture swings for them), and A Leader Strand (6327), hidden
-  behind trees a neighbour's land grows in the empty cell south of it.
+- A Leader Strand (6327) was hidden behind trees a neighbour's land grew in front of it; no two
+  rooms' land overlaps now (`world3d/skirt.js`), and every room was shot again.
+- Left for a person: the shots still listed under "To fix" in `docs/JEV_REVIEW_SHOTS.md`, each kept
+  by its own words (JEV's pick from the picture swings for them).
 
 ## Not done
 - Nothing from this list.

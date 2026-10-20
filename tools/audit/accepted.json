@@ -16,7 +16,7 @@
   "413": "The arena's mud basin is a water room (you wade it): water stays water",
   "13000": "The Docks of Garathorm: a working harbour's wooden docks with boats, the sunken city only told of beyond the harbour mouth; you stand on the quay, not under the sea",
   "24728": "\"a broad square beneath a high ceiling ... Streets of stalls and shopfronts spread to the east and the west\": the dwarves' market under the cavern roof, a cave, not a dungeon's halls",
-  "3209": "A river along a ledge under the city's vault: the sewer look (JEV unsure, 0.51)",
+  "3209": "\"The vault drops lower here ... Pale roots have forced their way through the mortar overhead\": a river in a built vault under the city, the sewer look, not a cave",
   "13842": "Morkai's streets are a city of the dead, drawn as the necropolis",
   "1157": "\"bare rock, chiselled square ... A pair of iron brackets hold the black stubs of torches. The floor is dry, a relief after the wet halls above\": a dry corridor, not under the water",
   "3773": "\"You are afloat on the Styx ... the dim luminous edge of the water on either side of the boat ... the near bank lies south\": on the river in the boat, not its bank",
@@ -30,7 +30,7 @@
   "12347": "The Warded Castle's Centre Ward, drawn in the castle's interior style",
   "13120": "Durmandel's Royal Hall, drawn in the castle's interior style",
   "13022": "Valin's Gate, a great stone gateway: drawn as castle walls and gate (JEV unsure, 0.34)",
-  "6680": "Salem's Lot: the Pegasi Deck, a curved balcony of white-painted wood on the town's flight deck with stalls for winged horses; drawn with the town, not as a fortress",
+  "6680": "\"a graceful curved balcony of white-painted wood, with stalls for winged horses set into its back wall\": a wooden deck of the town's stables, not a castle",
   "13903": "\"The courtyard's edge is a ragged strip of paving where a stunted yew bends over a bench of pale stone\": the open courtyard under the temple wall, not a room inside it",
   "13297": "\"You float on black, still water in a narrow shaft, with a ring of stone rising sheer on every side\": the water at the bottom of the well, not a cave",
   "4524": "The greenhouse: JEV picked garden (0.97) when it was drawn as a room and a room (0.61) once it was a garden; either suits it",
@@ -39,7 +39,10 @@
   "10004": "\"This small office contains a sturdy stone desk covered in papers, charts, and mining surveys\": an office, drawn as a room; JEV picked a room (0.49) and then a mine (0.47) from its pictures",
   "3030": "\"The dump, where the people from the city drop their garbage ... North of here you see the common square\": open ground of the city by the sewer's pipes, not inside the sewer",
   "21778": "\"At the farthest corner of the balcony the rail turns back on itself ... Cobwebs hang from the rail\": a balcony of the cave elves' arena hall, not woods (JEV 0.22)",
-  "7306": "\"The mud goes to your chest\": a swimming room of the Sewer, and water stays water (tests/test_room_looks.py); the sewer's mud is its water"
+  "7306": "\"The mud goes to your chest\": a swimming room of the Sewer, and water stays water (tests/test_room_looks.py); the sewer's mud is its water",
+  "13904": "\"A studded door of black oak ... stands in this corner of the courtyard ... The courtyard continues south and west\": the open courtyard of the temple, not a room inside it",
+  "15148": "\"The ground here dips into a hollow, a round bowl in the hillside lined with soft moss and ringed by gnarled thorn bushes\": the hills, not a wood",
+  "203621": "\"Ferns and moss soften the ground beneath a dim green canopy. Birdsong drifts down through the branches overhead\": a wood, whatever its name says"
  },
  "rooms": {
   "15210": "Fameland's halls of the fallen are drawn in the holy style, as the zone is",

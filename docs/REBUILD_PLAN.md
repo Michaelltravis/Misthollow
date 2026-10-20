@@ -2157,7 +2157,7 @@ zones as a whole as well as rooms, and looks at the rooms as they are drawn.
     grassland seen from a mouse's height is field, the Winterwood's path has its trees). The Newbie
     Zone's training rooms are dungeon, not cave.
   - **The full pass, from a fresh clone** (no answers cached, so JEV was asked everything afresh;
-    shot on a GPU at about 7 s a room). 44 rooms take a new look (`world/looks.json`, each with its
+    shot on a GPU at about 7 s a room). 51 rooms take a new look (`world/looks.json`, each with its
     reason):
     - **Rooms:** of 8,438 judged by their words, 30 were listed. 28 are drawn as JEV picks: tunnels
       the zone's mountain wording made mountain are caves, a lane of cottages is a village not a
@@ -2166,17 +2166,19 @@ zones as a whole as well as rooms, and looks at the rooms as they are drawn.
       frozen marsh). None left open.
     - **Zones:** five were listed, all at low confidence (the Mindflayer's Lair, both cathedrals,
       the Sewer, Salem's Lot); each is accepted with its reason and JEV upholds all five.
-    - **Shots:** all 611 shot (good 220, bare 197, the wrong place 145, the wrong style 48,
-      unreadable 1). 16 rooms take the look JEV picks from the shot and words; 172 are "the look
-      confirmed", 5 accepted and upheld. **16 stay listed**: A Leader Strand (below), and 15
-      each kept by its own words (in
-      `accepted.json`, quoted) and each reason not upheld: the boat on the Styx, the dry corridor
-      of the Submerged Temple, the Docks of Garathorm, the bottom of a well where you float, a
-      courtyard, a home inside the Elder Oak, a guild hall, a market under a cavern roof, and the
-      Sewer's Mudhole (JEV would draw a swamp, but water stays water). JEV's pick
-      from a picture swings: four rooms moved to its pick were judged wrong again with the old look
-      picked (the greenhouse: inside 0.56, then garden 0.95, then inside 0.61), so these are put
-      back and left to a person.
+    - **Shots:** all 611 shot, twice (the second time after the land fix below: good 209, bare 200,
+      the wrong place 145, the wrong style 56, unreadable 1). 22 rooms take the look JEV picks from
+      the shot and words (and The Mountain Pass, which its pinned neighbour would have made
+      volcanic, its words' mountain); 177 are "the look confirmed", 3 accepted and upheld.
+      **21 stay listed, each kept by its own words** (quoted in `accepted.json`), each reason not
+      upheld: the boat on the Styx, the dry corridor of the Submerged Temple, the Docks of
+      Garathorm, the bottom of a well where you float, two courtyards, homes inside the Elder Oak,
+      a guild hall, a market under a cavern roof, a leafy "underground" path, the vaulted river
+      under the city, the pegasi deck, the Sewer's Mudhole (JEV would draw a swamp, but water stays
+      water)... JEV's pick from a picture swings: rooms moved to its pick were judged wrong again
+      with the old look picked (the greenhouse: inside 0.56, then garden 0.95, then inside 0.61),
+      and a fresh shot of the same room gets a fresh low-confidence verdict, so these are left to a
+      person rather than chased.
     - **Bare:** 198. Of the things their words name that the game draws, JEV sees all in 58, some in
       49, none in 38. Looked at by hand, most "none" are misses (the Crystal Spire's crystals and the
       Great Valley's statue are plainly there), but one was a real fault: **Before The Gates Of
@@ -2185,13 +2187,17 @@ zones as a whole as well as rooms, and looks at the rooms as they are drawn.
       and it did so over a room. A corner now runs on only over empty cells (`world3d/skirt.js`,
       `tests/web/skirt.test.mjs`; 49 rooms in all were overdrawn so). The gates are seen now and
       JEV confirms them (castle, 0.96).
-    - Still open, of the same family: **A Leader Strand** (6327, Arachnos) is hidden behind tall
-      trees that the land round The Tether Path (6325's neighbour 6326) grows in the empty cell
-      south of it, between the camera and the hero (JEV: "unreadable" before the fix, now the wrong
-      place). Two rooms at right angles to one empty cell both fill it; which should give way is a
-      choice for the owner.
+    - Of the same family: **A Leader Strand** (6327, Arachnos) was hidden behind tall trees that
+      the land round A Road Crossing (6326) grew in the empty cell south of it, between the camera
+      and the hero (JEV: "unreadable"). Two rooms at right angles to one empty cell both filled it;
+      over the world, neighbours' land lay on the same ground everywhere. Now no two rooms' land
+      overlaps: where it would, the room nearer that ground keeps it, and, as near, the land north
+      or south of a room before the land east or west of it, so the strip in front of the camera is
+      the room's behind it (`skirt.js` `yields`). A piece cut so keeps the whole patch it came from,
+      so a mountain's land still rises from its own room. All 611 rooms were shot again after it.
+      A Leader Strand is seen now, and is drawn as the web it is (its name had read as a beach).
     - The atlas index still named zone 50 The Great Eastern Desert (`docs/world/ATLAS_INDEX.md`).
-    - Tests (on Windows): the web suites pass (183); of the offline Python suites, all but
+    - Tests (on Windows): the web suites pass (190); of the offline Python suites, all but
       `test_atlas`'s zones.json check pass (it writes `world\zones\...` on Windows), with
       `PYTHONUTF8=1` for `test_spells_audit`. The live suites fail the same 35 checks with these
       changes as without them (a second account, Unix file modes, timing): none is the art's.
