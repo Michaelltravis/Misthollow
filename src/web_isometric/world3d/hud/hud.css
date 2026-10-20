@@ -387,6 +387,9 @@ button { font: inherit; color: inherit; }
 #log .tx-panel { white-space: pre-wrap; word-break: break-word; overflow-x: hidden; font-size: calc(11px * var(--ui)); padding: 6px 8px; }
 .tx-sep { height: 1px; margin: 4px 0; background: linear-gradient(90deg, rgba(216,180,106,0), rgba(216,180,106,.45), rgba(216,180,106,0)); }
 .tx-bar { color: rgba(216,180,106,.35); }
+/* a list the server set in columns with spaces: fixed-width, so they line up again */
+.tx-cols { margin: 2px 0; white-space: pre-wrap; font: 12px/1.45 ui-monospace, Menlo, Consolas, monospace; color: var(--ink); }
+#log .tx-cols { font-size: calc(11px * var(--ui)); }
 .tx-meter { display: inline-block; height: .7em; vertical-align: .05em; border-radius: 3px; overflow: hidden;
   background: rgba(255,255,255,.07); box-shadow: inset 0 0 0 1px rgba(216,180,106,.35); }
 .tx-meter i { display: block; height: 100%; background: linear-gradient(90deg, #b98d45, #f3d999); }
@@ -686,7 +689,8 @@ html.fallen #vignette { background: radial-gradient(ellipse at 50% 46%, rgba(30,
 .sb-bar { height: 5px; border-radius: 3px; background: rgba(0,0,0,.6); position: relative; margin: 5px 0 4px; }
 .sb-bar b { position: absolute; inset: 0 auto 0 0; border-radius: 3px; background: linear-gradient(90deg, #6a44b8, #c49af8 75%, #f3d999); }
 .sb-bar i { position: absolute; top: -2px; bottom: -2px; width: 1px; background: rgba(243,217,153,.8); }
-.sb-cost { font: 500 12px var(--label); color: var(--ink-dim); letter-spacing: .02em; }
+/* (the body face, not the small capitals: a description in small capitals read as shouting) */
+.sb-cost { font: 500 12.5px/1.35 var(--body); color: var(--ink-dim); letter-spacing: .01em; }
 .sb-desc { font: 14.5px/1.38 var(--lore); color: var(--ink); margin-top: 3px; }
 .sb-key { position: absolute; right: 9px; bottom: 7px; }
 .sb-add { position: absolute; right: 8px; bottom: 6px; width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--edge);

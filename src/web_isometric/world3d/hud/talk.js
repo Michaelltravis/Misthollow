@@ -3,7 +3,7 @@
 // and the finished quests you can hand in (Turn in: `quest complete <id>`). The words are the
 // server's own reply to `talk`; the offers and the finished quests come from /quests.
 
-import { formatLines, noteKind } from './frames.js';
+import { formatLines, noteKind, PROMPT_AT } from './frames.js';
 
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
@@ -30,7 +30,8 @@ export function talkHtml(says) {
 // what follows "You greet ..." is theirs (before it: your command's echo, the world going on);
 // the prompt, the echo of a command and the offers' own lines (the window lists the offers) go.
 export function readTalk(text) {
-  let lines = String(text || '').replace(/\r/g, '').split('\n').map(l => l.trim()).filter(Boolean);
+  // (a line's leading prompt goes, the rest stays: what they say can follow it on the same line)
+  let lines = String(text || '').replace(/\r/g, '').split('\n').map(l => l.replace(PROMPT_AT, '').trim()).filter(Boolean);
   const greet = lines.findIndex(l => /^You greet /.test(l));
   if (greet >= 0) lines = lines.slice(greet + 1);
   const says = [], choices = [], offers = [];

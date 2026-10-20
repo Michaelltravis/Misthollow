@@ -5,6 +5,10 @@
 
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
+// an item's kind as a player says it, not the world file's (`drinkcon` is a bottle or a skin)
+const TYPE_NAMES = { drinkcon: 'drink', armor: 'armour', treasure: 'valuable', money: 'coin', fountain: 'fountain', other: 'goods', trash: 'junk', note: 'letter' };
+export const typeName = t => (t ? TYPE_NAMES[t] || String(t).replace(/_/g, ' ') : '');
+
 // the word the MUD finds a carried item by, numbered when several share it ("2.sword")
 export function keywordFor(item, list) {
   const kw = String(item.name || item.short || 'item').toLowerCase().split(/\s+/).find(w => w.length > 1) || 'item';
@@ -53,7 +57,7 @@ export function createShop(root, { fetchShop, send, icon, sound }) {
       <div class="sb-list sh-list">${rows.map((r, i) => `<div class="sh-row ${r.ok ? '' : 'no'}" data-i="${i}">
         <div class="sh-ic"></div>
         <div class="sb-main"><div class="sb-name">${esc(r.item.short || r.item.name)}</div>
-          <div class="sb-cost">${r.item.level ? `level ${r.item.level} · ` : ''}${esc(r.item.type || '')}${r.why ? ` · ${esc(r.why)}` : ''}</div></div>
+          <div class="sb-cost">${r.item.level ? `level ${r.item.level} · ` : ''}${esc(typeName(r.item.type))}${r.why ? ` · ${esc(r.why)}` : ''}</div></div>
         <div class="sh-price">${r.price.toLocaleString()}</div>
         <button class="tr-buy" data-i="${i}" ${r.ok ? '' : 'disabled'}>${verb}</button>
       </div>`).join('') || `<span class="ch-none">${tab === 'buy' ? 'Nothing for sale right now' : 'You carry nothing to sell'}</span>`}</div>`;

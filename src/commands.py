@@ -2096,7 +2096,6 @@ class CommandHandler:
         await player.send(f"{c['cyan']}{BL}{H*W}{BR}{c['reset']}")
         
     @classmethod
-    @classmethod
     async def cmd_inspect(cls, player: 'Player', args: List[str]):
         """Inspect an item in detail — shows rarity, procs, lore, drop source.
         
@@ -2599,7 +2598,6 @@ class CommandHandler:
             await player.send(line)
 
     @classmethod
-    @classmethod
     async def cmd_minimap(cls, player: 'Player', args: List[str]):
         """Display a compact ASCII minimap centered on the player."""
         from map_system import render_ascii_map
@@ -2861,8 +2859,8 @@ class CommandHandler:
         lines.append(f"{c['bright_cyan']}{'═' * 70}{c['reset']}")
         lines.append(f"{c['white']}Total topics: {len(HELP_TOPICS)} | Type 'help <topic>' for details{c['reset']}")
         
-        # Paginate - 20 lines per page
-        page_size = 20
+        # Paginate - 20 lines per page (a terminal's screenful; a web page scrolls, so it has it all)
+        page_size = (len(lines) or 1) if getattr(getattr(player, 'connection', None), 'is_web', False) else 20
         total_lines = len(lines)
         
         for i in range(0, total_lines, page_size):
@@ -13247,7 +13245,6 @@ class CommandHandler:
                 player.target = enemy
 
     @classmethod
-    @classmethod
     async def cmd_protect(cls, player: 'Player', args: List[str]):
         """Protect an ally, intercepting attacks. Usage: protect <ally>|protect off"""
         c = player.config.COLORS
@@ -13685,7 +13682,6 @@ class CommandHandler:
 
     # ==================== FOOD & DRINK COMMANDS ====================
 
-    @classmethod
     @classmethod
     async def cmd_drink_alt(cls, player: 'Player', args: List[str]):
         """Drink from a fountain or container. Usage: drink [from] <source>"""
@@ -14488,6 +14484,11 @@ class CommandHandler:
                 await player.room.send_to_room(f"{c['white']}{report}{c['reset']}", exclude=[player])
 
     @classmethod
+    async def cmd_social(cls, player: 'Player', args: List[str]):
+        """`social`: the emotes, as `socials` lists them."""
+        await cls.cmd_socials(player, args)
+
+    @classmethod
     async def cmd_socials(cls, player: 'Player', args: List[str]):
         """List all available social commands."""
         c = player.config.COLORS
@@ -15189,8 +15190,8 @@ class CommandHandler:
         return msg
 
     @classmethod
-    async def cmd_social(cls, player: 'Player', social_name: str, args: List[str]):
-        """Process a social command."""
+    async def do_social(cls, player: 'Player', social_name: str, args: List[str]):
+        """Process a social command (each emote's own command calls it; not a command itself)."""
         if social_name not in cls.SOCIALS:
             return False
 
@@ -15255,165 +15256,165 @@ class CommandHandler:
         return True
 
     # Generate individual social command methods for every social in SOCIALS dict.
-    # Each is a thin wrapper around cmd_social for command dispatch.
+    # Each is a thin wrapper around do_social for command dispatch.
 
     @classmethod
     async def cmd_smile(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'smile', args)
+        await cls.do_social(player, 'smile', args)
     @classmethod
     async def cmd_laugh(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'laugh', args)
+        await cls.do_social(player, 'laugh', args)
     @classmethod
     async def cmd_nod(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'nod', args)
+        await cls.do_social(player, 'nod', args)
     @classmethod
     async def cmd_bow(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'bow', args)
+        await cls.do_social(player, 'bow', args)
     @classmethod
     async def cmd_wave(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'wave', args)
+        await cls.do_social(player, 'wave', args)
     @classmethod
     async def cmd_hug(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'hug', args)
+        await cls.do_social(player, 'hug', args)
     @classmethod
     async def cmd_kiss(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'kiss', args)
+        await cls.do_social(player, 'kiss', args)
     @classmethod
     async def cmd_cuddle(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'cuddle', args)
+        await cls.do_social(player, 'cuddle', args)
     @classmethod
     async def cmd_pat(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'pat', args)
+        await cls.do_social(player, 'pat', args)
     @classmethod
     async def cmd_comfort(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'comfort', args)
+        await cls.do_social(player, 'comfort', args)
     @classmethod
     async def cmd_curtsy(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'curtsy', args)
+        await cls.do_social(player, 'curtsy', args)
     @classmethod
     async def cmd_greet(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'greet', args)
+        await cls.do_social(player, 'greet', args)
     @classmethod
     async def cmd_salute(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'salute', args)
+        await cls.do_social(player, 'salute', args)
     @classmethod
     async def cmd_dance(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'dance', args)
+        await cls.do_social(player, 'dance', args)
     @classmethod
     async def cmd_giggle(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'giggle', args)
+        await cls.do_social(player, 'giggle', args)
     @classmethod
     async def cmd_cheer(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'cheer', args)
+        await cls.do_social(player, 'cheer', args)
     @classmethod
     async def cmd_clap(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'clap', args)
+        await cls.do_social(player, 'clap', args)
     @classmethod
     async def cmd_whistle(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'whistle', args)
+        await cls.do_social(player, 'whistle', args)
     @classmethod
     async def cmd_wink(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'wink', args)
+        await cls.do_social(player, 'wink', args)
     @classmethod
     async def cmd_slap(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'slap', args)
+        await cls.do_social(player, 'slap', args)
     @classmethod
     async def cmd_poke(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'poke', args)
+        await cls.do_social(player, 'poke', args)
     @classmethod
     async def cmd_bonk(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'bonk', args)
+        await cls.do_social(player, 'bonk', args)
     @classmethod
     async def cmd_facepalm(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'facepalm', args)
+        await cls.do_social(player, 'facepalm', args)
     @classmethod
     async def cmd_shrug(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'shrug', args)
+        await cls.do_social(player, 'shrug', args)
     @classmethod
     async def cmd_eyeroll(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'eyeroll', args)
+        await cls.do_social(player, 'eyeroll', args)
     @classmethod
     async def cmd_spit(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'spit', args)
+        await cls.do_social(player, 'spit', args)
     @classmethod
     async def cmd_cry(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'cry', args)
+        await cls.do_social(player, 'cry', args)
     @classmethod
     async def cmd_sigh(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'sigh', args)
+        await cls.do_social(player, 'sigh', args)
     @classmethod
     async def cmd_gasp(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'gasp', args)
+        await cls.do_social(player, 'gasp', args)
     @classmethod
     async def cmd_scream(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'scream', args)
+        await cls.do_social(player, 'scream', args)
     @classmethod
     async def cmd_yawn(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'yawn', args)
+        await cls.do_social(player, 'yawn', args)
     @classmethod
     async def cmd_stretch(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'stretch', args)
+        await cls.do_social(player, 'stretch', args)
     @classmethod
     async def cmd_flex(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'flex', args)
+        await cls.do_social(player, 'flex', args)
     @classmethod
     async def cmd_cringe(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'cringe', args)
+        await cls.do_social(player, 'cringe', args)
     @classmethod
     async def cmd_kneel(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'kneel', args)
+        await cls.do_social(player, 'kneel', args)
     @classmethod
     async def cmd_meditate(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'meditate', args)
+        await cls.do_social(player, 'meditate', args)
     @classmethod
     async def cmd_pray(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'pray', args)
+        await cls.do_social(player, 'pray', args)
     @classmethod
     async def cmd_battlecry(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'battlecry', args)
+        await cls.do_social(player, 'battlecry', args)
     @classmethod
     async def cmd_taunt(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'taunt', args)
+        await cls.do_social(player, 'taunt', args)
     @classmethod
     async def cmd_challenge_emote(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'challenge_emote', args)
+        await cls.do_social(player, 'challenge_emote', args)
     @classmethod
     async def cmd_surrender(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'surrender', args)
+        await cls.do_social(player, 'surrender', args)
     @classmethod
     async def cmd_grin(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'grin', args)
+        await cls.do_social(player, 'grin', args)
     @classmethod
     async def cmd_snicker(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'snicker', args)
+        await cls.do_social(player, 'snicker', args)
     @classmethod
     async def cmd_thank(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'thank', args)
+        await cls.do_social(player, 'thank', args)
     @classmethod
     async def cmd_glare(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'glare', args)
+        await cls.do_social(player, 'glare', args)
     @classmethod
     async def cmd_grumble(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'grumble', args)
+        await cls.do_social(player, 'grumble', args)
     @classmethod
     async def cmd_cackle(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'cackle', args)
+        await cls.do_social(player, 'cackle', args)
     @classmethod
     async def cmd_tickle(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'tickle', args)
+        await cls.do_social(player, 'tickle', args)
     @classmethod
     async def cmd_apologize(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'apologize', args)
+        await cls.do_social(player, 'apologize', args)
     @classmethod
     async def cmd_blush(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'blush', args)
+        await cls.do_social(player, 'blush', args)
     @classmethod
     async def cmd_ponder(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'ponder', args)
+        await cls.do_social(player, 'ponder', args)
     @classmethod
     async def cmd_sit_social(cls, player: 'Player', args: List[str]):
         """Sit social emote (use 'sit' for the position command)."""
-        await cls.cmd_social(player, 'sit', args)
+        await cls.do_social(player, 'sit', args)
 
     # ==================== UTILITY ====================
 
@@ -15426,7 +15427,6 @@ class CommandHandler:
         await player.save()
         await player.send("Character saved.")
         
-    @classmethod
     @staticmethod
     def _calc_item_rent_cost(item) -> int:
         """Calculate per-day rent cost for a single item based on rarity."""

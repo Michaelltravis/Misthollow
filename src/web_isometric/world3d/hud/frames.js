@@ -24,7 +24,40 @@ export function classify(text) {
   if (m && /[A-Za-z]/.test(m[1]) && !BAR.test(m[1])) return { t: 'titled', title: m[1].replace(/^[\s★☆✦✧•*]+|[\s★☆✦✧•*]+$/g, '') };
   // (a lone "|" is a map's path, not a box: a row has room inside its bars)
   if ((/^\s*[║│]/.test(t) || (/^\s*\|/.test(t) && /\|\s*$/.test(t))) && t.trim().length >= 3) return { t: 'row', text: t.match(ROW)[1] };
+  if (columns(t)) return { t: 'cols' };
   return { t: 'text' };
+}
+
+// a row of a list the server set in columns with spaces ("  horse      2000 gold  A riding horse",
+// "absolution    accept    account"): an indented line of two fields or more, or any of three,
+// each short; prose, with a double space after a full stop, is not one
+function columns(t) {
+  const parts = t.trim().split(/\s{2,}/);
+  if (parts.length < 2 || parts.slice(0, -1).some(p => p.length > 32)) return false;
+  // (indented, its last field may run on, a description; not indented, every field is short)
+  return /^\s/.test(t) ? true : parts.length >= 3 && parts.every(p => p.length <= 32);
+}
+
+// a run of column rows, drawn fixed-width so the server's own spacing lines them up again
+export const renderCols = lines => `<div class="tx-cols">${lines.map(l => `<div>${meters(l.html)}</div>`).join('')}</div>`;
+// (an indented line amid them is one of them, its fields one space apart: "  manabound_gryphon A ...")
+export const inList = text => /^\s+\S/.test(text);
+
+// the prompt a line can begin with ("20/20hp 128/128mp 158/158mv> the pilgrim leaves north"): the
+// HUD shows those numbers itself, so it goes, and the rest of the line stays
+export const PROMPT_AT = /^\s*<?\s*\d+\/\d+\s*hp\b[^>\n]*>\s*/i;
+export function unprompt(html) {
+  // (each entity one character, as it shows)
+  const plain = String(html).replace(/<[^>]*>/g, '').replace(/&(gt|lt|amp|quot|#\d+);/g, (_, e) => ({ gt: '>', lt: '<', amp: '&', quot: '"' }[e] || '?'));
+  const m = plain.match(PROMPT_AT);
+  if (!m) return html;
+  let drop = m[0].length;
+  return String(html).split(/(<[^>]*>)/).map(p => {
+    if (!drop || p.startsWith('<')) return p;
+    let i = 0;
+    while (i < p.length && drop) { i = p[i] === '&' && p.indexOf(';', i) > i ? p.indexOf(';', i) + 1 : i + 1; drop--; }
+    return p.slice(i);
+  }).join('');
 }
 
 // is this line part of a framed block (a box's rule or row)?
@@ -116,6 +149,14 @@ export function formatLines(lines) {
         && classify(lines[i + 2].text).t === 'rule' && lines[i + 1].text.trim().length <= 60) {
       out.push({ html: `<div class="tx-head">${esc(lines[i + 1].text.trim())}</div>`, box: true });
       i += 2;
+      continue;
+    }
+    if (k.t === 'cols') {
+      const run = [l];
+      // (as the chat log gathers them: an indented line goes on the run)
+      const next = j => j < lines.length && (classify(lines[j].text).t === 'cols' || (inList(lines[j].text) && classify(lines[j].text).t === 'text'));
+      while (next(i + 1)) run.push(lines[++i]);
+      out.push({ html: renderCols(run), box: true });
       continue;
     }
     const one = renderLine(l);

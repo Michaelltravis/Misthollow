@@ -595,7 +595,8 @@ class ArenaManager:
 
         # Also include online players with arena stats
         if player.world:
-            for p in getattr(player.world, 'players', []):
+            online = getattr(player.world, 'players', None) or {}
+            for p in (online.values() if isinstance(online, dict) else online):   # (a dict: name -> player)
                 _ensure_arena_stats(p)
                 if p.arena_wins + p.arena_losses > 0:
                     # Update or add

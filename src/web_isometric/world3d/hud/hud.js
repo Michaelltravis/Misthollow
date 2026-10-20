@@ -4,7 +4,7 @@
 // Actions go out as bus events ('hud.attack', 'hud.ability', 'hud.flee') for main.js,
 // which knows the target and plays the hero's animation.
 import { splitByKind } from './logkinds.js';
-import { framed as inBox, renderBox, renderLine, classify, meters } from './frames.js';
+import { framed as inBox, renderBox, renderLine, renderCols, classify, meters, inList, unprompt } from './frames.js';
 import { SCHOOL_CSS } from '../sctlogic.js';
 import { createInventory } from './inventory.js';
 import { createCharacter } from './character.js';
@@ -851,19 +851,39 @@ export function createHud() {
   MH.bus.on('terminal.output', ({ html }) => {
     if (!html || !MH.state.isLoggedIn) return;
     const plain = l => l.replace(/<[^>]+>/g, '').replace(/&gt;/g, '>').replace(/&lt;/g, '<').replace(/&amp;/g, '&');
-    const lines = String(html).split(/\r?\n/).filter(l => plain(l).trim() && !PROMPT.test(plain(l)));
+    // (a prompt a line begins with goes: the HUD shows those numbers; frames.js unprompt)
+    const lines = String(html).split(/\r?\n/).filter(l => !PROMPT.test(plain(l))).map(unprompt).filter(l => plain(l).trim());
     for (const g of splitByKind(lines)) {
       for (const line of g.html.split('\n')) {
         const text = plain(line);
-        if (inBox(text)) { boxLine(line, text, g.kind); continue; }
+        if (inBox(text)) { cols = null; boxLine(line, text, g.kind); continue; }
         box = null;
+        // a list set in columns, gathered the same way (frames.js renderCols), an indented line
+        // amid it one of its rows
+        const k = classify(text).t;
+        if (k === 'cols' || (k === 'text' && inList(text) && cols && cols.el.isConnected)) { colsLine(line, text, g.kind); continue; }
+        cols = null;
         const one = renderLine({ html: line, text });
         if (one) { log(one, null, g.kind); continue; }
         log(meters(line), null, g.kind);
       }
     }
   });
-  MH.bus.on('terminal.echo', () => { box = null; });
+  let cols = null;
+  function colsLine(html, text, sort) {
+    const atBottom = stick;
+    if (!cols || !cols.el.isConnected) {
+      const d = document.createElement('div');
+      d.className = 'tx-block';
+      if (sort) d.classList.add(`k-${sort}`);
+      els.log.appendChild(d);
+      cols = { el: d, lines: [] };
+    }
+    cols.lines.push({ html, text });
+    cols.el.innerHTML = renderCols(cols.lines);
+    if (atBottom) els.log.scrollTop = els.log.scrollHeight;
+  }
+  MH.bus.on('terminal.echo', () => { box = null; cols = null; });
   // a command typed shows as typed; one the bar sent for a fight goes with the fight ({ text, kind })
   MH.bus.on('terminal.echo', cmd => (typeof cmd === 'object' ? log(`> ${cmd.text}`, 'cmd', cmd.kind) : log(`> ${cmd}`, 'cmd')));
   // tabs filter the log; the mode chip decides what Enter does with plain text

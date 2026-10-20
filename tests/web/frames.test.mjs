@@ -94,3 +94,39 @@ test('the talk window: their words, notes of what happened to you, banners; quie
   const quiet = talkHtml(['New in your journal: guildmaster (notable figure encountered)']);
   assert.match(quiet, /^<p class="tk-quiet">They have nothing to say\.<\/p><p class="tx-note journal">/);
 });
+
+test('a list set in columns with spaces is drawn fixed-width; prose is not', async () => {
+  const { classify, formatLines } = await import('../../src/web_isometric/world3d/hud/frames.js');
+  for (const t of ['  horse         2000 gold  A reliable riding horse.', '  Autoattack    OFF', 'absolution    accept    account', '  Bash          50%'])
+    assert.equal(classify(t).t, 'cols', t);
+  for (const t of ['Your abilities grow as you use them.  Your trainer teaches the rest.', 'Available for purchase:', 'You are carrying:', 'A sentence  with  odd spacing in a very long first part of the line that goes on'])
+    assert.notEqual(classify(t).t, 'cols', t);
+  const out = formatLines(['Available for purchase:', '  horse   2000 gold', '  pony    900 gold', 'Done.'].map(t => ({ text: t, html: t })));
+  assert.deepEqual(out.map(o => o.box), [false, true, false]);
+  assert.match(out[1].html, /^<div class="tx-cols"><div>  horse   2000 gold<\/div><div>  pony    900 gold<\/div><\/div>$/);
+});
+
+test("a line's leading prompt goes and the rest stays; an indented line amid a list is one of its rows", async () => {
+  const { unprompt, formatLines } = await import('../../src/web_isometric/world3d/hud/frames.js');
+  const { readTalk } = await import('../../src/web_isometric/world3d/hud/talk.js');
+  assert.equal(unprompt('<span class="a">20/20hp 128/128mp 158/158mv&gt; </span>the pilgrim leaves north.'), '<span class="a"></span>the pilgrim leaves north.');
+  assert.equal(unprompt('the pilgrim leaves north.'), 'the pilgrim leaves north.');
+  assert.deepEqual(readTalk("You greet the waiter.\n20/20hp 9/9mp 9/9mv> waiter says, 'Welcome!'").says, ["waiter says, 'Welcome!'"]);
+  const out = formatLines(['  horse      2000 gold', '  manabound_gryphon A gryphon bound', '  pony       900 gold'].map(t => ({ text: t, html: t })));
+  assert.equal(out.length, 1, 'one block, the single-spaced row in it');
+});
+
+test("the shop names an item's kind as a player says it", async () => {
+  const { typeName } = await import('../../src/web_isometric/world3d/hud/shop.js');
+  assert.equal(typeName('drinkcon'), 'drink');
+  assert.equal(typeName('food'), 'food');
+  assert.equal(typeName('magic_item'), 'magic item');
+  assert.equal(typeName(undefined), '');
+});
+
+test("a mount for sale says its speed once", async () => {
+  const { forSale } = await import('../../src/web_isometric/world3d/hud/stable.js');
+  assert.equal(forSale({ description: 'A reliable riding horse. +35% speed.', travel: 35 }), 'A reliable riding horse. +35% speed.');
+  assert.equal(forSale({ description: 'A reliable donkey.', travel: 15 }), 'A reliable donkey. · +15% speed');
+  assert.equal(forSale({ description: 'A griffin. +60% speed, and it flies.', travel: 60, can_fly: true }), 'A griffin. +60% speed, and it flies.');
+});

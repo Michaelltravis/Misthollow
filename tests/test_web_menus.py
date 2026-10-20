@@ -30,7 +30,11 @@ check(w('Quest Progress: Speak with Sage Aldric (type "talk aldric") (1/1)')
 check(w("Check your score (type 'score')") == 'Check your score: open your Character sheet (C)', "single quotes too")
 check(w('Look around (type "look"), then rest (type "rest")') == 'Look around: right-click it, then Look, then rest: right-click yourself, then Rest', 'every hint in a line')
 check(w("\x1b[36m  Type 'journal' to view your discoveries.\x1b[0m") == "\x1b[36m  Open your Journal (L) to view your discoveries.\x1b[0m", "Type 'journal' to ...: Open your Journal (L) to ..., colours kept")
-check(w("Type 'talk aldric' to begin.") == "Type 'talk aldric' to begin.", 'a sentence /play has no window for stays')
+check(w("Type 'talk aldric' to begin.") == "Right-click them, then Talk to begin.", "Type 'talk aldric' to ...: the HUD's way")
+check(w('He is right here. Simply type "talk aldric" to speak with him.') == 'He is right here. Simply right-click them, then Talk to speak with him.',
+      'a quest\'s "simply type "talk aldric" to ...": the HUD\'s way, in lower case mid-sentence')
+check(w("Type 'channel list' to see them.") == "Type 'channel list' to see them.", 'a command whose /play way is itself typing stays')
+check(w("Type 'bake' to bake.") == "Type 'bake' to bake.", 'a command /play has no other way for stays')
 check(w("waiter says, 'Welcome! Type LIST to see my wares.'") == "waiter says, 'Welcome! Right-click the shopkeeper, then Shop to see my wares.'",
       "a shopkeeper's Type LIST: right-click, then Shop")
 check(w('TYPE NOTHING here') == 'TYPE NOTHING here', 'capitals that are not a command stay')

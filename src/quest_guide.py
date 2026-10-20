@@ -35,7 +35,7 @@ TYPED = re.compile(r'\s*\((?:type|try) "(\w+)[^)]*\)')
 # the same in any line the server sends /play: '(type "x")' or "(type 'x')" anywhere in it, and a
 # sentence "Type 'journal' to view your discoveries." where /play opens a window for it instead
 TYPED_ANY = re.compile(r"""\s*\((?:[Tt]ype|[Tt]ry) (["'])(\w+)[^)]*?\1\)""")
-TYPE_TO = re.compile(r"""\b[Tt]ype (["'])(\w+)\1( to [^.!\n\x1b]+)""")
+TYPE_TO = re.compile(r"""\b([Tt])ype (["'])(\w+)[^"'\n]*?\2( to [^.!\n\x1b]+)""")
 # and a shopkeeper's "Type LIST to see my wares" (the command in capitals, no quotes)
 TYPE_CAPS = re.compile(r"""\b[Tt]ype ([A-Z]{2,})( to [^.!'"\n\x1b]+)""")
 
@@ -67,10 +67,13 @@ def web_line(text):
         return f": {how}" if how else m.group(0)
 
     def sentence(m):
-        how = WEB_HOW.get(m.group(2).lower())
-        if not how or not how.startswith('open '):
+        # ("Type 'journal' to ..." / "simply type "talk aldric" to speak with him": the HUD's way,
+        # capitalised as the word it stands for)
+        how = WEB_HOW.get(m.group(3).lower())
+        if not how or (not how.startswith('open ') and how.startswith('type ')):
             return m.group(0)
-        return f"{how[0].upper()}{how[1:]}{m.group(3)}"
+        head = how[0].upper() if m.group(1) == 'T' else how[0]
+        return f"{head}{how[1:]}{m.group(4)}"
 
     def caps(m):
         how = WEB_HOW.get(m.group(1).lower())

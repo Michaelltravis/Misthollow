@@ -37,7 +37,7 @@ export function createTalents(root, { fetchTalents, send }) {
     if (!data) { body.innerHTML = '<span class="ch-none">Opening your talents…</span>'; return; }
     if (!data.has_trees) {
       body.innerHTML = `<span class="ch-none">${data.class === 'warrior'
-        ? 'Warriors grow by their martial doctrine and by using their abilities (type <b>doctrine</b>).'
+        ? 'Warriors grow by their martial doctrine and by using their abilities: see the <b>Doctrine</b> page of your Legend (G).'
         : 'Your class has no talent trees.'}</span>`;
       return;
     }
