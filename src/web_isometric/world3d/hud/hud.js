@@ -4,7 +4,7 @@
 // Actions go out as bus events ('hud.attack', 'hud.ability', 'hud.flee') for main.js,
 // which knows the target and plays the hero's animation.
 import { splitByKind } from './logkinds.js';
-import { framed as inBox, renderBox, renderLine, renderCols, classify, meters, inList, unprompt } from './frames.js';
+import { framed as inBox, renderBox, renderLine, renderCols, classify, meters, inList, unprompt, isTitle } from './frames.js';
 import { SCHOOL_CSS } from '../sctlogic.js';
 import { createInventory } from './inventory.js';
 import { createCharacter } from './character.js';
@@ -831,7 +831,7 @@ export function createHud() {
       // a rule, a short line, a rule: a heading ("═══\n Your Worth \n═══"); the rule that
       // closes it draws nothing more unless a box goes on from it
       const title = els.log.lastElementChild, above = title && title.previousElementSibling;
-      const closes = title && !title.className && title.textContent.trim().length <= 60 && above && above._lines
+      const closes = title && !title.className && isTitle(title.textContent) && above && above._lines
         && above._lines.length === 1 && classify(text).t === 'rule';
       if (closes) {
         above.innerHTML = `<div class="tx-head">${escHtml(title.textContent.trim())}</div>`;
@@ -915,8 +915,8 @@ export function createHud() {
       // `help` and `help <topic>`: the Help window (H), not the telnet's paged index in the log
       const asked = v && v.match(/^help(?:\s+(.+))?$/i);
       if (asked) { help.show(asked[1] || ''); st.history.unshift(raw); }
-      // `map`: the Map window (M), not the telnet's map drawn in letters
-      else if (v && /^map$/i.test(v)) { MH.bus.emit('hud.map'); st.history.unshift(raw); }
+      // `map` and `minimap`: the Map window (M), not the telnet's map drawn in letters
+      else if (v && /^(?:mini)?map$/i.test(v)) { MH.bus.emit('hud.map'); st.history.unshift(raw); }
       else if (v) { MH.sendCommand(v); if (!MH.secretLine(raw)) { st.history.unshift(raw); st.history.length = Math.min(st.history.length, 50); } }
       st.hi = -1;
       els.input.value = '';

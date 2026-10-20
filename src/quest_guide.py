@@ -30,14 +30,22 @@ WEB_HOW = {
     'kill': 'Tab to target it, F to attack', 'channel': 'type "channel list" in the chat box',
     'journal': 'open your Journal (L)', 'map': 'open the Map (M)', 'help': 'open Help (H)',
     'look': 'right-click it, then Look', 'examine': 'right-click it, then Look',
+    # the windows of the menu (play.html): what a command shows there
+    'achievements': 'open your Almanac (Y)', 'daily': 'open your Almanac (Y)', 'titles': 'open your Almanac (Y)',
+    'collections': 'open your Almanac (Y)', 'leaderboard': 'open your Legend (G)', 'doctrine': 'open your Legend (G)',
+    'prestige': 'open your Legend (G)', 'travel': 'open Travel (T)', 'waypoints': 'open Travel (T)',
+    'stable': 'open the Stable (U)', 'mounts': 'open the Stable (U)', 'pets': 'open the Stable (U)',
+    'bank': 'open the Bank (B)', 'balance': 'open the Bank (B)', 'mail': 'open the Bank (B), then Mail',
+    'storage': 'open the Bank (B), then Storage', 'talents': 'open your Talents (N)',
 }
 TYPED = re.compile(r'\s*\((?:type|try) "(\w+)[^)]*\)')
 # the same in any line the server sends /play: '(type "x")' or "(type 'x')" anywhere in it, and a
 # sentence "Type 'journal' to view your discoveries." where /play opens a window for it instead
 TYPED_ANY = re.compile(r"""\s*\((?:[Tt]ype|[Tt]ry) (["'])(\w+)[^)]*?\1\)""")
-TYPE_TO = re.compile(r"""\b([Tt])ype (["'])(\w+)[^"'\n]*?\2( to [^.!\n\x1b]+)""")
+TYPE_TO = re.compile(r"""\b([TtUu])(?:ype|se) (["'])(\w+)[^"'\n]*?\2( to [^.!\n\x1b]+)""")
 # and a shopkeeper's "Type LIST to see my wares" (the command in capitals, no quotes)
 TYPE_CAPS = re.compile(r"""\b[Tt]ype ([A-Z]{2,})( to [^.!'"\n\x1b]+)""")
+ANSI_CODE = re.compile(r'(\x1b\[[0-9;]*m)')
 
 
 def for_player(player, text):
@@ -59,7 +67,7 @@ def web_line(text):
     words: a '(type "x")' after what to do becomes how to do it with the HUD, and "Type 'x' to
     ..." becomes "Open your ... to ..." where a window does it. A hint /play has no other way
     for stays as it is (the chat box takes commands)."""
-    if not text or ('ype ' not in text and 'ry ' not in text and 'YPE ' not in text):
+    if not text or ('ype ' not in text and 'ry ' not in text and 'YPE ' not in text and 'se ' not in text):
         return text
 
     def paren(m):
@@ -72,14 +80,17 @@ def web_line(text):
         how = WEB_HOW.get(m.group(3).lower())
         if not how or (not how.startswith('open ') and how.startswith('type ')):
             return m.group(0)
-        head = how[0].upper() if m.group(1) == 'T' else how[0]
+        head = how[0].upper() if m.group(1) in 'TU' else how[0]
         return f"{head}{how[1:]}{m.group(4)}"
 
     def caps(m):
         how = WEB_HOW.get(m.group(1).lower())
         return f"{how[0].upper()}{how[1:]}{m.group(2)}" if how else m.group(0)
 
-    return TYPE_CAPS.sub(caps, TYPE_TO.sub(sentence, TYPED_ANY.sub(paren, text)))
+    # (the words between the colour codes: "\x1b[37mType ..." has an 'm' before its 'Type',
+    # and a word's edge is not seen there)
+    return ''.join(p if ANSI_CODE.fullmatch(p) else TYPE_CAPS.sub(caps, TYPE_TO.sub(sentence, TYPED_ANY.sub(paren, p)))
+                   for p in ANSI_CODE.split(text))
 
 
 def _words(s):

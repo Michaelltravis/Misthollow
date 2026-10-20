@@ -5,6 +5,7 @@ Port 4003 by default.
 """
 
 import asyncio
+import codecs
 import os
 import json
 import re
@@ -83,6 +84,8 @@ def html_escape(text: str) -> str:
 
 KIND_PATTERN = re.compile(r'\x1b\]K:([a-z]+)\x07')
 RESUME_PATTERN = re.compile(r'\x1b\]RESUME:([A-Za-z0-9_\-]+)\x07')
+# a colour code not finished at the end of what was read ("\x1b", "\x1b[", "\x1b[1;3")
+CSI_TAIL = re.compile(rb'\x1b(?:\[[0-9;]*)?$')
 
 
 class TelnetBridge:
@@ -110,19 +113,35 @@ class TelnetBridge:
     async def read_loop(self):
         """Read from MUD and send to WebSocket."""
         carry = b''
+        # (a character cut in two by the read is put together: the boxes' ═║ are three bytes)
+        utf8 = codecs.getincrementaldecoder('utf-8')(errors='replace')
         try:
             while True:
                 data = await self.reader.read(4096)
                 if not data:
                     break
+                # a line cut in two by the read: wait a moment for the rest of it, so the page
+                # gets it whole (a prompt, which ends no line, goes after that moment)
+                while not data.endswith(b'\n'):
+                    try:
+                        more = await asyncio.wait_for(self.reader.read(4096), 0.05)
+                    except asyncio.TimeoutError:
+                        break
+                    if not more:
+                        break
+                    data += more
                 data = carry + data
                 carry = b''
                 # a hidden signal cut in two by the read: keep its start for the next one
                 cut = data.rfind(b'\x1b]')
                 if cut != -1 and data.find(b'\x07', cut) == -1 and len(data) - cut < 256:
                     data, carry = data[:cut], data[cut:]
-                
-                text = data.decode('utf-8', errors='replace')
+                # and a colour code cut in two ("\x1b[3" | "7m"): the same
+                tail = CSI_TAIL.search(data)
+                if tail:
+                    data, carry = data[:tail.start()], data[tail.start():] + carry
+
+                text = utf8.decode(data)
                 
                 # Check for MAPSYNC control sequence: \x1b]MAPSYNC:playername:token\x07 (the
                 # token is this session's secret for the map server)

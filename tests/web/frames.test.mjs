@@ -130,3 +130,19 @@ test("a mount for sale says its speed once", async () => {
   assert.equal(forSale({ description: 'A reliable donkey.', travel: 15 }), 'A reliable donkey. · +15% speed');
   assert.equal(forSale({ description: 'A griffin. +60% speed, and it flies.', travel: 60, can_fly: true }), 'A griffin. +60% speed, and it flies.');
 });
+
+test("a label and its value set apart is a row; a status strung with ' | ' is a phrase", async () => {
+  const { classify } = await import('../../src/web_isometric/world3d/hud/frames.js');
+  assert.equal(classify('Level 11:      23,140 XP').t, 'cols');
+  assert.equal(classify('Threat: DEADLY  |  Level: 10 vs You 1  |  XP: suicide').t, 'text');
+  assert.equal(classify('Current streak: 1 days').t, 'text');
+  assert.equal(classify('Note:  this sentence is a long explanation that goes on and on').t, 'text');
+});
+
+test("a sentence between two rules stays a sentence; a status strung with ' | ' stays prose, indented or not", async () => {
+  const { formatLines, classify, isTitle } = await import('../../src/web_isometric/world3d/hud/frames.js');
+  assert.ok(isTitle('Daily Login Status') && !isTitle('No players found.'));
+  const out = formatLines(['══════════', 'No players found.', '══════════'].map(t => ({ text: t, html: t })));
+  assert.ok(!out.some(o => /tx-head/.test(o.html)), 'no heading made of a sentence');
+  assert.equal(classify('  Kills: 0  |  Rooms explored: 627  |  Secrets: 0').t, 'text');
+});

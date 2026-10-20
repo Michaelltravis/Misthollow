@@ -230,7 +230,8 @@ class HouseManager:
             owned[house['plot_num']] = (owner, house)
 
         await player.send(f"\n{c['bright_cyan']}═══ Garathorm Housing District ═══{c['reset']}")
-        await player.send(f"{c['white']}{'Plot':>5} {'Size':<8} {'Cost':>8} {'Status':<30}{c['reset']}")
+        # (the heading in step with the rows below: "  {plot:>3}   {size:<16} {cost:>6,}g  {status}")
+        await player.send(f"{c['white']}  {'#':>3}   {'Size':<16} {'Cost':>7}  {'Status'}{c['reset']}")
         await player.send(f"{c['white']}{'─'*55}{c['reset']}")
 
         for plot_num in range(1, 21):

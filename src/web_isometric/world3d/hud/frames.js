@@ -34,8 +34,12 @@ export function classify(text) {
 function columns(t) {
   const parts = t.trim().split(/\s{2,}/);
   if (parts.length < 2 || parts.slice(0, -1).some(p => p.length > 32)) return false;
-  // (indented, its last field may run on, a description; not indented, every field is short)
-  return /^\s/.test(t) ? true : parts.length >= 3 && parts.every(p => p.length <= 32);
+  // a status line strung with " | " is a phrase, not a row ("Kills: 0  |  Rooms explored: 627")
+  if (parts.some(p => p.startsWith('|'))) return false;
+  if (/^\s/.test(t)) return true;          // (indented, its last field may run on, a description)
+  // a label and its value set apart ("Level 11:      23,140 XP"), or three short fields or more
+  if (parts.length === 2) return /^[\w' -]{1,24}:$/.test(parts[0]) && parts[1].length <= 32;
+  return parts.every(p => p.length <= 32);
 }
 
 // a run of column rows, drawn fixed-width so the server's own spacing lines them up again
@@ -59,6 +63,9 @@ export function unprompt(html) {
     return p.slice(i);
   }).join('');
 }
+
+// a line between two rules that is a title: short, and not a sentence ("No players found." is not)
+export const isTitle = text => { const t = String(text).trim(); return t.length > 0 && t.length <= 60 && !/[.!?]$/.test(t); };
 
 // is this line part of a framed block (a box's rule or row)?
 export const framed = text => { const k = classify(text).t; return k === 'rule' || k === 'row'; };
@@ -146,7 +153,7 @@ export function formatLines(lines) {
     }
     // a short line between two rules: a heading (help's "=====\nTITLE\n=====")
     if (k.t === 'rule' && i + 2 < lines.length && classify(lines[i + 1].text).t === 'text'
-        && classify(lines[i + 2].text).t === 'rule' && lines[i + 1].text.trim().length <= 60) {
+        && classify(lines[i + 2].text).t === 'rule' && isTitle(lines[i + 1].text)) {
       out.push({ html: `<div class="tx-head">${esc(lines[i + 1].text.trim())}</div>`, box: true });
       i += 2;
       continue;

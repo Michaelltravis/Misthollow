@@ -13141,11 +13141,13 @@ class CommandHandler:
         
         await player.send(f"{c['cyan']}=== Available Commands ==={c['reset']}")
         
-        # Display in columns
-        cols = 5
+        # Display in columns, as wide as the longest name (a fixed 14 let marked_for_death_thief
+        # push its row out of step), as many as an 80-column screen holds
+        width = max((len(x) for x in cmds), default=1)
+        cols = max(1, 78 // (width + 2))
         for i in range(0, len(cmds), cols):
             row = cmds[i:i+cols]
-            formatted = '  '.join(f"{cmd:<14}" for cmd in row)
+            formatted = '  '.join(f"{cmd:<{width}}" for cmd in row)
             await player.send(f"{c['white']}{formatted}{c['reset']}")
         
         await player.send(f"\n{c['yellow']}Type 'help <command>' for more information.{c['reset']}")
@@ -14497,11 +14499,13 @@ class CommandHandler:
         
         await player.send(f"{c['cyan']}=== Social Commands ==={c['reset']}")
         
-        # Display in columns
-        cols = 6
+        # Display in columns, as wide as the longest name (a fixed 12 let challenge_emote push
+        # its row out of step), as many as an 80-column screen holds
+        width = max((len(s) for s in social_list), default=1)
+        cols = max(1, 78 // (width + 2))
         for i in range(0, len(social_list), cols):
             row = social_list[i:i+cols]
-            formatted = '  '.join(f"{s:<12}" for s in row)
+            formatted = '  '.join(f"{s:<{width}}" for s in row)
             await player.send(f"{c['white']}{formatted}{c['reset']}")
         
         await player.send(f"\n{c['yellow']}Usage: <social> [target]{c['reset']}")
@@ -16129,9 +16133,11 @@ class CommandHandler:
         }
 
         await player.send(f"{c['cyan']}Current Settings:{c['reset']}")
+        # (as wide as the longest label and two spaces: "Autoloot Items" filled a fixed 14)
+        width = max(len(label) for label in toggles) + 2
         for label, enabled in toggles.items():
             status = f"{c['bright_green']}ON{c['reset']}" if enabled else f"{c['red']}OFF{c['reset']}"
-            await player.send(f"  {label:<14} {status}")
+            await player.send(f"  {label:<{width}}{status}")
 
         if hasattr(player, 'autorecall_hp') and player.autorecall_hp is not None:
             if getattr(player, 'autorecall_is_percent', False):
@@ -21178,15 +21184,16 @@ class CommandHandler:
         if not args:
             await player.send(f"\n{c['bright_cyan']}═══ Auction House ═══{c['reset']}")
             await player.send(f"{c['white']}Commands:{c['reset']}")
-            await player.send(f"  {c['bright_green']}auction list [category]{c['white']}  - Browse (weapons/armor/materials/consumables/misc)")
-            await player.send(f"  {c['bright_green']}auction sell <item> <price>{c['white']} - List item (5% fee)")
-            await player.send(f"  {c['bright_green']}auction sell <item> <price> auction{c['white']} - List as auction with min bid")
-            await player.send(f"  {c['bright_green']}auction buy <id>{c['white']}           - Buy a listing")
-            await player.send(f"  {c['bright_green']}auction bid <id> <amount>{c['white']}  - Bid on auction")
-            await player.send(f"  {c['bright_green']}auction cancel <id>{c['white']}        - Cancel your listing")
-            await player.send(f"  {c['bright_green']}auction search <keyword>{c['white']}   - Search listings")
-            await player.send(f"  {c['bright_green']}auction history{c['white']}            - Recent transactions")
-            await player.send(f"  {c['bright_green']}auction collect{c['white']}            - Collect pending gold/items")
+            # (each command padded to the longest, so the descriptions line up)
+            usage = [('auction list [category]', 'Browse (weapons/armor/materials/consumables/misc)'),
+                     ('auction sell <item> <price>', 'List item (5% fee)'),
+                     ('auction sell <item> <price> auction', 'List as auction with min bid'),
+                     ('auction buy <id>', 'Buy a listing'), ('auction bid <id> <amount>', 'Bid on auction'),
+                     ('auction cancel <id>', 'Cancel your listing'), ('auction search <keyword>', 'Search listings'),
+                     ('auction history', 'Recent transactions'), ('auction collect', 'Collect pending gold/items')]
+            width = max(len(cmd) for cmd, _ in usage)
+            for cmd, what in usage:
+                await player.send(f"  {c['bright_green']}{cmd:<{width}}{c['white']}  - {what}")
             await player.send(f"\n{c['yellow']}Visit {AUCTIONEER_NAME} at Market Square to trade.{c['reset']}")
             return
 

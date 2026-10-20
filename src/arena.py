@@ -212,12 +212,12 @@ class ArenaManager:
         if not args:
             await player.send(
                 f"{c['bright_cyan']}═══ Arena Commands ═══{c['reset']}\n"
-                f"  {c['white']}challenge <player>{c['reset']} — Challenge someone to a duel\n"
-                f"  {c['white']}accept / decline{c['reset']}   — Respond to a challenge\n"
-                f"  {c['white']}arena join{c['reset']}         — Queue for random matchmaking\n"
-                f"  {c['white']}arena stats{c['reset']}        — View your PvP record\n"
-                f"  {c['white']}arena top{c['reset']}          — Leaderboard (top 10)\n"
-                f"  {c['white']}arena rewards{c['reset']}      — Spend arena points (titles, consumables)\n"
+                f"  {c['white']}challenge <player>{c['reset']}  — Challenge someone to a duel\n"
+                f"  {c['white']}accept / decline{c['reset']}    — Respond to a challenge\n"
+                f"  {c['white']}arena join{c['reset']}          — Queue for random matchmaking\n"
+                f"  {c['white']}arena stats{c['reset']}         — View your PvP record\n"
+                f"  {c['white']}arena top{c['reset']}           — Leaderboard (top 10)\n"
+                f"  {c['white']}arena rewards{c['reset']}       — Spend arena points (titles, consumables)\n"
             )
             return
 
