@@ -2100,6 +2100,24 @@ zones as a whole as well as rooms, and looks at the rooms as they are drawn.
     haunted house has dust sheets over the furniture, holes in the boards and ghostly wisps.
   - The Winterlands' Massive Hallways (giants' halls of black stone), the bottom of a well and a
     black stone corridor are built halls, not a cave, a forest or a house.
+- **Round three: every flag closed.** All three reviews end with nothing left to fix; every
+  exception is in `tools/audit/accepted.json` with its reason, and the reports list them apart
+  ("accepted as they are"; for the shots also "the look confirmed": JEV judged the picture wrong but
+  its own pick of a look is the one drawn, so what it wants is detail, not another look).
+  - **Coverage:** 611 rooms shot live: two of every zone, and one of every look used in every zone
+    (each zone-look pair). The words of all 8,440 rooms were judged; the zones were judged again
+    after the fixes (the zone check now asks again whenever a zone's looks change).
+  - **More rooms pinned** (about 290 in this round, each with its reason): roads through farmland
+    drawn as streets, riverbanks, burial mounds, ice and lava caves, spider dens, offices and lodges
+    drawn as dungeons, the Crown of Bone's halls as crypts, the Olympian thrones as halls...
+  - **Snowy woods and snowy slopes:** a snowfield whose words name a wood has trees standing in it,
+    and one whose words name a mountainside has snow-capped cliffs round it.
+  - **The building words** cover offices, foyers, council rooms, closets, warehouses, lodges and
+    common rooms, so a town hall is never made a dungeon by the zone rule; and a styled zone's halls
+    don't take the dungeon look from a pinned cell next door.
+  - Room-review totals: 663 disagreements, then 447, 239, and none open. Shots: of 611, 164
+    judged good, 247 bare (the right place, plainly furnished), and every wrong one fixed,
+    confirmed or accepted.
 - **The screenshots** (`tools/jev_audit.py shots`): two rooms of every zone, live in /play.
   Note for the probe: a mood blends in over a few seconds of game time, and a software-rendered
   browser runs a frame a second, so a shot must snap the mood (`engine.setMood({}, true)`) or it
