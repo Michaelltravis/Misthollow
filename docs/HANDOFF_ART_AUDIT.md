@@ -16,10 +16,15 @@ notes in `docs/REBUILD_PLAN.md` ("The art audit").
   did not uphold were pinned in `world/looks.json` (each with its `_why`).
 - `docs/JEV_REVIEW_ZONES.md` and `docs/JEV_REVIEW_ROOMS.md`: nothing to fix. Tests pass.
 
+## Since done (from a fresh clone, on Windows with a GPU)
+- The full screenshot pass (all 611 rooms) and JEV's shots, rooms and zones verdicts over them;
+  the numbers and what was fixed are in `docs/REBUILD_PLAN.md` ("The full pass, from a fresh clone").
+- Left for a person: the 15 shots still listed under "To fix" in `docs/JEV_REVIEW_SHOTS.md` (each
+  kept by its own words; JEV's pick from the picture swings for them), and Before The Gates Of
+  Mahn-Tor (10162), where the cliffs of the room below rise through the room.
+
 ## Not done
-- A full screenshot pass with the round-four art (the cloud run reached about 360 of 417 rooms
-  before it was stopped; its shots were not kept), and JEV's shots verdict over all of them.
-- The PR for this branch.
+- Nothing from this list.
 
 ## Carrying on from a fresh clone
 1. `git checkout claude/nice-johnson-slpinu`; install the Python requirements, Node, and Playwright

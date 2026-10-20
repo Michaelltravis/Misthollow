@@ -2156,6 +2156,36 @@ zones as a whole as well as rooms, and looks at the rooms as they are drawn.
     are fixed (Fameland's memorial chambers and the Straight Path's Deliverance are crypts, MiNar's
     grassland seen from a mouse's height is field, the Winterwood's path has its trees). The Newbie
     Zone's training rooms are dungeon, not cave.
+  - **The full pass, from a fresh clone** (no answers cached, so JEV was asked everything afresh;
+    shot on a GPU at about 7 s a room). 44 rooms take a new look (`world/looks.json`, each with its
+    reason):
+    - **Rooms:** of 8,438 judged by their words, 30 were listed. 28 are drawn as JEV picks: tunnels
+      the zone's mountain wording made mountain are caves, a lane of cottages is a village not a
+      street, the Webless Path is not webs, a glacier crack is an ice cave, a ruined city's square
+      is ruins. Two keep their look with their words quoted (a basement yard open to the sky, a
+      frozen marsh). None left open.
+    - **Zones:** five were listed, all at low confidence (the Mindflayer's Lair, both cathedrals,
+      the Sewer, Salem's Lot); each is accepted with its reason and JEV upholds all five.
+    - **Shots:** all 611 shot (good 220, bare 198, the wrong place 143, the wrong style 48,
+      unreadable 2). 16 rooms take the look JEV picks from the shot and words; 171 are "the look
+      confirmed", 5 accepted and upheld. **15 stay listed**, each kept by its own words (in
+      `accepted.json`, quoted) and each reason not upheld: the boat on the Styx, the dry corridor
+      of the Submerged Temple, the Docks of Garathorm, the bottom of a well where you float, a
+      courtyard, a home inside the Elder Oak, a guild hall, a market under a cavern roof, and the
+      Sewer's Mudhole (JEV would draw a swamp, but water stays water). JEV's pick
+      from a picture swings: four rooms moved to its pick were judged wrong again with the old look
+      picked (the greenhouse: inside 0.56, then garden 0.95, then inside 0.61), so these are put
+      back and left to a person.
+    - **Bare:** 198. Of the things their words name that the game draws, JEV sees all in 58, some in
+      49, none in 38. Looked at by hand, most "none" are misses (the Crystal Spire's crystals and the
+      Great Valley's statue are plainly there), but one is a real fault: at **Before The Gates Of
+      Mahn-Tor** (10162) the cliffs of the mountain room below it (On The Cliffside, 2261, down)
+      rise through the room and bury the hero, the gate and the banners.
+    - The atlas index still named zone 50 The Great Eastern Desert (`docs/world/ATLAS_INDEX.md`).
+    - Tests (on Windows): the web suites pass (183); of the offline Python suites, all but
+      `test_atlas`'s zones.json check pass (it writes `world\zones\...` on Windows), with
+      `PYTHONUTF8=1` for `test_spells_audit`. The live suites fail the same 35 checks with these
+      changes as without them (a second account, Unix file modes, timing): none is the art's.
 - **Shooting the rooms yourself:** `node tools/audit/shoot_rooms.js tools/audit/rooms_audit.json OUT`
   (every room the audit has shot; `rooms_round4.json` is round four's) with the server running, then
   `python3 tools/jev_audit.py shots OUT` (needs `TYPESAFE_API_KEY`). A cloud container renders in
