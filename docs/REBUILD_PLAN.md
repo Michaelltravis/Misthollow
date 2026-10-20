@@ -2188,10 +2188,15 @@ boxes; telnet keeps them, and /play now draws them in its own dress instead:
     hid the word's edge). `move` alone failed (it took the words typed for a direction).
   - Lists in columns line up (emotes, commands, settings, the housing plots' heading, arena and
     auction help); `minimap` opens the Map.
-- **Every frame the server draws** (`tools/audit/frame_lines.py`: 526 lines in 27 files, from the
-  source, fields filled with a sample) is checked against `frames.js`: none is left a line of text
-  with the frame's characters in it. Two styles it lacked: a box's empty row (a lone ║, the talent
-  trees') and a heading with words after it ("═══ DUEL OVER ═══ Ann defeats Bo!").
+  - The 13 left out were then run too, against a throwaway copy of the game (each that ends the
+    session in a login of its own): each answers plainly, and `redit`'s builders' menu (which
+    takes every line after it until Q) is drawn as a list in step ("1) Name        : ...").
+- **Every frame the server draws** (`tools/audit/frame_lines.py`: 528 lines in 27 files, from the
+  source, fields filled with a sample; box characters and rules of = - ~ *) is checked against
+  `frames.js`: none is left a line of text with the frame's characters in it. Styles it lacked: a
+  box's empty row (a lone ║, the talent trees'), a heading with words after it ("═══ DUEL OVER ═══
+  Ann defeats Bo!"), and a rule of asterisks (the prestige banner). The two ASCII-art logos are
+  the telnet's welcome, which /play's own sign-in page stands in for.
 - **Tests:** `tests/web/frames.test.mjs` (frames, banners, panels, meters, the talk window),
   `tests/test_web_menus.py` (web_line, the web send path, the discovery line, `achievements`,
   the bridge, `move`, and every frame in the source).

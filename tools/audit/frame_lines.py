@@ -11,7 +11,8 @@ import re
 import sys
 
 SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'src')
-BOX = re.compile(r'[═║╔╗╚╝╠╣╦╩╬│┌┐└┘├┤─━]|={4,}|-{5,}|\+[-=]{3,}')
+# box characters, and rules of = - ~ * (a run of eight asterisks: four is a masked password)
+BOX = re.compile(r'[═║╔╗╚╝╠╣╦╩╬│┌┐└┘├┤─━]|={4,}|-{5,}|\+[-=]{3,}|~{4,}|\*{8,}')
 FILL = 'Sample Word'
 # not the game's output: a script that writes Python source
 SKIP_FILES = {'apply_wave2.py'}

@@ -22,7 +22,8 @@ const BAR = /[║│|]/;
 export function classify(text) {
   const t = String(text || '').replace(/\s+$/, '');
   if (!t.trim()) return { t: 'blank' };
-  if (RULE.test(t) && /[═─━=\-~]{3}/.test(t)) return { t: 'rule', inner: /^\s*[╠╟╞├]/.test(t) || /^\s*\+-/.test(t) };
+  // (a rule of asterisks too, the prestige's: eight or more, not a masked password's four)
+  if (RULE.test(t) && /[═─━=\-~]{3}|\*{8}/.test(t)) return { t: 'rule', inner: /^\s*[╠╟╞├]/.test(t) || /^\s*\+-/.test(t) };
   const m = t.match(TITLED);
   if (m && /[A-Za-z]/.test(m[1]) && !BAR.test(m[1])) return { t: 'titled', title: m[1].replace(/^[\s★☆✦✧•*]+|[\s★☆✦✧•*]+$/g, '') };
   const r = t.match(TITLED_REST);
@@ -39,13 +40,19 @@ export function classify(text) {
 // "absolution    accept    account"): an indented line of two fields or more, or any of three,
 // each short; prose, with a double space after a full stop, is not one
 function columns(t) {
+  // an option of a lettered menu, short ("4) Sector type : forest", "Q) Quit"): one of its rows
+  if (/^[0-9A-Z]\)\s\S/.test(t) && t.length <= 48) return true;
   const parts = t.trim().split(/\s{2,}/);
   if (parts.length < 2 || parts.slice(0, -1).some(p => p.length > 32)) return false;
   // a status line strung with " | " is a phrase, not a row ("Kills: 0  |  Rooms explored: 627")
   if (parts.some(p => p.startsWith('|'))) return false;
   if (/^\s/.test(t)) return true;          // (indented, its last field may run on, a description)
-  // a label and its value set apart ("Level 11:      23,140 XP"), or three short fields or more
-  if (parts.length === 2) return /^[\w' -]{1,24}:$/.test(parts[0]) && parts[1].length <= 32;
+  // a label and its value set apart ("Level 11:      23,140 XP"), or padded out to its colon (an
+  // editor's menu: "1) Name        : Dragon's Tail"), or three short fields or more
+  if (parts.length === 2) {
+    return (/^[\w' -]{1,24}:$/.test(parts[0]) && parts[1].length <= 32)
+      || (/^[-\w)' ]{1,24}$/.test(parts[0]) && /^: /.test(parts[1]) && parts[1].length <= 60);
+  }
   return parts.every(p => p.length <= 32);
 }
 

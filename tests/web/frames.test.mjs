@@ -157,3 +157,19 @@ test("a box's empty row (a lone ║) and a heading with words after it", async (
   assert.equal(renderLine({ text: '═══ DUEL ═══ Ann vs Bo!' }), '<div class="tx-head">DUEL</div><div>Ann vs Bo!</div>');
   assert.equal(classify('the -- dash -- in prose').t, 'text');
 });
+
+test('a rule of asterisks (the prestige banner) is a rule; a masked password is not', async () => {
+  const { classify } = await import('../../src/web_isometric/world3d/hud/frames.js');
+  assert.equal(classify('*'.repeat(60)).t, 'rule');
+  assert.equal(classify('~~~~~~~~~~').t, 'rule');
+  assert.notEqual(classify('account password ****').t, 'rule');
+});
+
+test("an editor's menu (redit), its labels padded out to their colons, lines up", async () => {
+  const { classify } = await import('../../src/web_isometric/world3d/hud/frames.js');
+  for (const t of ["1) Name        : Dragon's Tail", '--Room Number   : [205547]', 'A) Exit Down   : -1', '3) Room flags  : NOBITS',
+    '4) Sector type : forest', '2) Description :', 'B) Extra Descriptions', 'Q) Quit'])
+    assert.equal(classify(t).t, 'cols', t);
+  assert.equal(classify('The dragon’s stone tail tapers out here into open air, a long grey spur').t, 'text');
+  assert.equal(classify('Enter choice:').t, 'text');
+});
