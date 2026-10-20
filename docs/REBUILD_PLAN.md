@@ -2152,7 +2152,29 @@ boxes; telnet keeps them, and /play now draws them in its own dress instead:
   (the journal and offers) likewise. A discovery is one line there ("New in your journal: ...").
 - **Typed `help` and `map`** open the Help (at the topic) and Map windows, not a paged index or a
   map in letters. The server no longer echoes a web page's commands (each showed twice).
+- **Every menu, swept.** Of the server's 533 commands, the ones that show something (not the class
+  abilities, the emotes, an immortal's tools, or what acts: quit, rent, drop, a toggle...) were run
+  on a web connection where each shows (a shop's list at a shop, mail at the post office, the
+  auction house, the stable, the arena, the housing district, a trainer), 104 of them, drawn as
+  /play draws them and read; and every window of the HUD opened and looked at.
+  - A list the server lines up with spaces (the stable's mounts, the housing plots, settings,
+    levels, arena rewards, the command list) is drawn fixed-width, so it lines up again; a row
+    set one space apart amid it is one of its rows.
+  - A line that begins with a prompt ("20/20hp ...> the pilgrim leaves north") loses the prompt
+    and keeps the rest (the talk window dropped such a line whole); the help index is not paged
+    on a web page ("Press ENTER to continue" there was a dead end).
+  - A menu's bars were taken for the fight's health bar (msgkind.py) and hidden from the log's
+    All tab with the fight, reputation's whole list among them: the health bar is ten cells,
+    and a row of a box is the menu's.
+  - The windows' descriptions (a shop's, the stable's, a quest offered, the Legend's) were set in
+    small capitals and read as shouting: the body face. The Talents window said "type doctrine":
+    the Legend's Doctrine page (G). A shop called a bottle "drinkcon": a drink. A mount for sale
+    said its speed twice.
 - **Fixed on the way:** `achievements` failed outright (it read its definitions as dicts); the
-  updates list read its file in the system's code page (dashes came out as "â€”" on Windows).
+  updates list read its file in the system's code page (dashes came out as "â€”" on Windows);
+  `inspect`, `minimap`, `protect` and `drink_alt` failed outright (two `@classmethod`s), and so did
+  the rent an item adds (`@classmethod` on a `@staticmethod`); `social` alone failed (the emotes'
+  helper answered to it: it lists the emotes now); `arena top` failed (the online players are a
+  dict).
 - **Tests:** `tests/web/frames.test.mjs` (frames, banners, panels, meters, the talk window),
   `tests/test_web_menus.py` (web_line, the web send path, the discovery line, `achievements`).
