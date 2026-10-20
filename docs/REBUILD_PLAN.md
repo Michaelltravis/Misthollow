@@ -2088,6 +2088,22 @@ zones as a whole as well as rooms, and looks at the rooms as they are drawn.
     mines, ice caves, gardens, ruins, camps, the Submerged Temple's marble halls as halls, and the
     Garathorm city wall as ramparts.
   - The Pit of Minos is a dungeon and the Mindflayer's Lair a cave, not a house's rooms.
+  - **Under the sea read as a dry field** (sand, boulders, pines tinted green for kelp; JEV: "the
+    wrong kind of place" in all three sunken zones): kelp is built (`terrain-looks.js` `kelp`),
+    bubbles rise, shafts of light fall from the surface, the seabed is blue-green and the fog is
+    deep and close. Underwater In The Sewer is drawn under the water.
+  - **A snowfield at dawn or dusk was sand** (the warm dusk sun on white): snow keeps its cold
+    light but at night.
+  - **A wizard's office was a feast** (a table named in its words drew the kit's banquet table):
+    in an arcane, holy, haunted, elven or infernal hall it is a plain table; a styled library, shop,
+    bank or tavern keeps its shelves and counters; a castle's bedroom its banners and torches; a
+    haunted house has dust sheets over the furniture, holes in the boards and ghostly wisps.
+  - The Winterlands' Massive Hallways (giants' halls of black stone), the bottom of a well and a
+    black stone corridor are built halls, not a cave, a forest or a house.
+- **The screenshots** (`tools/jev_audit.py shots`): two rooms of every zone, live in /play.
+  Note for the probe: a mood blends in over a few seconds of game time, and a software-rendered
+  browser runs a frame a second, so a shot must snap the mood (`engine.setMood({}, true)`) or it
+  shows the last room's light (the sunken zones first read as daylight that way).
   - Left as they are, by judgement: the Great Eastern Desert (named a desert, it is a river and a
     mountain's caves, and drawn as such), the Winterwood's snowy paths (snow, JEV would have them
     forest), mountain snowfields.

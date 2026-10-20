@@ -622,7 +622,12 @@
   "205557": "inside",
   "206604": "dungeon",
   "209007": "dungeon",
-  "7216": "underwater"
+  "7216": "underwater",
+  "3952": "dungeon",
+  "3953": "dungeon",
+  "3954": "dungeon",
+  "8695": "dungeon",
+  "5840": "dungeon"
  },
  "zones": {
   "465": "cave",
@@ -1294,7 +1299,12 @@
   "209007": "Garathorm Vineyard: In the wine cellar reads as dungeon, not inside (art audit, JEV)",
   "tones:481": "Ghenna: a hell; its streets and halls are red stone under firelight, not a town's grey (art audit)",
   "tones:515": "Orcus Temple: the demon prince's temple, red stone under firelight (art audit)",
-  "7216": "Sewer: Underwater In The Sewer is under the water, holding your breath, not a dry tunnel (art audit, JEV shot)"
+  "7216": "Sewer: Underwater In The Sewer is under the water, holding your breath, not a dry tunnel (art audit, JEV shot)",
+  "3952": "The Winterlands: A Massive Hallway is a giants' hall of fitted black stone, not a cave (art audit, JEV shot)",
+  "3953": "The Winterlands: A Massive Hallway is a giants' hall of fitted black stone, not a cave (art audit, JEV shot)",
+  "3954": "The Winterlands: A Massive Hallway is a giants' hall of fitted black stone, not a cave (art audit, JEV shot)",
+  "8695": "King's Forest: The Bottom Of A Well is a shaft of mossy stones, not a forest (art audit, JEV shot)",
+  "5840": "Tunnels of Sin: The Turning Corridor is a corridor of black stone, not a house's room (art audit, JEV shot)"
  },
  "underground_zones": {
   "72": "sewer",
