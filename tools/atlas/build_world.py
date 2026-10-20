@@ -371,6 +371,10 @@ def build(write=False):
                         'atlas_area': area, 'rooms': {}, 'mobs': {}, 'objects': {}}
         if area in sealed_area:
             new_zones[z]['sealed'] = True
+    # a name of our own where the atlas's does not fit the rooms the zone ends up with (overrides.json "zone_names")
+    for z, name in (ov.get('zone_names') or {}).items():
+        if int(z) in new_zones:
+            new_zones[int(z)]['name'] = name
     for z, v in ztab.items():
         if v['status'] in ('ours-only', 'internal'):
             src = {k: copy.deepcopy(val) for k, val in zones[z].items() if not k.startswith('_') and k != 'rooms'}

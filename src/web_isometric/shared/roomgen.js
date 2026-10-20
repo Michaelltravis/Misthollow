@@ -497,10 +497,13 @@
       throne: [1, 1, 'centre', true], table: [2, 1, 'centre', true], bench: [1, 1, 'edge', true], shelf: [1, 1, 'edge', true],
       bed: [1, 1, 'edge', true], chest: [1, 1, 'edge', true], barrel: [1, 1, 'edge', true], crate: [1, 1, 'edge', true],
       weapons: [1, 1, 'edge', true], fence: [1, 1, 'edge', true], dead_tree: [1, 1, 'scatter', true], torch: [1, 1, 'edge', true],
-      lantern: [1, 1, 'edge', true], chains: [1, 1, 'edge', false], cairn: [1, 1, 'scatter', false], skull: [1, 1, 'scatter', false],
+      lantern: [1, 1, 'edge', true], chains: [1, 1, 'edge', true], cairn: [1, 1, 'scatter', false], skull: [1, 1, 'scatter', false],
       bones: [1, 1, 'scatter', false], candle: [1, 1, 'scatter', false], rubble: [1, 1, 'scatter', false],
       mushroom: [1, 1, 'scatter', false], flowers: [1, 1, 'scatter', false], crystal: [1, 1, 'scatter', false],
       rug: [2, 2, 'centre', false], blood: [1, 1, 'scatter', false], ash: [1, 1, 'scatter', false], stake_holes: [1, 1, 'scatter', false],
+      gate: [2, 1, 'edge', true], tree: [1, 1, 'scatter', true], reeds: [1, 1, 'scatter', false], roots: [1, 1, 'edge', false],
+      boat: [2, 1, 'edge', true], mist: [1, 1, 'scatter', false], ice: [1, 1, 'scatter', true], flames: [1, 1, 'scatter', true],
+      mirror: [1, 1, 'edge', true], bell: [1, 1, 'centre', true], waterfall: [2, 1, 'edge', true],
     };
     const features = [];
     const featWanted = (roomData.features || []).filter(f => FEAT[f.k]);

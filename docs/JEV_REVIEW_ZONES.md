@@ -5,7 +5,6 @@ For each zone as a whole, JEV judged whether the looks its rooms are drawn with 
 
 | verdict | sure | zone | name | rooms | setting | drawn (top looks) |
 |---|---|---|---|---|---|---|
-| wrong | 0.53 | 50 | Great Eastern Desert | 105 | desert | water_swim 41, water_noswim 26, cave 16, mountain 12 |
 | generic | 0.15 | 62 | The Orc Enclave | 68 | orc | forest 34, cave 15, dungeon 9, shore 5 |
 | partly | 0.64 | 447 | Mahn-Tor Keep | 90 | castle | inside 59, city 23, castle 3, mountain 2 |
 | partly | 0.52 | 470 | Castle of Ostragoth | 111 | castle | inside 51, cave 30, crypt 12, castle 11 |
@@ -22,7 +21,7 @@ For each zone as a whole, JEV judged whether the looks its rooms are drawn with 
 | partly | 0.31 | 63 | Arachnos | 53 | wilds | web 32, field 7, forest 7, cave 4 |
 | partly | 0.31 | 501 | Aredrel Dwarven | 99 | dwarf | cave 42, inside 26, mine 12, field 11 |
 | partly | 0.28 | 491 | Morvoct | 86 | sea | inside 29, village 11, dungeon 10, water_swim 9 |
-| partly | 0.23 | 186 | Newbie Zone | 41 | dungeon | cave 29, dungeon 10, city 1, field 1 |
+| partly | 0.24 | 186 | Newbie Zone | 41 | dungeon | dungeon 37, cave 2, city 1, field 1 |
 | partly | 0.16 | 250 | Bedlam Arena | 18 | arena | inside 14, dungeon 2, field 1, water_swim 1 |
 | right | 0.99 | 238 | The Haunted Monastery | 25 | temple | inside 16, crypt 6, ruins 2, garden 1 |
 | right | 0.96 | 180 | The Great Northern Forest | 26 | wilds | snow 13, forest 9, stones 1, inside 1 |
@@ -103,6 +102,7 @@ For each zone as a whole, JEV judged whether the looks its rooms are drawn with 
 | right | 0.51 | 495 | Island Of The Dead | 98 | tomb | crypt 45, shore 27, forest 17, cave 4 |
 | right | 0.49 | 25 | High Tower Of Magic I | 98 | tower | inside 83, forest 12, dungeon 2, cave 1 |
 | right | 0.49 | 36 | The Chessboard of Garathorm | 67 | town | city 65, dungeon 1, inside 1 |
+| right | 0.45 | 50 | The Desert River and Caverns | 105 | wilds | water_swim 41, water_noswim 26, cave 16, mountain 12 |
 | right | 0.45 | 79 | Redferne's Residence | 20 | plane | inside 15, mountain 5 |
 | right | 0.45 | 235 | The Goblin Warrens | 20 | orc | cave 12, inside 5, web 1, forest 1 |
 | right | 0.44 | 416 | Castle Of Caboon | 49 | castle | inside 28, cave 10, crypt 7, field 3 |
@@ -128,11 +128,12 @@ For each zone as a whole, JEV judged whether the looks its rooms are drawn with 
 | right | 0.31 | 479 | Ancalador | 55 | dungeon | cave 46, crypt 4, forest 2, hills 1 |
 | right | 0.20 | 480 | Salem's Lot | 82 | town | inside 30, field 20, city 19, garden 4 |
 
-## Accepted as they are (19)
+## Accepted as they are (18)
+
+JEV was shown each with its reason and held it fair (18 of 18).
 
 | zone | name | verdict | why |
 |---|---|---|---|
-| 50 | Great Eastern Desert | wrong 0.53 | Named a desert, but its rooms are a river and a mountain's caves, and they are drawn as such; the name is the odd one out, not the art |
 | 62 | The Orc Enclave | generic 0.15 | The Orc Enclave: woods, caves and the river, drawn so |
 | 447 | Mahn-Tor Keep | partly 0.64 | Mahn-Tor's streets, market and squares are a city's (city), its halls the castle style |
 | 470 | Castle of Ostragoth | partly 0.52 | Ostragoth's halls are the castle style; the caves and crypts under it are drawn as caves and crypts |
@@ -149,7 +150,7 @@ For each zone as a whole, JEV judged whether the looks its rooms are drawn with 
 | 63 | Arachnos | partly 0.31 | Arachnos: webbed lairs and the woods and fields round them |
 | 501 | Aredrel Dwarven | partly 0.31 | Aredrel: the dwarven hold's cavern streets, its halls in the dwarven style, its mines |
 | 491 | Morvoct | partly 0.28 | Morvoct: its village and houses, its waters, and its prison, guard rooms and cages as dungeons (JEV unsure, 0.28) |
-| 186 | Newbie Zone | partly 0.23 | The Newbie Zone's training passages, drawn as caves and dungeon (JEV unsure, 0.23) |
+| 186 | Newbie Zone | partly 0.24 | The Newbie Zone: a training dungeon, drawn as dungeon (37 of its 41 rooms); its entrance off the city street and the field it looks out on are drawn as those (JEV unsure, 0.24) |
 | 250 | Bedlam Arena | partly 0.16 | Bedlam Arena: its pits and platforms, drawn as built halls and open ground |
 
-_334,896 input tokens over all answers (about $0.01 at $0.042 per million)._
+_334,900 input tokens over all answers (about $0.01 at $0.042 per million)._

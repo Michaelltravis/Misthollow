@@ -2122,10 +2122,42 @@ zones as a whole as well as rooms, and looks at the rooms as they are drawn.
   Note for the probe: a mood blends in over a few seconds of game time, and a software-rendered
   browser runs a frame a second, so a shot must snap the mood (`engine.setMood({}, true)`) or it
   shows the last room's light (the sunken zones first read as daylight that way).
-  - Left as they are, by judgement: the Great Eastern Desert (named a desert, it is a river and a
-    mountain's caves, and drawn as such), the Winterwood's snowy paths (snow, JEV would have them
-    forest), mountain snowfields.
-- **Gallery:** `/play?demo&gallery=rooms&only=icastle,ithrone,ibedroom,iarcane,iholy,iinfernal,ihaunted,idwarven,ielven,foundry,foundry2`.
+  - (Round three left the Great Eastern Desert's name, the Winterwood's paths and the snowfields as
+    they were; round four settles them, below.)
+- **Round four: the bare rooms, and no judgement call left unchecked.** 247 of the 611 shots were
+  "bare": the right kind of place with nothing its words name in view. JEV was asked, for each, what
+  the words name that the picture lacks, first from the features the client draws and then (for
+  those it called "something else") from a list of scenery.
+  - **Most were drawn, just too small to see** (99 of the 115 that named a feature): a throne was a
+    grey block, chains a thread by a post, crystals finger-sized, a lantern a speck. The models are
+    remade at the size the camera reads (`terrain-features.js`): a throne on a stepped dais with a
+    high back, a red cushion and a gilded crest (facing the camera); chains hanging from a beam
+    between two posts to manacles; crystals as a glowing cluster to head height; a heap of bones
+    round a ribcage and skull; braziers with flames; lanterns that light; a stand of giant mushrooms
+    underground or in woods; and the thing a room is named for is drawn bigger and with more of it
+    round it (a store room's crates, sacks and barrels; a crystal cave's clusters).
+  - **A real bug:** the town kit's props are built small (the town draws them at x4-5), and the
+    feature layer drew them at x1: crates, sacks, weapon racks, wells and fences were specks.
+  - **Scenery the looks did not draw** is read and drawn now (`room_features.py`, 11 new kinds):
+    gates, trees standing in a non-forest room (fruit trees, a lone oak, pines), reeds, roots and
+    vines down a wall, boats drawn up on a shore, low mist, ice formations, open fires, mirrors (and
+    walls of glass), a bell in its frame, a waterfall; an indoor hearth is a fireplace in the north
+    wall with a chair drawn up to it. And words that only seemed to name a thing no longer do: a bed
+    of gravel is not a bed (nor its gravel a grave), incense sticks are not roots; a pump is a well,
+    a colonnade pillars, a whale's ribs bones.
+  - **The Great Eastern Desert is renamed The Desert River and Caverns.** The atlas's area of that
+    name is the desert's river, its gorge and waterfall and the caves under the mountain; the sands
+    themselves went to the Sea of Storms with their rooms still named The Great Eastern Desert. The
+    zone's name now says what it is (`world/atlas/overrides.json` `zone_names`, applied by
+    `tools/atlas/build_world.py`), and JEV judges it right.
+  - **Every exception gets JEV's second opinion.** Each room, zone and shot let stand in
+    `tools/audit/accepted.json` is shown to JEV with its reason ("does the reason hold?"); one it
+    does not hold fair goes back on the list to fix. Of the rooms' 36 it upheld 31: the other five
+    are fixed (Fameland's memorial chambers and the Straight Path's Deliverance are crypts, MiNar's
+    grassland seen from a mouse's height is field, the Winterwood's path has its trees). The Newbie
+    Zone's training rooms are dungeon, not cave.
+- **Gallery:** `/play?demo&gallery=rooms&only=icastle,ithrone,ibedroom,iarcane,iholy,iinfernal,ihaunted,idwarven,ielven,foundry,foundry2`;
+  the round-four features: `only=fthrone,fstore,fcrystal,fhall,fshore,fgate`.
 - **Tests:** `tests/test_room_looks.py` (the Foundry is foundry throughout, every styled zone's rooms
   carry its style, Ostragoth's halls are halls, the Winterlands' cavern an ice cave, the city wall
   a rampart, Ghenna red stone), `tests/web/roomlooks.test.mjs` (`foundry` is a walkable look with

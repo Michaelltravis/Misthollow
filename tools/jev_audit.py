@@ -108,6 +108,9 @@ SHOT_FIT = {
     'unreadable': 'too dark, blocked or broken to tell',
 }
 
+# a second opinion on a case let stand by hand: JEV is shown the reviewer's reason with the case
+FAIR = {'fair': 'the reason holds: what is drawn is a fair way to show this', 'unfair': 'the reason does not hold: it should be drawn differently'}
+
 # the bodies creatures are drawn with, as JEV is told them (a person's models and the skeletons are
 # one choice each: which one is the gear's business, not the body's)
 BODIES = {
@@ -256,7 +259,13 @@ def rooms_mode(zone, limit):
     acc_path = os.path.join(HERE, 'audit', 'accepted.json')
     accepted = (json.load(open(acc_path)).get('rooms') or {}) if os.path.exists(acc_path) else {}
     taken = [b for b in bad if str(b[0]) in accepted]
-    bad = [b for b in bad if str(b[0]) not in accepted]
+    # (each one let stand goes back to JEV with its reason; one it does not hold fair is listed again)
+    fair = run({k: {**items[k], 'drawn as': ', '.join(sorted(now)), 'why it is drawn so': accepted[str(k)]} for k, now, _p, _c in taken},
+               '`drawn as` is the look the game draws this room with and `why it is drawn so` a reviewer\'s reason for '
+               'letting it stand against another pick. Does the reason hold?', FAIR, 'jev_rooms_fair.json')
+    unfair = {int(k) for k, a in fair.items() if a['choice'] == 'unfair' and int(k) in {b[0] for b in taken}}
+    taken = [b for b in taken if b[0] not in unfair]
+    bad = [b for b in bad if str(b[0]) not in accepted or b[0] in unfair]
     by_zone = collections.defaultdict(list)
     for k, now, pick, conf in bad:
         by_zone[items[k]['zone']].append((k, now, pick, conf))
@@ -272,7 +281,9 @@ def rooms_mode(zone, limit):
         for k, now, pick, conf in sorted(rows):
             lines.append(f'| {k} | {items[k]["room"]} | {now} | {pick} | {conf:.2f} | {why[k] or "rules"} |')
         lines.append('')
-    lines += [f'## Accepted as they are ({len(taken)})', '', '| room | name | drawn | JEV | why |', '|---|---|---|---|---|']
+    lines += [f'## Accepted as they are ({len(taken)})', '',
+              f'JEV was shown each with its reason and held it fair ({len(taken)} of {len(taken) + len(unfair)}); those it did not are listed above.', '',
+              '| room | name | drawn | JEV | why |', '|---|---|---|---|---|']
     lines += [f'| {k} | {items[k]["room"]} | {now} | {pick} | {accepted[str(k)]} |' for k, now, pick, conf in sorted(taken)]
     return report('ROOMS', lines, answers, bad)
 
@@ -339,10 +350,18 @@ def zones_mode(zone):
     for v, c, n, name, k, st, top in rows:
         lines.append(f'| {v} | {c:.2f} | {n} | {name} | {k} | {st} | {top} |')
     taken = [r for r in rows if r[0] != 'right' and str(r[2]) in accepted]
-    lines += ['', f'## Accepted as they are ({len(taken)})', '', '| zone | name | verdict | why |', '|---|---|---|---|']
+    fair = run({key_of[r[2]]: {**items[key_of[r[2]]], 'why it is drawn so': accepted[str(r[2])]} for r in taken},
+               '`why it is drawn so` is a reviewer\'s reason for letting this zone\'s looks stand. Does the reason hold?',
+               FAIR, 'jev_zones_fair.json')
+    asked = {key_of[r[2]] for r in taken}
+    unfair = {int(k.split('@')[0]) for k, a in fair.items() if a['choice'] == 'unfair' and k in asked}
+    taken = [r for r in taken if r[2] not in unfair]
+    lines += ['', f'## Accepted as they are ({len(taken)})', '',
+              f'JEV was shown each with its reason and held it fair ({len(taken)} of {len(taken) + len(unfair)}).', '',
+              '| zone | name | verdict | why |', '|---|---|---|---|']
     lines += [f'| {r[2]} | {r[3]} | {r[0]} {r[1]:.2f} | {accepted[str(r[2])]} |' for r in taken]
     answers = {**{'f' + k: v for k, v in fit.items() if k in items}, **{'s' + k: v for k, v in setting.items() if k in items}}
-    return report('ZONES', lines, answers, [r for r in rows if r[0] != 'right' and str(r[2]) not in accepted])
+    return report('ZONES', lines, answers, [r for r in rows if r[0] != 'right' and (str(r[2]) not in accepted or r[2] in unfair)])
 
 
 def shots_mode(folder):
@@ -371,6 +390,27 @@ def shots_mode(folder):
     unsure = {k: v for k, v in items.items() if k in answers and answers[k]['choice'] != 'good'}
     better = run(unsure, '`screenshot` is the room as the game draws it now. Going by its own name and description, '
                  'which of these looks should it be drawn with?', looks, 'jev_shots_look.json', workers=4)
+    # for every shot judged bare: the one thing its words name that the picture lacks most, of the
+    # things the client can draw (room_features.py), or nothing it could draw
+    from room_features import FEATURES
+    things = {k: k.replace('_', ' ') for k, *_ in FEATURES}
+    things['nothing'] = 'nothing the words name is missing from the picture'
+    things['other'] = 'something else, not in this list'
+    bare = {k: v for k, v in items.items() if k in answers and answers[k]['choice'] == 'bare'}
+    lacking = run(bare, '`screenshot` is the room as the game draws it now. Of the things this room\'s own words name, '
+                  'which one is most plainly missing from the picture?', things, 'jev_shots_missing.json', workers=4)
+    # and for those whose missing thing is none of the features: which piece of scenery it is
+    scenery = {'trees': 'trees or woods', 'rocks': 'rocks, boulders or cliffs', 'river': 'a river, stream or flowing water',
+               'waterfall': 'a waterfall', 'lake': 'a lake, pool or still water', 'bridge': 'a bridge', 'boat': 'a boat, ship or dock',
+               'gate': 'a gate, door or archway', 'stairs': 'stairs or steps', 'building': 'a building, house or hut',
+               'wall': 'a wall, tower or rampart', 'mist': 'mist, fog or smoke', 'ice': 'ice or snow', 'fire': 'fire or lava',
+               'webs': 'spider webs', 'roots': 'roots, vines or creepers', 'mirrors': 'mirrors or glass', 'bell': 'a bell',
+               'machine': 'machinery, gears or pipes', 'sea_life': 'coral, kelp, shells or fish', 'reeds': 'reeds, rushes or tall grass',
+               'path': 'a road, path or track', 'light': 'a glow, light or luminous thing', 'stalls': 'market stalls or wares',
+               'nothing': 'nothing the words name is missing', 'other': 'something else'}
+    other = {k: v for k, v in bare.items() if (lacking.get(k) or {}).get('choice') == 'other'}
+    unlisted = run(other, '`screenshot` is the room as the game draws it now. Of the things this room\'s own words name, '
+                   'which one is most plainly missing from the picture?', scenery, 'jev_shots_scenery.json', workers=4)
     rows = []
     for key, a in answers.items():
         if key not in items:
@@ -390,7 +430,14 @@ def shots_mode(folder):
     wrong = [r for r in rows if r[0] in ('wrong_place', 'wrong_style')]
     confirmed = [r for r in wrong if r[7] and r[7].split()[0] == r[6]]
     taken = [r for r in wrong if r not in confirmed and str(r[4]) in accepted]
-    todo = [r for r in wrong if r not in confirmed and r not in taken]
+    # a second opinion on each one accepted: JEV sees the shot with the reason it was let stand
+    keyed = {k: v for k, v in items.items() if int(k.split('@')[0]) in {r[4] for r in taken}}
+    fair = run({k: {**v, 'why it is drawn so': accepted[k.split('@')[0]]} for k, v in keyed.items()},
+               '`screenshot` is the room as the game draws it; `why it is drawn so` is a reviewer\'s reason for letting it stand. '
+               'Does the reason hold?', FAIR, 'jev_shots_fair.json', workers=4)
+    unfair = {int(k.split('@')[0]) for k, a in fair.items() if k in keyed and a['choice'] == 'unfair'}
+    todo = [r for r in wrong if r not in confirmed and (r not in taken or r[4] in unfair)]
+    taken = [r for r in taken if r[4] not in unfair]
     head = '| verdict | sure | zone | room | name | look | JEV would draw |'
     lines = ['# JEV review: rooms as drawn', '',
              f'JEV looked at {len(rows)} screenshots of rooms in /play, each against its own words and its zone\'s setting',
@@ -401,8 +448,21 @@ def shots_mode(folder):
               "Judged the wrong place or style, but the look JEV would draw is the one drawn: what it wants is detail.", '',
               head, '|---|---|---|---|---|---|---|']
     lines += [f'| {r[0]} | {r[1]:.2f} | {r[2]} {r[3]} | {r[4]} | {r[5]} | {r[6]} | {r[7]} |' for r in confirmed]
-    lines += ['', f'## Accepted as they are ({len(taken)})', '', '| room | name | look | why |', '|---|---|---|---|']
+    lines += ['', f'## Accepted as they are ({len(taken)})', '',
+              f'JEV was shown each with its reason and held it fair ({len(taken)} of {len(taken) + len(unfair)}); '
+              'those it did not are under To fix.', '', '| room | name | look | why |', '|---|---|---|---|']
     lines += [f'| {r[4]} | {r[5]} | {r[6]} | {accepted[str(r[4])]} |' for r in taken]
+    lines += ['', '## Bare: what the words name that the picture lacks', '',
+              '| room | name | look | missing | drawn features |', '|---|---|---|---|---|']
+    feats = {r.vnum: [f['k'] for f in (getattr(r, 'features', None) or [])] for _z, _n, r in room_of.values()}
+    for key in sorted(bare):
+        m = lacking.get(key)
+        if not m:
+            continue
+        v = int(key.split('@')[0])
+        u = unlisted.get(key)
+        miss = f"{m['choice']} {m.get('confidence') or 0:.2f}" + (f" ({u['choice']} {u.get('confidence') or 0:.2f})" if u else '')
+        lines.append(f"| {v} | {room_of[v][2].name} | {room_of[v][2].look} | {miss} | {', '.join(feats.get(v, [])) or '-'} |")
     lines += ['', '## All', '', head, '|---|---|---|---|---|---|---|']
     lines += [f'| {r[0]} | {r[1]:.2f} | {r[2]} {r[3]} | {r[4]} | {r[5]} | {r[6]} | {r[7]} |' for r in rows]
     return report('SHOTS', lines, answers, todo)

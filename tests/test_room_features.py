@@ -62,6 +62,20 @@ async def main():
     check(not by_key(rf.features('The Stone Floor', 'The stone floor is cold. A stone bridge crosses the stream.')).get('standing_stone'),
           'a stone floor or a stone bridge is not a standing stone')
 
+    # ---- the art audit's bare rooms: the scenery the words name, and the words that only seem to
+    keys = lambda n, d: {f['k'] for f in rf.features(n, d)}
+    check('well' in keys('Northern Square', 'A pump with an iron handle stands in the middle.'), 'a town pump is drawn as a well')
+    check('pillar' in keys('A Street', 'The avenue runs east between empty colonnades.'), 'a colonnade is pillars')
+    check('bones' in keys('A Bay', 'the bleached ribs of a whale stand upright in the shingle'), "a whale's ribs are bones")
+    check({'bed', 'grave'}.isdisjoint(keys('The River', 'The water runs clear over a bed of gravel.')), 'a bed of gravel is neither a bed nor a grave')
+    check('roots' not in keys('An Alcove', 'A bowl of white sand holds a few burnt-down incense sticks.'), 'incense sticks are not roots')
+    check('gate' in keys('Before The Gates', 'Before you rises the gate of Burzuk, a wall of black timber.'), 'a gate that rises is drawn')
+    check('gate' not in keys('A Hall', 'The hall continues north, and the gate lies south.'), 'a gate named as where a way goes is not')
+    check({'mist', 'reeds', 'boat', 'bell', 'mirror', 'waterfall', 'tree', 'ice', 'flames'} <= set().union(*(keys('x', d) for d in [
+        'Mist curls low over the ground.', 'Reeds crowd the bank.', 'A rowboat is beached on the shingle.', 'The great bell hangs silent.',
+        'Mirrors line the walls.', 'A waterfall cascades down the cliff.', 'A line of fruit trees runs along the wall.',
+        'Icicles hang from the roof.', 'Ancient fires burn in the hollow.'])), 'the scenery words are read')
+
     # ---- the client knows every feature the reader names
     gen = open(os.path.join(ROOT, 'src/web_isometric/shared/roomgen.js'), encoding='utf-8').read()
     draw = open(os.path.join(ROOT, 'src/web_isometric/world3d/terrain-features.js'), encoding='utf-8').read()
