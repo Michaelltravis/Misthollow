@@ -95,6 +95,11 @@ async def main():
     above = [(r.vnum, r.name, r.look) for r in sewer if r.look not in rl.UNDERGROUND and r.look not in rl.WATER_SECTORS]
     check(sewer and not above, f'every room of the Sewer is underground or water ({above[:4]})')
     check(rooms[7016].look == 'sewer' and rooms[7337].look == 'cave', 'a pipe bend is a sewer, the Basilisk\'s Cave a cave')
+    # the Drow City is drow throughout (owner: "the drow city doesn't look like a drow city"): its
+    # streets, houses, tunnels and bridges all drawn by the drow look (terrain-drow.js)
+    drow = [r for r in rooms.values() if getattr(getattr(r, 'zone', None), 'number', None) == 51]
+    other = [(r.vnum, r.name, r.look) for r in drow if r.look != 'drow']
+    check(drow and not other, f'every room of the Drow City has the drow look ({other[:4]})')
     # filler the look contradicts is gone ("Bird calls echo through the canopy." down a sewer pipe)
     wrong = [(r.vnum, line) for r in rooms.values() for kind, lines in rl.FILLER.items() if r.look not in rl.FILLER_FITS[kind]
              for line in lines if line in rl._norm(r.description)]

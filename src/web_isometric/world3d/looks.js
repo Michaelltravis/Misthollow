@@ -159,6 +159,9 @@ function person(m, all, why = 'person') {
   const orc = ORCISH.test(all);
   const skin = orc ? pick([0x8fb07a, 0x9aa070, 0x7a9a6a]) : (RACE_TINT.find(([re]) => re.test(all)) || [])[1];
   const out = (model, loadout, tint) => ({ model, loadout, tint: skin || tint, scale: scale !== 1 ? +scale.toFixed(2) : undefined, why });
+  // a priestess who keeps a door (Lloth's temple warden) is robed, not a knight
+  if (has(/\b(priests?|priestess|clerics?|monk|nun|acolyte|bishop|abbot|vicar|druids?|shaman|sage|hermit|healer|oracle|seer|prophet|cantor|confessor|astrologer)\b/))
+    return out('mage', ['Spellbook', 'Mage_Cape'], pick([0xf4ecd8, 0xe8e0f0, 0xd8e8d0]));
   if (has(/\b(guards?|guardsman|bodyguard|lifeguard|guildguard|gateguard|soldiers?|sentry|watchman|watch|warden|cityguard|captain|sergeant|lieutenant|militia|patrol|peacekeeper|marshal|bailiff|jailor|jailer)\b/))
     return out('knight', ['1H_Sword', 'Round_Shield', 'Knight_Helmet'], 0xc8d0e0);
   if (has(/\b(knights?|paladins?|templars?|crusaders?|champion)\b/)) return out('knight', ['1H_Sword', 'Badge_Shield', 'Knight_Helmet', 'Knight_Cape'], 0xe0e4f0);
@@ -167,8 +170,6 @@ function person(m, all, why = 'person') {
     return out(pick(['knight', 'mage']), ['Knight_Cape', 'Mage_Cape'], pick([0xf0d890, 0xd8b8e8, 0xf0e0c0]));
   if (has(/\b(mages?|wizards?|witch|warlocks?|sorcerers?|sorceress|necromancers?|conjurer|enchanter|enchantress|illusionist|magus|summoner|spellbinder|arcanist|magic user)\b/))
     return out('mage', ['2H_Staff', 'Mage_Hat', 'Mage_Cape'], pick([0xffffff, 0xd8c8f0, 0xc8e0d0]));
-  if (has(/\b(priests?|priestess|clerics?|monk|nun|acolyte|bishop|abbot|vicar|druids?|shaman|sage|hermit|healer|oracle|seer|prophet|cantor|confessor|astrologer)\b/))
-    return out('mage', ['Spellbook', 'Mage_Cape'], pick([0xf4ecd8, 0xe8e0f0, 0xd8e8d0]));
   if (has(/\b(librarian|scribe|scholar|teacher|student|apprentice|cartographer|navigator|alchemist|apothecary|herbalist|secretary|clerk|curator)\b/))
     return out('mage', ['Spellbook_open'], pick(warm));
   if (has(/\b(innkeeper|bartender|barkeep|barmaid|waiter|waitress|brewer|tavern)\b/)) return out('barbarian', ['Mug'], pick(warm));

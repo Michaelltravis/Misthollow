@@ -134,6 +134,14 @@ export const LOOK_SAMPLES = [
   { look: 'water_noswim', sector: 'water_noswim', name: 'On Mira Retrum', description: 'Deep water, too deep to wade.' },
   { look: 'web', sector: 'field', name: 'Webbed Entrance', description: 'Sticky webs coat the limbs of the trees; webbed remains of crickets, rats and men hang in cocoons.' },
   { look: 'necropolis', sector: 'city', name: 'In The Streets Of Morkai', description: 'A crooked street of black stone houses; orc bones lie where they fell, and green ghost-fire burns in the braziers.' },
+  // the drow city (terrain-drow.js): its streets, Narbondel, Lolth's temple, a bridge over the abyss,
+  // the fungus forest, a noble house
+  { look: 'drow', sector: 'city', zone: 51, name: 'The City Street', description: 'A street between the spire houses of the drow, faerie fire glowing on every carved edge.' },
+  { look: 'drow', sector: 'inside', zone: 51, key: 'drowcenter', name: 'The Center Of The Drow City', description: 'The heart of the city; the great pillar rises into the dark.' },
+  { look: 'drow', sector: 'inside', zone: 51, key: 'drowtemple', name: 'Entrance To The Temple Of Lloth', description: 'The spider-shaped temple of Lolth crouches over the way.' },
+  { look: 'drow', sector: 'inside', zone: 51, key: 'drowbridge', name: 'A Thin Underground Bridge', description: 'A narrow bridge over the abyss; the city glows far below.' },
+  { look: 'drow', sector: 'inside', zone: 51, key: 'drowfungus', name: 'The Fungus Forest', description: 'Giant mushrooms glow in the dark.' },
+  { look: 'drow', sector: 'inside', zone: 51, key: 'drowhouse', name: 'The Main Chamber In The Fourth House', description: 'A hall of the noble house, its walls carved with spiders.' },
   { look: 'castle', sector: 'city', name: 'The Castle Yard', description: 'High walls ring the yard; banners hang from the battlements.' },
   { look: 'castle', sector: 'field', key: 'blackcastle', name: 'Before The Dark Castle', description: 'A grim castle of black stone rises before you.' },
   // a way into another region (key gate*): a named gateway on the far side

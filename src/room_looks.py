@@ -29,7 +29,10 @@ from collections import Counter
 logger = logging.getLogger('Misthollow')
 
 LOOKS = ('cave', 'mine', 'crypt', 'sewer', 'dungeon', 'desert', 'snow', 'shore', 'volcanic', 'swamp', 'web', 'castle',
-         'necropolis', 'stones', 'village', 'camp', 'garden', 'ruins', 'terrace', 'ice_cave', 'lava_cave')
+         'necropolis', 'stones', 'village', 'camp', 'garden', 'ruins', 'terrace', 'ice_cave', 'lava_cave',
+         # a drow city in its cavern (the Drow City, zone 51: world/looks.json underground_zones);
+         # the client tells its streets, houses, tunnels, bridges and temple apart by their names
+         'drow')
 UNDERGROUND = {'cave', 'mine', 'crypt', 'sewer', 'dungeon', 'ice_cave', 'lava_cave'}
 # a hand override (world/looks.json) may also keep a room as plain country or a plain room
 OVERRIDE_LOOKS = LOOKS + ('field', 'forest', 'hills', 'mountain', 'city', 'inside')
@@ -488,7 +491,9 @@ def classify(world, overrides=None):
         # sector says (a pipe junction typed 'city', a ledge 'mountain'), but for one whose own name
         # says another underground place (a cave in the sewers stays a cave) and the water in it
         under = (ov.get('underground') or {}).get(_zone(room))
-        if under and (not look or look not in UNDERGROUND) and sector not in WATER_SECTORS:
+        # (the drow city is drow throughout: its tunnels, bridges and the dwellings carved in the
+        # stalagmites too; terrain-drow.js tells them apart by their names)
+        if under and (under == 'drow' or not look or look not in UNDERGROUND) and sector not in WATER_SECTORS:
             room.look, room.look_why = under, 'stated'      # (world/looks.json states it)
             continue
         if not look and _trees(room):
