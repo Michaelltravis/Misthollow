@@ -83,10 +83,12 @@ async def main():
     check(rooms[14648].look == 'web' and rooms[6132].look == 'web', 'webbed woods are spider lairs')
     check(rooms[16126].look == 'forest', 'the edge of a Forrest is a forest')
     check(rooms[8387].look == 'inside', "a castle's guest room with a bed is a room, not a cave")
-    indoor_country = [(r.vnum, r.name) for r in rooms.values() if r.look == 'inside' and rl.open_country(r)]
+    # (unless pinned by hand with its reason, world/looks.json: A Well Used Path crossing a cathedral's hall)
+    indoor_country = [(r.vnum, r.name) for r in rooms.values() if r.look == 'inside' and rl.open_country(r) and r.vnum not in ov['rooms']]
     check(not indoor_country, f'no room named as open country is drawn indoors ({indoor_country[:4]})')
     mtn = [(r.vnum, r.name, r.look) for r in rooms.values() if r.sector_type in ('field', 'hills', 'forest')
-           and rl.MOUNTAIN_RE.search(r.name or '') and not rl.FOREST_RE.search(r.name or '') and r.look in ('field', 'hills', 'forest')]
+           and rl.MOUNTAIN_RE.search(r.name or '') and not rl.FOREST_RE.search(r.name or '') and r.look in ('field', 'hills', 'forest')
+           and r.vnum not in ov['rooms']]      # (a reviewed pin wins: A Small Rocky Path down a wooded hillside)
     check(not mtn, f'no room named as mountain country is drawn as field, hills or forest ({mtn[:4]})')
     water = [r for r in rooms.values() if r.sector_type in rl.WATER_SECTORS]
     check(all(r.look == r.sector_type for r in water), 'water stays water')

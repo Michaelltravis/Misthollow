@@ -146,7 +146,9 @@ INTERIOR_RE = re.compile(
     r'\b(temple|church|chapel|cathedral|shrine|taverna?|inn|pub|bar|alehouse|bank|library|study|'
     r'bedroom|bed ?chamber|quarters|dormitory|throne|palace|shop|store|market|merchant|smithy|'
     r'guild|barracks|house|home|cottage|kitchen|parlou?r|dining|living room|stable|great hall|lore-hall|'
-    r'belfry|bell ?tower|sacristy|vestry|nave|pews?|organ|choir|rose window|vestments)\b', re.I)
+    r'belfry|bell ?tower|sacristy|vestry|nave|pews?|organ|choir|rose window|vestments|'
+    # (a town hall's and a lodge's rooms: the art audit found them drawn as dungeons)
+    r'office|foyer|council|committee|waiting room|closet|warehouse|hearth|lodge|reading room|common room)\b', re.I)
 
 ENCLOSED_SECTORS = {'inside', 'cave', 'dungeon', 'underground'}
 WATER_SECTORS = {'water_swim', 'water_noswim', 'underwater'}
@@ -535,6 +537,10 @@ def classify(world, overrides=None):
                 continue
             if look in UNDERGROUND and look != 'sewer' and INTERIOR_RE.search(f'{room.name} {room.description}'):
                 continue
+            # (a styled zone's halls stay its halls: a cell pinned a dungeon doesn't make the tower's
+            # reading room one)
+            if look in UNDERGROUND and _zone(room) in (ov.get('interiors') or {}):
+                continue
             if look in ('village', 'camp', 'ruins') and (TOWN_RE.search(f'{room.name} {room.description}') or STREET_RE.search(room.name or '')):
                 continue
             taken[room] = look
@@ -574,6 +580,10 @@ def classify(world, overrides=None):
     return Counter(r.look for r in rooms.values())
 
 
+# snow in a wood and snow on a mountainside: the client draws trees through the first and cliffs
+# round the second (terrain-looks.js SNOW_WOOD, SNOW_PEAK; the same words)
+SNOW_WOOD = re.compile(r'\b(trees?|forest|woods?|woodland|pines?|firs?|spruces?|taiga|birch(?:es)?|groves?)\b', re.I)
+SNOW_PEAK = re.compile(r'\b(mountains?|mountainside|peaks?|summit|cliffs?|crags?|ridges?|slopes?|mountain pass)\b', re.I)
 ICE_WORDS = re.compile(r'\b(ice|icy|icicles?|frost(?:ed|y)?|frozen|glaciers?|rime)\b', re.I)
 LAVA_WORDS = re.compile(r'\b(lava|magma|molten)\b', re.I)
 

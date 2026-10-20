@@ -10,7 +10,7 @@ import { castleWalls, castleYard, zoneGates } from './terrain-castle.js';
 import { drawFeatures, featureCells } from './terrain-features.js';
 import { drowKind, drowDress, drowHallKind, bridgeCells, DROW_OPEN } from './terrain-drow.js';
 import { interiorStyle, styleFloor, styleWall, dressInterior, STYLES } from './terrain-interiors.js';
-import { underground, dressHall, outdoorEdge, outdoorDress, mountainCliffs, sunkenRuins, webDress, tinted, RUIN_RE, LOOK_GROUND, UNDERGROUND } from './terrain-looks.js';
+import { underground, dressHall, outdoorEdge, outdoorDress, mountainCliffs, sunkenRuins, webDress, tinted, RUIN_RE, LOOK_GROUND, UNDERGROUND, SNOW_WOOD } from './terrain-looks.js';
 
 export const ROOM_W = 24, ROOM_H = 15;
 // the web words (room_looks.py LOOK_WORDS 'web'): two or more hang webs in a room of any look
@@ -233,7 +233,8 @@ export function buildRoom(layout, ox, oz, kits, room) {
     // the open ground (BLOCK, so the hero walks round them), never on the ways through, the
     // middle, the stairs or where creatures stand ----
     const grove = new Set();
-    if (theme === 'forest') {
+    // (a snowy wood too: the taiga, the Winterwood's paths)
+    if (theme === 'forest' || (theme === 'snow' && SNOW_WOOD.test(`${layout.name || ''} ${layout.description || ''}`))) {
       const mx = Math.floor(W / 2), my = Math.floor(H / 2);
       const keep = (layout.spawnSlots || []).map(sp => [Math.floor(sp.x / 16), Math.floor(sp.y / 16)])
         .concat([layout.stairsUp, layout.stairsDown, ...(layout.portals || [])].filter(Boolean).map(t => [t.x, t.y]));
@@ -301,7 +302,7 @@ export function buildRoom(layout, ox, oz, kits, room) {
       b.add(asOccluder(edge && key.startsWith('Rock') ? edge.rock(key) : N.get(key)), trs(cx, 0, cz, rng() * Math.PI * 2, key === 'Bush_Common' ? s * 1.6 : s));
     }
     // ground clutter on open floor (not on the paths): a look's own (terrain-looks.js), or grass
-    if (edge && edge.cliffs) mountainCliffs(ctx());
+    if (edge && edge.cliffs) mountainCliffs(ctx(), theme === 'snow');
     if (theme === 'underwater' && RUIN_RE.test(layout.name || (room && room.data && room.data.name) || '')) sunkenRuins(ctx());
     if (theme === 'web') webDress(ctx());
     if (bare || theme === 'desert') outdoorDress(ctx(), theme);
