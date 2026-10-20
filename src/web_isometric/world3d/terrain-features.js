@@ -575,7 +575,7 @@ export function drawFeatures(c) {
       case 'flames': if (indoor && has('brazier')) break; put(blocker(flames(v)), cx, cz, yaw, main ? 1.4 : 1, { shadow: false }); if (torches) torches.push(new THREE.Vector3(cx, 0.9, cz)); break;
       case 'mirror': put(blocker(mirror()), cx, cz, wallYaw(f), 1); break;
       case 'bell': put(blocker(bell()), cx, cz, 0, main ? 1.25 : 1); break;
-      case 'waterfall': put(blocker(waterfall()), cx, cz, wallYaw(f), main ? 1.2 : 1); break;
+      case 'waterfall': put(blocker(waterfall()), cx, cz, 0, main ? 1.2 : 1); break;   // (its falling sheet toward the camera)
       case 'blood': case 'ash': case 'stake_holes': put(decal(f.k, v), cx, cz, yaw, 1, { shadow: false, receive: false }); break;
       default: break;
     }
