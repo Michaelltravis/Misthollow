@@ -42,7 +42,10 @@
   "7306": "\"The mud goes to your chest\": a swimming room of the Sewer, and water stays water (tests/test_room_looks.py); the sewer's mud is its water",
   "13904": "\"A studded door of black oak ... stands in this corner of the courtyard ... The courtyard continues south and west\": the open courtyard of the temple, not a room inside it",
   "15148": "\"The ground here dips into a hollow, a round bowl in the hillside lined with soft moss and ringed by gnarled thorn bushes\": the hills, not a wood",
-  "203621": "\"Ferns and moss soften the ground beneath a dim green canopy. Birdsong drifts down through the branches overhead\": a wood, whatever its name says"
+  "203621": "\"Ferns and moss soften the ground beneath a dim green canopy. Birdsong drifts down through the branches overhead\": a wood, whatever its name says",
+  "10522": "\"the boat floats on a wide, still sea under an enormous sky ... All around lies the empty ocean\": on the open water in the boat, and water stays water",
+  "10900": "\"You drift on the dark swell of the Ocean Stream, a broad current\": on the stream in the boat, and water stays water",
+  "15161": "\"A thin white waterfall tumbles down a black rock face into a pool ... The trail leads east back into the Dank Wood\": a trail under a rock face, its waterfall drawn (JEV picked mountain for it before, then shore)"
  },
  "rooms": {
   "15210": "Fameland's halls of the fallen are drawn in the holy style, as the zone is",

@@ -2166,16 +2166,16 @@ zones as a whole as well as rooms, and looks at the rooms as they are drawn.
       frozen marsh). None left open.
     - **Zones:** five were listed, all at low confidence (the Mindflayer's Lair, both cathedrals,
       the Sewer, Salem's Lot); each is accepted with its reason and JEV upholds all five.
-    - **Shots:** all 611 shot, twice (the second time after the land fix below: good 209, bare 200,
-      the wrong place 145, the wrong style 56, unreadable 1). 22 rooms take the look JEV picks from
-      the shot and words (and The Mountain Pass, which its pinned neighbour would have made
-      volcanic, its words' mountain); 177 are "the look confirmed", 3 accepted and upheld.
-      **21 stay listed, each kept by its own words** (quoted in `accepted.json`), each reason not
-      upheld: the boat on the Styx, the dry corridor of the Submerged Temple, the Docks of
-      Garathorm, the bottom of a well where you float, two courtyards, homes inside the Elder Oak,
-      a guild hall, a market under a cavern roof, a leafy "underground" path, the vaulted river
-      under the city, the pegasi deck, the Sewer's Mudhole (JEV would draw a swamp, but water stays
-      water)... JEV's pick from a picture swings: rooms moved to its pick were judged wrong again
+    - **Shots:** all 611 shot, twice (the second time after the land fixes below: good 213, bare
+      193, the wrong place 149, the wrong style 55, unreadable 1). 22 rooms take the look JEV picks
+      from the shot and words (and The Mountain Pass, which its pinned neighbour would have made
+      volcanic, its words' mountain); 178 are "the look confirmed", 3 accepted and upheld.
+      **23 stay listed, each kept by its own words** (quoted in `accepted.json`), each reason not
+      upheld: the boats on the Styx, the open sea and the Ocean Stream, the dry corridor of the
+      Submerged Temple, the Docks of Garathorm, the bottom of a well where you float, two
+      courtyards, homes inside the Elder Oak, a guild hall, a market under a cavern roof, a leafy
+      "underground" path, the vaulted river under the city, the pegasi deck, the Sewer's Mudhole
+      (JEV would draw a swamp, but water stays water)... JEV's pick from a picture swings: rooms moved to its pick were judged wrong again
       with the old look picked (the greenhouse: inside 0.56, then garden 0.95, then inside 0.61),
       and a fresh shot of the same room gets a fresh low-confidence verdict, so these are left to a
       person rather than chased.
@@ -2195,7 +2195,11 @@ zones as a whole as well as rooms, and looks at the rooms as they are drawn.
       or south of a room before the land east or west of it, so the strip in front of the camera is
       the room's behind it (`skirt.js` `yields`). A piece cut so keeps the whole patch it came from,
       so a mountain's land still rises from its own room. All 611 rooms were shot again after it.
-      A Leader Strand is seen now, and is drawn as the web it is (its name had read as a beach).
+      Drawn as the web it is (its name had read as a beach), A Leader Strand was buried again, by
+      its own land: the webbed woods grow tall trees close, and the camera stands 13-18 m south
+      of the hero, inside their crowns. No tree grows now in the land just south of a room, 20 m
+      out across its width (`terrain.js` `CAMERA_BACK`); the 118 rooms shot with open land to the
+      south were shot again. It and the Ethereal Web's other rooms are seen now.
     - The atlas index still named zone 50 The Great Eastern Desert (`docs/world/ATLAS_INDEX.md`).
     - Tests (on Windows): the web suites pass (190); of the offline Python suites, all but
       `test_atlas`'s zones.json check pass (it writes `world\zones\...` on Windows), with

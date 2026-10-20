@@ -444,6 +444,8 @@ const FILL = {
   default: { trees: 0.03, bushes: 0.04, rocks: 0.01, grass: 0.08 },
   town: { houses: true },
 };
+// how far south of the hero the camera stands at most (engine.js rig: 19-34 m away at 46-58°)
+const CAMERA_BACK = 20;
 function fillerLand(c, theme) {
   const { layout, ox, oz, kits, b, rng, occ, owned, group, room } = c;
   const { W, H } = layout;
@@ -511,6 +513,10 @@ function fillerLand(c, theme) {
       const r = rng();
       // thinner the further out (beyond the fog's reach it is only a haze anyway)
       let acc = (spec.trees || 0) * (1 - 0.65 * Math.min(1, out));
+      // none in the land just south of the room, where the camera stands (13-18 m back): their
+      // crowns would fill the view and bury the hero (A Leader Strand, in the webbed woods)
+      const front = pz > oz + H && pz < oz + H + CAMERA_BACK && px > ox - 1 && px < ox + W + 1;
+      if (r < acc && front) continue;
       if (r < acc && trees.length) { b.add(occ(trees[Math.floor(rng() * trees.length)]), trs(px, y, pz, yaw, 0.55 + rng() * 0.35), { shadow: false }); continue; }
       acc += spec.rocks || 0;
       if (r < acc) {
