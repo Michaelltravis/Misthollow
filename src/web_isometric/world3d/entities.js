@@ -8,6 +8,7 @@ import { mountRider } from './steed.js';
 import { spawnDressed, dress } from './equip.js';
 import { creatureLook, hashStr, npcDress } from './looks.js';
 import { makeProc, makeProp } from './proc.js';
+import { poseFor, postureChange } from './posture.js';
 import { makeKin } from './kin.js';
 import { isHostile, conOf, shownName } from './targeting.js';
 import { deathStyle, remains, fallOver, nameKey } from './corpse.js';
@@ -250,6 +251,7 @@ export class Entities {
       if (!e) { this.create(key, w); continue; }
       e.data = w.data;
       if (e.kind === 'player' && e.actor && w.data.look) dress(e.actor, w.data.look, w.data.char_class);
+      if (e.kind === 'player' && e.actor) this.posture(e, w.data.position);
       // another player on their mount (steed.js)
       if (e.kind === 'player' && e.actor) { e.riding = mountRider(e.actor, w.data.mount || null, e.riding || null); e.plateY = 0; }
       // a dressed person whose gear changed (disarmed, or picked something up)
@@ -308,10 +310,24 @@ export class Entities {
       e.root = actor.root;
       e.root.position.copy(at);
       e.root.rotation.y = (hashStr(key) % 628) / 100;
-      actor.play(isHostile(w) ? 'Idle_Combat' : actor.idle || 'Idle', 0, e.still ? 0 : 0.85 + (hashStr(key) % 30) / 100);
+      // (a player already resting or asleep when they come into sight is drawn so at once)
+      e.position = isPlayer ? w.data.position || 'standing' : 'standing';
+      e.pose = isPlayer && poseFor(e.position) ? poseFor(e.position).loop : null;
+      actor.play(e.pose || (isHostile(w) ? 'Idle_Combat' : actor.idle || 'Idle'), 0, e.still ? 0 : 0.85 + (hashStr(key) % 30) / 100);
       if (isPlayer && w.data.mount) e.riding = mountRider(actor, w.data.mount, null);
       this.engine.scene.add(e.root);
     }).catch(() => {});
+  }
+
+  // another player rests, sleeps or gets up (payload position): they sit down or lie down once,
+  // then hold it (update: poseDue)
+  posture(e, position) {
+    const ch = postureChange(e.position || 'standing', position || 'standing');
+    e.position = position || 'standing';
+    if (!ch) return;
+    e.pose = ch.loop;
+    const d = ch.once && !e.riding ? e.actor.once(ch.once, 0.2) : 0;
+    e.poseDue = performance.now() + d * 900 + 1;
   }
 
   // a creature's body: its zone's gear on a person they dressed, else the body looks.js gives it
@@ -431,7 +447,7 @@ export class Entities {
       if (e.goal && !held) {
         const p = e.root.position, dx = e.goal.x - p.x, dz = e.goal.z - p.z, d = Math.hypot(dx, dz);
         if (d < 0.1 && e.then) { e.goal = e.then; e.then = null; }
-        else if (d < 0.1) { e.goal = null; e.rush = false; if (e.actor) e.actor.play(e.riding ? 'Idle' : isHostile(e) ? 'Idle_Combat' : e.actor.idle || 'Idle', 0.18, e.still ? 0 : 1); }
+        else if (d < 0.1) { e.goal = null; e.rush = false; if (e.actor) e.actor.play(e.riding ? 'Idle' : e.pose || (isHostile(e) ? 'Idle_Combat' : e.actor.idle || 'Idle'), 0.18, e.still ? 0 : 1); }
         else {
           // (a creature charging over from next door runs)
           const speed = e.kind === 'player' ? Math.min(9 * (e.data.speed || 1), Math.max(3.2, d * 4)) : e.rush ? Math.min(7, Math.max(3.2, d * 1.6)) : 3.2;
@@ -440,6 +456,11 @@ export class Entities {
           e.root.rotation.y = Math.atan2(dx, dz);
           if (e.actor) e.actor.play(e.riding ? 'Idle' : speed > 4.5 ? 'Running_A' : 'Walking_A', 0.15, 1.1);
         }
+      }
+      // sat down or got up (posture): once that clip is through, hold the pose (or stand idle)
+      if (e.actor && e.poseDue && !e.goal && performance.now() >= e.poseDue) {
+        e.poseDue = 0;
+        e.actor.play(e.riding ? 'Idle' : e.pose || (isHostile(e) ? 'Idle_Combat' : e.actor.idle || 'Idle'), 0.35);
       }
       if (e.actor) e.actor.update(dt);
       if (e.riding) { e.riding.steed.update(dt, !!e.goal, 1.5); e.riding.pose(t, !!e.goal); }

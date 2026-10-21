@@ -599,6 +599,7 @@ async function runGame() {
     // what the hero wears (gear_look.py): re-dressed when it changes
     if (hero && payload.player && payload.player.look) dress(hero, payload.player.look, payload.player.char_class);
     if (hero && payload.player) ride(payload.player);
+    if (ctl && payload.player) ctl.setPosture(payload.player.position);    // resting sits down, sleeping lies down
     if ('group' in payload) hud.party.update(payload.group);
     if (payload.player && 'quest' in payload.player) hud.quest.update(payload.player.quest);
     if (!payload.player || !payload.player.vnum) return;
