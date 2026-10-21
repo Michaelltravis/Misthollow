@@ -243,7 +243,7 @@ async def run(tmp):
     check(a is not None and a.characters == [] and save_of('Deckard') is None
           and conn.account is not None and conn.state == conn.STATE_SELECT_CHAR, '…and makes the account alone, opening its menu')
     m = re.search(r'\x1b\]ACCOUNT:(\{[^\x07]*\})\x07', out)
-    check(bool(m) and json.loads(m.group(1)) == {'account': 'deckard', 'max': 8, 'email': '', 'chars': []},
+    check(bool(m) and json.loads(m.group(1)) == {'account': 'deckard', 'max': 8, 'email': '', 'note': '', 'bad': False, 'chars': []},
           '…which a web page also gets as a hidden ACCOUNT signal')
     out = await say(conn, w, 'create', '')
     check(conn.state == conn.STATE_SELECT_CHAR and out.count('Available commands') == 1,
@@ -316,6 +316,8 @@ async def run(tmp):
     m = re.findall(r'\x1b\]ACCOUNT:(\{[^\x07]*\})\x07', out)
     check('Email set to deckard@example.com' in out and Account.load('deckard').settings['email'] == 'deckard@example.com'
           and bool(m) and json.loads(m[-1])['email'] == 'deckard@example.com', "…and sets one, showing the menu again")
+    check(json.loads(m[-1])['note'].startswith('Email set to deckard@example.com') and json.loads(m[-1])['bad'] is False,
+          '…with what it did for the page to show over its list')
     conn, w = connection()
     await say(conn, w, 'deckard@example.com', 'deckardpass1')
     check(conn.account is not None and conn.account.account_name == 'deckard', '…which then signs in by it')

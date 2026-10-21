@@ -103,12 +103,6 @@ export function setupLogin() {
     go();
   }
   $('#switch-btn').addEventListener('click', () => { showForm(); name.value = ''; pass.value = ''; name.focus(); say(''); });
-  // the account menu's replies to its email command (shown over the list it sends again)
-  MH.bus.on('terminal.output', ({ text }) => {
-    if (MH.state.isLoggedIn || !text || chars.classList.contains('hidden')) return;
-    const m = /(email set to [^:\n]+)|(that isn't an email address\.|that email already belongs to an account\.)/i.exec(text);
-    if (m) heroNote = m[1] ? `${m[1]}. You can sign in with it now.` : m[2];
-  });
   MH.bus.on('login.expired', who => { showForm(); if (who) name.value = who; pass.focus(); });
   // a line of lore, changing every few seconds while the title screen stands
   const lore = $('#login .lore-line');
@@ -181,7 +175,8 @@ export function setupLogin() {
   MH.bus.on('account.menu', menu => {
     // back from a hero half made (the name was taken meanwhile, or Back): the list again
     if (creating) { creating = false; create.classList.add('hidden'); if (stage) stage.stop(); }
-    say(heroNote);
+    // what the menu's last command did (its email), or what the hero wizard learned
+    if (menu.note) say(menu.note, menu.bad); else say(heroNote);
     heroNote = '';
     heroes(menu);
     // an account just made: straight on to its first hero

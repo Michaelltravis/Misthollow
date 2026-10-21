@@ -905,8 +905,9 @@ class Connection:
         except (ConnectionResetError, BrokenPipeError, ConnectionAbortedError, OSError):
             pass
     
-    async def show_character_menu(self):
-        """Display character selection menu."""
+    async def show_character_menu(self, note: str = '', bad: bool = False):
+        """Display character selection menu (note: what the last command did, which a web page
+        shows over its list; bad: it was refused)."""
         c = self.config.COLORS
         from accounts import AccountManager
         
@@ -947,7 +948,7 @@ class Connection:
             # (web_client.py turns it into {type: 'account'})
             import json
             menu = {'account': self.account.account_name, 'max': self.account.settings.get('max_chars', 8),
-                    'email': self.account.settings.get('email') or '',
+                    'email': self.account.settings.get('email') or '', 'note': note, 'bad': bad,
                     'chars': [{k: i[k] for k in ('name', 'level', 'class', 'race')} for i in char_info]}
             await self._send_raw(f"\x1b]ACCOUNT:{json.dumps(menu, separators=(',', ':'))}\x07".encode('utf-8'))
     
@@ -1284,11 +1285,11 @@ class Connection:
             if not args:
                 await self.send(f"Email: {self.account.settings.get('email') or 'none'}. Usage: email <address>")
                 return
-            if AccountManager.set_email(self.account, args[0]):
-                await self.send(f"Email set to {self.account.settings['email']}: sign in by it from now on.")
-            else:
-                await self.send(email_problem(args[0], self.account))
-            await self.show_character_menu()
+            ok = AccountManager.set_email(self.account, args[0])
+            note = (f"Email set to {self.account.settings['email']}: sign in by it from now on." if ok
+                    else email_problem(args[0], self.account))
+            await self.send(note)
+            await self.show_character_menu(note, bad=not ok)
 
         elif cmd == 'password' or cmd == 'passwd':
             self.temp_new_password = None
