@@ -5029,6 +5029,19 @@ class CommandHandler:
             return
 
         target = player.fighting
+        import brain
+        if brain.on('tactics') and player.room:
+            # any creature here winding up something that can be broken (brain/): the one you
+            # name, else your foe's, else the first that is (a healer praying behind the line)
+            if args:
+                named = player.find_target_in_room(' '.join(args))
+                if named is not None and named is not player and not hasattr(named, 'connection'):
+                    target = named
+            elif not (getattr(target, 'pending_intent', None) or {}).get('interruptible'):
+                for ch in player.room.characters:
+                    if not hasattr(ch, 'connection') and (getattr(ch, 'pending_intent', None) or {}).get('interruptible'):
+                        target = ch
+                        break
 
         # Generic declared-intent interrupt (any mob winding up a cast/hex)
         intent = getattr(target, 'pending_intent', None)

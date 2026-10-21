@@ -1849,13 +1849,33 @@ HELP_TOPICS = {'auction': {'category': 'command',
                               '\n'
                               'MECHANICS:\n'
                               '- Works on any declared cast/hex marked interruptible\n'
+                              '- Any creature in the room: name it (interrupt priest), or with no\n'
+                              '  name your foe, else the first one winding up (a healer praying\n'
+                              '  behind the line, a captain gathering a word of silence)\n'
                               '- Chance scales with your kick skill\n'
                               '- Cooldown: 20s on success, 8s on a miss\n'
                               '- Also works on boss telegraphed casts\n'
                               '\n'
-                              'See also: BRACE, SIDESTEP',
-               'syntax': 'interrupt',
+                              'See also: BRACE, SIDESTEP, ROUSE',
+               'syntax': 'interrupt [creature]',
                'title': 'Interrupt'},
+ 'rouse': {'category': 'command',
+           'description': 'Shake a friend out of a stun or a magical sleep.\n'
+                          '\n'
+                          'MECHANICS:\n'
+                          '- A groupmate in the room who is stunned or asleep from a spell\n'
+                          '  is back on their feet at once\n'
+                          '- It costs your next swing\n'
+                          '- 12 second cooldown\n'
+                          '\n'
+                          'Other ways out of a hold: fire burns away roots and webs, a blow\n'
+                          'wakes a sleeper (a creature you have charmed, too), Unfettered and a\n'
+                          'cleansing lift them. Creatures learn your holds: the same kind again\n'
+                          'is shrugged off more and more often in one fight, so mix your schools.\n'
+                          '\n'
+                          'See also: INTERRUPT, BRACE',
+           'syntax': 'rouse <friend>',
+           'title': 'Rouse'},
  'barricade': {'category': 'command',
                'description': 'Brace a closed door so nothing opens it for a while.\n'
                               '\n'

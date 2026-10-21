@@ -613,13 +613,13 @@ def _wrap_mob_ai():
         if intent and intent is not before and getattr(mob, 'room', None) is not None:
             intent['area'] = _area_for(mob, intent)
             import action_combat
-            ms = (int(action_combat.WINDUP * 1000) if action_combat.on_clock(mob)
+            ms = (int(intent.get('windup_action', action_combat.WINDUP) * 1000) if action_combat.on_clock(mob)
                   else int((cr.round_seconds() + cr.NPC_PHASE_DELAY) * 1000))
             if time.time() < getattr(mob, 'slowed_until', 0):
                 # slowed (marquee_abilities): the wind-up takes a round longer, and its mark says so
                 intent['declared_at'] = intent.get('declared_at', time.time()) + cr.round_seconds()
                 ms += int(cr.round_seconds() * 1000)
-            ev.emit(mob.room, 'windup', src=mob, dst=getattr(mob, 'fighting', None), label=intent.get('label'),
+            ev.emit(mob.room, 'windup', src=mob, dst=intent.get('target') or getattr(mob, 'fighting', None), label=intent.get('label'),
                     kind=intent.get('kind'), ms=ms, area=intent['area'], school=_school_of_label(intent.get('label')),
                     interruptible=bool(intent.get('interruptible')) or None)
 

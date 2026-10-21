@@ -60,7 +60,46 @@
   },
   "6314": {
    "rank": "boss",
-   "why": "Zyraxxis"
+   "why": "Zyraxxis; Poison Spit can be interrupted: a wind-up to answer (docs/MOB_AI.md, phase 1b)",
+   "boss_config": {
+    "enrage_time": 75,
+    "enrage_multiplier": 1.5,
+    "ability_interval": 4.0,
+    "phases": [
+     {
+      "threshold": 65,
+      "message": "The Spider Queen screeches and egg sacs split!",
+      "spawn_adds": {
+       "6301": 3
+      }
+     },
+     {
+      "threshold": 35,
+      "message": "The Spider Queen thrashes, exposing her underside!"
+     }
+    ],
+    "abilities": [
+     {
+      "name": "Web Trap",
+      "telegraph": "The Spider Queen lifts her forelegs, webbing the air!",
+      "cast_time": 2,
+      "cooldown": 14,
+      "damage_dice": "3d6+4",
+      "dodge": true,
+      "vulnerable_after": 3
+     },
+     {
+      "name": "Poison Spit",
+      "telegraph": "The Spider Queen gurgles, venom pooling in her maw!",
+      "cast_time": 2,
+      "cooldown": 12,
+      "damage_dice": "4d4+6",
+      "aoe": true,
+      "dodge": true,
+      "interruptible": true
+     }
+    ]
+   }
   }
  },
  "patrols": [

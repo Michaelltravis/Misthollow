@@ -989,23 +989,6 @@ class Mobile(Character):
             pass
         return True
             
-    async def combat_ai(self):
-        """AI behavior during combat."""
-        if not self.fighting or not self.fighting.is_alive:
-            self.fighting = None
-            self.position = 'standing'
-            return
-            
-        # Cast spells if caster
-        if 'caster' in self.flags and self.mana > 20:
-            if random.randint(1, 100) <= 30:
-                await self.cast_mob_spell()
-                return
-                
-        # Special attacks
-        if random.randint(1, 100) <= 20:
-            await self.special_attack()
-            
     async def faction_aggressive_ai(self) -> bool:
         """Attack on sight if faction reputation is hostile."""
         if not self.room or not getattr(self, 'faction', None):
@@ -1360,43 +1343,6 @@ class Mobile(Character):
             ]
             c = self.config.COLORS
             await self.room.send_to_room(f"{c['green']}{self.name} {random.choice(messages)}{c['reset']}")
-            
-    async def cast_mob_spell(self):
-        """Cast a spell during combat."""
-        if not self.fighting:
-            return
-            
-        c = self.config.COLORS
-        target = self.fighting
-        
-        # Different spells based on mob type
-        if self.special == 'necromancer':
-            spells = ['chill_touch', 'energy_drain', 'fear']
-        elif self.special == 'shaman':
-            spells = ['poison', 'blindness', 'weaken']
-        elif 'dragon' in self.name.lower():
-            spells = ['fireball', 'fear']
-        else:
-            spells = ['magic_missile', 'chill_touch']
-            
-        spell = random.choice(spells)
-        
-        # Calculate damage
-        damage = random.randint(self.level, self.level * 3)
-        
-        await self.room.send_to_room(
-            f"{c['bright_magenta']}{self.name} casts {spell.replace('_', ' ')}!{c['reset']}"
-        )
-        
-        if hasattr(target, 'send'):
-            await target.send(f"{c['bright_red']}{self.name}'s spell hits you for {damage} damage!{c['reset']}")
-            
-        self.mana -= 20
-        
-        killed = await target.take_damage(damage, self)
-        if killed:
-            from combat import CombatHandler
-            await CombatHandler.handle_death(self, target)
             
     async def special_attack(self):
         """Perform a special attack based on mob type."""

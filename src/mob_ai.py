@@ -39,6 +39,8 @@ GUARDED_KEYWORDS = {'guard', 'cityguard', 'knight', 'soldier', 'sentinel', 'sent
 BIG_KEYWORDS = {'ogre', 'troll', 'giant', 'bear', 'golem', 'minotaur', 'yeti',
                 'cyclops', 'behemoth', 'ettin', 'juggernaut'}
 TRAPSMITH_KEYWORDS = {'kobold', 'trapper', 'tinker', 'sapper', 'saboteur', 'poacher'}
+ARCHER_KEYWORDS = {'archer', 'bowman', 'bowmen', 'crossbowman', 'marksman', 'longbowman', 'slinger'}
+SUPPORT_KEYWORDS = {'bard', 'minstrel', 'drummer', 'skald', 'chanter', 'herald'}
 AMBUSH_KEYWORDS = {'spider', 'stalker', 'lurker', 'assassin', 'panther', 'shadow',
                    'ambusher', 'creeper', 'widow'}
 
@@ -152,6 +154,20 @@ def classify_mob(mob) -> set:
         elif 'wimpy' in flags and getattr(mob, 'level', 99) <= 8:
             roles.add('coward')
 
+    # archers shoot from afar and supporters hang back (combat_range.ROLE_RANGE): with the brain's
+    # tactics on, read from their words or a bow in hand
+    import brain
+    if brain.on('tactics'):
+        try:
+            import combat_range
+            bow = combat_range.wielded_kind(mob) in combat_range.WEAPON_RANGE
+        except Exception:
+            bow = False
+        if all_words & ARCHER_KEYWORDS or bow:
+            roles.add('archer')
+        if all_words & SUPPORT_KEYWORDS:
+            roles.add('support')
+
     # Boss by HP threshold (never for bosses.py Boss instances — see above — nor for a marquee
     # quest's creatures: their health is sized to the party hunting them (marquee_scale), and the
     # boss kit — a slam on everyone in the room every 8 s, fear, adds — would ride along with it)
@@ -193,6 +209,16 @@ async def _caster_tick(mob, target):
     """Caster mob AI: heal self, buff, or offensive spell."""
     if mob.mana < 10 or _silenced(mob):
         return False
+    import brain
+    if brain.on('tactics'):
+        # its ward is a real affect that runs out, once a fight (brain/cast.py); heals and spells
+        # are declared, but for a trivial fight's quick instant ones below
+        from brain import cast
+        if await cast.ward(mob, brain.of(mob)):
+            return True
+        if not _intent_exempt(mob, target):
+            return False
+        mob.ai_state['buffed'] = True        # (the ward stands for the old, permanent buff)
 
     c = mob.config.COLORS
     now = time.time()
@@ -584,6 +610,9 @@ async def _healer_tick(mob, target):
     """Healer mob: prioritize healing wounded allies in the room."""
     if mob.mana < 15:
         return False
+    import brain
+    if brain.on('tactics') and not _intent_exempt(mob, target):
+        return False        # a prayer, declared a round ahead and interruptible (brain/cast.py)
 
     now = time.time()
     cd = mob.ai_state.setdefault('heal_cd', 0)
@@ -672,6 +701,29 @@ async def _coward_tick(mob, target):
 
 INTENT_WINDUP = 3.0        # min seconds between declaration and resolution
 INTENT_ROOM_CAP = 2        # max simultaneous wind-ups per room (readability)
+
+
+def _room_cap(mob):
+    """The room's cap on wind-ups: INTENT_ROOM_CAP, or the creature's profile with tactics on
+    (readable 2, brutal 3; never above brain/profile INVARIANTS)."""
+    import brain
+    if brain.on('tactics'):
+        return int(brain.of(mob).profile.get('room_windup_cap', INTENT_ROOM_CAP))
+    return INTENT_ROOM_CAP
+
+
+async def _announce(mob, intent):
+    """Say a declared wind-up aloud, with how to answer it."""
+    c = mob.config.COLORS
+    if intent['kind'] in ('heavy', 'aoe'):
+        tip = ' (brace or sidestep!)'
+    elif intent.get('interruptible'):
+        tip = ' (interrupt it!)'
+    else:
+        tip = ''
+    await mob.room.send_to_room(
+        f"{c['bright_yellow']}⚠ {intent['telegraph']}{c['yellow']}{tip}{c['reset']}"
+    )
 
 
 def _intent_exempt(mob, target) -> bool:
@@ -764,7 +816,12 @@ def _choose_boss_intent(mob, target):
 
 
 def _choose_caster_intent(mob, target):
-    """Pick the caster's next declared offensive/debuff spell (heal/buff stay instant)."""
+    """Pick the caster's next declared offensive/debuff spell (heal/buff stay instant).
+    With the brain's tactics on, real spells from its role's book (brain/cast.py)."""
+    import brain
+    if brain.on('tactics'):
+        from brain import cast
+        return cast.choose(mob, brain.of(mob), target)
     now = time.time()
     if mob.mana < 10 or now < mob.ai_state.get('spell_cd', 0) or _silenced(mob):
         return None
@@ -978,7 +1035,7 @@ async def _legacy_declare_intents(mob):
         return   # reeling — in no state to wind anything up
     # keep pack fights readable: at most a couple of wind-ups at once
     pending = sum(1 for ch in mob.room.characters if getattr(ch, 'pending_intent', None))
-    if pending >= INTENT_ROOM_CAP:
+    if pending >= _room_cap(mob):
         return
 
     roles = classify_mob(mob)
@@ -1015,16 +1072,7 @@ async def _legacy_declare_intents(mob):
 
     intent['declared_at'] = time.time()
     mob.pending_intent = intent
-    c = mob.config.COLORS
-    if intent['kind'] in ('heavy', 'aoe'):
-        tip = ' (brace or sidestep!)'
-    elif intent.get('interruptible'):
-        tip = ' (interrupt it!)'
-    else:
-        tip = ''
-    await mob.room.send_to_room(
-        f"{c['bright_yellow']}⚠ {intent['telegraph']}{c['yellow']}{tip}{c['reset']}"
-    )
+    await _announce(mob, intent)
 
 
 async def _resolve_legacy(mob, target, which):
@@ -1136,6 +1184,11 @@ async def _resolve_intent(mob):
         return False
     c = mob.config.COLORS
     target = mob.fighting
+    what, arg = intent['ability']
+    if what in ('mob_heal', 'disrupt') and mob.room:
+        from brain import cast
+        await (cast.resolve_heal if what == 'mob_heal' else cast.resolve_disrupt)(mob, arg)
+        return True
     if not target or not getattr(target, 'is_alive', False) or not mob.room:
         if mob.room:
             await mob.room.send_to_room(
@@ -1152,7 +1205,6 @@ async def _resolve_intent(mob):
         except Exception:
             pass
 
-    what, arg = intent['ability']
     if what == 'boss':
         handler = _BOSS_HANDLERS.get(arg)
         if handler:
@@ -1161,6 +1213,9 @@ async def _resolve_intent(mob):
         await _cast_offensive(mob, target, arg)
     elif what == 'caster_debuff':
         await _cast_debuff(mob, target, arg)
+    elif what == 'mob_hex':
+        from brain import cast
+        await cast.resolve_hex(mob, target, arg)
     elif what == 'legacy':
         await _resolve_legacy(mob, target, arg)
     elif what == 'bruiser':

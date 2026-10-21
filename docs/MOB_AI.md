@@ -74,7 +74,7 @@ Each phase ships as its own pull request, behind its flag in `world/ai_profiles.
 |---|---|---|---|
 | 0 | The brain in place, running the old rules unchanged; profiles, scoring, threat table, scheduler, debug commands; `ai.py` gone | none | done |
 | 1a | Threat and targeting: damage and healing make threat; a real `taunt` for warriors and paladins; Commanding Shout and rescue fixate; healers heal only their own side; pets get a companion profile | `threat` | on |
-| 1b | Tactics: creatures cast real spells; abilities cool down instead of happening once a life; heals that can be interrupted; Disrupt aimed at your healer; crowd control creatures **learn** (a school used again is resisted more, and they say so); **breakouts** (`rouse` a stunned friend, fire burns away roots and webs, damage wakes a sleeper) | `tactics` | |
+| 1b | Tactics: creatures cast real spells; abilities cool down instead of happening once a life; heals that can be interrupted; Disrupt aimed at your healer; crowd control creatures **learn** (a school used again is resisted more, and they say so); **breakouts** (`rouse` a stunned friend, fire burns away roots and webs, damage wakes a sleeper) | `tactics` | on |
 | 2a | Awareness and pursuit: sight, hearing, invisibility; a path that opens, unlocks or breaks doors; every creature chases, leashes and walks home; bosses attack on sight and reset | `pursuit` | |
 | 2b | Calling for help as one rule; trains in brutal zones; fleeing toward friends and coming back | `social` | |
 | 3 | A living world: sleep, food, territory, predators and prey, scavengers, townsfolk who run and fetch the watch, real shop hours | `life` | |
@@ -139,7 +139,86 @@ elite and 2, and boss 10050):
 health against Skarg goes from 0% to 38%, and against the Spider Queen from 0% to 60%. Before,
 a boss locked onto whatever engaged it first. The sim overstates this, because it never gives a
 servant its own creature turn; in the game a servant swings every round. A servant's threat
-counts ×3 so it can still hold.
+counts ×3 so it can still hold. The owner chose to keep it: out-nuking your pet should draw the
+boss.
+
+## Phase 1b: tactics
+
+**Casting** (`brain/cast.py`):
+- **Spell books:** a caster knows its role's spells up to its level (`roles.caster.spells` in
+  `world/ai_profiles.json`): magic missile and weaken from level 1, then blindness, slow,
+  entangle, lightning and fireball as it climbs. Before, every caster had fireball at any level.
+- **Harm spells** land as before (`mob_ai._cast_offensive`): its own calibrated damage, the cap
+  for non-bosses, resistance, reflection, the terrain.
+- **Hexes** put the spell's own affects on their target, with a duration, through
+  `SpellHandler.apply_affect`. A slow is the real slow (half the swings), not a lost turn.
+  Blindness is the real blindness. A root holds you in place. Unfettered wards against them and a
+  cleansing lifts them.
+- **Restraint:** a creature never piles more holds on one player in 18 s than the zone's
+  `cc_chain` (readable 1, brutal 3).
+- **Root and nuke:** a brutal caster roots someone who keeps their distance, then uses its
+  biggest spell on them while they're held.
+- **Its ward** is the `armor` spell, once a fight, and it runs out. The old buff took 10 off its
+  armour class for life.
+
+**Healers and Disrupt:**
+- Healers mend by prayer, declared a round ahead and interruptible: "⚠ The priest begins a
+  healing prayer over the raider! (interrupt it!)". Left alone, a prayer heals a little more than
+  the old instant heal did.
+- An elite or better (in a brutal zone, a caster too) that sees a player healing its foes turns
+  a word of silence on them: Disrupt. It is declared, aimed at the healer (the /play mark is on
+  them), interruptible, and silences for a few seconds, at most every 20 s.
+- `interrupt [creature]` reaches any creature in the room winding something up, not only your
+  own foe.
+
+**The zone's wind-up:** on the real-time clock a creature's wind-up lasts the profile's
+`windup_action_s`: 2 s in a readable zone, 1.4 s in a brutal one (never under 1.2 s). The room's
+cap of wind-ups at once is the profile's too (2, brutal 3). Round mode keeps its round.
+
+**Once a fight, not once a life:** a pack's call for help, a caster's ward and cooldowns come
+back for the next fight, and an enrage wears off when the fight is over (`brain.end_encounter`).
+
+**Holds, the Misthollow way** (`brain/cc.py`; the owner asked for something other than
+diminishing returns):
+- **Creatures learn your tricks.** For the length of a fight a creature remembers each school of
+  hold that landed on it (sleep, a root, a stun, a charm, blindness...).
+  - The same school again is resisted by `adapt_rate` more each time: readable 15%, brutal 25%,
+    bosses faster, at most 80%.
+  - It says so: "The troll's eyes narrow — it knows that arcane trick now and shrugs it off!
+    (try another kind)".
+  - A hold of another school lands as well as ever. Bashes and kicks are one school ("force").
+- **Breakouts:**
+  - `rouse <friend>` shakes a groupmate out of a stun or a magical sleep. It costs your next
+    swing, with a 12 s cooldown.
+  - Fire burns away roots.
+  - A blow wakes a sleeper and breaks a creature's charm.
+
+**Archers and supporters** (archer, bowman, crossbowman, minstrel, bard...) are read from their
+names or a bow in hand, so `combat_range.ROLE_RANGE` finally applies and they keep their distance.
+
+**Interruptible casts** for four bosses that had none: one of each one's own wind-ups can now be
+broken, set in its population file.
+- the Spider Queen's Poison Spit;
+- Aurexus's Lightning Breath;
+- Grubbak's Den Collapse;
+- the Beholder's Disintegration Ray.
+
+New abilities (a heal to break up, a storm that builds slowly) were tried first. Even toned down
+they made each boss harder for a hero who never interrupts: Grubbak's lone-hero deaths went from
+14 to 18 in 36. Flagging what they already do changes nothing for that hero (`bosses.py` prints
+the same to the byte) and gives everyone else an answer.
+
+**Measured** (`scenarios.py tactics`, a warrior, cleric and mage at level 30 against a caster, a
+healer and an elite captain):
+- Answering every wind-up, 0–10% of the interruptible ones still land.
+- Every special that landed was warned of first.
+- With nobody interrupting, no player was ever held more than the zone allows in 18 s.
+- A mage sleeping 60 fresh creatures four times each lands:
+
+  | Tier | Try 1 | Try 2 | Try 3 | Try 4 | Then entangle |
+  |---|---|---|---|---|---|
+  | readable | 100% | 88% | 73% | 55% | 100% |
+  | brutal | 100% | 65% | 58% | 53% | 100% |
 
 ## Checks
 
@@ -150,6 +229,10 @@ counts ×3 so it can still hold.
   stickiness and the cooldown, the next foe, taunts, Commanding Shout's reach, healers and pets,
   `MH_BRAIN_OFF=threat`).
 - `python3 tools/balance/scenarios.py threat --check`: S1, above.
+- `python3 tests/test_brain_tactics.py`: phase 1b in the real game (book, ward, real hexes,
+  prayers, Disrupt, interrupt's reach, the zone's wind-up, learning and forgetting, rouse, fire
+  and blows breaking holds, once-a-fight abilities, archers, `MH_BRAIN_OFF=tactics`).
+- `python3 tools/balance/scenarios.py tactics --check`: S7, above.
 - `python3 tests/test_brain_parity.py`: with every feature off (`MH_BRAIN_OFF`),
   `tools/balance/sim.py` (rounds and real time) and `bosses.py` print the same to the byte as
   with no brain at all. `zones.py` can't be held to
