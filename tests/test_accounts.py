@@ -243,7 +243,7 @@ async def run(tmp):
     check(a is not None and a.characters == [] and save_of('Deckard') is None
           and conn.account is not None and conn.state == conn.STATE_SELECT_CHAR, '…and makes the account alone, opening its menu')
     m = re.search(r'\x1b\]ACCOUNT:(\{[^\x07]*\})\x07', out)
-    check(bool(m) and json.loads(m.group(1)) == {'account': 'deckard', 'max': 8, 'chars': []},
+    check(bool(m) and json.loads(m.group(1)) == {'account': 'deckard', 'max': 8, 'email': '', 'chars': []},
           '…which a web page also gets as a hidden ACCOUNT signal')
     out = await say(conn, w, 'create', '')
     check(conn.state == conn.STATE_SELECT_CHAR and out.count('Available commands') == 1,
@@ -270,12 +270,65 @@ async def run(tmp):
     conn, w = connection()
     out = await say(conn, w, 'deckard', 'deckardpass1')
     check('ACCOUNT:' not in out and 'Rook' in out, '…and telnet the menu as text only')
-    # the page's script (net.js): Create account and the account's heroes, no hero auto-played
+    # a web page signing in by a hero's name gets the account's heroes too (one login, every
+    # hero); telnet still goes straight in as that hero
+    conn, w = connection()
+    conn.is_web = True
+    out = await say(conn, w, 'Rook', 'deckardpass1')
+    check(conn.entered is None and conn.state == conn.STATE_SELECT_CHAR and 'ACCOUNT:' in out,
+          "a web page signing in by a hero's name gets the account's heroes")
+    conn, w = connection()
+    await say(conn, w, 'Rook', 'deckardpass1')
+    check(conn.entered is not None and conn.entered.name == 'Rook', '…telnet goes straight in as the hero')
+
+    # ------------------------------------------------ email: one account an email, signing in by it
+    conn, w = connection()
+    conn.is_web = True
+    out = await say(conn, w, 'newaccount Wren Wren@Example.com', 'wrenpass123', 'wrenpass123')
+    a = Account.load('wren')
+    check(a is not None and a.settings['email'] == 'wren@example.com' and conn.state == conn.STATE_SELECT_CHAR,
+          '`newaccount <name> <email>` makes an account that keeps its email')
+    m = re.search(r'\x1b\]ACCOUNT:(\{[^\x07]*\})\x07', out)
+    check(bool(m) and json.loads(m.group(1))['email'] == 'wren@example.com', "…and the page is told it")
+    conn, w = connection()
+    conn.is_web = True
+    out = await say(conn, w, 'WREN@example.COM')
+    check('Account password' in out and conn.temp_account_name == 'wren', 'an email at the login prompt finds its account, in any case')
+    out = await say(conn, w, 'wrenpass123')
+    check(conn.account is not None and conn.account.account_name == 'wren' and conn.state == conn.STATE_SELECT_CHAR,
+          "…and its password opens the account's menu")
+    conn, w = connection()
+    out = await say(conn, w, 'nobody@example.com')
+    check('No account uses the email' in out and conn.state == conn.STATE_GET_NAME, 'an email no account has is said to be none')
+    conn, w = connection()
+    out = await say(conn, w, 'newaccount Finch wren@example.com')
+    check('already belongs to an account' in out and not Account.exists('finch'), '`newaccount` refuses an email another account has')
+    out = await say(conn, w, 'newaccount Finch not-an-email')
+    check("isn't an email" in out and not Account.exists('finch'), '…and one that is not an email')
+    # an older account adds one from its menu
+    conn, w = connection()
+    conn.is_web = True
+    await say(conn, w, 'deckard', 'deckardpass1')
+    out = await say(conn, w, 'email wren@example.com')
+    check('already belongs to an account' in out and not Account.load('deckard').settings.get('email'),
+          "the menu's email refuses another account's")
+    out = await say(conn, w, 'email Deckard@Example.com')
+    m = re.findall(r'\x1b\]ACCOUNT:(\{[^\x07]*\})\x07', out)
+    check('Email set to deckard@example.com' in out and Account.load('deckard').settings['email'] == 'deckard@example.com'
+          and bool(m) and json.loads(m[-1])['email'] == 'deckard@example.com', "…and sets one, showing the menu again")
+    conn, w = connection()
+    await say(conn, w, 'deckard@example.com', 'deckardpass1')
+    check(conn.account is not None and conn.account.account_name == 'deckard', '…which then signs in by it')
+    check(accounts.email_problem('deckard@example.com', Account.load('deckard')) == '', 'an account may keep its own email')
+
+    # the page's script (net.js): sign in by email or name, a new account when there is none,
+    # the account's heroes; the password only after its prompt
     js = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'src', 'web_isometric', 'shared', 'net.js'),
               encoding='utf-8').read()
-    check('multiple characters' not in js and 'joinAccount' not in js and '`newaccount ${' in js
-          and "payload.type === 'account'" in js and "sendDelayed('char-menu'" not in js,
-          "/play's script makes accounts with newaccount and draws the account's heroes")
+    check('multiple characters' not in js and 'joinAccount' not in js and '`newaccount ${st.playerName} ${st.newEmail}`' in js
+          and "payload.type === 'account'" in js and "sendDelayed('char-menu'" not in js
+          and "'login.noaccount'" in js and "sendDelayed('login-pw'" in js,
+          "/play's script signs in, makes accounts with newaccount and draws the account's heroes")
     import web_client
     check(json.loads(web_client.ACCOUNT_PATTERN.search('x\x1b]ACCOUNT:{"account":"a","chars":[]}\x07y').group(1))['account'] == 'a',
           'the bridge finds the ACCOUNT signal')

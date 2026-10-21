@@ -250,20 +250,30 @@
       <button class="btn alt" id="switch-btn">Switch account</button>
     </div>
     <div id="login-form">
-      <div class="login-tabs" role="tablist">
-        <button class="tab on" id="tab-login" role="tab" aria-selected="true">Log in</button>
-        <button class="tab" id="tab-new" role="tab" aria-selected="false">Create account</button>
-      </div>
-      <input id="login-name" placeholder="Account name" autocomplete="username" maxlength="12" title="Your account's name (a hero's name also works, and goes straight to that hero)">
-      <input id="login-pass" type="password" placeholder="Password" autocomplete="current-password">
-      <input id="login-pass2" class="new-only" type="password" placeholder="Password again" autocomplete="new-password">
+      <h2 class="lf-title">Sign in</h2>
+      <input id="login-name" placeholder="Email or account name" autocomplete="username" maxlength="254" spellcheck="false" aria-label="Email or account name">
+      <input id="login-pass" type="password" placeholder="Password" autocomplete="current-password" aria-label="Password">
       <button class="btn" id="login-btn">Enter the Hollow</button>
-      <div class="login-note new-only">One account holds all your heroes. Make it here, then forge your first hero.</div>
+      <button class="link-btn" id="to-create">New here? Create an account</button>
+    </div>
+    <div id="signup-form" class="hidden">
+      <h2 class="lf-title">Create your account</h2>
+      <div class="login-note" id="signup-why">One account holds all your heroes.</div>
+      <input id="new-email" type="email" placeholder="Email" autocomplete="email" maxlength="254" spellcheck="false" aria-label="Email">
+      <input id="new-name" placeholder="Account name (3–12 letters)" autocomplete="username" maxlength="12" spellcheck="false" aria-label="Account name">
+      <input id="new-pass" type="password" placeholder="Password (8 or more characters)" autocomplete="new-password" aria-label="Password">
+      <input id="new-pass2" type="password" placeholder="Password again" autocomplete="new-password" aria-label="Password again">
+      <button class="btn" id="signup-btn">Create account</button>
+      <button class="link-btn" id="to-login">I already have an account</button>
     </div>
     <div id="login-chars" class="hidden">
       <div class="lc-head">Account <b></b></div>
       <div class="lc-list"></div>
       <button class="btn" id="forge-btn">Forge a new hero</button>
+      <div class="lc-email hidden">
+        <div class="login-note">Add an email to sign in with it (and to get a reset if you forget your password).</div>
+        <div class="lc-email-row"><input id="acct-email" type="email" placeholder="Email" autocomplete="email" maxlength="254" aria-label="Email"><button class="btn alt" id="acct-email-btn">Save</button></div>
+      </div>
       <button class="btn alt" id="leave-btn">Switch account</button>
     </div>
     <div id="login-status"></div>

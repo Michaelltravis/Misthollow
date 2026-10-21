@@ -1,7 +1,9 @@
 // Login and character creation for the 3D client. The protocol is the server's own
-// prompts, driven through net.js (MH.connect). Log in: an account's name and password, then
-// its heroes (the account's menu, sent as an 'account' message) to play one or forge one.
-// Create account: a name and a password (twice) make an empty account, then the same list.
+// prompts, driven through net.js (MH.connect). One account holds all of a player's heroes. Sign
+// in: the account's email (or name) and password, then its heroes (the account's menu, sent as
+// an 'account' message) to play one or forge one. No account by what was typed: the card turns
+// into Create your account (email, account name, password twice), which makes an empty account
+// and goes straight on to its first hero.
 // A new hero is its name, then the race, male or female, class and stat-roll prompts,
 // answered from these screens. The class step shows the class's 3D model turning on a small stage.
 import { makeStage } from './stage.js';
@@ -50,33 +52,32 @@ const LORE = [
 ];
 
 export function setupLogin() {
-  const name = $('#login-name'), pass = $('#login-pass'), pass2 = $('#login-pass2'), status = $('#login-status');
-  const create = $('#create'), btn = $('#login-btn');
-  let creating = false, prime = '';
+  const name = $('#login-name'), pass = $('#login-pass'), status = $('#login-status');
+  const nEmail = $('#new-email'), nName = $('#new-name'), nPass = $('#new-pass'), nPass2 = $('#new-pass2');
+  const create = $('#create');
+  let creating = false, prime = '', madeNow = false;
   const saved = ls.get(NAME_KEY);
   if (saved) name.value = saved;
   const say = (msg, err) => { status.textContent = msg || ''; status.className = err ? 'error' : ''; };
   // this browser signed in before: one click continues (the stored token, not a password)
-  const resumeBox = $('#login-resume'), form = $('#login-form'), chars = $('#login-chars');
-  const showForm = () => { resumeBox.classList.add('hidden'); chars.classList.add('hidden'); form.classList.remove('hidden'); };
-  // Log in | Create account
-  let isNew = false;
-  const tab = which => {
-    isNew = which === 'new';
-    form.classList.toggle('new', isNew);
-    $('#tab-login').classList.toggle('on', !isNew);
-    $('#tab-new').classList.toggle('on', isNew);
-    $('#tab-login').setAttribute('aria-selected', String(!isNew));
-    $('#tab-new').setAttribute('aria-selected', String(isNew));
-    name.placeholder = isNew ? 'New account name' : 'Account name';
-    pass.autocomplete = isNew ? 'new-password' : 'current-password';
-    btn.textContent = isNew ? 'Create account' : 'Enter the Hollow';
-    pass2.value = '';
+  const resumeBox = $('#login-resume'), form = $('#login-form'), signup = $('#signup-form'), chars = $('#login-chars');
+  const only = el => [resumeBox, form, signup, chars].forEach(x => x.classList.toggle('hidden', x !== el));
+  const showForm = () => only(form);
+  // no account yet: the account first (email, name, password), then its heroes; what was typed
+  // at the sign-in carries over
+  function showSignup(why) {
+    only(signup);
+    const typed = name.value.trim();
+    if (typed.includes('@')) { if (!nEmail.value) nEmail.value = typed; }
+    else if (typed && !nName.value) nName.value = typed;
+    if (pass.value && !nPass.value) nPass.value = pass.value;
+    $('#signup-why').textContent = why || 'One account holds all your heroes.';
     say('');
-    (name.value ? pass : name).focus();
-  };
-  $('#tab-login').addEventListener('click', () => tab('login'));
-  $('#tab-new').addEventListener('click', () => { name.value = ''; tab('new'); });
+    [nEmail, nName, nPass, nPass2].find(x => !x.value)?.focus();
+  }
+  $('#to-create').addEventListener('click', () => showSignup());
+  $('#to-login').addEventListener('click', () => { showForm(); say(''); (name.value ? pass : name).focus(); });
+  MH.bus.on('login.noaccount', who => showSignup(`There's no account for ${who} yet. Create one to start playing.`));
   const rec = MH.auth.get();
   if (rec) {
     resumeBox.querySelector('b').textContent = rec.name;
@@ -102,6 +103,12 @@ export function setupLogin() {
     go();
   }
   $('#switch-btn').addEventListener('click', () => { showForm(); name.value = ''; pass.value = ''; name.focus(); say(''); });
+  // the account menu's replies to its email command (shown over the list it sends again)
+  MH.bus.on('terminal.output', ({ text }) => {
+    if (MH.state.isLoggedIn || !text || chars.classList.contains('hidden')) return;
+    const m = /(email set to [^:\n]+)|(that isn't an email address\.|that email already belongs to an account\.)/i.exec(text);
+    if (m) heroNote = m[1] ? `${m[1]}. You can sign in with it now.` : m[2];
+  });
   MH.bus.on('login.expired', who => { showForm(); if (who) name.value = who; pass.focus(); });
   // a line of lore, changing every few seconds while the title screen stands
   const lore = $('#login .lore-line');
@@ -115,30 +122,43 @@ export function setupLogin() {
     }, 8000);
   }
 
-  function begin() {
+  const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s.]+$/;
+  function signIn() {
     const n = name.value.trim(), p = pass.value;
-    if (!n || !p) return say('Need both a name and a password.', true);
-    if (!/^[a-zA-Z]{3,12}$/.test(n)) return say('A name is 3–12 letters (no spaces, numbers or symbols).', true);
-    if (isNew) {
-      if (p.length < 8) return say('Passwords must be at least 8 characters.', true);
-      if (pass2.value !== p) return say("The two passwords don't match.", true);
-    }
+    if (!n || !p) return say('Enter your email (or account name) and your password.', true);
+    if (n.includes('@') ? !EMAIL.test(n) : !/^[a-zA-Z]{3,12}$/.test(n)) return say("That isn't an email or an account name.", true);
     ls.set(NAME_KEY, n);
-    MH.connect(n, p, isNew);
+    madeNow = false;
+    MH.connect(n, p, false);
   }
-  btn.addEventListener('click', begin);
-  name.addEventListener('keydown', e => { if (e.key === 'Enter') pass.focus(); e.stopPropagation(); });
-  pass.addEventListener('keydown', e => { if (e.key === 'Enter') (isNew ? pass2.focus() : begin()); e.stopPropagation(); });
-  pass2.addEventListener('keydown', e => { if (e.key === 'Enter') begin(); e.stopPropagation(); });
+  function signUp() {
+    const e = nEmail.value.trim(), n = nName.value.trim(), p = nPass.value;
+    if (!EMAIL.test(e)) return say("That isn't an email address.", true);
+    if (!/^[a-zA-Z]{3,12}$/.test(n)) return say('An account name is 3–12 letters (no spaces, numbers or symbols).', true);
+    if (p.length < 8) return say('Passwords must be at least 8 characters.', true);
+    if (nPass2.value !== p) return say("The two passwords don't match.", true);
+    ls.set(NAME_KEY, e);
+    madeNow = true;
+    MH.connect(n, p, true, undefined, e);
+  }
+  $('#login-btn').addEventListener('click', signIn);
+  $('#signup-btn').addEventListener('click', signUp);
+  // Enter moves to the next box, and on the last one sends
+  const chain = (fields, go) => fields.forEach((f, i) => f.addEventListener('keydown', e => {
+    if (e.key === 'Enter') (i < fields.length - 1 ? fields[i + 1].focus() : go());
+    e.stopPropagation();
+  }));
+  chain([name, pass], signIn);
+  chain([nEmail, nName, nPass, nPass2], signUp);
 
   // ---- the account's heroes ----
   const send = v => { const s = MH.state.mudSocket; if (s && s.readyState === WebSocket.OPEN) s.send(v); };
   const esc = s => String(s).replace(/[&<>"']/g, ch => `&#${ch.charCodeAt(0)};`);
   const tint = cls => '#' + (THEMES[cls] || THEMES.creature).core.toString(16).padStart(6, '0');
   function heroes(menu) {
-    resumeBox.classList.add('hidden');
-    form.classList.add('hidden');
-    chars.classList.remove('hidden');
+    only(chars);
+    // an account with no email yet (made before emails): offered here
+    chars.querySelector('.lc-email').classList.toggle('hidden', !!menu.email);
     chars.querySelector('.lc-head b').textContent = menu.account;
     const list = chars.querySelector('.lc-list');
     list.innerHTML = menu.chars.length ? menu.chars.map(c => {
@@ -164,7 +184,17 @@ export function setupLogin() {
     say(heroNote);
     heroNote = '';
     heroes(menu);
+    // an account just made: straight on to its first hero
+    if (madeNow && !menu.chars.length) { madeNow = false; $('#forge-btn').click(); }
   });
+  const saveEmail = () => {
+    const e = $('#acct-email').value.trim();
+    if (!EMAIL.test(e)) return say("That isn't an email address.", true);
+    heroNote = '';
+    send(`email ${e}`);
+  };
+  $('#acct-email-btn').addEventListener('click', saveEmail);
+  $('#acct-email').addEventListener('keydown', e => { if (e.key === 'Enter') saveEmail(); e.stopPropagation(); });
   let heroNote = '', phase = '';
   $('#forge-btn').addEventListener('click', () => {
     creating = true;
