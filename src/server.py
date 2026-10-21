@@ -82,6 +82,12 @@ WEB_MARK_RE = re.compile(rb'\x1b\]WEB(?::([0-9A-Fa-f.:]{2,45}))?\x07')
 
 logger = logging.getLogger('Misthollow.Server')
 
+# new names being made right now (lower case -> the Connection making it). A name is checked
+# when it is typed but saved only after race, class and stats: the hold turns a second
+# connection away at once, rather than after it has chosen everything
+_naming = {}
+
+
 class Connection:
     """Represents a single client connection."""
     
@@ -132,6 +138,7 @@ class Connection:
         self.account = None
         self.temp_account_name = None
         self.play_after = None          # a character asked for by name, opened via its account
+        self.held_name = None           # the new name this connection is making (_naming)
         self.new_account_only = False   # `newaccount`: the password makes an account, no hero
         self.temp_email = ''            # ...signing in by this email too
         self.code = None                # the email code asked for (security.new_code), and what for:
@@ -298,10 +305,12 @@ class Connection:
         if name.lower().startswith('newaccount '):
             parts = name.split()
             want, email = parts[1], (parts[2] if len(parts) > 2 else '')
+            # (held last: a refusal for anything else leaves the name free)
             why = (name_problem(want) or ("That name is already taken." if name_taken(want) else '')
                    or (email_problem(email) if email else '') or ('Usage: newaccount <name> [<email>]' if len(parts) > 3 else '')
                    or ("An email is needed: newaccount <name> <email>. A code will be sent to it."
-                       if not email and verification_on() else ''))
+                       if not email and verification_on() else '')
+                   or ("That name is already taken." if not self._hold_name(want) else ''))
             if why:
                 await self.send(why)
                 await self.send("Enter account name (or character name): ")
@@ -356,6 +365,10 @@ class Connection:
             return
         
         # A new name: a new account, and its first character of the same name
+        if not self._hold_name(name_lower):
+            await self.send(f"'{name_cap}' is already taken: someone is making it right now.")
+            await self.send("Enter account name (or character name): ")
+            return
         self.temp_account_name = name_lower
         self.temp_name = name_cap
         await self.send(f"'{name_cap}' is a new name. Create account? (Y/N) ")
@@ -367,10 +380,28 @@ class Connection:
             await self.send("Choose a password: ")
             self.state = self.STATE_GET_PASSWORD
         else:
+            self._let_name_go()
             self.temp_name = self.temp_account_name = None
             await self.send("What name shall you be known by? ")
             self.state = self.STATE_GET_NAME
-            
+
+    def _hold_name(self, name: str) -> bool:
+        """Hold a new name while this connection makes it (False: another connection is)."""
+        key = name.lower()
+        holder = _naming.get(key)
+        if (holder is not None and holder is not self and not getattr(holder, '_disconnected', False)
+                and not holder.writer.is_closing()):
+            return False
+        self._let_name_go()
+        _naming[key] = self
+        self.held_name = key
+        return True
+
+    def _let_name_go(self):
+        if self.held_name and _naming.get(self.held_name) is self:
+            del _naming[self.held_name]
+        self.held_name = None
+
     async def handle_password(self, password: str):
         """The new account's password (a sign-up: the account and its first character are
         made together when the character is finished)."""
@@ -417,6 +448,7 @@ class Connection:
         account, why = await AccountManager.create_account(self.temp_account_name, self.temp_password, self.temp_email)
         self.temp_email = ''
         self.temp_password = None
+        self._let_name_go()
         if account is None:
             self.temp_account_name = None
             await self.send(f"{why} The account was not made.")
@@ -489,6 +521,7 @@ class Connection:
         self.temp_password = self.temp_name = self.temp_account_name = self.code = None
         self.temp_email = ''
         self.new_account_only = False
+        self._let_name_go()
         await self.send(why)
         await self.send("Enter account name (or character name): ")
         self.state = self.STATE_GET_NAME
@@ -659,6 +692,7 @@ class Connection:
                                                                           email=self.temp_email, **char)
         self.temp_password = None
         self.temp_email = ''
+        self._let_name_go()
         if self.player is None:
             # the name was taken while the character was being made
             await self.send(f"{why} Your character was not made.")
@@ -1556,8 +1590,8 @@ class Connection:
         
         name = name.capitalize()
         
-        # Check if name is taken (a character's, or another account's)
-        if name_taken(name, self.account):
+        # Check if name is taken (a character's, another account's, or one being made)
+        if name_taken(name, self.account) or not self._hold_name(name):
             await self.send("That name is already taken. Choose another: ")
             return
         
@@ -1755,6 +1789,7 @@ class Connection:
         if getattr(self, '_disconnected', False):
             return                         # quit already did this; the input loop's finally comes again
         self._disconnected = True
+        self._let_name_go()
         logger.info(f"Connection closed: {self.address}")
         
         if self.player:
