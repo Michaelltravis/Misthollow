@@ -126,7 +126,8 @@ class Connection:
         self.account = None
         self.temp_account_name = None
         self.play_after = None          # a character asked for by name, opened via its account
-        self.login_failures = 0         # wrong passwords on this connection (security.py)
+        self.new_account_only = False   # `newaccount`: the password makes an account, no hero
+        self.login_failures = 0        # wrong passwords on this connection (security.py)
         self.forgot_sent = False
         self.is_web = False             # the web bridge announced itself (WEB_MARK): no hard wrap
         
@@ -273,8 +274,23 @@ class Connection:
         if name.lower().startswith('resume '):
             await self.handle_resume(name.split())
             return
-            
+
         from accounts import AccountManager, name_problem, name_taken
+        # `newaccount <name>`: an account with no character yet (/play's Create account); its
+        # menu's create makes the heroes, of any free names
+        if name.lower().startswith('newaccount '):
+            want = name.split(None, 1)[1].strip()
+            why = name_problem(want) or ("That name is already taken." if name_taken(want) else '')
+            if why:
+                await self.send(why)
+                await self.send("Enter account name (or character name): ")
+                return
+            self.temp_account_name = want.lower()
+            self.temp_name = None
+            self.new_account_only = True
+            await self.send(f"Choose a password for the account {want.capitalize()}: ")
+            self.state = self.STATE_GET_PASSWORD
+            return
         why = name_problem(name)
         if why:
             await self.send(why)
@@ -338,7 +354,22 @@ class Connection:
             
     async def handle_confirm_new_char_password(self, password: str):
         """Confirm new character password."""
-        if password == self.temp_password:
+        if password == self.temp_password and self.new_account_only:
+            # `newaccount`: the account alone, then its menu
+            from accounts import AccountManager
+            self.new_account_only = False
+            account, why = await AccountManager.create_account(self.temp_account_name, password)
+            self.temp_password = None
+            if account is None:
+                self.temp_account_name = None
+                await self.send(f"{why} The account was not made.")
+                await self.send("Enter account name (or character name): ")
+                self.state = self.STATE_GET_NAME
+                return
+            self.account = account
+            await self.send(f"Account {account.account_name} made.")
+            await self.show_character_menu()
+        elif password == self.temp_password:
             await self.show_race_menu()
             self.state = self.STATE_GET_RACE
         else:
@@ -889,9 +920,16 @@ class Connection:
                 await self.send(f"  {c['bright_green']}{i}) {info['name']:<12}{c['white']} Lvl {info['level']:<3} {info['class']:<12}{c['reset']}")
         else:
             await self.send(f"\r\n{c['yellow']}You have no characters yet. Type 'create' to make one!{c['reset']}")
-        
+
         await self.send(f"\r\n{c['bright_cyan']}════════════════════════════════════════════════════════════{c['reset']}")
         self.state = self.STATE_SELECT_CHAR
+        if self.is_web:
+            # the page draws the menu itself: the account and its characters as a hidden signal
+            # (web_client.py turns it into {type: 'account'})
+            import json
+            menu = {'account': self.account.account_name, 'max': self.account.settings.get('max_chars', 8),
+                    'chars': [{k: i[k] for k in ('name', 'level', 'class', 'race')} for i in char_info]}
+            await self._send_raw(f"\x1b]ACCOUNT:{json.dumps(menu, separators=(',', ':'))}\x07".encode('utf-8'))
     
     async def show_account_help(self):
         """Display detailed account menu help."""
@@ -1163,7 +1201,7 @@ class Connection:
                 await self.send("You have reached the maximum number of characters!")
                 await self.show_character_menu()
                 return
-            await self.send("Enter name for new character: ")
+            await self.send("Enter name for new character (or nothing, to go back): ")
             self.state = self.STATE_CREATE_CHAR_NAME
         
         elif cmd == 'delete' or cmd == 'd':
@@ -1337,16 +1375,16 @@ class Connection:
         await self.show_character_menu()
     
     async def handle_create_char_name(self, name: str):
-        """Handle new character name for account."""
+        """Handle new character name for account (nothing typed: back to the menu)."""
         if not name:
-            await self.send("Enter name for new character: ")
+            await self.show_character_menu()
             return
         
         from accounts import name_problem, name_taken
         why = name_problem(name)
         if why:
             await self.send(why)
-            await self.send("Enter name for new character: ")
+            await self.send("Enter name for new character (or nothing, to go back): ")
             return
         
         name = name.capitalize()

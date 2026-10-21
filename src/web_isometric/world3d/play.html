@@ -247,14 +247,24 @@
     <div id="login-resume" class="hidden">
       <div class="lr-who">Welcome back, <b></b></div>
       <button class="btn" id="resume-btn">Continue</button>
-      <button class="btn alt" id="switch-btn">Use another name</button>
+      <button class="btn alt" id="switch-btn">Switch account</button>
     </div>
     <div id="login-form">
-      <input id="login-name" placeholder="Name" autocomplete="username" maxlength="12">
+      <div class="login-tabs" role="tablist">
+        <button class="tab on" id="tab-login" role="tab" aria-selected="true">Log in</button>
+        <button class="tab" id="tab-new" role="tab" aria-selected="false">Create account</button>
+      </div>
+      <input id="login-name" placeholder="Account name" autocomplete="username" maxlength="12" title="Your account's name (a hero's name also works, and goes straight to that hero)">
       <input id="login-pass" type="password" placeholder="Password" autocomplete="current-password">
+      <input id="login-pass2" class="new-only" type="password" placeholder="Password again" autocomplete="new-password">
       <button class="btn" id="login-btn">Enter the Hollow</button>
-      <button class="btn alt" id="create-btn">Forge a new hero</button>
-      <input id="login-acct" placeholder="…on my account (optional)" autocomplete="off" maxlength="12" title="Your account's name: the new hero joins it, and the password above is the account's. Left empty, a new account of the hero's name is made.">
+      <div class="login-note new-only">One account holds all your heroes. Make it here, then forge your first hero.</div>
+    </div>
+    <div id="login-chars" class="hidden">
+      <div class="lc-head">Account <b></b></div>
+      <div class="lc-list" role="list"></div>
+      <button class="btn" id="forge-btn">Forge a new hero</button>
+      <button class="btn alt" id="leave-btn">Switch account</button>
     </div>
     <div id="login-status"></div>
   </div>

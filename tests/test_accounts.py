@@ -10,6 +10,7 @@ import asyncio
 import hashlib
 import json
 import os
+import re
 import shutil
 import sys
 import tempfile
@@ -231,11 +232,53 @@ async def run(tmp):
     await say(conn, w, 'Webtwo', 'human', 'male', 'paladin', 'y')
     check(conn.entered is not None and Account.load('webhero').characters == ['Webhero', 'Webtwo'],
           '…the new hero joins that account')
-    # the scripted login's answers (net.js) to the account menu
+    # Create account (/play): `newaccount <name>`, its password twice: an account with no hero
+    conn, w = connection()
+    conn.is_web = True
+    out = await say(conn, w, 'newaccount Deckard')
+    check('Choose a password for the account Deckard' in out and conn.state == conn.STATE_GET_PASSWORD,
+          "`newaccount <name>` asks for the new account's password")
+    out = await say(conn, w, 'deckardpass1', 'deckardpass1')
+    a = Account.load('deckard')
+    check(a is not None and a.characters == [] and save_of('Deckard') is None
+          and conn.account is not None and conn.state == conn.STATE_SELECT_CHAR, '…and makes the account alone, opening its menu')
+    m = re.search(r'\x1b\]ACCOUNT:(\{[^\x07]*\})\x07', out)
+    check(bool(m) and json.loads(m.group(1)) == {'account': 'deckard', 'max': 8, 'chars': []},
+          '…which a web page also gets as a hidden ACCOUNT signal')
+    out = await say(conn, w, 'create', '')
+    check(conn.state == conn.STATE_SELECT_CHAR and out.count('Available commands') == 1,
+          "nothing typed at the create's name prompt goes back to the menu")
+    await say(conn, w, 'create', 'Rook', 'human', 'male', 'warrior', 'y')
+    check(conn.entered is not None and conn.entered.name == 'Rook' and Account.load('deckard').characters == ['Rook']
+          and save_of('Rook')['account_name'] == 'deckard', '…and its create makes a hero of another name on it')
+    conn, w = connection()
+    out = await say(conn, w, 'newaccount deckard')
+    check('already taken' in out and conn.state == conn.STATE_GET_NAME, '`newaccount` refuses a taken account name')
+    out = await say(conn, w, 'newaccount Rook')
+    check('already taken' in out and conn.state == conn.STATE_GET_NAME, "…and a hero's name")
+    out = await say(conn, w, 'newaccount ab')
+    check('between' in out and conn.state == conn.STATE_GET_NAME, '…and a name that will not do')
+    out = await say(conn, w, 'newaccount Vesper', 'vesperpass1', 'different1')
+    check("don't match" in out and conn.state == conn.STATE_GET_PASSWORD and not Account.exists('vesper'),
+          '…and two passwords that differ make nothing')
+    conn, w = connection()
+    conn.is_web = True
+    out = await say(conn, w, 'deckard', 'deckardpass1')
+    m = re.search(r'\x1b\]ACCOUNT:(\{[^\x07]*\})\x07', out)
+    check(bool(m) and json.loads(m.group(1))['chars'] == [{'name': 'Rook', 'level': 1, 'class': 'warrior', 'race': 'human'}],
+          "logging in to an account sends a web page its heroes")
+    conn, w = connection()
+    out = await say(conn, w, 'deckard', 'deckardpass1')
+    check('ACCOUNT:' not in out and 'Rook' in out, '…and telnet the menu as text only')
+    # the page's script (net.js): Create account and the account's heroes, no hero auto-played
     js = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'src', 'web_isometric', 'shared', 'net.js'),
               encoding='utf-8').read()
-    check('multiple characters' not in js and "sendDelayed('join-create', 'create')" in js
-          and 'enter name for new character' in js, "/play's script answers the account menu for a new hero")
+    check('multiple characters' not in js and 'joinAccount' not in js and '`newaccount ${' in js
+          and "payload.type === 'account'" in js and "sendDelayed('char-menu'" not in js,
+          "/play's script makes accounts with newaccount and draws the account's heroes")
+    import web_client
+    check(json.loads(web_client.ACCOUNT_PATTERN.search('x\x1b]ACCOUNT:{"account":"a","chars":[]}\x07y').group(1))['account'] == 'a',
+          'the bridge finds the ACCOUNT signal')
 
     # ------------------------------------------------ claim
     fresh(tmp, 'claim')
@@ -264,6 +307,24 @@ async def run(tmp):
     out = await say(conn, w, 'keeppass1')
     check('Spare is now on this account' in out and Account.load('home').characters == ['Home', 'Away', 'Spare']
           and Account.load('keep').characters == ['Kept'], '…and moves the character, leaving the other account its rest')
+
+    # ------------------------------------------------ an admin's move (tools/move_to_account.py)
+    fresh(tmp, 'move')
+    main_acct, _ = await AccountManager.create_account('mainone', 'mainonepass1')
+    old, _ = await AccountManager.create_account('oldone', 'oldonepass1')
+    await AccountManager.create_character(old, 'Veteran', 'human', 'warrior', STATS)
+    tok = security.issue_token('Veteran')
+    ok, why = AccountManager.move_character(main_acct, 'veteran')
+    check(ok and Account.load('mainone').characters == ['Veteran'] and save_of('Veteran')['account_name'] == 'mainone',
+          'move_character puts a character on an account without a password')
+    check(not Account.exists('oldone') and security.use_token('Veteran', tok) is None,
+          '…the account it leaves empty is put away, and its devices sign in again')
+    check(not AccountManager.move_character(main_acct, 'Veteran')[0] and not AccountManager.move_character(main_acct, 'Nobody')[0],
+          '…one already there, or no such character, is refused')
+    await write_save('Loner', level=60)
+    main_acct.settings['max_chars'] = 1
+    check(AccountManager.move_character(main_acct, 'Loner') == (False, 'This account has no room for another character.'),
+          '…and so is one past the account\'s limit')
 
     # ------------------------------------------------ migration of older saves
     base = fresh(tmp, 'migrate')
