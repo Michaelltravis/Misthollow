@@ -46,6 +46,11 @@ async def to_stats(conn, w, name, pw='goodpassword'):
     return out
 
 
+def server_naming():
+    import server
+    return server._naming
+
+
 def saved(name):
     with open(os.path.join(Config.PLAYER_DIR, f'{name.lower()}.json')) as f:
         return json.load(f)
@@ -136,6 +141,24 @@ async def offline():
     check(j.entered == 0 and 'Fenn' not in accounts.Account.load('keeper').characters
           and 'already taken' in wj.text() and j.state == j.STATE_SELECT_CHAR,
           'an account character whose name was saved meanwhile is neither made nor linked')
+
+    # Create account (`newaccount`) holds its name the same way, both ways round
+    k, wk = connection()
+    await k.handle_input('Hale')
+    n, wn = connection()
+    await n.handle_input('newaccount Hale')
+    check(n.state == n.STATE_GET_NAME and 'already taken' in wn.text() and not accounts.Account.exists('hale'),
+          '`newaccount` cannot take a name a sign-up is making')
+    o, wo = connection()
+    await o.handle_input('newaccount Iver')
+    q, wq = connection()
+    await q.handle_input('Iver')
+    check(q.state == q.STATE_GET_NAME and 'already taken' in wq.text(), '…nor a sign-up a name `newaccount` is making')
+    for line in ('iverpass12', 'iverpass12'):
+        await o.handle_input(line)
+    check(accounts.Account.exists('iver') and 'iver' not in server_naming(), '…which, made, it lets go')
+    await k.disconnect()
+    await q.disconnect()
 
     # a new character's file is made exclusively, even past the name check
     from player import Player

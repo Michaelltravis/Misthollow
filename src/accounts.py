@@ -322,7 +322,34 @@ class AccountManager:
             return False, "Wrong password."
         if len(account.characters) >= account.settings.get('max_chars', 8):
             return False, "This account has no room for another character."
-        if source is not None:
+        AccountManager._move(account, name, data, source)
+        logger.info(f"accounts: {account.account_name} claimed {name} from {source.account_name if source else 'no account'}")
+        return True, ''
+
+    @staticmethod
+    def move_character(account: Account, char_name: str) -> Tuple[bool, str]:
+        """An admin's move of a character into `account`, no password asked (tools/move_to_account.py,
+        run on the server's machine while the game is down): (True, '') or (False, why not)."""
+        name = (char_name or '').capitalize()
+        data = _read_save(name)
+        if name_problem(name) or data is None:
+            return False, f"There is no character called {name or 'that'}."
+        name = data.get('name') or name
+        if name in account.characters:
+            return False, f"{name} is already on this account."
+        if len(account.characters) >= account.settings.get('max_chars', 8):
+            return False, "This account has no room for another character."
+        source = Account.load(data.get('account_name') or '')
+        AccountManager._move(account, name, data, source)
+        logger.info(f"accounts: {name} moved to {account.account_name} from {source.account_name if source else 'no account'}")
+        return True, ''
+
+    @staticmethod
+    def _move(account: Account, name: str, data: dict, source: Optional[Account]):
+        """Take a character off `source` (if any) and put it on `account`: its save names the
+        account and keeps no password of its own; its devices sign in again. A source left with
+        no characters is retired, unless it is an admin one."""
+        if source is not None and source.account_name != account.account_name:
             source.remove_character(name)
             source.save()
         account.add_character(name)
@@ -333,8 +360,6 @@ class AccountManager:
         security.forget_all(name)
         if source is not None and not source.characters and not source.is_admin:
             AccountManager._retire(source)
-        logger.info(f"accounts: {account.account_name} claimed {name} from {source.account_name if source else 'no account'}")
-        return True, ''
 
     @staticmethod
     def _retire(account: Account):

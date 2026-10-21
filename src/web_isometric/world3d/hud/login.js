@@ -1,7 +1,9 @@
 // Login and character creation for the 3D client. The protocol is the server's own
-// prompts, driven through net.js (MH.connect): name/password, then for a new hero the
-// race, male or female, class and stat-roll prompts, answered from these screens. The class step shows the
-// class's 3D model turning on a small stage.
+// prompts, driven through net.js (MH.connect). Log in: an account's name and password, then
+// its heroes (the account's menu, sent as an 'account' message) to play one or forge one.
+// Create account: a name and a password (twice) make an empty account, then the same list.
+// A new hero is its name, then the race, male or female, class and stat-roll prompts,
+// answered from these screens. The class step shows the class's 3D model turning on a small stage.
 import { makeStage } from './stage.js';
 import { starterLook } from '../gearlook.js';
 import { uiIcon } from './icons.js';
@@ -48,15 +50,33 @@ const LORE = [
 ];
 
 export function setupLogin() {
-  const name = $('#login-name'), pass = $('#login-pass'), acct = $('#login-acct'), status = $('#login-status');
-  const create = $('#create');
+  const name = $('#login-name'), pass = $('#login-pass'), pass2 = $('#login-pass2'), status = $('#login-status');
+  const create = $('#create'), btn = $('#login-btn');
   let creating = false, prime = '';
   const saved = ls.get(NAME_KEY);
   if (saved) name.value = saved;
   const say = (msg, err) => { status.textContent = msg || ''; status.className = err ? 'error' : ''; };
   // this browser signed in before: one click continues (the stored token, not a password)
-  const resumeBox = $('#login-resume'), form = $('#login-form');
-  const showForm = () => { resumeBox.classList.add('hidden'); form.classList.remove('hidden'); };
+  const resumeBox = $('#login-resume'), form = $('#login-form'), chars = $('#login-chars');
+  const showForm = () => { resumeBox.classList.add('hidden'); chars.classList.add('hidden'); form.classList.remove('hidden'); };
+  // Log in | Create account
+  let isNew = false;
+  const tab = which => {
+    isNew = which === 'new';
+    form.classList.toggle('new', isNew);
+    $('#tab-login').classList.toggle('on', !isNew);
+    $('#tab-new').classList.toggle('on', isNew);
+    $('#tab-login').setAttribute('aria-selected', String(!isNew));
+    $('#tab-new').setAttribute('aria-selected', String(isNew));
+    name.placeholder = isNew ? 'New account name' : 'Account name';
+    pass.autocomplete = isNew ? 'new-password' : 'current-password';
+    btn.textContent = isNew ? 'Create account' : 'Enter the Hollow';
+    pass2.value = '';
+    say('');
+    (name.value ? pass : name).focus();
+  };
+  $('#tab-login').addEventListener('click', () => tab('login'));
+  $('#tab-new').addEventListener('click', () => { name.value = ''; tab('new'); });
   const rec = MH.auth.get();
   if (rec) {
     resumeBox.querySelector('b').textContent = rec.name;
@@ -81,7 +101,7 @@ export function setupLogin() {
     const go = () => ($('#loading').classList.contains('done') ? $('#resume-btn').click() : setTimeout(go, 250));
     go();
   }
-  $('#switch-btn').addEventListener('click', () => { showForm(); name.value = ''; pass.value = ''; acct.value = ''; name.focus(); say(''); });
+  $('#switch-btn').addEventListener('click', () => { showForm(); name.value = ''; pass.value = ''; name.focus(); say(''); });
   MH.bus.on('login.expired', who => { showForm(); if (who) name.value = who; pass.focus(); });
   // a line of lore, changing every few seconds while the title screen stands
   const lore = $('#login .lore-line');
@@ -95,31 +115,93 @@ export function setupLogin() {
     }, 8000);
   }
 
-  function begin(isNew) {
+  function begin() {
     const n = name.value.trim(), p = pass.value;
     if (!n || !p) return say('Need both a name and a password.', true);
-    if (isNew && !/^[a-zA-Z]{3,12}$/.test(n)) return say('A name is 3–12 letters (no spaces, numbers or symbols).', true);
-    // a new hero on an account you have (its password), or else a new account of the hero's name
-    const a = isNew ? acct.value.trim() : '';
-    if (a && !/^[a-zA-Z]{3,12}$/.test(a)) return say('An account name is 3–12 letters.', true);
-    creating = isNew;
-    if (isNew) wizard('', 'FORGE YOUR HERO', 'Summoning the loom of fate…', '');
-    MH.connect(n, p, isNew, undefined, a);
+    if (!/^[a-zA-Z]{3,12}$/.test(n)) return say('A name is 3–12 letters (no spaces, numbers or symbols).', true);
+    if (isNew) {
+      if (p.length < 8) return say('Passwords must be at least 8 characters.', true);
+      if (pass2.value !== p) return say("The two passwords don't match.", true);
+    }
+    ls.set(NAME_KEY, n);
+    MH.connect(n, p, isNew);
   }
-  $('#login-btn').addEventListener('click', () => begin(false));
-  $('#create-btn').addEventListener('click', () => begin(true));
-  pass.addEventListener('keydown', e => { if (e.key === 'Enter') begin(false); e.stopPropagation(); });
+  btn.addEventListener('click', begin);
   name.addEventListener('keydown', e => { if (e.key === 'Enter') pass.focus(); e.stopPropagation(); });
-  acct.addEventListener('keydown', e => { if (e.key === 'Enter') begin(true); e.stopPropagation(); });
+  pass.addEventListener('keydown', e => { if (e.key === 'Enter') (isNew ? pass2.focus() : begin()); e.stopPropagation(); });
+  pass2.addEventListener('keydown', e => { if (e.key === 'Enter') begin(); e.stopPropagation(); });
+
+  // ---- the account's heroes ----
+  const send = v => { const s = MH.state.mudSocket; if (s && s.readyState === WebSocket.OPEN) s.send(v); };
+  const esc = s => String(s).replace(/[&<>"']/g, ch => `&#${ch.charCodeAt(0)};`);
+  const tint = cls => '#' + (THEMES[cls] || THEMES.creature).core.toString(16).padStart(6, '0');
+  function heroes(menu) {
+    resumeBox.classList.add('hidden');
+    form.classList.add('hidden');
+    chars.classList.remove('hidden');
+    chars.querySelector('.lc-head b').textContent = menu.account;
+    const list = chars.querySelector('.lc-list');
+    list.innerHTML = menu.chars.length ? menu.chars.map(c => {
+      const cc = tint(c.class);
+      return `<button class="hero" data-name="${esc(c.name)}" style="--cc:${cc}" aria-label="Play ${esc(c.name)}, level ${esc(c.level)} ${esc(String(c.race).replace('_', ' '))} ${esc(c.class)}">`
+        + `<img alt="" src="${uiIcon((THEMES[c.class] || THEMES.creature).glyph, { size: 64, color: cc, glow: 'rgba(0,0,0,.6)' })}">`
+        + `<span><b>${esc(c.name)}</b><small>${esc(String(c.race).replace('_', ' '))} ${esc(c.class)}</small></span>`
+        + `<span class="lv" title="Level">${esc(c.level)}</span></button>`;
+    }).join('') : '<div class="lc-empty">No heroes yet. Forge your first.</div>';
+    list.querySelectorAll('.hero').forEach(el => el.addEventListener('click', () => {
+      say(`Entering as ${el.dataset.name}…`);
+      MH.playHero(el.dataset.name);
+    }));
+    const full = menu.chars.length >= (menu.max || 8);
+    $('#forge-btn').disabled = full;
+    $('#forge-btn').title = full ? `This account holds its most heroes (${menu.max})` : '';
+    const first = list.querySelector('.hero');
+    (first || $('#forge-btn')).focus();
+  }
+  MH.bus.on('account.menu', menu => {
+    // back from a hero half made (the name was taken meanwhile, or Back): the list again
+    if (creating) { creating = false; create.classList.add('hidden'); if (stage) stage.stop(); }
+    say(heroNote);
+    heroNote = '';
+    heroes(menu);
+  });
+  let heroNote = '', phase = '';
+  $('#forge-btn').addEventListener('click', () => {
+    creating = true;
+    phase = 'name';
+    say('');
+    wizard('', 'FORGE YOUR HERO', 'Summoning the loom of fate…', '');
+    send('create');
+  });
+  // signing out of the account: the connection closes and the page starts again
+  $('#leave-btn').addEventListener('click', () => { try { MH.state.mudSocket.close(); } catch (_) {} location.reload(); });
 
   // ---- creation wizard ----
-  const send = v => { const s = MH.state.mudSocket; if (s && s.readyState === WebSocket.OPEN) s.send(v); };
   function wizard(step, title, hint, body) {
     create.classList.remove('hidden');
     create.querySelector('.step').textContent = step;
     create.querySelector('h2').textContent = title;
     create.querySelector('.hint').textContent = hint;
     create.querySelector('.body').innerHTML = body;
+  }
+  // the hero's name (the account menu's create asks it); nothing sent goes back to the list
+  function naming(err) {
+    wizard('NEW HERO', 'NAME YOUR HERO', 'The name the mist will remember: 3–12 letters.',
+      `<div class="name-row"><input id="hero-name" maxlength="12" autocomplete="off" spellcheck="false" placeholder="Hero name">`
+      + `<button class="btn" id="hero-go">Continue</button></div><div class="name-err"></div>`
+      + `<button class="btn alt" id="hero-back">Back</button>`);
+    create.querySelector('.name-err').textContent = err || '';
+    const input = $('#hero-name');
+    const go = () => {
+      const v = input.value.trim();
+      if (!/^[a-zA-Z]{3,12}$/.test(v)) { create.querySelector('.name-err').textContent = 'A name is 3–12 letters (no spaces, numbers or symbols).'; return; }
+      send(v);
+      wizard('', 'FORGE YOUR HERO', 'Weighing the name…', '');
+    };
+    $('#hero-go').addEventListener('click', go);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') go(); e.stopPropagation(); });
+    $('#hero-back').addEventListener('click', () => send(''));
+    input.focus();
   }
   function races() {
     wizard('STEP 1 OF 4', 'CHOOSE YOUR LINEAGE', 'Your bloodline shapes your gifts and your fate.',
@@ -207,7 +289,22 @@ export function setupLogin() {
     $('#reroll').addEventListener('click', () => { create.querySelector('.stats').classList.add('rolling'); rollText = ''; send('n'); });
   }
   MH.bus.on('terminal.output', ({ text }) => {
-    if (!creating || MH.state.isLoggedIn || !text) return;
+    if (MH.state.isLoggedIn || !text) return;
+    // what the account's menu says about the last thing asked of it (shown over the list)
+    const full = /maximum number of characters/i.test(text);
+    const lost = /([^\n]*already taken\.?)\s*your character was not made/i.exec(text);
+    if (full) heroNote = 'This account holds its most heroes.';
+    if (lost) heroNote = `${lost[1].trim()} Your hero was not made.`;
+    if (/error loading character/i.test(text)) say('That hero could not be loaded.', true);
+    if (!creating || full || lost) return;
+    if (phase === 'name') {
+      if (/enter name for new character/i.test(text) || /choose another/i.test(text)) {
+        const err = text.split('\n').map(l => l.trim()).find(l => /taken|must|only letters/i.test(l));
+        return naming(err && !/enter name/i.test(err) ? err.replace(/\s*choose another:?\s*$/i, '') : '');
+      }
+      if (!/choose your race|race name or number/i.test(text)) return;
+      phase = 'build';
+    }
     if (/choose your race|race name or number/i.test(text)) return races();
     if (/male or female/i.test(text)) return sexes();
     if (/choose your class|class name or number/i.test(text)) return classes();
@@ -219,11 +316,6 @@ export function setupLogin() {
       $('#restart').addEventListener('click', () => location.reload());
     }
   });
-  MH.bus.on('create.blocked', msg => {
-    if (!creating) return;
-    wizard('', 'FORGE YOUR HERO', msg, '<button class="btn alt" id="restart">Start over</button>');
-    $('#restart').addEventListener('click', () => location.reload());
-  });
   MH.bus.on('login.status', msg => say(msg));
   MH.bus.on('login.error', msg => say(msg, true));
   MH.bus.on('login.success', () => {
@@ -231,6 +323,5 @@ export function setupLogin() {
     create.classList.add('hidden');
     $('#login').classList.add('hidden');
     if (stage) stage.stop();
-    ls.set(NAME_KEY, MH.state.playerName);
   });
 }
