@@ -176,6 +176,47 @@ def load_content(zones):
     return placed, mobs, objs
 
 
+def load_population(placed, mobs):
+    """Fold in who world/population puts where (src/population.py applies it when the game loads,
+    after the zone files): its creatures join `mobs`, its spawns, fill, patrols' first rooms and
+    bosses join `placed`. Returns the vnums it places as bosses, and the zones it says want none
+    ({zone: why})."""
+    bosses, no_boss = set(), {}
+    for path in sorted(glob.glob(os.path.join(ROOT, 'world', 'population', 'zone_*.json'))):
+        with open(path, encoding='utf-8') as f:
+            d = json.load(f)
+        if d.get('no_boss'):
+            no_boss[int(d['zone'])] = d['no_boss']
+        for k, c in (d.get('creatures') or {}).items():
+            mobs[int(k)] = {**(mobs.get(int(k)) or {}), **c}
+            if c.get('rank') == 'boss':
+                bosses.add(int(k))
+        for key in ('spawns', 'fill'):
+            for sp in d.get(key) or []:
+                for rv in sp.get('rooms') or []:
+                    placed[int(rv)]['mobs'].append(int(sp['vnum']))
+        for pt in d.get('patrols') or []:
+            if pt.get('route'):
+                placed[int(pt['route'][0])]['mobs'].append(int(pt['vnum']))
+        for b in d.get('bosses') or []:
+            placed[int(b['room'])]['mobs'].append(int(b['vnum']))
+            bosses.add(int(b['vnum']))
+    return bosses, no_boss
+
+
+def carried(mob):
+    """The items a creature carries, wears or drops (its inventory, equipment and loot tables)."""
+    out = []
+    for key in ('inventory', 'equipment', 'loot_table', 'boss_loot_table', 'equipment_rolls'):
+        xs = mob.get(key) or []
+        for x in (xs.values() if isinstance(xs, dict) else xs):
+            try:
+                out.append(int(x.get('vnum') if isinstance(x, dict) else x))
+            except (TypeError, ValueError):
+                pass
+    return out
+
+
 def level_of(mob):
     try:
         return int(mob.get('level') or 0)
