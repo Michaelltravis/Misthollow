@@ -1126,7 +1126,12 @@
    "exits": {
     "north": {
      "to_room": 8403,
-     "description": "To the north lies The King's Chamber."
+     "description": "To the north lies The King's Chamber.",
+     "door": {
+      "name": "door black iron",
+      "state": "open",
+      "locked": false
+     }
     },
     "east": {
      "to_room": 8404,
@@ -1276,11 +1281,19 @@
    "exits": {
     "south": {
      "to_room": 8396,
-     "description": "To the south lies Before The Royal Chambers."
+     "description": "To the south lies Before The Royal Chambers.",
+     "door": {
+      "name": "door black iron",
+      "state": "open",
+      "locked": false
+     }
     }
    },
-   "description": "A vast bed of black wood stands under a canopy of rotted velvet, its\nposts carved with twisting runes. A tall mirror in a silver frame has\nbeen turned to face the wall, and a great chest, locked and banded,\nstands beside it. The air tastes of ash and cold iron. Heavy curtains\nhide the windows, and the only door lies south.",
-   "extra_descs": {},
+   "description": "A vast bed of black wood stands under a canopy of rotted velvet, its\nposts carved with twisting runes. A tall mirror in a silver frame has\nbeen turned to face the wall, and a great chest, locked and banded,\nstands beside it. The air tastes of ash and cold iron. Heavy curtains\nhide the tall windows and stir now and then, though there is no wind,\nand the only door, of black iron, lies south.",
+   "extra_descs": {
+    "curtains window windows": "Heavy black curtains, rotted at the hems, cover windows tall enough for a man to step through. Something has torn small ragged holes in them, high up, as if with claws.",
+    "mirror": "The mirror has been turned to face the wall. Whoever sleeps here has no wish to see what it would show, or what it would not."
+   },
    "mob_resets": [
     {
      "vnum": 647006,
@@ -1790,9 +1803,12 @@
      "to_room": 8424,
      "description": "To the north lies The House Of Death.",
      "door": {
-      "name": "door",
+      "name": "door iron starred",
       "state": "closed",
-      "locked": false
+      "locked": true,
+      "key_vnum": 747005,
+      "pickproof": true,
+      "arcane": true
      }
     },
     "up": {
@@ -1803,7 +1819,8 @@
    "description": "A wide cavern opens at the foot of the stairs, its roof lost in dark and\nits floor strewn with bones. Wind gusting through unseen cracks makes a\nwailing that never ceases. A heavy door of black iron stands in the far\nwall. The stair climbs up behind you, and the door leads north to the\nHouse Of Death.",
    "look": "cave",
    "extra_descs": {
-    "bones floor": "The bones lie in drifts and heaps, human and otherwise, all gnawed clean\nand snapped for the marrow. Nothing here has been buried."
+    "bones floor": "The bones lie in drifts and heaps, human and otherwise, all gnawed clean\nand snapped for the marrow. Nothing here has been buried.",
+    "door iron starred star": "An iron door set into the rock of the north wall, a seven-pointed star worked into its face around the keyhole. It is warm to the touch, and through the keyhole comes a low hum and a breath of heat like an opened furnace. Whatever is chained behind it is far beyond the dead of this castle: go in with a great company at your back, or not at all."
    }
   },
   "8424": {
@@ -1821,12 +1838,23 @@
    "exits": {
     "south": {
      "to_room": 8423,
-     "description": "To the south lies The Cave Of Wailing."
+     "description": "To the south lies The Cave Of Wailing.",
+     "door": {
+      "name": "door iron starred",
+      "state": "closed",
+      "locked": true,
+      "key_vnum": 747005,
+      "pickproof": true,
+      "arcane": true
+     }
     }
    },
-   "description": "Niches line this long, low chamber, each cut for a body and most of them\nfilled with shapes wrapped in grey shrouds. The air is dry, stale and\nutterly still. Dust has settled on everything but a ring of bare floor\nat the centre. A single door leads back south.",
+   "description": "Niches line this long, low chamber, each cut for a body and most of them\nfilled with shapes wrapped in grey shrouds. The air is dry and hot, and\nit hums, low, like a held note. Dust has settled on everything but a\nring of bare floor at the centre, where the stone has been scorched\nsmooth as glass. A single iron door, set with a seven-pointed star,\nleads back south.",
    "look": "crypt",
-   "extra_descs": {}
+   "extra_descs": {
+    "ring floor glass": "The ring of floor is fused smooth, black glass shot through with veins of light that still move, slowly, like something breathing.",
+    "shrouds niches shapes bodies": "The shrouded dead lie with their hands crossed over their chests. Each one holds something that was once a weapon, melted at the blade."
+   }
   },
   "8426": {
    "vnum": 8426,
@@ -3354,10 +3382,10 @@
   },
   "647006": {
    "vnum": 647006,
-   "name": "ostragoth sorcerer lord mage",
-   "short_desc": "Ostragoth, the sorcerer-lord",
-   "long_desc": "Ostragoth the sorcerer-lord stands in his chamber, tall and gaunt, black fire coiling about his fingers.",
-   "description": "A tall, hollow-cheeked man in robes the colour of a starless night, his\neyes two points of cold light in a face like old parchment. Power\ngathers around him like a storm, and the air tastes of ash and iron\nwhenever he moves.",
+   "name": "ostragoth vampire lord sorcerer",
+   "short_desc": "Ostragoth, the vampire lord",
+   "long_desc": "Ostragoth the vampire lord stands before the shrouded bed, his cloak spread like folded wings.",
+   "description": "A tall, hollow-cheeked man in robes the colour of a starless night, his\nface like old parchment drawn tight over the bone. His lips are dark\nwith old blood, and when he smiles the teeth are long and white. The\nblack fire he once coiled about his fingers burns in his eyes now, two\ncold points of light, and the air tastes of ash and iron whenever he\nmoves.",
    "level": 21,
    "alignment": -1000,
    "hp_dice": "21d8+286",

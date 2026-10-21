@@ -4,7 +4,8 @@ after the zone files and before the first reset, so a rebuild of world/zones kee
     {"zone": 220,
      "bosses": [{"vnum": 22070, "room": 14151, "mechanics": [{"type": "plague_pools"}], "why": "..."}],
                                                     # spawn here, and only here; fight mechanics
-     "doors":  [{"room": 14150, "dir": "south", "key": 22051, "name": "inner gate"}]}   # locked to a key
+     "doors":  [{"room": 14150, "dir": "south", "key": 22051, "name": "inner gate"}],   # locked to a key
+     "lairs":  [{"vnum": 647006, "room": 8403, "herald": 647009, ...}]}   # comes when someone walks in (lairs.py)
 
 Also "items" (prototypes by vnum, as the build-out writes them: keywords, short_desc, room_desc,
 description, kind, level and weapon_type/wear_slot/bonus; item_numbers() gives the rest), which
@@ -222,6 +223,20 @@ def apply(world, data=None) -> list:
             room.mob_resets.append({'vnum': vnum, 'max': 1})
             if b.get('mechanics'):
                 world.mob_prototypes[vnum]['mechanics'] = b['mechanics']   # boss_mechanics.py
+        # a boss who comes when someone walks into his lair, and shuts them in (lairs.py): no reset
+        # places him anywhere
+        for b in d.get('lairs') or []:
+            import lairs
+            vnum = int(b['vnum'])
+            problem = lairs.register(world, b, int(z))
+            if problem:
+                problems.append(f"zone {z}: {problem}")
+                continue
+            for r in world.rooms.values():
+                if r.mob_resets:
+                    r.mob_resets = [m for m in r.mob_resets if int(m.get('vnum', -1)) != vnum]
+            if b.get('mechanics'):
+                world.mob_prototypes[vnum]['mechanics'] = b['mechanics']
         for dd in d.get('doors') or []:
             room = world.rooms.get(int(dd['room']))
             ex = (room.exits or {}).get(dd['dir']) if room else None

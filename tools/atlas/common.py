@@ -200,7 +200,7 @@ def load_population(placed, mobs, objs=None):
         for pt in d.get('patrols') or []:
             if pt.get('route'):
                 placed[int(pt['route'][0])]['mobs'].append(int(pt['vnum']))
-        for b in d.get('bosses') or []:
+        for b in (d.get('bosses') or []) + (d.get('lairs') or []):
             placed[int(b['room'])]['mobs'].append(int(b['vnum']))
             bosses.add(int(b['vnum']))
     return bosses, no_boss
