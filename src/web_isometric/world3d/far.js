@@ -7,6 +7,7 @@
 // round the hero, the haze's colour, so the land never simply ends.
 import * as THREE from 'three';
 import { ROOM_W, ROOM_H, GROUND } from './terrain.js';
+import { chessSquare, SQUARE_FILL } from './chesslogic.js';
 
 // how many rooms out the stand-ins reach, and how much further the outdoor haze lies, by quality
 export const FAR = { low: { range: 6, sight: 1.25 }, med: { range: 8, sight: 1.45 }, high: { range: 10, sight: 1.65 } };
@@ -20,6 +21,7 @@ export function farKind(theme) {
   if (!theme || UNDER.has(theme)) return 'none';
   if (WATER.has(theme)) return theme === 'shore' ? 'field' : 'water';
   if (TOWN.has(theme)) return 'town';
+  if (theme === 'chessboard') return 'board';      // (its square's stone, nothing standing on it)
   if (theme === 'inside') return 'roof';
   if (['forest', 'darkforest', 'swamp', 'snow', 'hills', 'mountain', 'desert', 'field', 'stones', 'volcanic'].includes(theme)) return theme;
   return 'field';
@@ -70,7 +72,8 @@ export class FarView {
       const rnd = MH.mulberry32((room.vnum * 2654435761) ^ 0x51);
       const shapes = farShapes(kind, rnd);
       const pal = GROUND[theme] || GROUND.default;
-      const tile = kind === 'water' ? 0x2c5a78 : new THREE.Color(pal.a).lerp(new THREE.Color(pal.b), 0.5).multiplyScalar(0.9).getHex();
+      const tile = kind === 'water' ? 0x2c5a78 : kind === 'board' ? new THREE.Color(SQUARE_FILL[chessSquare(room.data.name) || 'gate']).getHex()
+        : new THREE.Color(pal.a).lerp(new THREE.Color(pal.b), 0.5).multiplyScalar(0.9).getHex();
       plans.push({ room, tile, shapes });
       counts.tile++;
       for (const s of shapes) counts[s[0]]++;

@@ -110,6 +110,13 @@ async def main():
     zn = lambda r: getattr(getattr(r, 'zone', None), 'number', None)
     foundry = [(r.vnum, r.name, r.look) for r in rooms.values() if zn(r) == 248 and r.look != 'foundry']
     check(not foundry, f'every room of the Clockwork Foundry has the foundry look ({foundry[:4]})')
+    # the Chessboard of Garathorm is a board of marble squares, not market streets (terrain-chess.js);
+    # its treasuries under the board stay vaults
+    board = [r for r in rooms.values() if zn(r) == 36 and r.sector_type == 'city']
+    off = [(r.vnum, r.name, r.look) for r in board if r.look != 'chessboard']
+    check(len(board) == 65 and not off, f'every square of the Chessboard has the chessboard look ({off[:4]})')
+    check(all(rooms[v].look != 'chessboard' for v in (3665, 3666)), 'and its treasuries are not squares')
+    check('cobblestones' not in rooms[3610].description, "a square's description has lost the city's cobblestones")
     styled = {z: st for z, st in ov['interiors'].items()}
     unstyled = [(r.vnum, r.name) for r in rooms.values() if zn(r) in styled and (r.tone or {}).get('interior') != styled[zn(r)]]
     check(styled and not unstyled, f'the rooms of every styled zone carry its interior style ({unstyled[:3]})')

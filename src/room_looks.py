@@ -35,7 +35,10 @@ LOOKS = ('cave', 'mine', 'crypt', 'sewer', 'dungeon', 'desert', 'snow', 'shore',
          'drow',
          # the Clockwork Foundry (zone 248): steel, pipes, gears and furnaces, not the cave its
          # tunnels' words read as (world/looks.json underground_zones; the art audit)
-         'foundry')
+         'foundry',
+         # the Chessboard of Garathorm (zone 36): squares of white marble and black obsidian, not the
+         # market streets its old 'city' sector drew (world/looks.json zones; terrain-chess.js)
+         'chessboard')
 UNDERGROUND = {'cave', 'mine', 'crypt', 'sewer', 'dungeon', 'ice_cave', 'lava_cave'}
 # a zone look that holds for every room of its zone, whatever a room's own words say
 ZONE_WIDE = {'drow', 'foundry'}
@@ -413,6 +416,8 @@ def _fits(room, look):
     sector = getattr(room, 'sector_type', '') or 'inside'
     if look in UNDERGROUND:
         return sector in ENCLOSED_SECTORS and not INTERIOR_RE.search(f'{room.name} {room.description}')
+    if look == 'chessboard':
+        return sector == 'city'          # (the board's squares and its gate, not the treasuries under it)
     if look in ('stones', 'village', 'camp', 'garden', 'ruins', 'terrace'):
         return sector in OUTDOOR_FROM_DESC or (sector == 'city' and not TOWN_RE.search(f'{room.name} {room.description}'))
     return sector in OUTDOOR_FROM_DESC
@@ -452,6 +457,9 @@ OWN_LINES = {
     'mine': ('Old timbers prop up the rock overhead.', 'Rusted rails run along the floor.', 'Rock dust hangs in the still air.'),
     'crypt': ('The air smells of dust and old death.', 'Niches in the walls hold crumbling bones.', 'The silence is deep and cold.'),
     'dungeon': ('Iron rings are set into the damp walls.', 'The stone floor is slick and cold.', 'Somewhere a chain rattles.'),
+    'chessboard': ('Squares of white marble and black obsidian run away in rank and file.',
+                   'Your footsteps ring out across the polished stone.', 'A thin line of brass divides one square from the next.',
+                   'The great board waits in silence for the next move.'),
 }
 
 
@@ -604,7 +612,7 @@ INDOOR_FILLER = [
 _FILLER_RE = [re.compile(r'\s*' + r'\s+'.join(re.escape(w) for w in f.split())) for f in INDOOR_FILLER]
 OPEN_LOOKS = {'field', 'forest', 'hills', 'mountain', 'desert', 'snow', 'shore', 'swamp', 'volcanic',
               'water_swim', 'water_noswim', 'underwater', 'city', 'darkforest',
-              'stones', 'village', 'camp', 'garden', 'ruins', 'terrace'}
+              'stones', 'village', 'camp', 'garden', 'ruins', 'terrace', 'chessboard'}
 
 
 def strip_filler(world) -> int:

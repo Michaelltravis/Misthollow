@@ -280,7 +280,9 @@
     const wide = {};
     for (const d of ['north', 'south', 'east', 'west']) {
       const e = exits[d];
-      if (!e || e.kind !== 'open' || e.door || !OUTDOOR_LOOKS.has(sector) || !OUTDOOR_LOOKS.has(MH.themeForSector(e.nlook || ''))) continue;
+      // (the Chessboard's squares, too: the board is one floor, its squares running into each other)
+      const board = !!e && sector === 'chessboard' && e.nlook === 'chessboard';
+      if (!e || e.kind !== 'open' || e.door || (!board && (!OUTDOOR_LOOKS.has(sector) || !OUTDOOR_LOOKS.has(MH.themeForSector(e.nlook || ''))))) continue;
       // water opens onto water; land onto land (a shore between them is the bank, below)
       if (WATERS.has(sector) !== WATERS.has(MH.themeForSector(e.nlook || ''))) continue;
       wide[d] = true;
@@ -290,6 +292,13 @@
       } else {
         gaps[d] = { y0: 1, y1: H - 2 };
         for (let y = 1; y < H - 1; y++) set(d === 'west' ? 0 : W - 1, y, FLOOR);
+      }
+    }
+    // where two of the board's open sides meet, the corner opens too (else a stub of the ring
+    // stands where four squares meet)
+    if (sector === 'chessboard') {
+      for (const [x, y, a, b] of [[0, 0, 'north', 'west'], [W - 1, 0, 'north', 'east'], [0, H - 1, 'south', 'west'], [W - 1, H - 1, 'south', 'east']]) {
+        if (wide[a] && wide[b]) set(x, y, FLOOR);
       }
     }
 
@@ -583,7 +592,8 @@
     // scattered obstacles, kept only when they don't break connectivity (fewer where the words
     // already furnish the room)
     const obstacles = [];
-    const tries = features.length ? 2 : 8 + Math.floor(rng() * 8);
+    // (none on the Chessboard: its squares are bare, the pieces are its creatures)
+    const tries = sector === 'chessboard' ? 0 : features.length ? 2 : 8 + Math.floor(rng() * 8);
     for (let i = 0; i < tries; i++) {
       const big = rng() < 0.35;
       const ox = 2 + Math.floor(rng() * (W - 5));

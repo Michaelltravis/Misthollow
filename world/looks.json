@@ -976,7 +976,8 @@
  "zones": {
   "465": "cave",
   "424": "crypt",
-  "476": "stones"
+  "476": "stones",
+  "36": "chessboard"
  },
  "_why": {
   "15209": "Fameland: a memorial alcove to the fallen, drawn as crypt (art audit, JEV second opinion)",
@@ -1047,6 +1048,7 @@
   "20701": "On The Bridge: underground in Moria Deep (drawn as forest; owner: underground places should look underground)",
   "20750": "Before The Bridge To Moria Deep: underground in Moria Deep (drawn as forest; owner: underground places should look underground)",
   "476": "Stone Circle: a ring of standing stones, altars and a stone city under the open sky, typed city by an old import",
+  "36": "The Chessboard of Garathorm: an eight-by-eight board of white marble and black obsidian squares, typed city by an old import and drawn as market streets (owner: \"doesn't look like a chessboard\")",
   "24671": "Inside The Great Stone: a hollow inside a standing stone of the Stone Circle; roofed, not open turf",
   "2317": "The Dusty Road: across a bare heath beyond the village, not in it",
   "2318": "The Dusty Road: the heath against a fieldstone wall, past the village",

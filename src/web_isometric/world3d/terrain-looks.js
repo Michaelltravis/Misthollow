@@ -586,6 +586,8 @@ export const LOOK_GROUND = {
   camp: { a: 0x6e6a48, b: 0x847a54, path: 0x75614a, wet: 0x3a3a2e },
   garden: { a: 0x4f8a3e, b: 0x6aa24a, path: 0xc8bc9a, wet: 0x2e5a4a },
   terrace: { a: 0xd8d2c4, b: 0xe8e2d6, path: 0xc4bcaa, wet: 0x8aa0aa },
+  // the paving round the Chessboard (terrain-chess.js draws the board itself)
+  chessboard: { a: 0x8a8070, b: 0x9c9282, path: 0x8a8070, wet: 0x6a7a80 },
   ruins: { a: 0x6f8048, b: 0x8a8c5e, path: 0xa49c88, wet: 0x3c4a3a },
   stones: { a: 0x5f7448, b: 0x7c8a58, path: 0x8a8678, wet: 0x3c4a3a },
   // an ice cave's frosted rock floor; a lava cave's black glass and ash
