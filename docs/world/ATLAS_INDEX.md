@@ -651,7 +651,7 @@ What the atlas left unjoined (rooms with no way in, or no way back out) was join
 - **atlas-only**, open. 47 rooms; inside 47.
 - Creatures 15, items 0, levels 8-18 (median 12).
 - **Needs:** items; a boss.
-- Joins: Great Eastern Desert ×1; Welmar's Castle ×1.
+- Joins: The Desert River and Caverns ×1; Welmar's Castle ×1.
 - 52 one-way exits (as the atlas has them).
 
 ### Castle Of Caboon (zone 416, atlas 16)
@@ -743,7 +743,7 @@ What the atlas left unjoined (rooms with no way in, or no way back out) was join
 - **matched**, open. 100 rooms; inside 88, city 11, forest 1.
 - Creatures 38, items 1, levels 1-25 (median 12).
 - **Needs:** descriptions for 66 rooms; a boss.
-- Joins: Great Eastern Desert ×1; Ogre Village ×1.
+- Joins: The Desert River and Caverns ×1; Ogre Village ×1.
 - 1 ways added to connect it.
 
 ### Durmandel I (zone 503, atlas 103)
@@ -843,7 +843,7 @@ What the atlas left unjoined (rooms with no way in, or no way back out) was join
 - **matched**, open. 213 rooms; inside 108, city 103, field 1.
 - Creatures 92, items 23, levels 1-50 (median 15); bosses: the Ancient Guardian (3016), the Sewer King (3014); services: auctioneer, guildmaster, sage_aldric, shopkeeper, trainer.
 - **Needs:** descriptions for 111 rooms.
-- Joins: God Rooms ×1; Great Eastern Desert ×1; Sewer ×1; Redferne's Residence ×1; Forest of Shadows ×1; Bedlam Arena ×1; Garathorm Housing District ×1; Garathorm Wall ×4; Trade Road ×4; Fameland ×1; Garathorm Cathedral ×1; Garathorm School House ×1.
+- Joins: God Rooms ×1; The Desert River and Caverns ×1; Sewer ×1; Redferne's Residence ×1; Forest of Shadows ×1; Bedlam Arena ×1; Garathorm Housing District ×1; Garathorm Wall ×4; Trade Road ×4; Fameland ×1; Garathorm Cathedral ×1; Garathorm School House ×1.
 - 2 ways added to connect it; 2 one-way exits (as the atlas has them); 1 doors the atlas locks, unlocked until keys are made; 1 water rooms (boat or raft).
 
 ### Garathorm School House (zone 517, atlas 117)
@@ -892,7 +892,7 @@ What the atlas left unjoined (rooms with no way in, or no way back out) was join
 - Joins: Quickstream ×1.
 - 2 ways added to connect it; 3 one-way exits (as the atlas has them); 1 water rooms (boat or raft).
 
-### Great Eastern Desert (zone 50, atlas 25)
+### The Desert River and Caverns (zone 50, atlas 25)
 
 - **matched**, open (connector). 105 rooms; water_swim 41, water_noswim 26, mountain 25.
 - Creatures 22, items 3, levels 5-28 (median 9); services: stable_master.
@@ -1099,7 +1099,7 @@ What the atlas left unjoined (rooms with no way in, or no way back out) was join
 - **ours (off the atlas)**, open. 285 rooms; inside 100, city 95, water_noswim 51.
 - Creatures 183, items 2, levels 1-35 (median 10); services: shopkeeper.
 - **Needs:** a boss.
-- Joins: The Straight Path ×1; Mountain Range ×1; Great Eastern Desert ×2; Sea of Storms ×1; The Whispering Woods ×1.
+- Joins: The Straight Path ×1; Mountain Range ×1; The Desert River and Caverns ×2; Sea of Storms ×1; The Whispering Woods ×1.
 - 34 one-way exits (as the atlas has them); 51 water rooms (boat or raft).
 
 ### Newbie Zone (zone 186)
@@ -1161,7 +1161,7 @@ What the atlas left unjoined (rooms with no way in, or no way back out) was join
 
 - **matched**, open (connector). 187 rooms; forest 98, field 46, inside 15.
 - Creatures 118, items 38, levels 1-38 (median 3); bosses: Grukthar the Goblin King (3503).
-- Joins: Minos River Island ×4; Great Eastern Desert ×1; Haon-Dor (Dark) ×2; The Orc Enclave ×1; Elven Village ×1; Trade Road ×2; Castle Of Caboon ×1; MiNar I ×1; Outcast Fortress ×2; Ogre Village ×1; Mira Retrum I ×1.
+- Joins: Minos River Island ×4; The Desert River and Caverns ×1; Haon-Dor (Dark) ×2; The Orc Enclave ×1; Elven Village ×1; Trade Road ×2; Castle Of Caboon ×1; MiNar I ×1; Outcast Fortress ×2; Ogre Village ×1; Mira Retrum I ×1.
 - 6 ways added to connect it; 22 one-way exits (as the atlas has them); 5 doors the atlas locks, unlocked until keys are made; 14 water rooms (boat or raft).
 
 ### Quickstream (zone 415, atlas 15)
@@ -1199,7 +1199,7 @@ What the atlas left unjoined (rooms with no way in, or no way back out) was join
 
 - **matched**, open (connector). 350 rooms; inside 91, water_noswim 89, field 53.
 - Creatures 158, items 12, levels 3-34 (median 13); services: shopkeeper.
-- Joins: Great Eastern Desert ×2; Thalos ×1; Great Pyramid ×1; New Thalos ×1; Morvoct ×1; Eden ×1; Island Of The Dead ×1; Isle of Lag ×1.
+- Joins: The Desert River and Caverns ×2; Thalos ×1; Great Pyramid ×1; New Thalos ×1; Morvoct ×1; Eden ×1; Island Of The Dead ×1; Isle of Lag ×1.
 - 3 ways added to connect it; 34 one-way exits (as the atlas has them); 14 doors the atlas locks, unlocked until keys are made; 137 water rooms (boat or raft).
 
 ### Sewer (zone 72, atlas 83)
@@ -1298,7 +1298,7 @@ What the atlas left unjoined (rooms with no way in, or no way back out) was join
 - **ours (off the atlas)**, open. 5 rooms; flying 2, dungeon 2, mountain 1.
 - Creatures 5, items 0, levels 1-50 (median 35); bosses: Scorathax the Red Dragon (8003).
 - **Needs:** items.
-- Joins: Great Eastern Desert ×1; The Plane of Eternal Chaos ×3.
+- Joins: The Desert River and Caverns ×1; The Plane of Eternal Chaos ×3.
 - 1 one-way exits (as the atlas has them).
 
 ### The Drowned Reliquary (zone 285)
@@ -1416,7 +1416,7 @@ What the atlas left unjoined (rooms with no way in, or no way back out) was join
 - **ours (off the atlas)**, open. 18 rooms; underwater 15, water_surface 2, city 1.
 - Creatures 30, items 0, levels 14-25 (median 20).
 - **Needs:** items.
-- Joins: Great Eastern Desert ×1.
+- Joins: The Desert River and Caverns ×1.
 - 2 water rooms (boat or raft).
 
 ### The Sunken Temple of Nereus (zone 240)
@@ -1466,7 +1466,7 @@ What the atlas left unjoined (rooms with no way in, or no way back out) was join
 
 - **matched**, open (connector). 574 rooms; forest 243, city 143, inside 104.
 - Creatures 110, items 5, levels 3-33 (median 13).
-- Joins: High Tower Of Magic I ×1; Garathorm Inner City ×4; Stable & Temple ×1; The Chessboard of Garathorm ×1; Mountain Range ×1; Great Eastern Desert ×1; Plains ×2; Northern Wilderness ×1; Welmar's Castle ×1; Newbie Zone ×1; Strange Garden ×1; Garathorm Vineyard ×2; Mishrak ×1; Hommlet ×7; King's Forest ×5; Castle Varok ×1; Tombs of Atuan ×1; Badlands II ×1; Ancalador ×1; Salem's Lot ×2; Haunted House ×1; Phaeton's Academy ×1; Elvandar ×4; Necromancer Mines ×1.
+- Joins: High Tower Of Magic I ×1; Garathorm Inner City ×4; Stable & Temple ×1; The Chessboard of Garathorm ×1; Mountain Range ×1; The Desert River and Caverns ×1; Plains ×2; Northern Wilderness ×1; Welmar's Castle ×1; Newbie Zone ×1; Strange Garden ×1; Garathorm Vineyard ×2; Mishrak ×1; Hommlet ×7; King's Forest ×5; Castle Varok ×1; Tombs of Atuan ×1; Badlands II ×1; Ancalador ×1; Salem's Lot ×2; Haunted House ×1; Phaeton's Academy ×1; Elvandar ×4; Necromancer Mines ×1.
 - 91 one-way exits (as the atlas has them).
 
 ### Troglodyte Mines (zone 426, atlas 26)
@@ -1474,7 +1474,7 @@ What the atlas left unjoined (rooms with no way in, or no way back out) was join
 - **atlas-only**, open. 44 rooms; inside 44.
 - Creatures 14, items 0, levels 6-16 (median 9).
 - **Needs:** items; a boss.
-- Joins: Great Eastern Desert ×1.
+- Joins: The Desert River and Caverns ×1.
 - 6 doors the atlas locks, unlocked until keys are made.
 
 ### Tunnel Of Sticks (zone 210, atlas 34)

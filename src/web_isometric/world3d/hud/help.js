@@ -1,7 +1,15 @@
 // Help (H): the controls of /play, and a search over the game's help topics (/help: the same
 // topics as the MUD's `help` command).
 
+import { formatLines } from './frames.js';
+
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+// a topic's text, its rules and boxes in /play's dress (frames.js); the rest as written
+export function helpHtml(text) {
+  return formatLines(String(text || '').replace(/\r/g, '').split('\n').map(t => ({ text: t, html: esc(t) || ' ' })))
+    .map(o => (o.box ? o.html : `<div class="hp-line">${o.html}</div>`)).join('');
+}
 
 export const CONTROLS = [
   ['Move', 'W A S D, or click the ground'],
@@ -57,7 +65,7 @@ export function createHelp(root, { fetchTopics, fetchTopic }) {
     if (!open) return;
     if (reading) {
       body.innerHTML = `<button class="hp-back">‹ Back</button><div class="hp-title">${esc(reading.name)}</div>
-        <pre class="hp-text">${esc(reading.text)}</pre>`;
+        <div class="hp-text">${helpHtml(reading.text)}</div>`;
       body.querySelector('.hp-back').addEventListener('click', () => { reading = null; render(); });
       return;
     }
@@ -85,5 +93,10 @@ export function createHelp(root, { fetchTopics, fetchTopic }) {
     root.classList.toggle('hidden', !open);
     if (open) { reading = null; render(); load(); setTimeout(() => input.focus(), 30); }
   }
-  return { toggle, get open() { return open; } };
+  // `help` typed in the chat box: the window, open at the topic asked for (or its search)
+  function show(topic) {
+    toggle(true);
+    if (topic) { input.value = topic; read(topic); }
+  }
+  return { toggle, show, get open() { return open; } };
 }

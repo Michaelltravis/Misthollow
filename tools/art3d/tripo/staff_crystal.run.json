@@ -1,0 +1,46 @@
+{
+ "name": "staff_crystal",
+ "concepts": [
+  {
+   "n": 1,
+   "task_id": "bfc696f9-1c8a-4ea5-8af1-ea220e071433",
+   "credits": 5,
+   "file": "concept_1.png",
+   "spec": {
+    "model": "banana",
+    "size": "768x1344",
+    "prompt": "Stylized low-poly fantasy wizard staff, a single game prop shown whole, standing perfectly upright and vertical, centered, seen from the side. Gnarled dark wooden shaft with a wrapped leather grip a third of the way down and an iron cap at the foot. The top splits into three curling wooden prongs that cradle a large faceted violet crystal, bound with two thin gold bands. Chunky readable shapes, hand-painted flat colours with soft light-to-dark gradients, no texture noise, no harsh shadows. Game-ready prop in the style of KayKit adventurers. Plain light grey background, nothing else in the picture. --no hands, character, text, multiple objects"
+   },
+   "at": "2026-10-20T21:41:53.549072Z"
+  },
+  {
+   "n": 2,
+   "task_id": "20229309-496c-425a-93ff-78d8dba64545",
+   "credits": 5,
+   "file": "concept_2.png",
+   "spec": {
+    "model": "banana",
+    "size": "768x1344",
+    "prompt": "Stylized low-poly fantasy wizard staff, a single game prop shown whole, standing perfectly upright and vertical, centered, seen from the side. Gnarled dark wooden shaft with a wrapped leather grip a third of the way down and an iron cap at the foot. The top splits into three curling wooden prongs that cradle a large faceted violet crystal, bound with two thin gold bands. Chunky readable shapes, hand-painted flat colours with soft light-to-dark gradients, no texture noise, no harsh shadows. Game-ready prop in the style of KayKit adventurers. Plain light grey background, nothing else in the picture. --no hands, character, text, multiple objects"
+   },
+   "at": "2026-10-20T21:42:01.688268Z"
+  }
+ ],
+ "models": [
+  {
+   "concept": 2,
+   "task_id": "a4563e58-e329-490c-a8ae-e8187dc7d997",
+   "credits": 110,
+   "file": "model.glb",
+   "spec": {
+    "model": "P2-20260801",
+    "face_limit": 600,
+    "texture": true,
+    "pbr": false,
+    "texture_version": "v3.5-20260815",
+    "delight": true
+   },
+   "at": "2026-10-20T21:43:06.926148Z"
+  }
+ ]
+}

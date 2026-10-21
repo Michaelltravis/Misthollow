@@ -1,6 +1,6 @@
 {
  "zone": 50,
- "_about": "The Great Eastern Desert's river and the caves under the mountain (levels 5-28): the myconids of the Fungus Temple, with their shaman a sub-boss; the drider and the brass dragon as elites; and the dracolich in its giant cave, whose breath rots the ground and whose wings darken the cavern.",
+ "_about": "The Desert River and Caverns: the Great Eastern Desert's river and the caves under the mountain (levels 5-28): the myconids of the Fungus Temple, with their shaman a sub-boss; the drider and the brass dragon as elites; and the dracolich in its giant cave, whose breath rots the ground and whose wings darken the cavern.",
  "creatures": {
   "5013": {
    "helpers": {

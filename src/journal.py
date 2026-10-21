@@ -206,7 +206,14 @@ class JournalManager:
         }
         
         display_icon = ascii_icons.get(icon, icon)
-        
+
+        # /play: one line, which its windows set apart as a journal note (hud/frames.js noteKind);
+        # the journal is a window there (L)
+        if getattr(getattr(player, 'connection', None), 'is_web', False):
+            what = msg.rstrip('!. ').lower()
+            await player.send(f"{c[color]}New in your journal: {c['bright_white']}{title}{c['reset']}{c[color]} ({what}){c['reset']}")
+            return
+
         await player.send("")
         await player.send(f"{c[color]}  +{'=' * 54}+{c['reset']}")
         await player.send(f"{c[color]}  |  {display_icon} {msg:^44}  |{c['reset']}")

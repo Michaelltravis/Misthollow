@@ -76,6 +76,9 @@ const INSTRUMENT_SHAPES = new Set(['lute', 'lyre', 'harp', 'flute', 'drum', 'hor
 export const STAFF_HEADS = new Set(['crystal', 'skull', 'gnarled', 'plain']);
 const STAFF_OF = { mage: 'crystal', necromancer: 'skull' };
 export const staffShape = (p, cls) => `staff_${STAFF_HEADS.has(p.v) ? p.v : STAFF_OF[String(cls || '').toLowerCase()] || 'plain'}`;
+// staves the kit holds as pieces (made by Tripo, tools/art3d/tripo/, repainted onto the kit's
+// palette by blender/models/tripo_prop.py): held in place of the shape built in code
+export const STAFF_PIECE = { staff_crystal: 'Tripo_Staff_Crystal' };
 // a hat by its shape (gear_look.py HATS), else the class's: casters the pack's wizard hat, the
 // rest a brimmed hat with a feather; brim, cap and mitre are built in code (procgear.js)
 const HAT_SHAPES = new Set(['wizard', 'brim', 'cap', 'mitre']);
@@ -265,7 +268,10 @@ export function planLook(look, cls, kit) {
   // the main hand: a piece from the pack, or a shape built in code; finer ones get a pommel stone
   const m = look.main;
   if (m && m.k === 'staff' && archmage) add('Archmage_Staff', {});
-  else if (m && m.k === 'staff') procs.push({ shape: staffShape(m, cls), piece: 'knight-1H_Sword', look: m, roles: weaponRoles(m, cls) });
+  else if (m && m.k === 'staff') {
+    const shape = staffShape(m, cls);
+    if (!(STAFF_PIECE[shape] && add(STAFF_PIECE[shape], weaponRoles(m, cls)))) procs.push({ shape, piece: 'knight-1H_Sword', look: m, roles: weaponRoles(m, cls) });
+  }
   else if (m) {
     const shape = procShape(m);
     if (shape) procs.push({ shape, piece: m.k === 'bow' ? 'knight-1H_Sword_Offhand' : 'knight-1H_Sword', look: m, roles: weaponRoles(m, cls) });

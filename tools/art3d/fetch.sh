@@ -16,7 +16,7 @@ get() {  # get <url> <dest>
 # KayKit packs (Kay Lousberg, CC0) are mirrored on GitHub; jsDelivr serves the files.
 kaykit() {  # kaykit <repo> <local dir> <path>...
   local repo="$1" dir="$2"; shift 2
-  for p in "$@"; do get "https://cdn.jsdelivr.net/gh/KayKit-Game-Assets/$repo@main/$p" "$CACHE/$dir/$p"; done
+  for p in "$@"; do p="${p%$'\r'}"; get "https://cdn.jsdelivr.net/gh/KayKit-Game-Assets/$repo@main/$p" "$CACHE/$dir/$p"; done
 }
 
 A=addons/kaykit_character_pack_adventures

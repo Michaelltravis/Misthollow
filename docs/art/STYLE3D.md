@@ -48,6 +48,23 @@ node tools/art3d/qc_models.mjs                     # the rules above
 Claude does the work in Blender by writing the model script, rendering the preview, looking at
 it and revising. No screen is needed. The game gallery has the final say.
 
+### Kit pieces from Tripo (`tools/art3d/tripo/`)
+
+Gear can be made by Tripo's API instead of by hand (SOURCES.md says where it comes from): a spec
+in `tripo/<name>.json` holds the prompt, the model settings and how the piece fits the kit.
+
+```
+node tools/art3d/tripo.mjs concepts tools/art3d/tripo/<name>.json      # concept images; pick one
+node tools/art3d/tripo.mjs model tools/art3d/tripo/<name>.json --concept N   # -> tripo/<name>.glb
+tools/art3d/blender/run.sh models/tripo_prop.py --spec tripo/<name>.json --preview --export
+```
+
+The equipment kit takes every piece in `blender/out/equip`, which git ignores: before
+`node build.mjs .cache equip`, export all of them (`models/archmage.py --export` and
+`models/tripo_prop.py --spec ... --export` for each spec), or the rebuilt kit loses the ones left
+out. On Windows, `setup.sh` needs Python 3.11 for bpy 4.2: `uv venv --python 3.11 tools/art3d/.venv`
+and `uv pip install --python tools/art3d/.venv/Scripts/python.exe "bpy==4.2.*"` does it.
+
 ### Writing a model (`tools/art3d/blender/mhb`)
 
 - **`Skel`:** the body as a graph of points with radii.

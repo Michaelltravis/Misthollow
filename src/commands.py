@@ -415,6 +415,12 @@ class CommandHandler:
     @classmethod
     async def cmd_move(cls, player: 'Player', direction: str):
         """Move in a direction."""
+        # (typed as a command, `move north`, it comes with the words typed: `move` alone failed)
+        if isinstance(direction, list):
+            if not direction:
+                await player.send("Move which way? (north, south, east, west, up or down)")
+                return
+            direction = cls.ALIASES.get(direction[0].lower(), direction[0].lower())
         if not player.room:
             await player.send("You are nowhere!")
             return
@@ -2107,7 +2113,6 @@ class CommandHandler:
         await player.send(f"{c['cyan']}{BL}{H*W}{BR}{c['reset']}")
         
     @classmethod
-    @classmethod
     async def cmd_inspect(cls, player: 'Player', args: List[str]):
         """Inspect an item in detail — shows rarity, procs, lore, drop source.
         
@@ -2610,7 +2615,6 @@ class CommandHandler:
             await player.send(line)
 
     @classmethod
-    @classmethod
     async def cmd_minimap(cls, player: 'Player', args: List[str]):
         """Display a compact ASCII minimap centered on the player."""
         from map_system import render_ascii_map
@@ -2872,8 +2876,8 @@ class CommandHandler:
         lines.append(f"{c['bright_cyan']}{'═' * 70}{c['reset']}")
         lines.append(f"{c['white']}Total topics: {len(HELP_TOPICS)} | Type 'help <topic>' for details{c['reset']}")
         
-        # Paginate - 20 lines per page
-        page_size = 20
+        # Paginate - 20 lines per page (a terminal's screenful; a web page scrolls, so it has it all)
+        page_size = (len(lines) or 1) if getattr(getattr(player, 'connection', None), 'is_web', False) else 20
         total_lines = len(lines)
         
         for i in range(0, total_lines, page_size):
@@ -13154,11 +13158,13 @@ class CommandHandler:
         
         await player.send(f"{c['cyan']}=== Available Commands ==={c['reset']}")
         
-        # Display in columns
-        cols = 5
+        # Display in columns, as wide as the longest name (a fixed 14 let marked_for_death_thief
+        # push its row out of step), as many as an 80-column screen holds
+        width = max((len(x) for x in cmds), default=1)
+        cols = max(1, 78 // (width + 2))
         for i in range(0, len(cmds), cols):
             row = cmds[i:i+cols]
-            formatted = '  '.join(f"{cmd:<14}" for cmd in row)
+            formatted = '  '.join(f"{cmd:<{width}}" for cmd in row)
             await player.send(f"{c['white']}{formatted}{c['reset']}")
         
         await player.send(f"\n{c['yellow']}Type 'help <command>' for more information.{c['reset']}")
@@ -13257,7 +13263,6 @@ class CommandHandler:
             if hasattr(player, 'target'):
                 player.target = enemy
 
-    @classmethod
     @classmethod
     async def cmd_protect(cls, player: 'Player', args: List[str]):
         """Protect an ally, intercepting attacks. Usage: protect <ally>|protect off"""
@@ -13696,7 +13701,6 @@ class CommandHandler:
 
     # ==================== FOOD & DRINK COMMANDS ====================
 
-    @classmethod
     @classmethod
     async def cmd_drink_alt(cls, player: 'Player', args: List[str]):
         """Drink from a fountain or container. Usage: drink [from] <source>"""
@@ -14260,7 +14264,7 @@ class CommandHandler:
             return
         
         try:
-            with open(updates_file) as f:
+            with open(updates_file, encoding='utf-8') as f:     # (its dashes are UTF-8: not the system's code page)
                 data = json.load(f)
         except Exception as e:
             await player.send(f"{c['red']}Error reading updates.{c['reset']}")
@@ -14499,6 +14503,11 @@ class CommandHandler:
                 await player.room.send_to_room(f"{c['white']}{report}{c['reset']}", exclude=[player])
 
     @classmethod
+    async def cmd_social(cls, player: 'Player', args: List[str]):
+        """`social`: the emotes, as `socials` lists them."""
+        await cls.cmd_socials(player, args)
+
+    @classmethod
     async def cmd_socials(cls, player: 'Player', args: List[str]):
         """List all available social commands."""
         c = player.config.COLORS
@@ -14507,11 +14516,13 @@ class CommandHandler:
         
         await player.send(f"{c['cyan']}=== Social Commands ==={c['reset']}")
         
-        # Display in columns
-        cols = 6
+        # Display in columns, as wide as the longest name (a fixed 12 let challenge_emote push
+        # its row out of step), as many as an 80-column screen holds
+        width = max((len(s) for s in social_list), default=1)
+        cols = max(1, 78 // (width + 2))
         for i in range(0, len(social_list), cols):
             row = social_list[i:i+cols]
-            formatted = '  '.join(f"{s:<12}" for s in row)
+            formatted = '  '.join(f"{s:<{width}}" for s in row)
             await player.send(f"{c['white']}{formatted}{c['reset']}")
         
         await player.send(f"\n{c['yellow']}Usage: <social> [target]{c['reset']}")
@@ -15200,8 +15211,8 @@ class CommandHandler:
         return msg
 
     @classmethod
-    async def cmd_social(cls, player: 'Player', social_name: str, args: List[str]):
-        """Process a social command."""
+    async def do_social(cls, player: 'Player', social_name: str, args: List[str]):
+        """Process a social command (each emote's own command calls it; not a command itself)."""
         if social_name not in cls.SOCIALS:
             return False
 
@@ -15266,165 +15277,165 @@ class CommandHandler:
         return True
 
     # Generate individual social command methods for every social in SOCIALS dict.
-    # Each is a thin wrapper around cmd_social for command dispatch.
+    # Each is a thin wrapper around do_social for command dispatch.
 
     @classmethod
     async def cmd_smile(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'smile', args)
+        await cls.do_social(player, 'smile', args)
     @classmethod
     async def cmd_laugh(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'laugh', args)
+        await cls.do_social(player, 'laugh', args)
     @classmethod
     async def cmd_nod(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'nod', args)
+        await cls.do_social(player, 'nod', args)
     @classmethod
     async def cmd_bow(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'bow', args)
+        await cls.do_social(player, 'bow', args)
     @classmethod
     async def cmd_wave(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'wave', args)
+        await cls.do_social(player, 'wave', args)
     @classmethod
     async def cmd_hug(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'hug', args)
+        await cls.do_social(player, 'hug', args)
     @classmethod
     async def cmd_kiss(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'kiss', args)
+        await cls.do_social(player, 'kiss', args)
     @classmethod
     async def cmd_cuddle(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'cuddle', args)
+        await cls.do_social(player, 'cuddle', args)
     @classmethod
     async def cmd_pat(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'pat', args)
+        await cls.do_social(player, 'pat', args)
     @classmethod
     async def cmd_comfort(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'comfort', args)
+        await cls.do_social(player, 'comfort', args)
     @classmethod
     async def cmd_curtsy(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'curtsy', args)
+        await cls.do_social(player, 'curtsy', args)
     @classmethod
     async def cmd_greet(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'greet', args)
+        await cls.do_social(player, 'greet', args)
     @classmethod
     async def cmd_salute(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'salute', args)
+        await cls.do_social(player, 'salute', args)
     @classmethod
     async def cmd_dance(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'dance', args)
+        await cls.do_social(player, 'dance', args)
     @classmethod
     async def cmd_giggle(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'giggle', args)
+        await cls.do_social(player, 'giggle', args)
     @classmethod
     async def cmd_cheer(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'cheer', args)
+        await cls.do_social(player, 'cheer', args)
     @classmethod
     async def cmd_clap(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'clap', args)
+        await cls.do_social(player, 'clap', args)
     @classmethod
     async def cmd_whistle(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'whistle', args)
+        await cls.do_social(player, 'whistle', args)
     @classmethod
     async def cmd_wink(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'wink', args)
+        await cls.do_social(player, 'wink', args)
     @classmethod
     async def cmd_slap(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'slap', args)
+        await cls.do_social(player, 'slap', args)
     @classmethod
     async def cmd_poke(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'poke', args)
+        await cls.do_social(player, 'poke', args)
     @classmethod
     async def cmd_bonk(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'bonk', args)
+        await cls.do_social(player, 'bonk', args)
     @classmethod
     async def cmd_facepalm(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'facepalm', args)
+        await cls.do_social(player, 'facepalm', args)
     @classmethod
     async def cmd_shrug(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'shrug', args)
+        await cls.do_social(player, 'shrug', args)
     @classmethod
     async def cmd_eyeroll(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'eyeroll', args)
+        await cls.do_social(player, 'eyeroll', args)
     @classmethod
     async def cmd_spit(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'spit', args)
+        await cls.do_social(player, 'spit', args)
     @classmethod
     async def cmd_cry(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'cry', args)
+        await cls.do_social(player, 'cry', args)
     @classmethod
     async def cmd_sigh(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'sigh', args)
+        await cls.do_social(player, 'sigh', args)
     @classmethod
     async def cmd_gasp(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'gasp', args)
+        await cls.do_social(player, 'gasp', args)
     @classmethod
     async def cmd_scream(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'scream', args)
+        await cls.do_social(player, 'scream', args)
     @classmethod
     async def cmd_yawn(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'yawn', args)
+        await cls.do_social(player, 'yawn', args)
     @classmethod
     async def cmd_stretch(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'stretch', args)
+        await cls.do_social(player, 'stretch', args)
     @classmethod
     async def cmd_flex(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'flex', args)
+        await cls.do_social(player, 'flex', args)
     @classmethod
     async def cmd_cringe(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'cringe', args)
+        await cls.do_social(player, 'cringe', args)
     @classmethod
     async def cmd_kneel(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'kneel', args)
+        await cls.do_social(player, 'kneel', args)
     @classmethod
     async def cmd_meditate(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'meditate', args)
+        await cls.do_social(player, 'meditate', args)
     @classmethod
     async def cmd_pray(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'pray', args)
+        await cls.do_social(player, 'pray', args)
     @classmethod
     async def cmd_battlecry(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'battlecry', args)
+        await cls.do_social(player, 'battlecry', args)
     @classmethod
     async def cmd_taunt(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'taunt', args)
+        await cls.do_social(player, 'taunt', args)
     @classmethod
     async def cmd_challenge_emote(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'challenge_emote', args)
+        await cls.do_social(player, 'challenge_emote', args)
     @classmethod
     async def cmd_surrender(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'surrender', args)
+        await cls.do_social(player, 'surrender', args)
     @classmethod
     async def cmd_grin(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'grin', args)
+        await cls.do_social(player, 'grin', args)
     @classmethod
     async def cmd_snicker(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'snicker', args)
+        await cls.do_social(player, 'snicker', args)
     @classmethod
     async def cmd_thank(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'thank', args)
+        await cls.do_social(player, 'thank', args)
     @classmethod
     async def cmd_glare(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'glare', args)
+        await cls.do_social(player, 'glare', args)
     @classmethod
     async def cmd_grumble(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'grumble', args)
+        await cls.do_social(player, 'grumble', args)
     @classmethod
     async def cmd_cackle(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'cackle', args)
+        await cls.do_social(player, 'cackle', args)
     @classmethod
     async def cmd_tickle(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'tickle', args)
+        await cls.do_social(player, 'tickle', args)
     @classmethod
     async def cmd_apologize(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'apologize', args)
+        await cls.do_social(player, 'apologize', args)
     @classmethod
     async def cmd_blush(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'blush', args)
+        await cls.do_social(player, 'blush', args)
     @classmethod
     async def cmd_ponder(cls, player: 'Player', args: List[str]):
-        await cls.cmd_social(player, 'ponder', args)
+        await cls.do_social(player, 'ponder', args)
     @classmethod
     async def cmd_sit_social(cls, player: 'Player', args: List[str]):
         """Sit social emote (use 'sit' for the position command)."""
-        await cls.cmd_social(player, 'sit', args)
+        await cls.do_social(player, 'sit', args)
 
     # ==================== UTILITY ====================
 
@@ -15437,7 +15448,6 @@ class CommandHandler:
         await player.save()
         await player.send("Character saved.")
         
-    @classmethod
     @staticmethod
     def _calc_item_rent_cost(item) -> int:
         """Calculate per-day rent cost for a single item based on rarity."""
@@ -16140,9 +16150,11 @@ class CommandHandler:
         }
 
         await player.send(f"{c['cyan']}Current Settings:{c['reset']}")
+        # (as wide as the longest label and two spaces: "Autoloot Items" filled a fixed 14)
+        width = max(len(label) for label in toggles) + 2
         for label, enabled in toggles.items():
             status = f"{c['bright_green']}ON{c['reset']}" if enabled else f"{c['red']}OFF{c['reset']}"
-            await player.send(f"  {label:<14} {status}")
+            await player.send(f"  {label:<{width}}{status}")
 
         if hasattr(player, 'autorecall_hp') and player.autorecall_hp is not None:
             if getattr(player, 'autorecall_is_percent', False):
@@ -17078,8 +17090,9 @@ class CommandHandler:
         show_progress = args and args[0].lower() == 'progress'
         
         earned = player.achievements or {}
-        total_points = sum(ACHIEVEMENTS.get(ach_id, {}).get('points', 0) for ach_id in earned)
-        max_points = sum(a.get('points', 0) for a in ACHIEVEMENTS.values())
+        # (ACHIEVEMENTS holds Achievement objects: their name, points and description)
+        total_points = sum(ACHIEVEMENTS[ach_id].points for ach_id in earned if ach_id in ACHIEVEMENTS)
+        max_points = sum(a.points for a in ACHIEVEMENTS.values())
         
         await player.send(f"\r\n{c['bright_cyan']}═══════════════════ ACHIEVEMENTS ═══════════════════{c['reset']}")
         await player.send(f"{c['yellow']}Points: {c['bright_yellow']}{total_points}/{max_points}{c['reset']}  |  "
@@ -17112,20 +17125,19 @@ class CommandHandler:
         if earned:
             await player.send(f"\r\n{c['bright_green']}✓ Earned:{c['reset']}")
             for ach_id in earned:
-                info = ACHIEVEMENTS.get(ach_id, {})
-                title = info.get('title', ach_id)
-                points = info.get('points', 0)
+                info = ACHIEVEMENTS.get(ach_id)
+                title = info.name if info else ach_id
+                points = info.points if info else 0
                 await player.send(f"  {c['bright_green']}★{c['reset']} {title} {c['yellow']}({points} pts){c['reset']}")
         
         # Show unearned if requested
         if show_all:
-            unearned = [a for a in ACHIEVEMENTS if a not in earned]
+            unearned = [a for a, info in ACHIEVEMENTS.items() if a not in earned and not info.hidden]
             if unearned:
                 await player.send(f"\r\n{c['white']}○ Not yet earned:{c['reset']}")
                 for ach_id in unearned[:10]:  # Limit to avoid spam
-                    info = ACHIEVEMENTS.get(ach_id, {})
-                    title = info.get('title', ach_id)
-                    desc = info.get('description', '')
+                    info = ACHIEVEMENTS[ach_id]
+                    title, desc = info.name, info.description
                     await player.send(f"  {c['white']}○{c['reset']} {title} - {c['white']}{desc}{c['reset']}")
                 if len(unearned) > 10:
                     await player.send(f"  {c['white']}... and {len(unearned) - 10} more{c['reset']}")
@@ -18244,7 +18256,10 @@ class CommandHandler:
         import sys
         import re
         from pathlib import Path
-        
+        import os
+        # (the script prints ✓: it writes UTF-8 and is read as UTF-8, not in Windows' code page)
+        _UTF8_ENV = {**os.environ, 'PYTHONIOENCODING': 'utf-8'}
+
         script_path = Path(__file__).parent.parent / "scripts" / "backup.py"
         
         if not args:
@@ -18256,7 +18271,7 @@ class CommandHandler:
             await player.send(f"{c['bright_cyan']}=== Available Backups ==={c['reset']}")
             result = subprocess.run(
                 [sys.executable, str(script_path), '--list'],
-                capture_output=True, text=True
+                capture_output=True, text=True, encoding='utf-8', errors='replace', env=_UTF8_ENV
             )
             for line in result.stdout.strip().split('\n'):
                 await player.send(f"{c['white']}{line}{c['reset']}")
@@ -18278,7 +18293,7 @@ class CommandHandler:
             await player.send(f"{c['yellow']}Restoring from {filename}...{c['reset']}")
             result = subprocess.run(
                 [sys.executable, str(script_path), '--restore', filename],
-                capture_output=True, text=True
+                capture_output=True, text=True, encoding='utf-8', errors='replace', env=_UTF8_ENV
             )
             for line in result.stdout.strip().split('\n'):
                 await player.send(f"{c['white']}{line}{c['reset']}")
@@ -18303,7 +18318,7 @@ class CommandHandler:
         
         await player.send(f"{c['yellow']}Creating {backup_type} backup...{c['reset']}")
         
-        result = subprocess.run(cmd_args, capture_output=True, text=True)
+        result = subprocess.run(cmd_args, capture_output=True, text=True, encoding='utf-8', errors='replace', env=_UTF8_ENV)
         
         if result.returncode == 0:
             # Parse output for summary
@@ -21189,15 +21204,16 @@ class CommandHandler:
         if not args:
             await player.send(f"\n{c['bright_cyan']}═══ Auction House ═══{c['reset']}")
             await player.send(f"{c['white']}Commands:{c['reset']}")
-            await player.send(f"  {c['bright_green']}auction list [category]{c['white']}  - Browse (weapons/armor/materials/consumables/misc)")
-            await player.send(f"  {c['bright_green']}auction sell <item> <price>{c['white']} - List item (5% fee)")
-            await player.send(f"  {c['bright_green']}auction sell <item> <price> auction{c['white']} - List as auction with min bid")
-            await player.send(f"  {c['bright_green']}auction buy <id>{c['white']}           - Buy a listing")
-            await player.send(f"  {c['bright_green']}auction bid <id> <amount>{c['white']}  - Bid on auction")
-            await player.send(f"  {c['bright_green']}auction cancel <id>{c['white']}        - Cancel your listing")
-            await player.send(f"  {c['bright_green']}auction search <keyword>{c['white']}   - Search listings")
-            await player.send(f"  {c['bright_green']}auction history{c['white']}            - Recent transactions")
-            await player.send(f"  {c['bright_green']}auction collect{c['white']}            - Collect pending gold/items")
+            # (each command padded to the longest, so the descriptions line up)
+            usage = [('auction list [category]', 'Browse (weapons/armor/materials/consumables/misc)'),
+                     ('auction sell <item> <price>', 'List item (5% fee)'),
+                     ('auction sell <item> <price> auction', 'List as auction with min bid'),
+                     ('auction buy <id>', 'Buy a listing'), ('auction bid <id> <amount>', 'Bid on auction'),
+                     ('auction cancel <id>', 'Cancel your listing'), ('auction search <keyword>', 'Search listings'),
+                     ('auction history', 'Recent transactions'), ('auction collect', 'Collect pending gold/items')]
+            width = max(len(cmd) for cmd, _ in usage)
+            for cmd, what in usage:
+                await player.send(f"  {c['bright_green']}{cmd:<{width}}{c['white']}  - {what}")
             await player.send(f"\n{c['yellow']}Visit {AUCTIONEER_NAME} at Market Square to trade.{c['reset']}")
             return
 

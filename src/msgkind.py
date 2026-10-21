@@ -29,7 +29,8 @@ REFUSAL_RE = re.compile(
 # the fight's own lines when no action is open (ticks, procs, charges, a health bar)
 COMBAT_RE = re.compile(
     r'(looks ill from |You shudder from the poison|You take \d+ damage from |You heal \d+ HP from |The effect of .+ wears off|'
-    r'Arcane charges? |\[Arcane Charges: |fizzles|STAGGERED|\[[█░▓▒ ]{5,}\]|\[\d+ damage\]|'
+    # (the health bar is ten cells, combat.get_health_bar: a menu's longer bar, reputation's, is not the fight)
+    r'Arcane charges? |\[Arcane Charges: |fizzles|STAGGERED|\[[█░▓▒ ]{10}\]|\[\d+ damage\]|'
     r'\*\*\* CRITICAL|OBLITERATES|ANNIHILATES|DEVASTATES|MASSACRES|^[💥💤✨🔥❄⚡🩸☠🌀🛡]\s|'
     r'^[\w\' -]+ attacks (?:you|[A-Z]\w+)!$|^You attack .+!$)')
 
@@ -48,6 +49,10 @@ def kind_of(line, in_action=False):
     if REWARD_RE.search(plain):
         return 'reward'
     if REFUSAL_RE.match(plain) or SPEECH_RE.search(plain):
+        return None
+    # a row of a menu's box is the menu, not the fight (skills' bars looked like a health bar),
+    # whatever is going on: /play draws the box whole (hud/frames.js)
+    if plain[0] in '║│|╔╚╠╟╞╒╘┌└├':
         return None
     if in_action or COMBAT_RE.search(plain):
         return 'combat'

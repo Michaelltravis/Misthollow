@@ -172,6 +172,20 @@ export const LOOK_SAMPLES = [
     features: [{ k: 'brazier', n: 1 }, { k: 'pole', n: 1 }, { k: 'skull', n: 2 }, { k: 'bench', n: 2 }, { k: 'blood', n: 1 }, { k: 'ash', n: 1 }] },
   { look: 'inside', sector: 'inside', key: 'temple', name: 'The Temple', description: 'A great altar of slab stone; braziers smoulder at every corner, skull-lamps hang from chains.',
     features: [{ k: 'altar', n: 1, c: 'black' }, { k: 'brazier', n: 2 }, { k: 'skull', n: 1 }, { k: 'lantern', n: 1 }, { k: 'ash', n: 1, c: 'black' }, { k: 'chains', n: 1 }] },
+  // the art audit's bare rooms: the named thing made big enough to see, and the scenery a look alone
+  // does not draw
+  { look: 'inside', sector: 'inside', key: 'fthrone', name: "Upon Zeus's Mighty Throne", description: 'A great throne of white marble stands upon a dais.',
+    features: [{ k: 'throne', n: 1, main: true, c: 'white' }, { k: 'candle', n: 2 }] },
+  { look: 'dungeon', sector: 'inside', key: 'fstore', name: 'A Store Room', description: 'Crates, sacks and barrels are piled to the ceiling; chains hang from a beam.',
+    features: [{ k: 'crate', n: 2 }, { k: 'barrel', n: 2 }, { k: 'chains', n: 1 }] },
+  { look: 'cave', sector: 'inside', key: 'fcrystal', name: 'The Crystal Cave', description: 'Crystals of violet and blue jut from every wall; giant mushrooms glow in the corners; bones lie heaped.',
+    features: [{ k: 'crystal', n: 3, main: true, c: 'purple' }, { k: 'mushroom', n: 2 }, { k: 'bones', n: 1 }] },
+  { look: 'inside', sector: 'inside', key: 'fhall', name: 'The Hall Of Mirrors', description: 'Tall mirrors line the walls; a great bell hangs in its frame; a fireplace roars at the north end.',
+    features: [{ k: 'mirror', n: 3, main: true }, { k: 'bell', n: 1 }, { k: 'brazier', n: 1 }] },
+  { look: 'shore', sector: 'field', key: 'fshore', name: 'The Boathouse Shore', description: 'A rowboat is drawn up among the reeds by an old willow; mist lies on the water, and a waterfall spills down the cliff.',
+    features: [{ k: 'boat', n: 1 }, { k: 'reeds', n: 2 }, { k: 'tree', n: 1 }, { k: 'mist', n: 1 }, { k: 'waterfall', n: 1 }] },
+  { look: 'cave', sector: 'inside', key: 'fgate', name: 'Before The Gates', description: 'The gate of Burzuk rises before you; fires burn in pits; icicles hang from the roof; roots crawl down the wall.',
+    features: [{ k: 'gate', n: 1, main: true }, { k: 'flames', n: 2 }, { k: 'ice', n: 2 }, { k: 'roots', n: 1 }] },
   // places an old import typed 'city' that are no town (room_looks.py TOWNLESS): real rooms
   { look: "village", sector: 'city', key: "village", name: "The Palm Covered Path", description: "The sand is smooth here, swept clean by broom and by wind, and the palms stand in a tidy row on each side. Flags of bright cloth snap from poles, and a ring of whitewashed stones marks the approach to a large hut.",
     features: [{k: "pole", n: 2}, {k: "banner", n: 2}] },

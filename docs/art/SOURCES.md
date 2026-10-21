@@ -98,5 +98,17 @@ renames their clips to the names `assets.js` maps (dropping the rest). Creatures
 body built in code (kin.js); a `prefer`red bestiary entry keeps the pack model instead (goblins,
 zombies, bats, young dragons, slimes).
 Models we make ourselves in Blender: see STYLE3D.md (art3d/bodies).
+
+Generated with Tripo (https://www.tripo3d.ai, through its API, developers.tripo3d.ai): **not CC0**.
+These are ours under Tripo's terms of service for paid API use; check those terms before a
+commercial release. Each piece has a spec in `tools/art3d/tripo/` (the prompts and settings),
+the model Tripo returned beside it (`<name>.glb`, committed so the kit builds from a fresh clone
+without asking Tripo again) and the log of its tasks and credits (`<name>.run.json`).
+`tools/art3d/tripo.mjs` makes them; `blender/models/tripo_prop.py` fits each to the KayKit rig and
+repaints it onto the equipment kit's palette, and `build.mjs equip` takes it in.
+
+| Piece | Made | Covers | Spec |
+|---|---|---|---|
+| Tripo_Staff_Crystal | 2026-10-20, concept by `banana`, model by `P2-20260801`, 120 credits | the mage's crystal staff (`gearlook.js` STAFF_PIECE), in place of the one `procgear.js` builds | `tools/art3d/tripo/staff_crystal.json` |
 Another CC0 candidate: isaiah658's "50+ Monsters Pack 3D" (OpenGameArt, static OBJ, would need
 rigging in Blender).

@@ -4,6 +4,16 @@
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const bar = (hp, max) => `<div class="al-bar"><i style="width:${max ? Math.round(100 * Math.max(0, hp) / max) : 0}%"></i><span>${hp}/${max}</span></div>`;
 
+// a mount for sale: its description, and its speed and flight where the description doesn't say
+// them already ("... +35% speed." twice over)
+export function forSale(x) {
+  const d = String(x.description || '').trim();
+  const more = [];
+  if (!/%\s*speed/i.test(d)) more.push(`+${x.travel ?? 0}% speed`);
+  if (x.can_fly && !/\bfl(?:y|ies)\b/i.test(d)) more.push('flies');
+  return [d, ...more].filter(Boolean).join(' · ');
+}
+
 export function createStable(root, { fetchStable, send }) {
   const body = root.querySelector('.st-body');
   let open = false, data = null;
@@ -18,7 +28,7 @@ export function createStable(root, { fetchStable, send }) {
           <div class="sb-cost">+${x.travel ?? 0}% speed${x.can_fly ? ' · flies' : ''}${x.combat_ok ? ' · fights' : ''} · loyalty ${x.loyalty}</div></div>
         ${x.active ? '<button class="tr-buy" data-cmd="dismount">Dismount</button>' : `<button class="tr-buy" data-cmd="mount ${esc(x.key)}">Mount</button>`}</div>`).join('');
     const buy = (m.purchasable || []).map(x => `<div class="sh-row ${x.afford && m.at_stable ? '' : 'no'}">
-        <div class="sb-main"><div class="sb-name">${esc(x.name)}</div><div class="sb-cost">${esc(x.description || '')} · +${x.travel ?? 0}% speed${x.can_fly ? ' · flies' : ''}</div></div>
+        <div class="sb-main"><div class="sb-name">${esc(x.name)}</div><div class="sb-cost">${esc(forSale(x))}</div></div>
         <div class="sh-price">${(x.cost || 0).toLocaleString()}</div>
         <button class="tr-buy" data-cmd="stable buy ${esc(x.key)}" ${x.afford && m.at_stable ? '' : 'disabled'}>Buy</button></div>`).join('');
     const pets = [...(data.pets || []).map(p => ({ ...p, kind: p.type })), ...(data.companions || []).map(c => ({ ...c, kind: c.role }))]

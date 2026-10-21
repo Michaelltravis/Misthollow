@@ -1,0 +1,32 @@
+{
+  "name": "staff_crystal",
+  "why": "The mage's crystal staff (gearlook.js staffShape 'staff_crystal'), made by Tripo in place of the one procgear.js builds in code: the first Tripo piece for the equipment kit.",
+  "concepts": 2,
+  "image": {
+    "model": "banana",
+    "size": "768x1344",
+    "prompt": "Stylized low-poly fantasy wizard staff, a single game prop shown whole, standing perfectly upright and vertical, centered, seen from the side. Gnarled dark wooden shaft with a wrapped leather grip a third of the way down and an iron cap at the foot. The top splits into three curling wooden prongs that cradle a large faceted violet crystal, bound with two thin gold bands. Chunky readable shapes, hand-painted flat colours with soft light-to-dark gradients, no texture noise, no harsh shadows. Game-ready prop in the style of KayKit adventurers. Plain light grey background, nothing else in the picture. --no hands, character, text, multiple objects"
+  },
+  "model": {
+    "model": "P2-20260801",
+    "face_limit": 600,
+    "texture": true,
+    "pbr": false,
+    "texture_version": "v3.5-20260815",
+    "delight": true
+  },
+  "kit": {
+    "piece": "Tripo_Staff_Crystal",
+    "bone": "handslot.r",
+    "like": "2H_Staff",
+    "budget": 600,
+    "colours": {
+      "wood": "wood",
+      "wood_dark": "wood_dark",
+      "grip": "leather_dark",
+      "iron": "iron",
+      "gold": "gold",
+      "crystal": "gem_purple~glow"
+    }
+  }
+}

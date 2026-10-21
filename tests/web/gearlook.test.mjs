@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { planLook, swingClips, starterLook, kitIndex, CLASS_BASE, PROC, rangedBlow, SEX_BUILD } from '../../src/web_isometric/world3d/gearlook.js';
+import { planLook, swingClips, starterLook, kitIndex, CLASS_BASE, PROC, rangedBlow, SEX_BUILD, STAFF_PIECE } from '../../src/web_isometric/world3d/gearlook.js';
 import { buildProc, buildAddon, SHAPES, ADDONS, MOTIFS, HANGING } from '../../src/web_isometric/world3d/procgear.js';
 
 const ART = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../src/web_isometric/art3d');
@@ -295,6 +295,11 @@ test("a staff by its head, else the class's: a mage's crystal, a necromancer's s
   assert.equal(staffShape({ k: 'staff', v: 'gnarled' }, 'mage'), 'staff_gnarled');
   for (const head of ['crystal', 'skull', 'gnarled', 'plain']) {
     const plan = planLook({ v: 1, sig: `staff:${head}`, main: { k: 'staff', h: 2, v: head, m: 'wood', t: 2 } }, 'mage', kit);
+    const made = STAFF_PIECE[`staff_${head}`];
+    if (made && kit.pieces[made]) {
+      assert.ok(names(plan).includes(made) && !plan.procs.some(p => String(p.shape).startsWith('staff')), `${head}: the kit's own piece`);
+      continue;
+    }
     const pr = plan.procs.find(p => p.shape === `staff_${head}`);
     assert.ok(pr && kit.pieces[pr.piece], `${head}: built in code on a sword's mount`);
     const a = buildProc(pr.shape, pr.look, paint);
