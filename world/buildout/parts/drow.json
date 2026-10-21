@@ -44,78 +44,24 @@
   "5172": "Another meeting of bridges lies here, where three spans join on a broad slab of rock wedged across the chasm. The slab tilts slightly, enough to make every step uncertain. Spans lead east, west and south, each vanishing into the dark after a few paces. Someone has scratched a small mark into the stone, an arrow pointing south.",
   "5170": "The bridge narrows here until it is barely a hand's width wider than a boot, and the rock beneath it is cracked. Ahead to the south a soft green glow spills from an opening in the chasm wall where the bridge ends. Back north the span climbs gently toward the slab where the bridges meet. The drop on both sides is utterly black.",
   "5169": "This small chamber is hollowed out of the chasm wall and lit by a thick carpet of glowing fungus that covers its floor and walls in soft green light. The air is warm and damp and smells of mould. A door to the north leads out onto the thin bridge, and a low gap in the west wall opens into a hidden tunnel. Carvings of open eyes have been cut above both openings.",
-  "5168": {
-   "description": "This tunnel is low and narrow, hidden behind a door of stone made to look like the rock around it. Its walls are rough and unworked, bearing only the marks of crude tools. The air is still and stale, and the only light is a faint green glow leaking from the chamber to the east. The passage leads on west into the darkness.",
-   "look": "cave"
-  },
-  "5167": {
-   "description": "The secret tunnel turns here, and a heavy slab of stone hangs in a groove at its northern end, a hidden door that can be slid aside. Dust lies thick on the floor, marked only by a narrow worn path. The passage runs back east toward the glowing chamber. Water drips somewhere in the dark, slow and steady.",
-   "look": "cave"
-  },
-  "5165": {
-   "description": "The tunnel bends here where three ways meet in the rough rock. To the north the passage opens into a large cave, a wide tunnel runs off west into the dark, and to the south a slab that looks like the wall itself hides a door. The floor is gritty with fallen stone, and a cold draught comes and goes.",
-   "look": "cave"
-  },
-  "5166": {
-   "description": "The tunnel opens into a large cave, its roof lost in darkness and hung with long stalactites that drip slowly onto the stone. Broken stalagmites stand about the floor like the stumps of a felled forest. A shallow pool lies in one hollow, black and perfectly still. The only way out lies back south to the bend in the tunnel.",
-   "look": "cave"
-  },
-  "5164": {
-   "description": "A wide tunnel runs through the rock here, broad enough for a cart, its floor worn smooth by the passage of many feet over long ages. At this end the floor rises steeply, and a slope of rough steps leads up into the dark. The tunnel runs back east to a bend. The walls are cold and slick with damp.",
-   "look": "cave"
-  },
-  "5163": {
-   "description": "The wide tunnel levels out at the top of a steep rise, and the rough steps lead back down into the darkness. Old torch brackets, long rusted, are set into the walls at intervals, though no light has burned in them for an age. The tunnel runs on south, its floor scattered with gravel. A faint smell of smoke hangs in the air, old and stale.",
-   "look": "cave"
-  },
-  "5162": {
-   "description": "The tunnel turns here around a great boulder that has fallen from the ceiling and been left where it lay. The rock overhead is cracked and sagging. The passage runs north, and to the west it squeezes round the boulder and goes on. Water trickles down one wall in a thin, glittering sheet.",
-   "look": "cave"
-  },
-  "5161": {
-   "description": "Here the wide tunnel is crossed by a narrow seam of pale crystal that glints in the faintest light. Someone once tried to cut it out of the rock, and the scars of their chisels are still plain in the wall. The tunnel runs east and turns south, where it grows broader still. The air is cool and very still.",
-   "look": "cave"
-  },
-  "5160": {
-   "description": "The tunnel widens into a broad gallery of rough rock, its floor uneven and its ceiling scarred by old falls. At one side a crumbling slope of stone leads up toward a narrow ledge high on the wall. The way north leads back into the wide tunnel. A distant rumble sometimes shakes fine dust from overhead.",
-   "look": "cave"
-  },
-  "5159": {
-   "description": "A narrow ledge runs along the face of a sheer cliff here, so slim that one must press against the rock to pass. A crumbling slope leads down to the wider tunnel. The ledge creeps on west along the wall, and the drop beside it falls away into black emptiness. Loose stones shift underfoot with every step.",
-   "look": "cave"
-  },
-  "5158": {
-   "description": "The ledge ends here against a jutting buttress of rock, and a steep crack climbs up into a sloping tunnel overhead. Handholds have been worn into the stone by many climbers before you. The ledge runs back east along the cliff face. A faint breath of cooler air drifts down through the crack.",
-   "look": "cave"
-  },
-  "5157": {
-   "description": "This tunnel slopes so sharply that the floor is almost a stair, and the rock is polished slick where countless hands and feet have scrabbled for purchase. At the bottom the passage drops down onto a narrow ledge. At the top a door of rough timber bound with iron is set into the west wall. The walls press close on every side.",
-   "look": "cave"
-  },
-  "5155": {
-   "description": "The dark tunnel meets a crossing here, and a foul stench drifts from a cave to the north. To the east a door of rough timber closes off a sharply sloping passage, and the tunnel runs on south into the dark. The walls are black with soot from ancient fires. No light reaches here at all.",
-   "look": "cave"
-  },
-  "5156": {
-   "description": "The stench in this low cave is overwhelming, a thick reek of rot, dung and stale smoke. The floor is covered in filthy straw and gnawed scraps, and the rock is smeared with crude marks in mud and ash. It is the sort of place where something lives and does not care how. The only way out is south, back into the dark tunnel.",
-   "look": "cave"
-  },
-  "5154": {
-   "description": "The tunnel runs straight and narrow here through black rock that seems to drink what little light there is. The ceiling is low enough to brush the head of a tall traveller. Faint scratches on the walls might be the marks of claws or of tools. The passage leads north and south.",
-   "look": "cave"
-  },
-  "5153": {
-   "description": "The tunnel turns here, and a trickle of water runs across the floor from a crack in the wall, pooling in a shallow hollow. The rock is softer here and has been worn into odd, smooth shapes. The way leads north and west, the air growing damper toward the west. Small pale crystals glint where the water has dried.",
-   "look": "cave"
-  },
-  "5152": {
-   "description": "The dark tunnel ends against a wall of wet rock, where a crude door of driftwood planks lashed together with rope is set in the stone to the south. Beyond it comes the faint, distant sound of waves and a smell of salt. The tunnel runs back east. Moss grows thick along the foot of the walls.",
-   "look": "cave"
-  },
-  "5151": {
-   "description": "This damp alcove sits just inside the cliff face, its walls running with water and its floor slick with green weed. Salt air blows in from the south, where a gap in the rock opens onto a rocky shore and the grey sea beyond. A plank door to the north leads into a dark tunnel. The roar of the surf echoes strangely in the narrow space.",
-   "look": "cave"
-  },
+  "5168": "This tunnel is low and narrow, hidden behind a door of stone made to look like the rock around it. Its walls are rough and unworked, bearing only the marks of crude tools. The air is still and stale, and the only light is a faint green glow leaking from the chamber to the east. The passage leads on west into the darkness.",
+  "5167": "The secret tunnel turns here, and a heavy slab of stone hangs in a groove at its northern end, a hidden door that can be slid aside. Dust lies thick on the floor, marked only by a narrow worn path. The passage runs back east toward the glowing chamber. Water drips somewhere in the dark, slow and steady.",
+  "5165": "The tunnel bends here where three ways meet in the rough rock. To the north the passage opens into a large cave, a wide tunnel runs off west into the dark, and to the south a slab that looks like the wall itself hides a door. The floor is gritty with fallen stone, and a cold draught comes and goes.",
+  "5166": "The tunnel opens into a large cave, its roof lost in darkness and hung with long stalactites that drip slowly onto the stone. Broken stalagmites stand about the floor like the stumps of a felled forest. A shallow pool lies in one hollow, black and perfectly still. The only way out lies back south to the bend in the tunnel.",
+  "5164": "A wide tunnel runs through the rock here, broad enough for a cart, its floor worn smooth by the passage of many feet over long ages. At this end the floor rises steeply, and a slope of rough steps leads up into the dark. The tunnel runs back east to a bend. The walls are cold and slick with damp.",
+  "5163": "The wide tunnel levels out at the top of a steep rise, and the rough steps lead back down into the darkness. Old torch brackets, long rusted, are set into the walls at intervals, though no light has burned in them for an age. The tunnel runs on south, its floor scattered with gravel. A faint smell of smoke hangs in the air, old and stale.",
+  "5162": "The tunnel turns here around a great boulder that has fallen from the ceiling and been left where it lay. The rock overhead is cracked and sagging. The passage runs north, and to the west it squeezes round the boulder and goes on. Water trickles down one wall in a thin, glittering sheet.",
+  "5161": "Here the wide tunnel is crossed by a narrow seam of pale crystal that glints in the faintest light. Someone once tried to cut it out of the rock, and the scars of their chisels are still plain in the wall. The tunnel runs east and turns south, where it grows broader still. The air is cool and very still.",
+  "5160": "The tunnel widens into a broad gallery of rough rock, its floor uneven and its ceiling scarred by old falls. At one side a crumbling slope of stone leads up toward a narrow ledge high on the wall. The way north leads back into the wide tunnel. A distant rumble sometimes shakes fine dust from overhead.",
+  "5159": "A narrow ledge runs along the face of a sheer cliff here, so slim that one must press against the rock to pass. A crumbling slope leads down to the wider tunnel. The ledge creeps on west along the wall, and the drop beside it falls away into black emptiness. Loose stones shift underfoot with every step.",
+  "5158": "The ledge ends here against a jutting buttress of rock, and a steep crack climbs up into a sloping tunnel overhead. Handholds have been worn into the stone by many climbers before you. The ledge runs back east along the cliff face. A faint breath of cooler air drifts down through the crack.",
+  "5157": "This tunnel slopes so sharply that the floor is almost a stair, and the rock is polished slick where countless hands and feet have scrabbled for purchase. At the bottom the passage drops down onto a narrow ledge. At the top a door of rough timber bound with iron is set into the west wall. The walls press close on every side.",
+  "5155": "The dark tunnel meets a crossing here, and a foul stench drifts from a cave to the north. To the east a door of rough timber closes off a sharply sloping passage, and the tunnel runs on south into the dark. The walls are black with soot from ancient fires. No light reaches here at all.",
+  "5156": "The stench in this low cave is overwhelming, a thick reek of rot, dung and stale smoke. The floor is covered in filthy straw and gnawed scraps, and the rock is smeared with crude marks in mud and ash. It is the sort of place where something lives and does not care how. The only way out is south, back into the dark tunnel.",
+  "5154": "The tunnel runs straight and narrow here through black rock that seems to drink what little light there is. The ceiling is low enough to brush the head of a tall traveller. Faint scratches on the walls might be the marks of claws or of tools. The passage leads north and south.",
+  "5153": "The tunnel turns here, and a trickle of water runs across the floor from a crack in the wall, pooling in a shallow hollow. The rock is softer here and has been worn into odd, smooth shapes. The way leads north and west, the air growing damper toward the west. Small pale crystals glint where the water has dried.",
+  "5152": "The dark tunnel ends against a wall of wet rock, where a crude door of driftwood planks lashed together with rope is set in the stone to the south. Beyond it comes the faint, distant sound of waves and a smell of salt. The tunnel runs back east. Moss grows thick along the foot of the walls.",
+  "5151": "This damp alcove sits just inside the cliff face, its walls running with water and its floor slick with green weed. Salt air blows in from the south, where a gap in the rock opens onto a rocky shore and the grey sea beyond. A plank door to the north leads into a dark tunnel. The roar of the surf echoes strangely in the narrow space.",
   "5171": "This thin bridge runs only a short way from the slab before it ends against the sheer chasm wall. A doorway was carved there once, framed with spiders, but it has been sealed with a slab of stone fused smooth as glass. The way back lies east to where the bridges meet. A soft, cold wind blows up from the depths, carrying a faint smell of water.",
   "5184": "Giant mushrooms rise here like trees, their pale stalks thick as pillars and their wide caps glowing in soft shades of blue and violet. Spores drift slowly in the still air, catching the light like motes of dust. The ground is soft and spongy underfoot, carpeted with smaller fungi that crunch with every step. A low iron door to the east leads back to a bend in the city street.",
   "5185": "This dwelling is hollowed from a stalagmite of reddish stone, unusual among the black spires of the city. Its single room is bare but for a stone bench and a few hooks on the wall, where a cloak or a lantern might hang. A small window, no more than a slit, lets in a sliver of violet light. The doorway east leads back to the city street.",
