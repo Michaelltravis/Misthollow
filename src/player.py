@@ -1230,8 +1230,8 @@ class Player(Character):
 
         return companions_data
 
-    async def save(self):
-        """Save the player to disk."""
+    async def save(self, new: bool = False):
+        """Save the player to disk (new: a character just made, whose file must not exist yet)."""
         data = {
             'name': self.name,
             'password_hash': self.password_hash,
@@ -1393,7 +1393,8 @@ class Player(Character):
         filepath = os.path.join(self.config.PLAYER_DIR, f"{self.name.lower()}.json")
         os.makedirs(os.path.dirname(filepath), exist_ok=True)
         
-        with open(filepath, 'w') as f:
+        # a new character's file is made, never written over (FileExistsError: the name was taken)
+        with open(filepath, 'x' if new else 'w') as f:
             json.dump(data, f, indent=2)
             
         logger.debug(f"Saved player: {self.name}")

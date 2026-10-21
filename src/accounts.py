@@ -236,8 +236,14 @@ class AccountManager:
         player = Player.create_new(name=name, password=None, race=race, char_class=char_class, stats=stats,
                                    world=world, sex=sex, look_style=look_style)
         player.account_name = account.account_name
+        try:
+            # made, never written over: a save that appeared anyway (another server process,
+            # a hand-copied file) is someone's character
+            await player.save(new=True)
+        except FileExistsError:
+            account.remove_character(name)
+            return None, "That name is already taken."
         account.save()
-        await player.save()
         logger.info(f"accounts: made {name} on {account.account_name}")
         return player, ''
 

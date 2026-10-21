@@ -78,6 +78,12 @@ WEB_MARK = b'\x1b]WEB\x07'
 
 logger = logging.getLogger('Misthollow.Server')
 
+# new names being made right now (lower case -> the Connection making it). A name is checked
+# when it is typed but saved only after race, class and stats: the hold turns a second
+# connection away at once, rather than after it has chosen everything
+_naming = {}
+
+
 class Connection:
     """Represents a single client connection."""
     
@@ -126,7 +132,8 @@ class Connection:
         self.account = None
         self.temp_account_name = None
         self.play_after = None          # a character asked for by name, opened via its account
-        self.login_failures = 0         # wrong passwords on this connection (security.py)
+        self.held_name = None           # the new name this connection is making (_naming)
+        self.login_failures = 0        # wrong passwords on this connection (security.py)
         self.forgot_sent = False
         self.is_web = False             # the web bridge announced itself (WEB_MARK): no hard wrap
         
@@ -306,6 +313,10 @@ class Connection:
             return
         
         # A new name: a new account, and its first character of the same name
+        if not self._hold_name(name_lower):
+            await self.send(f"'{name_cap}' is already taken: someone is making it right now.")
+            await self.send("Enter account name (or character name): ")
+            return
         self.temp_account_name = name_lower
         self.temp_name = name_cap
         await self.send(f"'{name_cap}' is a new name. Create account? (Y/N) ")
@@ -317,10 +328,28 @@ class Connection:
             await self.send("Choose a password: ")
             self.state = self.STATE_GET_PASSWORD
         else:
+            self._let_name_go()
             self.temp_name = self.temp_account_name = None
             await self.send("What name shall you be known by? ")
             self.state = self.STATE_GET_NAME
-            
+
+    def _hold_name(self, name: str) -> bool:
+        """Hold a new name while this connection makes it (False: another connection is)."""
+        key = name.lower()
+        holder = _naming.get(key)
+        if (holder is not None and holder is not self and not getattr(holder, '_disconnected', False)
+                and not holder.writer.is_closing()):
+            return False
+        self._let_name_go()
+        _naming[key] = self
+        self.held_name = key
+        return True
+
+    def _let_name_go(self):
+        if self.held_name and _naming.get(self.held_name) is self:
+            del _naming[self.held_name]
+        self.held_name = None
+
     async def handle_password(self, password: str):
         """The new account's password (a sign-up: the account and its first character are
         made together when the character is finished)."""
@@ -510,6 +539,7 @@ class Connection:
         else:
             self.account, self.player, why = await AccountManager.sign_up(self.temp_account_name, self.temp_password or '', **char)
         self.temp_password = None
+        self._let_name_go()
         if self.player is None:
             # the name was taken while the character was being made
             await self.send(f"{why} Your character was not made.")
@@ -1351,8 +1381,8 @@ class Connection:
         
         name = name.capitalize()
         
-        # Check if name is taken (a character's, or another account's)
-        if name_taken(name, self.account):
+        # Check if name is taken (a character's, another account's, or one being made)
+        if name_taken(name, self.account) or not self._hold_name(name):
             await self.send("That name is already taken. Choose another: ")
             return
         
@@ -1550,6 +1580,7 @@ class Connection:
         if getattr(self, '_disconnected', False):
             return                         # quit already did this; the input loop's finally comes again
         self._disconnected = True
+        self._let_name_go()
         logger.info(f"Connection closed: {self.address}")
         
         if self.player:
