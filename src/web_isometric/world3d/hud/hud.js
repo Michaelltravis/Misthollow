@@ -471,6 +471,7 @@ export function createHud() {
     // (yourself, the room, an object you name): sent without a target
     const aim = a ? a.target || 'enemy' : SELF.has(id) ? 'self' : 'enemy';
     MH.bus.emit('hud.ability', { id, name: a && a.name, spell: a ? a.type === 'spell' : false, self: aim !== 'enemy' && aim !== 'ally', ally: aim === 'ally',
+      door: aim === 'door',      // Block Door, Break Door: at the nearest closed door (main.js)
       // an area spell /play aims (spells.py AIM_RADIUS): its circle and how far it may land
       radius: a && a.radius, range: a && a.radius ? a.range : undefined });
   }

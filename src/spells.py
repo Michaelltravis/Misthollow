@@ -3079,7 +3079,6 @@ class SpellHandler:
     def _door_spell_refusal(cls, caster, spell, target):
         """Why a door spell cannot take hold on this door ('' when it can)."""
         import doors
-        import rites
         direction, exit_data, door, err = doors.resolve(getattr(caster, 'room', None), str(target or '').split())
         if err in ('what', 'noexit', 'noname') or not direction:
             return "There's no door that way."
@@ -3088,13 +3087,13 @@ class SpellHandler:
         name = doors.label(door)
         if doors.is_seal(door):
             return doors.seal_message(door)
+        if door.get('broken'):
+            return f"The {name} hangs broken: there is nothing to seal." if spell.get('special') == 'block_door' else f"The {name} is broken already."
         if door.get('state') != 'closed':
             return f"The {name} stands open: close it first." if spell.get('special') == 'block_door' else f"The {name} is already open."
         if spell.get('special') == 'break_door':
-            if doors.is_arcane(door):
-                return doors.arcane_message(door)
-            if rites.is_warded(door) and door.get('locked'):
-                return rites.ward_message(door)
+            if doors.unbreakable(door):
+                return doors.unbreakable_message(door)
         elif door.get('magically_blocked') or door.get('sealed_until', 0) > time.time():
             return f"The {name} is already sealed by magic."
         return ''
@@ -3758,7 +3757,9 @@ class SpellHandler:
             if door.get('state') != 'closed':
                 return
             secs = 120 + getattr(caster, 'level', 1) * 2
-            doors.apply(caster.room, direction, mirror=('sealed_until',), sealed_until=time.time() + secs)
+            # a stronger mage's seal takes more breaking (commands._door_max_hp)
+            doors.apply(caster.room, direction, mirror=('sealed_until', 'seal_power'), sealed_until=time.time() + secs,
+                        seal_power=3 * getattr(caster, 'level', 1), hp=None)
 
             await caster.send(f"{c['bright_blue']}Glowing sigils spread across the {doors.label(door)}, sealing it shut "
                               f"(about {secs // 60} minutes).{c['reset']}")

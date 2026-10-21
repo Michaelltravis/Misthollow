@@ -130,6 +130,38 @@ async def main():
     check(doors.view(arc, set(), priest).get('arcane') and doors.view(arc, set(), priest).get('can_break'),
           'the door menu knows the door is arcane, and that the cleric knows Break Door')
 
+    # ---- what else no force breaks: a quest's gate (magically blocked)
+    put(priest, iron_room)
+    doors.apply(iron_room, iron_dir, state='closed', broken=None, hp=None)
+    iron['magically_blocked'] = True
+    priest.mana = 1000
+    await C.execute(priest, 'cast', ["'break door'", iron_dir])
+    await C._bash_door(brute if brute.room is iron_room else priest, iron_dir)
+    check(priest.mana == 1000 and not iron.get('broken') and iron.get('hp') is None, 'a quest gate (magically blocked) takes no prayer and no bash')
+    iron.pop('magically_blocked', None)
+
+    # ---- a seal is as strong as its mage, and /play hears of it at once
+    novice, archmage = hero('Novice', 'mage', 19), hero('Archmage', 'mage', 60)
+    for m in (novice, archmage):
+        m.spells['block_door'] = 100
+    put(novice, iron_room)
+    await C.execute(novice, 'cast', ["'block door'", iron_dir])
+    weak = C._door_max_hp(iron)
+    check(doors.public(iron_room.vnum, iron_dir, iron).get('sealed'), 'a door event says the door is sealed (so /play shows it at once)')
+    iron['sealed_until'] = 0
+    put(archmage, iron_room)
+    await C.execute(archmage, 'cast', ["'block door'", iron_dir])
+    check(C._door_max_hp(iron) > weak, f"an archmage's seal takes more breaking than a novice's ({weak} -> {C._door_max_hp(iron)})")
+    iron['sealed_until'] = 0
+    doors.apply(iron_room, iron_dir, state='open')
+    await C.execute(novice, 'cast', ["'block door'", iron_dir])
+    check(not iron.get('sealed_until') and 'close it first' in said(novice), 'an open door cannot be sealed')
+
+    # ---- what load works out about a door is never written back to a zone file
+    saved = iron_room.to_dict() if hasattr(iron_room, 'to_dict') else None
+    sdoor = (saved or {}).get('exits', {}).get(iron_dir, {}).get('door', {}) if saved else {}
+    check(saved is None or not any(k in sdoor for k in doors.NOT_SAVED), f'a saved room keeps no material, magic or seal on its doors ({sorted(sdoor)})')
+
     print(f"\n{'ALL OK' if not failures else f'{len(failures)} FAILED'}")
     sys.exit(1 if failures else 0)
 

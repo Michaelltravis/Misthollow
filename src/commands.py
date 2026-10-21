@@ -5264,7 +5264,7 @@ class CommandHandler:
         if door.get('locked'):
             hp += 25
         if door.get('sealed_until', 0) > now:
-            hp += 45
+            hp += door.get('seal_power') or 45      # a mage's Block Door: level x 3
         if door.get('barricaded_until', 0) > now:
             hp += 30
         return hp
@@ -5276,7 +5276,7 @@ class CommandHandler:
         import doors
         name = doors.label(door)
         doors.apply(room, d, state='open', locked=False, broken=True,
-                    sealed_until=None, barricaded_until=None, hp=None)
+                    sealed_until=None, seal_power=None, barricaded_until=None, hp=None)
         target_room = exit_data.get('room') if exit_data else None
         if target_room:
             await target_room.send_to_room(f"{c['yellow']}💥 The {name} bursts open in a shower of splinters!{c['reset']}")
@@ -5304,8 +5304,8 @@ class CommandHandler:
         if rites.is_warded(door) and door.get('locked'):
             await player.send(f"{c['yellow']}{rites.ward_message(door)}{c['reset']}")
             return
-        if doors.is_arcane(door):
-            await player.send(f"{c['magenta']}{doors.arcane_message(door)}{c['reset']}")
+        if doors.unbreakable(door):
+            await player.send(f"{c['magenta']}{doors.unbreakable_message(door)}{c['reset']}")
             return
         max_hp = cls._door_max_hp(door)
         if 'hp' not in door:

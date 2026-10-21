@@ -226,9 +226,13 @@ async def _flush():
 
 
 def public(vnum, d, door):
-    """What every viewer may know about a door."""
+    """What every viewer may know about a door (sealed and barricaded too: a mage's seal, set or
+    broken, shows in /play at once)."""
+    now = time.time()
     return {'vnum': vnum, 'dir': d, 'label': label(door), 'state': door.get('state', 'open'),
-            'locked': bool(door.get('locked')), 'broken': bool(door.get('broken')), 'rev': door.get('rev', 0)}
+            'locked': bool(door.get('locked')), 'broken': bool(door.get('broken')), 'rev': door.get('rev', 0),
+            'sealed': bool(door.get('sealed_until', 0) > now or door.get('magically_blocked') or is_seal(door)),
+            'barricaded': bool(door.get('barricaded_until', 0) > now)}
 
 
 # ---------------------------------------------------------------- keys and picks
@@ -361,6 +365,8 @@ def unsealed_door(ex):
 # ---------------------------------------------------------------- what a door is made of
 # how much force it takes to break each (a locked door, a seal and a barricade add to it)
 MATERIALS = {'cloth': 15, 'glass': 30, 'wood': 60, 'oak': 90, 'metal': 120, 'iron': 160, 'stone': 220}
+# worked out at load, or of the moment: never written back to a zone file (world.py)
+NOT_SAVED = ('material', 'arcane', 'hp', 'seal_power', 'sealed_until', 'barricaded_until', 'rev')
 # words in a door's name, strongest first
 _MATERIAL_WORDS = [
     ('arcane', r'diamond|adamant\w*|mithril|rune\w*|ward\w*|enchanted|magic\w*'),
@@ -410,8 +416,27 @@ def is_arcane(door):
     return bool((door or {}).get('arcane'))
 
 
-def arcane_message(door):
+def unbreakable(door):
+    """No bash, spell or creature breaks it: bound by old magic, a quest's gate (magically
+    blocked), a sealed land's bar, or a rite's warded door while it is locked."""
+    if not isinstance(door, dict):
+        return False
+    import rites
+    return bool(door.get('arcane') or door.get('magically_blocked') or is_seal(door)
+                or (rites.is_warded(door) and door.get('locked')))
+
+
+def unbreakable_message(door):
+    if is_seal(door):
+        return seal_message(door)
+    import rites
+    if rites.is_warded(door) and door.get('locked'):
+        return rites.ward_message(door)
     return f"Old magic binds the {label(door)}: no force and no spell will break it."
+
+
+def arcane_message(door):
+    return unbreakable_message(door)
 
 
 # ---------------------------------------------------------------- load and reset
@@ -490,4 +515,4 @@ def reset_zone(world, zone):
             if _occupied(room) or (to is not None and _occupied(to)):
                 continue
             apply(room, d, state=want['state'], locked=want['locked'], broken=None, hp=None,
-                  sealed_until=None, barricaded_until=None, magically_blocked=None)
+                  sealed_until=None, seal_power=None, barricaded_until=None, magically_blocked=None)
