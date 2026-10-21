@@ -6,6 +6,9 @@ Strike an item out (or delete it) in the PR that finishes it.
 Done in that pass, for reference: deploys from `main`; every room written (0 placeholders); the
 build queue empty (items, bosses, two thin zones peopled); water breathing, corruption immunity
 and song power from gear working; the live test suites passing on Windows; requirements.txt.
+Then: the kick-counted-as-refused fix, shadows that fade, the Reliquary's air pockets, old
+journals renamed, the Foundry's steam and levers, Shadowspire's secret ways, bosses for the
+wall and the elven village, and a full test_marquee run (154 ok).
 
 ## Art
 
@@ -28,38 +31,22 @@ and song power from gear working; the live test suites passing on Windows; requi
 ## World
 
 - **Bosses by design, or not** — the build queue (`world/atlas/index.json`) asks a boss of every
-  open, non-connector zone of 30+ rooms. A population file's `no_boss` says why a zone has none
-  (New Thalos, the Newbie Zone, the School House, the Elven Village, Elvandar, Garathorm Wall);
-  revisit if any of them should have one after all.
-- **Shadow clones linger** — a Shadowspire hero's shadow (`src/zone_hazards.py`) is an ordinary
-  Shadow Stalker once spawned: it stays in the citadel if its hero flees. Despawn it with its
-  hero if that turns out to matter.
-- **Drowning in the Drowned Reliquary (285)** has no air pockets of its own: 36 rooms, a minute
-  of air. Add `air_pocket` rooms there (as zone 240 has) if level-60 players without water
-  breathing find it impossible; the Pearl drops from the Temple of Nereus's Sahuagin.
-- **Pressure and puzzles not yet read** — zone 248's `steam_damage`/`steam_pressure`/`lever` and
-  zone 245's `puzzle_room` (the mirror door) are stated in the zone files but nothing runs them.
-- **Old journals** still title a guildmaster "guildmaster" (entries written before the fix).
+  open, non-connector zone of 30+ rooms. A population file's `no_boss` says why a zone has none:
+  New Thalos, the Newbie Zone, the School House, Elvandar. (Garathorm Wall has Captain Greywatch
+  and the Elven Village the High Elven Guardian since 2026-10-20.)
+- **Captain Greywatch answers from anywhere on the wall** (`helpers.anywhere`, `src/allies.py`). If
+  he proves too strong a reinforcement for the levels 5-15 there, lower his level or give him
+  `rooms` instead of `anywhere`.
 
 ## Tests
 
-- **test_marquee, end to end** — its fixes (raise Gauntlet for the trial and put it back, a 480 s
-  budget for the Gorrund fight) passed in parts but no full run has used all of them together.
-  Run `tests/test_marquee.py` against a fresh local server once; it takes about 10 minutes.
-- **A kick that lands may be counted as refused** (suspected, seen once): `combat_hooks._capture`
-  swaps `player.send` while a skill runs, so it also catches other tasks' lines, such as the
-  action tick's "You are stunned and cannot attack!". "cannot" is a refusal word, so the
-  cooldown is given back and the ability event dropped. Fix: record only the skill's own sends
-  (a `contextvars.ContextVar` set in `execute()`).
 - **test_aim** failed once in a full run and passed on a rerun: timing.
 - The live suites need a local server and a `lib/` with the test accounts. A fresh checkout
   makes them itself (`tests/gauntlet_accounts.py`). test_combat_action levels Gauntlet up a
   little every run.
 
-## Deploy
+## Repository
 
-- Frostpine still runs the autopull.sh of `claude/nice-johnson-slpinu` until it pulls this change:
-  after the merge, fast-forward that branch to `main` once
-  (`git push origin origin/main:refs/heads/claude/nice-johnson-slpinu`). From then on it pulls
-  `main`. Watch `~/MUDNEW/deploy.log` for `== pull main`; the old branch can go after that.
-- The `Misthollow-work` worktree (branch `claude/open-work`) can be removed once this is merged.
+- About 95 old automated branches (Jules / Palette, 5-8 months old, nearly all one-commit
+  tweaks to `src/web_client.py`) are still on GitHub, unmerged on purpose: they predate the
+  current client. Delete them when convenient.
