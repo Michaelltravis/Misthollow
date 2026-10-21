@@ -127,7 +127,7 @@ class Connection:
         self.temp_account_name = None
         self.play_after = None          # a character asked for by name, opened via its account
         self.new_account_only = False   # `newaccount`: the password makes an account, no hero
-        self.login_failures = 0        # wrong passwords on this connection (security.py)
+        self.login_failures = 0         # wrong passwords on this connection (security.py)
         self.forgot_sent = False
         self.is_web = False             # the web bridge announced itself (WEB_MARK): no hard wrap
         

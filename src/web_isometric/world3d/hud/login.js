@@ -143,7 +143,7 @@ export function setupLogin() {
     const list = chars.querySelector('.lc-list');
     list.innerHTML = menu.chars.length ? menu.chars.map(c => {
       const cc = tint(c.class);
-      return `<button class="hero" role="listitem" data-name="${esc(c.name)}" style="--cc:${cc}">`
+      return `<button class="hero" data-name="${esc(c.name)}" style="--cc:${cc}" aria-label="Play ${esc(c.name)}, level ${esc(c.level)} ${esc(String(c.race).replace('_', ' '))} ${esc(c.class)}">`
         + `<img alt="" src="${uiIcon((THEMES[c.class] || THEMES.creature).glyph, { size: 64, color: cc, glow: 'rgba(0,0,0,.6)' })}">`
         + `<span><b>${esc(c.name)}</b><small>${esc(String(c.race).replace('_', ' '))} ${esc(c.class)}</small></span>`
         + `<span class="lv" title="Level">${esc(c.level)}</span></button>`;

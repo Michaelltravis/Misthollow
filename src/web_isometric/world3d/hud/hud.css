@@ -590,8 +590,9 @@ html.env-under #env-vignette { opacity: 1; background: radial-gradient(ellipse a
 #login-chars .hero small { color: var(--ink-dim); text-transform: capitalize; }
 #login-chars .hero .lv { margin-left: auto; font: 700 20px var(--title); color: var(--gold); }
 #login-chars .lc-empty { padding: 14px 6px; text-align: center; font: italic 15px var(--lore); color: var(--ink-dim); }
-#create .name-row { display: flex; gap: 10px; align-items: center; max-width: 440px; }
-#create .name-row input { flex: 1; }
+#create .name-row { display: flex; gap: 10px; align-items: center; max-width: 460px; }
+#create .name-row input { flex: 1 1 auto; min-width: 0; width: auto; }
+#create .name-row .btn, #create #hero-back { flex: none; width: auto; margin: 0; padding-left: 22px; padding-right: 22px; }
 #create .name-err { min-height: 18px; margin: 4px 0 8px; color: #ff9a8a; font: 500 13px var(--body); }
 #login-status { min-height: 18px; margin-top: 12px; font: 500 13px var(--body); color: var(--ink-dim); }
 #login-status.error { color: #ff9a8a; }
