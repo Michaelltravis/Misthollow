@@ -7284,7 +7284,8 @@ class CommandHandler:
             ally.fighting = None
             ally.position = 'standing'
             
-            attacker.fighting = player
+            import brain
+            brain.taunted(attacker, player, 4.0)     # (held on you a while: brain/)
             player.fighting = attacker
             player.position = 'fighting'
             if hasattr(player, 'target'):
@@ -15445,6 +15446,10 @@ class CommandHandler:
         await cls.do_social(player, 'battlecry', args)
     @classmethod
     async def cmd_taunt(cls, player: 'Player', args: List[str]):
+        """A warrior's or paladin's taunt in a fight (brain/taunt.py), else the social."""
+        import brain.taunt
+        if await brain.taunt.command(player, args):
+            return
         await cls.do_social(player, 'taunt', args)
     @classmethod
     async def cmd_challenge_emote(cls, player: 'Player', args: List[str]):
@@ -20147,12 +20152,20 @@ class CommandHandler:
         from mobs import Mobile
         
         taunted = 0
-        for char in player.room.characters:
-            if isinstance(char, Mobile) and char.hp > 0:
-                char.fighting = player
-                char.taunted_by = player
-                char.taunt_ticks = 6
+        import brain
+        if brain.on('threat'):
+            # the creatures fighting your side, held on you 12 s (help commanding_shout; brain/):
+            # never a shopkeeper standing by, nor a pet
+            for char in brain.enemies_of(player):
+                brain.taunted(char, player, 12.0)
                 taunted += 1
+        else:
+            for char in player.room.characters:
+                if isinstance(char, Mobile) and char.hp > 0:
+                    char.fighting = player
+                    char.taunted_by = player
+                    char.taunt_ticks = 6
+                    taunted += 1
         
         await player.send(f"{c['bright_yellow']}You let out a COMMANDING SHOUT! {taunted} enemies focus on you!{c['reset']}")
         if player.room:

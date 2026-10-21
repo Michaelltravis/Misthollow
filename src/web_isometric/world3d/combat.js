@@ -144,7 +144,7 @@ export class CombatView {
     if (this.onAggro) for (const e of list) {
       if (!e.src || e.src.m == null) continue;
       const atHero = this.isHero(e.dst) || (e.hits || []).some(h => this.isHero(h.dst)) || (e.also || []).some(h => this.isHero(h.dst));
-      if (atHero && ['attack', 'dmg', 'windup', 'spell', 'ability', 'resolve', 'debuff'].includes(e.k)) this.onAggro(e.src.m, e);
+      if (atHero && ['attack', 'dmg', 'windup', 'spell', 'ability', 'resolve', 'debuff', 'aggro'].includes(e.k)) this.onAggro(e.src.m, e);
     }
     // a skill's or a spell's wounds and heals follow it in the batch: each rises when the
     // ability reaches its target (an area's too), so they are found and timed first
@@ -297,6 +297,7 @@ export class CombatView {
       case 'stun': return this.stun(e);
       case 'oor': return this.isHero(e.src) && this.onOutOfRange && this.onOutOfRange(e);   // only our own
       case 'fizzle': return this.fizzle(e);
+      case 'aggro': return this.aggro(e);
       case 'proc': return this.proc(e);
       case 'fade': return this.fade(e);
       case 'xp': case 'gold': case 'rep': return this.reward(e);
@@ -403,6 +404,15 @@ export class CombatView {
   }
 
   // a spell that came apart in the caster's hands: a puff of grey smoke, a few sparks
+  // a creature turns on someone (brain/targeting.py: a taunt, a healer it hates, its foe fallen):
+  // it faces them, a red "!" over its head
+  aggro(e) {
+    const src = this.resolve(e.src), dst = this.resolve(e.dst);
+    if (!src) return;
+    if (dst) this.face(src, dst);
+    const p = this.chest(src).add(new THREE.Vector3(0, 0.9, 0));
+    this.fx.text(p, '!', { color: '#ff5a3c', size: 22, rise: 0.5, life: 0.9 });
+  }
   fizzle(e) {
     const src = this.resolve(e.src);
     if (!src) return;
