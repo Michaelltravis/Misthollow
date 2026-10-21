@@ -1,0 +1,103 @@
+{
+ "zone": 442,
+ "_about": "Outcast Fortress (levels 15-32): the outcasts are gone or hiding; Yarick the Outcast, who built the place, still holds his quarters in the keep.",
+ "items": {
+  "44290": {
+   "keywords": "broadsword notched yarick",
+   "short_desc": "Yarick's notched broadsword",
+   "room_desc": "A notched broadsword lies here.",
+   "description": "A broad, heavy sword with a blade notched by a hundred fights, its pommel a lump of raw iron. Yarick cut his way out of exile with it.",
+   "kind": "weapon",
+   "level": 32,
+   "weapon_type": "slash",
+   "bonus": {
+    "damroll": 2
+   }
+  },
+  "44291": {
+   "keywords": "mantle wolf fur outcast",
+   "short_desc": "an outcast's wolf-fur mantle",
+   "room_desc": "A wolf-fur mantle lies here.",
+   "description": "A thick mantle of grey wolf pelts, clasped with a brooch shaped like a broken chain: the outcasts' sign.",
+   "kind": "armor",
+   "level": 30,
+   "wear_slot": "about",
+   "bonus": {
+    "con": 1
+   }
+  }
+ },
+ "creatures": {
+  "44200": {
+   "name": "yarick outcast bandit warlord",
+   "short_desc": "Yarick the Outcast",
+   "long_desc": "Yarick the Outcast, a scarred bandit warlord, rises from his desk with a broadsword in hand.",
+   "description": "A big, grizzled man in patched mail under a mantle of wolf fur, a brand of exile burned into one cheek. He built this fortress for the cast-out and the hunted, and when the others fled or hid, he stayed to hold it.",
+   "level": 32,
+   "rank": "boss",
+   "flags": [
+    "aggressive",
+    "sentinel",
+    "stay_zone"
+   ],
+   "race": "human",
+   "alignment": -400,
+   "boss_config": {
+    "enrage_time": 180,
+    "enrage_multiplier": 1.5,
+    "ability_interval": 5.0,
+    "phases": [
+     {
+      "threshold": 50,
+      "message": "Yarick spits blood and roars: 'This fortress is mine! You will not take it!'"
+     }
+    ],
+    "abilities": [
+     {
+      "name": "Exile's Cleave",
+      "telegraph": "Yarick draws his notched broadsword back for a sweeping cut!",
+      "cast_time": 1.5,
+      "cooldown": 8,
+      "damage_dice": "4d8+8",
+      "aoe": true,
+      "radius": 3.5
+     },
+     {
+      "name": "Pommel Crack",
+      "telegraph": "Yarick reverses his grip and lunges with the pommel!",
+      "cast_time": 1,
+      "cooldown": 7,
+      "damage_dice": "3d10+8",
+      "dodge": true
+     },
+     {
+      "name": "Last Stand",
+      "telegraph": "Yarick plants his feet and bellows a war cry!",
+      "cast_time": 2.5,
+      "cooldown": 18,
+      "damage_dice": "5d8+10",
+      "interruptible": true,
+      "min_phase": 1
+     }
+    ]
+   },
+   "loot_table": [
+    {
+     "vnum": 44290,
+     "chance": 40
+    },
+    {
+     "vnum": 44291,
+     "chance": 35
+    }
+   ]
+  }
+ },
+ "bosses": [
+  {
+   "vnum": 44200,
+   "room": 16366,
+   "why": "Yarick the Outcast in Yarick's Quarters in the keep: the fortress's founder, who stayed when the others fled"
+  }
+ ]
+}

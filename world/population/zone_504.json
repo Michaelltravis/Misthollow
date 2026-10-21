@@ -1,6 +1,7 @@
 {
  "zone": 504,
  "_about": "Built from its writer's creatures (world/buildout/parts): ranks, helpers, and no boss (a peaceful place).",
+ "no_boss": "a peaceful city in the trees",
  "creatures": {
   "650406": {
    "rank": "sub-boss",

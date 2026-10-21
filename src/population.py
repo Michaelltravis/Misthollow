@@ -126,11 +126,12 @@ def apply(world, data=None) -> list:
         # the numbers from item_numbers). Its creatures carry or drop them by vnum.
         for v, it in (d.get('items') or {}).items():
             v = int(v)
-            if v in world.obj_prototypes:
+            # (applied twice, as a test may: its own item again is no clash)
+            if v in world.obj_prototypes and world.obj_prototypes[v].get('_population') != int(z):
                 problems.append(f"zone {z}: item {v} is taken already")
                 continue
             try:
-                world.obj_prototypes[v] = {'vnum': v, 'name': ' '.join(str(it['keywords']).split()),
+                world.obj_prototypes[v] = {'vnum': v, '_population': int(z), 'name': ' '.join(str(it['keywords']).split()),
                                            'short_desc': it['short_desc'], 'room_desc': it['room_desc'],
                                            'description': it['description'], **item_numbers(it)}
             except (KeyError, ValueError, TypeError) as e:

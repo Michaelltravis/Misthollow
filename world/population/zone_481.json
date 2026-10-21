@@ -68,7 +68,13 @@
     "rooms": 2,
     "count": 2,
     "shout": "A cry goes up, and the evil of Ghenna gathers!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 48190,
+     "chance": 20
+    }
+   ]
   },
   "9905": {
    "name": "broken",
@@ -153,7 +159,13 @@
    "alignment": -1000,
    "race": "humanoid",
    "source": "circle-contrib-areas/ghenna",
-   "rank": "elite"
+   "rank": "elite",
+   "loot_table": [
+    {
+     "vnum": 48192,
+     "chance": 30
+    }
+   ]
   },
   "9910": {
    "name": "deep dragon",
@@ -209,7 +221,17 @@
       "min_phase": 1
      }
     ]
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 48194,
+     "chance": 40
+    },
+    {
+     "vnum": 48195,
+     "chance": 30
+    }
+   ]
   },
   "9911": {
    "name": "derro",
@@ -298,7 +320,13 @@
     "rooms": 2,
     "count": 2,
     "shout": "A cry goes up, and the evil of Ghenna gathers!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 48191,
+     "chance": 12
+    }
+   ]
   },
   "9916": {
    "name": "barkeep",
@@ -360,7 +388,13 @@
     "rooms": 2,
     "count": 2,
     "shout": "A cry goes up, and the evil of Ghenna gathers!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 48193,
+     "chance": 35
+    }
+   ]
   },
   "9931": {
    "name": "wall foot",
@@ -773,5 +807,67 @@
     }
    ]
   }
- ]
+ ],
+ "items": {
+  "48190": {
+   "keywords": "morningstar spiked bugbear",
+   "short_desc": "a bugbear's spiked morningstar",
+   "room_desc": "A spiked morningstar lies here.",
+   "description": "A crude iron ball bristling with nails on a short ash haft, sized for a bugbear's fist.",
+   "kind": "weapon",
+   "level": 30,
+   "weapon_type": "pound"
+  },
+  "48191": {
+   "keywords": "shirt scale orcish",
+   "short_desc": "an orcish scale shirt",
+   "room_desc": "An orcish scale shirt lies here.",
+   "description": "A shirt of uneven iron scales riveted to greasy leather. It has seen many owners.",
+   "kind": "armor",
+   "level": 30,
+   "wear_slot": "body"
+  },
+  "48192": {
+   "keywords": "greaves black death knight",
+   "short_desc": "a death knight's black greaves",
+   "room_desc": "A pair of black greaves lies here.",
+   "description": "Black steel greaves etched with runes that drink the light, cold as a winter grave.",
+   "kind": "armor",
+   "level": 31,
+   "wear_slot": "legs"
+  },
+  "48193": {
+   "keywords": "blade swordmaster ghenna",
+   "short_desc": "the Ghenna Swordmaster's blade",
+   "room_desc": "A long, perfectly balanced blade lies here.",
+   "description": "A long sword of blued steel, so finely balanced it seems to move before you do. The Swordmaster killed a hundred challengers with it in his arena.",
+   "kind": "weapon",
+   "level": 31,
+   "weapon_type": "slash",
+   "bonus": {
+    "hitroll": 2
+   }
+  },
+  "48194": {
+   "keywords": "gems hoard deep dragon",
+   "short_desc": "a fistful of the deep dragon's hoard-gems",
+   "room_desc": "A scatter of acid-etched gems lies here.",
+   "description": "Rubies and dark sapphires, their facets etched dull by the dragon's breath. Still worth a fortune.",
+   "kind": "treasure",
+   "level": 33
+  },
+  "48195": {
+   "keywords": "cloak deep dragon hide",
+   "short_desc": "a cloak of deep dragon hide",
+   "room_desc": "A cloak of purple-black dragon hide lies here.",
+   "description": "A cloak of the deep dragon's supple purple-black hide, proof against acid and cold.",
+   "kind": "armor",
+   "level": 33,
+   "wear_slot": "about",
+   "bonus": {
+    "con": 1,
+    "hp": 15
+   }
+  }
+ }
 }

@@ -89,7 +89,17 @@
       "min_phase": 1
      }
     ]
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 47994,
+     "chance": 35
+    },
+    {
+     "vnum": 47993,
+     "chance": 15
+    }
+   ]
   },
   "47903": {
    "name": "lazarus assassin physician",
@@ -139,7 +149,13 @@
     "rooms": 3,
     "count": 2,
     "shout": "A bell tolls in the guild, and the dead rise to defend it!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 47991,
+     "chance": 20
+    }
+   ]
   },
   "47906": {
    "name": "keeper",
@@ -155,7 +171,13 @@
    "race": "humanoid",
    "source": "circle-contrib-areas/Ancala-1",
    "original_vnum": "QQ06",
-   "rank": "elite"
+   "rank": "elite",
+   "loot_table": [
+    {
+     "vnum": 47995,
+     "chance": 30
+    }
+   ]
   },
   "47907": {
    "name": "hermit",
@@ -197,7 +219,13 @@
    "alignment": -400,
    "race": "humanoid",
    "source": "circle-contrib-areas/Ancala-1",
-   "original_vnum": "QQ10"
+   "original_vnum": "QQ10",
+   "loot_table": [
+    {
+     "vnum": 47990,
+     "chance": 15
+    }
+   ]
   },
   "47910": {
    "name": "spider yellow",
@@ -239,7 +267,13 @@
    "alignment": -750,
    "race": "humanoid",
    "source": "circle-contrib-areas/Ancala-1",
-   "original_vnum": "QQ13"
+   "original_vnum": "QQ13",
+   "loot_table": [
+    {
+     "vnum": 47992,
+     "chance": 15
+    }
+   ]
   },
   "47913": {
    "name": "jello ochre",
@@ -276,7 +310,13 @@
     "rooms": 3,
     "count": 2,
     "shout": "A bell tolls in the guild, and the dead rise to defend it!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 47993,
+     "chance": 30
+    }
+   ]
   }
  },
  "spawns": [
@@ -416,5 +456,65 @@
     }
    ]
   }
- ]
+ ],
+ "items": {
+  "47990": {
+   "keywords": "shard crystal green",
+   "short_desc": "a shard of green crystal",
+   "room_desc": "A shard of green crystal lies here.",
+   "description": "A finger-long shard of glassy green crystal, broken from a crystal spider's back. It glows faintly in the acid forest's light.",
+   "kind": "treasure",
+   "level": 8
+  },
+  "47991": {
+   "keywords": "sword blackened wraith knight",
+   "short_desc": "a wraith knight's blackened sword",
+   "room_desc": "A blackened sword lies here.",
+   "description": "A knight's sword with a blade burned black, cold enough to frost the fingers. The guild's wraith knights carry them.",
+   "kind": "weapon",
+   "level": 15,
+   "weapon_type": "slash"
+  },
+  "47992": {
+   "keywords": "breastplate chitin umber",
+   "short_desc": "a chitin breastplate",
+   "room_desc": "A chitin breastplate lies here.",
+   "description": "A breastplate shaped from an umber hulk's dark, glossy shell, still smelling of the dragon's intestines.",
+   "kind": "armor",
+   "level": 18,
+   "wear_slot": "body"
+  },
+  "47993": {
+   "keywords": "pendant bloodstone",
+   "short_desc": "a bloodstone pendant",
+   "room_desc": "A bloodstone pendant lies here.",
+   "description": "A dark green stone flecked with red, set in silver: the Necromancers' Guild's sign, worn by its master.",
+   "kind": "armor",
+   "level": 17,
+   "wear_slot": "neck",
+   "bonus": {
+    "int": 1
+   }
+  },
+  "47994": {
+   "keywords": "sickle bone handled morticia",
+   "short_desc": "Morticia's bone-handled sickle",
+   "room_desc": "A bone-handled sickle lies here.",
+   "description": "A wicked crescent of black steel on a handle of human bone, used in the guild's harvests.",
+   "kind": "weapon",
+   "level": 23,
+   "weapon_type": "slash",
+   "bonus": {
+    "hp": 10
+   }
+  },
+  "47995": {
+   "keywords": "lantern crypt keeper",
+   "short_desc": "the Crypt Keeper's lantern",
+   "room_desc": "A green-glowing lantern lies here.",
+   "description": "An iron lantern burning with a cold green flame that gives no heat, by whose light the Crypt Keeper counts the dead.",
+   "kind": "light",
+   "level": 25
+  }
+ }
 }

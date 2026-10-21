@@ -1,6 +1,7 @@
 {
  "zone": 186,
  "_about": "The Newbie Zone (levels 1-7), kept gentle: no boss and no waves. The zombiefied newbies and the quasits help one of their own, the dark spectre is an elite, the massive Minotaur in the Red Room a sub-boss for new players to aim at, and a newbie monster wanders the first passages.",
+ "no_boss": "kept gentle for new players: its DEADLY veteran is the lesson, not a boss",
  "creatures": {
   "18607": {
    "helpers": {

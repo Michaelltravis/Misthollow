@@ -176,15 +176,17 @@ def load_content(zones):
     return placed, mobs, objs
 
 
-def load_population(placed, mobs):
+def load_population(placed, mobs, objs=None):
     """Fold in who world/population puts where (src/population.py applies it when the game loads,
-    after the zone files): its creatures join `mobs`, its spawns, fill, patrols' first rooms and
-    bosses join `placed`. Returns the vnums it places as bosses, and the zones it says want none
+    after the zone files): its items join `objs`, its creatures `mobs`, and its spawns, fill,
+    patrols' first rooms and bosses `placed`. Returns the vnums it places as bosses, and the zones it says want none
     ({zone: why})."""
     bosses, no_boss = set(), {}
     for path in sorted(glob.glob(os.path.join(ROOT, 'world', 'population', 'zone_*.json'))):
         with open(path, encoding='utf-8') as f:
             d = json.load(f)
+        for k, it in (d.get('items') or {}).items() if objs is not None else ():
+            objs[int(k)] = it
         if d.get('no_boss'):
             no_boss[int(d['zone'])] = d['no_boss']
         for k, c in (d.get('creatures') or {}).items():

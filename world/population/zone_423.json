@@ -19,7 +19,17 @@
     "rooms": 3,
     "count": 2,
     "shout": "A hidden door bangs open: the cult comes!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 42390,
+     "chance": 15
+    },
+    {
+     "vnum": 42391,
+     "chance": 15
+    }
+   ]
   },
   "42301": {
    "name": "zert fighter",
@@ -39,7 +49,13 @@
     "rooms": 3,
     "count": 2,
     "shout": "A hidden door bangs open: the cult comes!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 42393,
+     "chance": 30
+    }
+   ]
   },
   "42302": {
    "name": "furnok thief",
@@ -59,7 +75,13 @@
     "rooms": 3,
     "count": 2,
     "shout": "A hidden door bangs open: the cult comes!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 42392,
+     "chance": 30
+    }
+   ]
   },
   "42303": {
    "name": "gundigoot priest",
@@ -79,7 +101,13 @@
     "rooms": 3,
     "count": 2,
     "shout": "A hidden door bangs open: the cult comes!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 42394,
+     "chance": 30
+    }
+   ]
   },
   "42304": {
    "name": "assistant cleric",
@@ -157,7 +185,13 @@
       "min_phase": 1
      }
     ]
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 42395,
+     "chance": 35
+    }
+   ]
   }
  },
  "spawns": [
@@ -217,5 +251,62 @@
     }
    ]
   }
- ]
+ ],
+ "items": {
+  "42390": {
+   "keywords": "robe hooded cultist",
+   "short_desc": "a cultist's hooded robe",
+   "room_desc": "A hooded robe lies here.",
+   "description": "A plain brown robe like a pilgrim's, until you turn it out and see the lining stitched with a lidless eye.",
+   "kind": "armor",
+   "level": 10,
+   "wear_slot": "body"
+  },
+  "42391": {
+   "keywords": "bread loaf hommlet",
+   "short_desc": "a loaf of Hommlet bread",
+   "room_desc": "A loaf of brown bread lies here.",
+   "description": "A round brown loaf from the inn's ovens below, still faintly warm.",
+   "kind": "food",
+   "level": 8
+  },
+  "42392": {
+   "keywords": "dice loaded purse",
+   "short_desc": "a purse of loaded dice",
+   "room_desc": "A small purse of dice lies here.",
+   "description": "A leather purse of bone dice, every one of them weighted. Furnok never lost a game at the inn.",
+   "kind": "treasure",
+   "level": 12
+  },
+  "42393": {
+   "keywords": "scimitar curved zert",
+   "short_desc": "Zert's curved scimitar",
+   "room_desc": "A curved scimitar lies here.",
+   "description": "A narrow, sharply curved blade of good steel, its grip wound in black silk.",
+   "kind": "weapon",
+   "level": 13,
+   "weapon_type": "slash"
+  },
+  "42394": {
+   "keywords": "mace studded heavy",
+   "short_desc": "a heavy studded mace",
+   "room_desc": "A heavy studded mace lies here.",
+   "description": "A short-hafted mace with an iron head ringed by studs, far too heavy for a merchant's guard to carry honestly.",
+   "kind": "weapon",
+   "level": 15,
+   "weapon_type": "pound"
+  },
+  "42395": {
+   "keywords": "amulet carved eye hidden",
+   "short_desc": "a carved amulet of the hidden eye",
+   "room_desc": "A carved amulet lies here.",
+   "description": "A disc of black stone carved with a single lidless eye, warm to the touch. The false Canon wore it beneath his vestments.",
+   "kind": "armor",
+   "level": 16,
+   "wear_slot": "neck",
+   "bonus": {
+    "int": 1
+   }
+  }
+ }
 }

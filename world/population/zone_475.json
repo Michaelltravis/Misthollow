@@ -20,7 +20,13 @@
     "rooms": 2,
     "count": 2,
     "shout": "The bones of the path rattle, and more of them get up!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 47590,
+     "chance": 15
+    }
+   ]
   },
   "47501": {
    "name": "mirror shade",
@@ -39,7 +45,13 @@
     "rooms": 2,
     "count": 2,
     "shout": "The house shudders, and things come out of the walls!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 47591,
+     "chance": 25
+    }
+   ]
   },
   "47502": {
    "name": "chaos imp",
@@ -58,7 +70,13 @@
     "rooms": 2,
     "count": 2,
     "shout": "The house shudders, and things come out of the walls!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 47592,
+     "chance": 12
+    }
+   ]
   },
   "47503": {
    "name": "blood leech",
@@ -113,7 +131,13 @@
    ],
    "race": "humanoid",
    "rank": "elite",
-   "alignment": -400
+   "alignment": -400,
+   "loot_table": [
+    {
+     "vnum": 47593,
+     "chance": 30
+    }
+   ]
   },
   "47512": {
    "name": "blood serpent",
@@ -127,7 +151,13 @@
    ],
    "race": "serpent",
    "rank": "elite",
-   "alignment": -500
+   "alignment": -500,
+   "loot_table": [
+    {
+     "vnum": 47594,
+     "chance": 30
+    }
+   ]
   },
   "47520": {
    "name": "hermit cabin",
@@ -194,7 +224,17 @@
       "min_phase": 1
      }
     ]
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 47595,
+     "chance": 35
+    },
+    {
+     "vnum": 47591,
+     "chance": 25
+    }
+   ]
   }
  },
  "spawns": [
@@ -354,5 +394,62 @@
    "why": "a chaos imp"
   }
  ],
- "_fill": "tools/audit/densify.py: 17 more of the zone's own ordinary creatures in its empty rooms, 0.45 hostile per walkable room as the aim"
+ "_fill": "tools/audit/densify.py: 17 more of the zone's own ordinary creatures in its empty rooms, 0.45 hostile per walkable room as the aim",
+ "items": {
+  "47590": {
+   "keywords": "club femur bone",
+   "short_desc": "a femur club",
+   "room_desc": "A club made from a giant femur lies here.",
+   "description": "A huge thighbone prised out of the Path of Bones, its knob end studded with smaller teeth.",
+   "kind": "weapon",
+   "level": 23,
+   "weapon_type": "pound"
+  },
+  "47591": {
+   "keywords": "shard mirror living",
+   "short_desc": "a shard of living mirror",
+   "room_desc": "A shard of mirror lies here, showing the wrong room.",
+   "description": "A jagged sliver of mirror from the room of mirrors. What it shows is never quite where you are.",
+   "kind": "treasure",
+   "level": 24
+  },
+  "47592": {
+   "keywords": "vial ichor imp",
+   "short_desc": "a vial of chaos imp ichor",
+   "room_desc": "A vial of shifting ichor lies here.",
+   "description": "A stoppered vial of imp ichor that changes colour as you watch. It tastes of nothing, and it mends.",
+   "kind": "potion",
+   "level": 22
+  },
+  "47593": {
+   "keywords": "lamp library dim",
+   "short_desc": "a lamp of the dim library",
+   "room_desc": "A small dim lamp lies here.",
+   "description": "A lamp from the dimly lit library that gives just enough light to read by, and never more.",
+   "kind": "light",
+   "level": 25
+  },
+  "47594": {
+   "keywords": "shield scale blood serpent",
+   "short_desc": "a blood-serpent scale shield",
+   "room_desc": "A shield of red scales lies here.",
+   "description": "A kite shield faced with the overlapping crimson scales of the blood serpent, slick to the touch even when dry.",
+   "kind": "armor",
+   "level": 27,
+   "wear_slot": "shield"
+  },
+  "47595": {
+   "keywords": "crown crooked iron black",
+   "short_desc": "a crooked crown of black iron",
+   "room_desc": "A crooked crown of black iron lies here.",
+   "description": "A crown whose points lean every way at once, as if it were forged in a dream. The Lord of Chaos wore it askew.",
+   "kind": "armor",
+   "level": 30,
+   "wear_slot": "head",
+   "bonus": {
+    "int": 1,
+    "hp": 10
+   }
+  }
+ }
 }

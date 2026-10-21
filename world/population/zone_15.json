@@ -1,0 +1,106 @@
+{
+ "zone": 15,
+ "_about": "The Straight Path (levels 13-32): a road of trials from the bank toward the Utmost Throne, its dark halls of evil and temptation and its halls of light. The Great Ifrit, a demon of smokeless fire, waits in Spiritual Danger where the road turns toward the dark.",
+ "items": {
+  "1590": {
+   "keywords": "lamp brass ifrit",
+   "short_desc": "the Great Ifrit's brass lamp",
+   "room_desc": "A brass lamp lies here, a thread of smoke curling from its spout.",
+   "description": "A battered brass lamp with a long spout, warm to the touch. A thin flame of smokeless fire burns at its lip and never goes out.",
+   "kind": "light",
+   "level": 30
+  },
+  "1591": {
+   "keywords": "scimitar smokeless fire",
+   "short_desc": "a scimitar of smokeless fire",
+   "room_desc": "A scimitar of rippling flame lies here.",
+   "description": "A curved blade that seems forged from flame without smoke, rippling with heat. It does not burn the hand that holds it.",
+   "kind": "weapon",
+   "level": 32,
+   "weapon_type": "slash",
+   "bonus": {
+    "hitroll": 2
+   }
+  }
+ },
+ "creatures": {
+  "1590": {
+   "name": "ifrit demon great smoke",
+   "short_desc": "the Great Ifrit",
+   "long_desc": "The Great Ifrit, a towering demon of smokeless fire, coils in the shadows of the hall.",
+   "description": "A giant shape of living flame without smoke, horned and broad as a doorway, its eyes two coals. It waits where the road turns toward the dark, and whispers to every traveller that the other way is easier.",
+   "level": 32,
+   "rank": "boss",
+   "flags": [
+    "aggressive",
+    "sentinel"
+   ],
+   "race": "demon",
+   "alignment": -1000,
+   "boss_config": {
+    "enrage_time": 180,
+    "enrage_multiplier": 1.5,
+    "ability_interval": 5.0,
+    "phases": [
+     {
+      "threshold": 50,
+      "message": "The Great Ifrit swells to fill the hall, and its flame turns white!"
+     }
+    ],
+    "abilities": [
+     {
+      "name": "Smokeless Flame",
+      "telegraph": "The Great Ifrit draws in a breath, and the air shimmers with heat!",
+      "cast_time": 2,
+      "cooldown": 12,
+      "damage_dice": "4d8+8",
+      "aoe": true,
+      "radius": 4.5
+     },
+     {
+      "name": "Scimitar of Fire",
+      "telegraph": "The Great Ifrit raises a blade of flame!",
+      "cast_time": 1,
+      "cooldown": 7,
+      "damage_dice": "3d10+8",
+      "dodge": true
+     },
+     {
+      "name": "Whispered Doubt",
+      "telegraph": "The Great Ifrit begins to whisper, and your resolve wavers!",
+      "cast_time": 2.5,
+      "cooldown": 18,
+      "damage_dice": "5d8+8",
+      "interruptible": true,
+      "min_phase": 1
+     }
+    ]
+   },
+   "loot_table": [
+    {
+     "vnum": 1591,
+     "chance": 35
+    },
+    {
+     "vnum": 1590,
+     "chance": 40
+    }
+   ]
+  }
+ },
+ "bosses": [
+  {
+   "vnum": 1590,
+   "room": 1513,
+   "why": "the Great Ifrit in Spiritual Danger, where the road of trials turns toward the halls of earthly evil",
+   "mechanics": [
+    {
+     "type": "gloom",
+     "max": 0.7,
+     "shout": "The shadows in the corners gather and thicken around the Great Ifrit...",
+     "why": "the hall darkens as he weakens"
+    }
+   ]
+  }
+ ]
+}

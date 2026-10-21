@@ -1,6 +1,7 @@
 {
  "zone": 403,
  "_about": "Garathorm Wall: the walk along the top of the city wall. The night watch walks it in two halves; a sergeant keeps each far turn; gulls and crows ride the wind; a cutpurse uses the wall as a road over the rooftops.",
+ "no_boss": "the city's wall walk: the watch keeps it",
  "creatures": {
   "40300": {
    "name": "wall watchman sentry",
@@ -18,7 +19,21 @@
     "rooms": 3,
     "count": 2,
     "shout": "The sentry winds his horn: the wall is under attack!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 40390,
+     "chance": 20
+    },
+    {
+     "vnum": 40391,
+     "chance": 15
+    },
+    {
+     "vnum": 40392,
+     "chance": 15
+    }
+   ]
   },
   "40301": {
    "name": "sergeant wall",
@@ -36,7 +51,17 @@
     "group": "wall_watch",
     "rooms": 3,
     "count": 2
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 40393,
+     "chance": 30
+    },
+    {
+     "vnum": 40392,
+     "chance": 20
+    }
+   ]
   },
   "40302": {
    "name": "gull grey",
@@ -49,7 +74,13 @@
     "wimpy"
    ],
    "race": "bird",
-   "alignment": 0
+   "alignment": 0,
+   "loot_table": [
+    {
+     "vnum": 40395,
+     "chance": 20
+    }
+   ]
   },
   "40303": {
    "name": "crow carrion",
@@ -74,7 +105,13 @@
     "stay_zone"
    ],
    "race": "human",
-   "alignment": -300
+   "alignment": -300,
+   "loot_table": [
+    {
+     "vnum": 40394,
+     "chance": 25
+    }
+   ]
   }
  },
  "spawns": [
@@ -174,5 +211,62 @@
    ],
    "why": "the south and west walls"
   }
- ]
+ ],
+ "items": {
+  "40390": {
+   "keywords": "spear watchman ash",
+   "short_desc": "a watchman's ash spear",
+   "room_desc": "A watchman's ash spear lies here.",
+   "description": "A plain ash shaft as tall as a man, capped with a leaf-shaped steel head and wrapped in cord where the hand goes. The wall watch carry them on every turn of the battlements.",
+   "kind": "weapon",
+   "level": 12,
+   "weapon_type": "pierce"
+  },
+  "40391": {
+   "keywords": "horn watch brass",
+   "short_desc": "a brass watch horn",
+   "room_desc": "A brass watch horn lies here.",
+   "description": "A curled brass horn on a leather baldric, dented from many falls on stone. One long blast calls the next tower; three short ones call the whole wall.",
+   "kind": "treasure",
+   "level": 10
+  },
+  "40392": {
+   "keywords": "cap steel watch",
+   "short_desc": "a steel cap of the watch",
+   "room_desc": "A steel cap of the watch lies here.",
+   "description": "A round steel cap with a padded lining and the city's tower stamped on the brow. It is cold to wear in the wind off the plains.",
+   "kind": "armor",
+   "level": 12,
+   "wear_slot": "head"
+  },
+  "40393": {
+   "keywords": "sword short sergeant",
+   "short_desc": "a sergeant's short sword",
+   "room_desc": "A sergeant's short sword lies here.",
+   "description": "A broad, heavy-bladed short sword with a worn brass guard, kept sharp through twenty winters on the wall. It was made for close work on a narrow parapet.",
+   "kind": "weapon",
+   "level": 15,
+   "weapon_type": "slash",
+   "bonus": {
+    "hitroll": 1
+   }
+  },
+  "40394": {
+   "keywords": "knife thin cutpurse",
+   "short_desc": "a cutpurse's thin knife",
+   "room_desc": "A cutpurse's thin knife lies here.",
+   "description": "A slim blade no longer than a finger, honed on both edges, made for slitting purse strings rather than throats.",
+   "kind": "weapon",
+   "level": 11,
+   "weapon_type": "pierce"
+  },
+  "40395": {
+   "keywords": "bread heel watch",
+   "short_desc": "a heel of watch bread",
+   "room_desc": "A heel of watch bread lies here.",
+   "description": "A hard heel of the dark bread the sentries carry in their coats. The gulls have learned to wait for it.",
+   "kind": "food",
+   "level": 5
+  }
+ }
 }

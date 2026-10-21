@@ -19,5 +19,119 @@
   }
  ],
  "_about": "Who lives where (population.py).",
- "_fill": "tools/audit/densify.py: 9 more of the zone's own ordinary creatures in its empty rooms, 0.45 hostile per walkable room as the aim"
+ "_fill": "tools/audit/densify.py: 9 more of the zone's own ordinary creatures in its empty rooms, 0.45 hostile per walkable room as the aim",
+ "items": {
+  "45790": {
+   "keywords": "talon black granite gargoyle",
+   "short_desc": "a talon of black granite",
+   "room_desc": "A great curved talon of black stone lies here.",
+   "description": "A gargoyle's talon as long as a forearm, broken from the Gargoyle Lord's claw and still sharp enough to split stone.",
+   "kind": "weapon",
+   "level": 64,
+   "weapon_type": "pierce",
+   "bonus": {
+    "damroll": 2
+   }
+  },
+  "45791": {
+   "keywords": "mantle stone wing grey",
+   "short_desc": "a mantle of grey stone wings",
+   "room_desc": "A mantle of thin grey stone lies here, folded like wings.",
+   "description": "A mantle of overlapping slate-thin plates, carved from the Gargoyle Lord's own wings, that settles on the shoulders as light as leather.",
+   "kind": "armor",
+   "level": 62,
+   "wear_slot": "about",
+   "bonus": {
+    "hp": 15
+   }
+  }
+ },
+ "creatures": {
+  "45700": {
+   "name": "gargoyle lord iron winged",
+   "short_desc": "the Gargoyle Lord",
+   "long_desc": "The Gargoyle Lord crouches on the parapet between its two lesser kin, and unfolds its great stone wings.",
+   "description": "A gargoyle twice the size of any other on the wall, its granite hide veined with rusted iron and its wings ragged as the battlements. It has watched over the castle's outer wall since the castle was raised, and every gargoyle on it answers to it.",
+   "level": 65,
+   "rank": "boss",
+   "flags": [
+    "aggressive",
+    "sentinel"
+   ],
+   "race": "gargoyle",
+   "alignment": -900,
+   "boss_config": {
+    "enrage_time": 180,
+    "enrage_multiplier": 1.5,
+    "ability_interval": 5.0,
+    "phases": [
+     {
+      "threshold": 50,
+      "message": "The Gargoyle Lord screams, and the whole wall shudders under its wings!"
+     }
+    ],
+    "abilities": [
+     {
+      "name": "Stone Dive",
+      "telegraph": "The Gargoyle Lord leaps into the air and folds its wings to dive!",
+      "cast_time": 2,
+      "cooldown": 12,
+      "damage_dice": "8d10+30",
+      "aoe": true,
+      "radius": 4.5
+     },
+     {
+      "name": "Granite Talons",
+      "telegraph": "The Gargoyle Lord rakes back its great stone talons!",
+      "cast_time": 1,
+      "cooldown": 7,
+      "damage_dice": "6d12+30",
+      "dodge": true
+     },
+     {
+      "name": "Petrifying Gaze",
+      "telegraph": "The Gargoyle Lord's eyes begin to glow a dull grey!",
+      "cast_time": 2.5,
+      "cooldown": 18,
+      "damage_dice": "9d10+35",
+      "interruptible": true,
+      "min_phase": 1
+     }
+    ]
+   },
+   "loot_table": [
+    {
+     "vnum": 45790,
+     "chance": 35
+    },
+    {
+     "vnum": 45791,
+     "chance": 35
+    }
+   ]
+  }
+ },
+ "bosses": [
+  {
+   "vnum": 45700,
+   "room": 14198,
+   "why": "the Gargoyle Lord on the stretch of walkway where two gargoyles flank the walk, master of every gargoyle on the wall",
+   "mechanics": [
+    {
+     "type": "call_guards",
+     "at": [
+      75,
+      40
+     ],
+     "count": 3,
+     "rooms": 3,
+     "raise": [
+      22204
+     ],
+     "shout": "The Gargoyle Lord shrieks across the wall, and its stone kin take wing!",
+     "why": "the stone gargoyles of the wall come to its side"
+    }
+   ]
+  }
+ ]
 }

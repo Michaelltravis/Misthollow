@@ -41,7 +41,7 @@ def main():
     placed, MOBS, OBJS = load_content(zones)
     # and who world/population adds when the game loads (creatures, bosses): the zone files alone
     # called Garathorm's wall and cathedral empty
-    pop_bosses, NO_BOSS = load_population(placed, MOBS)     # (and the zones that want none, and why)
+    pop_bosses, NO_BOSS = load_population(placed, MOBS, OBJS)     # (and the zones that want none, and why)
     bosses_by_table = zone_boss_vnums() | pop_bosses
     ov = load_overrides()
     zj = json.load(open(os.path.join(ATLAS_DIR, 'zones.json'), encoding='utf-8'))
