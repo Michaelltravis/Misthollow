@@ -3,6 +3,7 @@
 // room to walk there (main.js plans the route through open exits and stairs). The big map
 // (`browse`) also zooms (wheel, +/-), pans (drag) and shows another zone than yours (browse(z)).
 import { isDeadly } from '../deathlogic.js';
+import { chessSquare, SQUARE_FILL } from '../chesslogic.js';
 const DEADLY = '#8a1c14';
 const SECTOR = {
   inside: '#8a8a96', dungeon: '#6f6a78', cave: '#6a6052', city: '#c7ab7c', forest: '#4f8a46', field: '#86a85a',
@@ -11,7 +12,10 @@ const SECTOR = {
   // the room looks (room_looks.py)
   mine: '#7a6450', crypt: '#5e5868', sewer: '#5a6a4a', snow: '#e4ecf4', shore: '#e0cc94', volcanic: '#7a3a2a',
   web: '#5a5e4a', stones: '#7c8a68', village: '#9a8a5e', camp: '#8a7a56', garden: '#5e9a4a', ruins: '#a49c88', terrace: '#e0dacc', ice_cave: '#a8c8e0', lava_cave: '#5a2a1a', castle: '#9a948a', necropolis: '#4c5650', drow: '#4a3a5e', foundry: '#5a4a3a',
+  chessboard: SQUARE_FILL.gate,
 };
+// a room's fill: the Chessboard's squares in their own white and black
+const fillOf = r => r.data.look === 'chessboard' ? SQUARE_FILL[chessSquare(r.data.name) || 'gate'] : SECTOR[r.data.look] || SECTOR[r.data.sector] || SECTOR.default;
 const CW = 22, CH = 14;      // css px per cell (keeps the 24:15 room shape)
 export const ZOOM_MIN = 0.3, ZOOM_MAX = 3;
 
@@ -87,7 +91,7 @@ export function createMinimap(root, onPick, onNorth = null, { cell = 1, browse =
       if (x < -cw || y < -ch || x > W() + cw || y > H() + ch) continue;
       const seen = shown ? shownSeen.has(r.vnum) : explored.has(r.vnum) || r === room;
       ctx.globalAlpha = seen ? 0.95 : 0.32;
-      const fill = isDeadly(r.data.flags) ? DEADLY : SECTOR[r.data.look] || SECTOR[r.data.sector] || SECTOR.default;
+      const fill = isDeadly(r.data.flags) ? DEADLY : fillOf(r);
       ctx.fillStyle = fill;
       ctx.beginPath(); ctx.roundRect(x + pad, y + pad, cw - pad * 2, ch - pad * 2, 3 * S); ctx.fill();
       if (!fine) continue;

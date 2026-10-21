@@ -113,11 +113,12 @@ async function runDemo() {
       : g === 'icons' ? (await showIconGallery()) || new THREE.Vector3()
       : g === 'sounds' ? (await showSoundGallery()) || new THREE.Vector3()
       : g === 'rooms' ? (await import('./demo.js')).buildLooksGallery(engine, kits)
+      : g === 'chessboard' ? (await import('./demo.js')).buildChessGallery(engine, kits)
       : g === 'steeds' ? await (await import('./demo.js')).buildSteedGallery(engine, kits)
       : showGallery(engine, extra || (g === 'nature' ? kits.nature : kits.dungeon), Number(params.get('scale')) || 1);
     engine.rig.target.copy(at); engine.placeCamera(true);
     // the rooms gallery lights its torches around wherever the camera looks, as the game does
-    if (g === 'rooms' && window.MH3D_gallery) engine.onTick((dt, t) => window.MH3D_gallery.world.update(dt, t, engine.rig.target));
+    if ((g === 'rooms' || g === 'chessboard') && window.MH3D_gallery) engine.onTick((dt, t) => window.MH3D_gallery.world.update(dt, t, engine.rig.target));
     window.MH3D = { engine, THREE, gallery: window.MH3D_gallery };
   } else {
     const banner = $('#banner');

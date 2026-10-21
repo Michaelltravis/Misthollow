@@ -233,6 +233,40 @@ export function buildLooksGallery(engine, kits) {
 
 const ALL_LOOK_SAMPLES = LOOK_SAMPLES;
 
+// /play?demo&gallery=chessboard: the Chessboard of Garathorm (zone 36, terrain-chess.js) as the zone
+// lays it out: eight by eight squares named white and black as its rooms are, the back ranks the
+// pieces' homes, and its gate off the east edge of the fifth rank. MH3D_gallery.rooms as above.
+export function buildChessGallery(engine, kits) {
+  const world = new World(engine, kits);
+  const BACK = ["Queen's Rook", "Queen's Knight", "Queen's Bishop", 'Queen', 'King', "King's Bishop", "King's Knight", "King's Rook"];
+  const vnumAt = (cx, cy) => 992000 + cy * 9 + cx;
+  const at = new Map();
+  for (let cy = 0; cy < 8; cy++) for (let cx = 0; cx < 8; cx++) {
+    const army = cy < 2 ? 'Black' : 'White', colour = (cx + cy) % 2 ? 'Black' : 'White';
+    const home = cy === 0 || cy === 7 ? `the ${army} ${BACK[cx]}` : cy === 1 || cy === 6 ? `one of the ${army} ${cx < 4 ? 'Queen' : 'King'}'s Pawns` : null;
+    at.set(`${cx},${cy}`, { look: 'chessboard', sector: 'city', name: `A ${colour} Square`,
+      description: `This area is a ${colour.toLowerCase()} marble square.${home ? ` This is usually the home of ${home}.` : ''}` });
+  }
+  at.set('8,3', { look: 'chessboard', sector: 'city', name: 'The Great Chessboard Of Garathorm', description: 'The area opens in the archway of the Chessboard.',
+    zoneExit: { side: 'east', zoneName: 'The Great Field Of Garathorm' } });
+  const cells = new Map([...at].map(([k, r]) => [k, { ...r, data: { sector: r.look, name: r.name } }]));
+  const rooms = [];
+  for (const [k, r] of at) {
+    const [cx, cy] = k.split(',').map(Number);
+    const exits = {};
+    for (const [d, dx, dy] of [['north', 0, -1], ['south', 0, 1], ['west', -1, 0], ['east', 1, 0]]) {
+      if (at.has(`${cx + dx},${cy + dy}`)) exits[d] = { to_room: vnumAt(cx + dx, cy + dy), kind: 'open', nlook: 'chessboard' };
+    }
+    if (r.zoneExit) exits[r.zoneExit.side] = { to_room: 0, kind: 'zone', zoneName: r.zoneExit.zoneName, toName: r.zoneExit.zoneName };
+    world.addRoom({ ...r, vnum: vnumAt(cx, cy), exits }, cx, cy, cells);
+    const c = world.centre(world.byVnum.get(vnumAt(cx, cy)));
+    rooms.push({ look: r.look, name: r.name, cx, cy, x: c.x, z: c.z });
+  }
+  window.MH3D_gallery = { rooms, world };
+  const start = rooms.find(r => r.cx === 2 && r.cy === 1);
+  return new THREE.Vector3(start.x, 0, start.z);
+}
+
 // /play?demo&gallery=steeds: a knight on each kind of mount (steed.js), walking on the spot
 export const STEED_SAMPLES = ['horse', 'warhorse', 'nightmare', 'griffin', 'clockwork_steed', 'moonstag', 'stoneboar', 'merchant_camel', 'shadowpanther', 'dire_warg'];
 export async function buildSteedGallery(engine, kits) {

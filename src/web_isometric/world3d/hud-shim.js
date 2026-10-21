@@ -18,7 +18,7 @@
   // sectors, and the looks the server gives rooms (room_looks.py: a cave that was typed 'inside')
   const THEMES = ['inside', 'city', 'dungeon', 'cave', 'forest', 'field', 'hills', 'mountain', 'desert',
     'swamp', 'water_swim', 'water_noswim', 'underwater', 'flying', 'default',
-    'mine', 'crypt', 'sewer', 'snow', 'shore', 'volcanic', 'web', 'castle', 'necropolis', 'stones', 'village', 'camp', 'garden', 'ruins', 'terrace', 'ice_cave', 'lava_cave', 'drow', 'foundry'];
+    'mine', 'crypt', 'sewer', 'snow', 'shore', 'volcanic', 'web', 'castle', 'necropolis', 'stones', 'village', 'camp', 'garden', 'ruins', 'terrace', 'ice_cave', 'lava_cave', 'drow', 'foundry', 'chessboard'];
   MH.themeForSector = MH.themeForSector || (s => THEMES.includes(s) ? s : 'default');
   MH.hashStr = MH.hashStr || function (s) {
     let h = 2166136261;

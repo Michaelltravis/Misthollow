@@ -11,6 +11,7 @@ import { drawFeatures, featureCells } from './terrain-features.js';
 import { skirtPatches } from './skirt.js';
 import { drowKind, drowDress, drowHallKind, bridgeCells, DROW_OPEN } from './terrain-drow.js';
 import { interiorStyle, styleFloor, styleWall, dressInterior, STYLES } from './terrain-interiors.js';
+import { chessboard } from './terrain-chess.js';
 import { underground, dressHall, outdoorEdge, outdoorDress, mountainCliffs, sunkenRuins, webDress, tinted, RUIN_RE, LOOK_GROUND, UNDERGROUND, SNOW_WOOD } from './terrain-looks.js';
 
 export const ROOM_W = 24, ROOM_H = 15;
@@ -124,6 +125,9 @@ export function buildRoom(layout, ox, oz, kits, room) {
     waterSurface(layout, ox, oz, group);
     underground(ctx(), theme);
     if (drowAs) drowDress(ctx(), drowAs);
+  } else if (theme === 'chessboard') {
+    // ---- the Chessboard of Garathorm: the room is one square of the board (terrain-chess.js) ----
+    chessboard(ctx());
   } else if (PAVED.has(theme)) {
     // (a dead city is a town's streets in black stone, terrain-town.js)
     const town = theme === 'city' || theme === 'necropolis', castle = theme === 'castle';
@@ -441,6 +445,7 @@ const FILL = {
   camp: { trees: 0.03, bushes: 0.02, rocks: 0.01, grass: 0.05 },
   garden: { trees: 0.05, bushes: 0.08, rocks: 0, grass: 0.1 },
   terrace: { trees: 0.015, bushes: 0.01, rocks: 0, grass: 0 },
+  chessboard: { trees: 0, bushes: 0.012, rocks: 0, grass: 0 },     // (flagged paving round the board)
   ruins: { trees: 0.025, bushes: 0.02, rocks: 0.02, grass: 0.08 },
   shore: { water: true },
   water_swim: { water: true },

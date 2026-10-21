@@ -18,7 +18,7 @@ for (const f of ['world3d/hud-shim.js', 'shared/themes-zones.js', 'shared/roomge
 }
 const MH = globalThis.MH;
 const LOOKS = ['cave', 'mine', 'crypt', 'sewer', 'dungeon', 'desert', 'snow', 'shore', 'volcanic', 'swamp', 'web', 'castle', 'necropolis',
-  'stones', 'village', 'camp', 'garden', 'ruins', 'terrace', 'drow', 'foundry'];
+  'stones', 'village', 'camp', 'garden', 'ruins', 'terrace', 'drow', 'foundry', 'chessboard'];
 
 function sampleRooms(n = 60) {
   const out = [];
@@ -133,4 +133,24 @@ test('a water room is water from bank to bank, and you cross it', () => {
     assert.ok(L.swim, `${look}: water you move across`);
     assert.ok(water > (W - 2) * (H - 2) * 0.8, `${look}: mostly open water (${water})`);
   }
+});
+
+test("the Chessboard's squares are one floor: whole sides open onto each other, nothing standing on them", async () => {
+  const { chessSquare } = await import('../../src/web_isometric/world3d/chesslogic.js');
+  const sq = (exits, name = 'A White Square') => MH.generateRoomTopDown({ vnum: 3610, name, description: '', sector: 'city', look: 'chessboard', flags: [], zone: 36, exits });
+  const open = to => ({ to_room: to, kind: 'open', nlook: 'chessboard' });
+  // a square in the middle of the board: no ring at all, no obstacles
+  const mid = sq({ north: open(1), south: open(2), east: open(3), west: open(4) });
+  assert.equal(mid.theme, 'chessboard');
+  assert.ok(!mid.grid.includes(BLOCK), 'nothing blocks a square in the middle of the board');
+  // a square on the board's edge keeps its ring there (the balustrade) and opens on the rest
+  const edge = sq({ south: open(2), east: open(3), west: open(4) });
+  for (let x = 0; x < W; x++) assert.equal(edge.grid[x], BLOCK, 'the north edge is walled');
+  for (let x = 1; x < W - 1; x++) assert.equal(edge.grid[(H - 1) * W + x], FLOOR, 'the south side is open');
+  assert.equal(edge.grid[(H - 1) * W], FLOOR, 'and its corner between two open sides');
+  // the gate onto the field keeps its doorway
+  const gate = sq({ west: open(1), east: { to_room: 9, kind: 'zone', nlook: 'field' } }, 'The Great Chessboard Of Garathorm');
+  assert.equal(gate.grid[1 * W + W - 1], BLOCK, 'the gate is a doorway in a wall');
+  assert.equal(chessSquare('A Black Square'), 'black');
+  assert.equal(chessSquare('The Great Chessboard Of Garathorm'), null);
 });
