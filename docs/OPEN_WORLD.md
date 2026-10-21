@@ -54,6 +54,33 @@ haze lies further off (`engine.farSight`: x1.25 / 1.45 / 1.65 by quality) and a 
 in the haze's colour stands round the hero. The camera may be dragged lower (pitch down to 14
 degrees: orbit.js) to look out over the land.
 
+### Past the edge: the country runs on (2026-10)
+
+The owner, on the Sea of Storms: "ocean rooms that have no exit should just show more ocean on the
+horizon or a land mass if there's a description of land in the distance ... forests, marshes etc
+too". Before, a sea room's exitless sides were a bank of grass and rocks, a strip of water past
+it, then the bare sky.
+
+- **Open water to the edge** (roomgen.js `deep`, edges.js `landSides`): a water room's sides that
+  are not land are drawn as water to its edge (still blocked: no boat leaves that way). A side is
+  land when its way out leads onto land, the map's room there is dry land, or the room's words put
+  the shore or a breakwater right there (a `near` vista); it keeps its bank, and the skirt past it
+  is land.
+- **Filler cells** (far.js `fillerPlan`, edges.js `fillKind`): every empty map cell within 4 rooms
+  of the zone's rooms is drawn as the country nearest it: the sea as the room's own bed under the
+  room's own water surface (one sea out to the haze), a forest as crowns, a marsh as marsh. Their
+  shapes stand back where a built room's own land lies.
+- **The sea's light** (engine.js `sea` mood): a blue-grey haze the far water fades into; at sea
+  the far hills lie down into a horizon line.
+- **Land in the distance** (room_vistas.py, vista.js): a room's words ("South lies the harbor to
+  Timeless Island", "Close beyond the bergs looms the black headland of Cape Voogk") give a
+  low-poly island, coast, cliffs, mountains, hills, forest or town where the view ends that way
+  (the camera looks down from the south: some 22 m to either side, 34 m ahead); named with no
+  side, off the sides with no way out. None where the zone's own rooms stand that way.
+
+Checks: `python3 tests/test_room_vistas.py`, `node --test tests/web/edges.test.mjs`
+(and roomlooks.test.mjs).
+
 ## Phase 3: seamless zone borders
 
 On entering a zone the client fetches the maps of the zones next door (main.js `nextDoor`) and

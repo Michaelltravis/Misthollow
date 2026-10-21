@@ -433,6 +433,17 @@
     if (waterRoom) {
       for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (at(x, y) === FLOOR) set(x, y, WATER);
     }
+    // and past its edge the sea runs on: the ring of a side that is not land (zone.js, edges.js
+    // landSides) is drawn as water, not as a bank of rocks; still BLOCK, so no boat leaves that way
+    const deep = [];
+    if (waterRoom) {
+      const land = roomData.land || {};
+      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+        if (at(x, y) !== BLOCK || (x > 0 && y > 0 && x < W - 1 && y < H - 1)) continue;
+        const sides = [y === 0 && 'north', y === H - 1 && 'south', x === 0 && 'west', x === W - 1 && 'east'].filter(Boolean);
+        if (!sides.some(s => land[s])) deep.push(y * W + x);
+      }
+    }
 
     // points of interest that must stay mutually reachable
     const pois = [];
@@ -665,7 +676,7 @@
       tone: roomData.tone || null,     // the zone's stone and light, from its rooms' words (zone_tone.py)
       setpiece: roomData.setpiece || null,   // a landmark's own light (setpieces.py)
       mossy: proseFx.mossy, snowy: proseFx.snowy,
-      exits, swim,
+      exits, swim, deep, land: roomData.land || {},
       dark: flags.includes('dark'),
       peaceful: flags.includes('peaceful'),
       pxW: W * T, pxH: H * T,
