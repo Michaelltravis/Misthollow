@@ -1957,29 +1957,12 @@ def build_map_payload(player, mode: str = 'full') -> dict:
             'color': zone_colors[i % len(zone_colors)],
         })
     
-    # Game time info
-    time_info = {}
+    # Game time and the weather over the current zone (web_hud.py: the page's sky dial; its
+    # world_tick event carries the same)
+    import web_hud
     world = getattr(player, 'world', None)
-    if world and hasattr(world, 'game_time'):
-        gt = world.game_time
-        time_info = {
-            'hour': getattr(gt, 'hour', 12),
-            'period': gt.get_period() if hasattr(gt, 'get_period') else 'afternoon',
-            'day': getattr(gt, 'day', 1),
-            'month': getattr(gt, 'month', 6),
-            'year': getattr(gt, 'year', 1000),
-        }
-
-    # Weather info for current zone
-    weather_info = {}
-    if player.room and player.room.zone and hasattr(player.room.zone, 'weather'):
-        w = player.room.zone.weather
-        weather_info = {
-            'sky': getattr(w, 'sky_condition', 'clear'),
-            'temperature': getattr(w, 'temperature', 70),
-            'wind': getattr(w, 'wind_speed', 0),
-            'precipitation': getattr(w, 'precipitation', 'none'),
-        }
+    sky = web_hud.sky_block(player)
+    time_info, weather_info = sky['time'], sky['weather']
 
     # Detailed info for the player's current room (the web client's MH.state.currentRoom)
     current_room = None
@@ -2149,7 +2132,10 @@ def build_map_payload(player, mode: str = 'full') -> dict:
             'quest': _quest_block(player),                    # the tracker: a marquee quest, else an ordinary one
         },
         'group': build_group_block(player),
+        'world_events': web_hud.events_block(world),
     }
+    # the body the HUD draws (needs, a breath held, mail), as its vitals event sends it
+    payload['player'].update(web_hud.body_block(player))
     if mode == 'near':
         # the 3D client draws every room around the hero, explored or not: send their
         # occupants so monsters ahead are standing there before you walk in

@@ -5,6 +5,7 @@ Dynamic world events that trigger periodically to keep the world feeling alive.
 Event types: Invasion, World Boss, Treasure Hunt, Double XP, Weather Events.
 """
 
+import msgkind
 import random
 import time
 import logging
@@ -329,7 +330,7 @@ class InvasionEvent(WorldEvent):
         self.zone_name = self.zone.name
 
         announcement = random.choice(INVASION_ANNOUNCEMENTS).format(zone=self.zone_name)
-        await self.world.broadcast(_colorize(announcement))
+        await self.world.broadcast(_colorize(announcement), kind=msgkind.UI)
         logger.info(f"Invasion event started in {self.zone_name}")
 
         # Spawn first wave immediately
@@ -353,7 +354,7 @@ class InvasionEvent(WorldEvent):
 
         c = Config().COLORS
         await self.world.broadcast(
-            _colorize(f"§R  ⚔️  Wave {self.wave}/{self.max_waves} of invaders in {self.zone_name}! ⚔️§N")
+            _colorize(f"§R  ⚔️  Wave {self.wave}/{self.max_waves} of invaders in {self.zone_name}! ⚔️§N"), kind=msgkind.UI
         )
 
         from mobs import Mobile
@@ -405,7 +406,7 @@ class InvasionEvent(WorldEvent):
                 f"§G  ✨ The invasion of {self.zone_name} has ended! ✨§N\n"
                 f"§W  {alive} invaders retreated. The realm is safe... for now.§N\n"
                 f"§G§B═══════════════════════════════════════════════════════════§N"
-            )
+            ), kind=msgkind.UI
         )
         await super().end()
 
@@ -660,14 +661,14 @@ class DoubleXPEvent(WorldEvent):
         super().__init__(world, duration_minutes)
 
     async def start(self):
-        await self.world.broadcast(_colorize(DOUBLE_XP_ANNOUNCEMENT))
+        await self.world.broadcast(_colorize(DOUBLE_XP_ANNOUNCEMENT), kind=msgkind.UI)
         logger.info("Double XP event started")
 
     async def tick(self):
         # 5-minute warning
         if 295 <= self.time_remaining <= 305:
             await self.world.broadcast(
-                _colorize(f"§G  ✨ Double XP ends in 5 minutes! Make it count! ✨§N")
+                _colorize(f"§G  ✨ Double XP ends in 5 minutes! Make it count! ✨§N"), kind=msgkind.UI
             )
 
     async def end(self):
@@ -676,7 +677,7 @@ class DoubleXPEvent(WorldEvent):
                 f"§G§B═══════════════════════════════════════════════════════════§N\n"
                 f"§G  The gods turn their gaze elsewhere. XP gains return to normal.§N\n"
                 f"§G§B═══════════════════════════════════════════════════════════§N"
-            )
+            ), kind=msgkind.UI
         )
         await super().end()
 
@@ -699,7 +700,7 @@ class WeatherEventWorld(WorldEvent):
     async def start(self):
         announcement = WEATHER_EVENT_ANNOUNCEMENTS.get(self.weather_type, "")
         if announcement:
-            await self.world.broadcast(_colorize(announcement))
+            await self.world.broadcast(_colorize(announcement), kind=msgkind.UI)
         logger.info(f"Weather event started: {self.weather_type}")
 
     async def tick(self):
@@ -738,7 +739,7 @@ class WeatherEventWorld(WorldEvent):
             "fog": "§C  The unnatural fog lifts, and visibility returns to normal.§N",
             "blizzard": "§W  The blizzard fades. Warmth slowly returns to the land.§N",
         }
-        await self.world.broadcast(_colorize(end_msgs.get(self.weather_type, "§W  The weather clears.§N")))
+        await self.world.broadcast(_colorize(end_msgs.get(self.weather_type, "§W  The weather clears.§N")), kind=msgkind.UI)
         await super().end()
 
     def summary(self) -> str:

@@ -113,6 +113,26 @@ button { font: inherit; color: inherit; }
 #player-frame .name { font: 700 19px var(--title); color: var(--gold-hi); letter-spacing: .05em; text-shadow: 0 1px 0 #000, 0 0 12px rgba(243,210,140,.25); }
 #player-frame .cls { font: 500 13px var(--label); color: var(--ink-dim); text-transform: lowercase; letter-spacing: .04em; }
 #buffs { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; max-width: 240px; }
+/* the body (body.js): hunger, thirst, stamina as thin meters; a posture to get up from */
+#body-meters { display: flex; align-items: center; gap: 9px; margin-top: 6px; }
+#body-meters .need { display: flex; align-items: center; gap: 3px; cursor: help; }
+#body-meters .need img { width: 15px; height: 15px; opacity: .85; }
+#body-meters .need-bar { width: 38px; height: 4px; border-radius: 2px; background: rgba(0,0,0,.55); box-shadow: inset 0 0 0 1px rgba(216,180,106,.22); overflow: hidden; }
+#body-meters .need-bar i { display: block; height: 100%; width: 100%; border-radius: 2px; transition: width .6s ease; }
+#body-meters .need-hunger i { background: linear-gradient(90deg, #a8742e, #e8b45a); }
+#body-meters .need-thirst i { background: linear-gradient(90deg, #2a7cc0, #7cc8f0); }
+#body-meters .need-move i { background: linear-gradient(90deg, #4f8a36, #a6d66a); }
+#body-meters .need[data-level="low"] img { opacity: 1; filter: drop-shadow(0 0 3px rgba(255,190,90,.8)); }
+#body-meters .need[data-level="crit"] .need-bar i { background: linear-gradient(90deg, #8e1d14, #ff6a4a); }
+#body-meters .need[data-level="crit"] { animation: need-pulse 1.4s ease-in-out infinite; }
+@keyframes need-pulse { 50% { opacity: .45; } }
+#body-meters .posture { margin-left: auto; width: 26px; height: 26px; padding: 2px; border-radius: 50%; cursor: pointer; display: grid; place-items: center;
+  border: 1px solid var(--edge); background: radial-gradient(circle at 40% 35%, rgba(60,70,95,.9), rgba(12,16,25,.95)); }
+#body-meters .posture:hover { box-shadow: 0 0 0 1px var(--gold-hi), 0 0 10px rgba(243,210,140,.45); }
+#body-meters .posture img { width: 18px; height: 18px; }
+#body-meters .posture.hidden { display: none; }
+#body-meters .posture[data-pos="sleeping"] img { animation: need-pulse 3s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { #body-meters .need, #body-meters .posture img { animation: none !important; } }
 .buff { position: relative; width: 26px; height: 26px; border-radius: 5px; overflow: hidden; cursor: default;
   box-shadow: 0 0 0 1px #000, 0 0 0 2px rgba(120,220,140,.6); }
 .buff.bad { box-shadow: 0 0 0 1px #000, 0 0 0 2px rgba(255,90,70,.75); }
@@ -234,6 +254,83 @@ button { font: inherit; color: inherit; }
 #minimap .mm-north i { font: 800 11px var(--title); font-style: normal; display: block; transition: color .2s; }
 #minimap .mm-north.turned { box-shadow: 0 0 0 1px rgba(243,217,153,.55), 0 0 10px rgba(243,217,153,.45); }
 #minimap .mm-room { font: 500 12.5px var(--label); color: var(--ink-dim); margin-top: 6px; max-width: 196px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; letter-spacing: .02em; }
+/* the sky dial (sky.js): the sun or the moon on its arc, the hour and season, the weather */
+#minimap .mm-sky { display: flex; align-items: center; gap: 7px; margin: -2px 0 6px; cursor: help; }
+#minimap .mm-sky.hidden { display: none; }
+.sky-arc { flex: none; overflow: visible; }
+.sky-track { fill: none; stroke: rgba(207,224,238,.28); stroke-width: 1; stroke-dasharray: 2 2.5; }
+.sky-horizon { stroke: rgba(216,180,106,.45); stroke-width: 1; }
+.sky-body { transition: transform 1.2s ease; }
+.sky-sun { fill: #ffd36a; filter: drop-shadow(0 0 3px rgba(255,200,90,.9)); }
+.sky-moon-dark { fill: rgba(40,52,74,.9); stroke: rgba(207,224,238,.35); stroke-width: .6; }
+.sky-moon-lit { fill: #e8eef8; filter: drop-shadow(0 0 2px rgba(200,220,255,.8)); }
+.sky-dial[data-body="sun"] .sky-moon, .sky-dial[data-body="moon"] .sky-sun { display: none; }
+.sky-dial[data-period="dawn"] .sky-sun, .sky-dial[data-period="dusk"] .sky-sun { fill: #ff9a4a; }
+.sky-read { display: flex; flex-direction: column; line-height: 1.05; min-width: 0; }
+.sky-hour { font: 700 12.5px var(--label); color: var(--mist-hi); letter-spacing: .04em; }
+.sky-season { font: italic 500 11px var(--lore); color: var(--ink-dim); }
+.sky-weather { margin-left: auto; display: flex; align-items: center; gap: 3px; }
+.sky-weather.hidden { display: none; }
+.sky-weather img { width: 22px; height: 22px; }
+.sky-weather.indoors img { opacity: .35; filter: grayscale(1); }
+.sky-temp { font: 600 12px var(--label); font-style: normal; color: var(--ink); }
+.sky-temp[data-band="frigid"] { color: #9fd4ff; } .sky-temp[data-band="cold"] { color: #c4e0f6; }
+.sky-temp[data-band="warm"] { color: #ffd08a; } .sky-temp[data-band="hot"] { color: var(--ember); }
+/* the room card (roomcard.js): a compass of the ways out, the room's name, what holds here */
+#minimap .mm-card { display: flex; align-items: center; gap: 7px; margin-top: 6px; max-width: 196px; }
+#minimap .mm-card .mm-room { margin-top: 0; max-width: 150px; }
+#minimap .mm-card-txt { min-width: 0; flex: 1; }
+.mm-compass { flex: none; overflow: visible; cursor: help; }
+.mm-compass .cp-ring { fill: rgba(8,11,18,.55); stroke: rgba(216,180,106,.3); stroke-width: .8; }
+.mm-compass .cp-hub { fill: var(--gold); }
+.mm-compass .cp-n { font: 700 5px var(--title); fill: var(--gold-hi); text-anchor: middle; opacity: .8; }
+.mm-compass .cp-spoke line { stroke-width: 1.6; stroke-linecap: round; }
+.mm-compass .cp-spoke[data-state="none"] line { stroke: rgba(207,224,238,.12); stroke-width: .8; }
+.mm-compass .cp-spoke[data-state="none"] circle, .mm-compass .cp-spoke[data-state="none"] path { fill: none; }
+.mm-compass .cp-spoke[data-state="open"] line { stroke: rgba(246,223,162,.85); } .mm-compass .cp-spoke[data-state="open"] :is(circle, path) { fill: var(--gold-hi); }
+.mm-compass .cp-spoke[data-state="zone"] line { stroke: #9fd4ff; } .mm-compass .cp-spoke[data-state="zone"] :is(circle, path) { fill: #9fd4ff; }
+.mm-compass .cp-spoke[data-state="door"] line { stroke: #c79a5a; stroke-dasharray: 2 1.4; } .mm-compass .cp-spoke[data-state="door"] :is(circle, path) { fill: #8a5a2a; stroke: #e2b878; stroke-width: .8; }
+.mm-compass .cp-spoke[data-state="locked"] line { stroke: #c06a50; stroke-dasharray: 2 1.4; } .mm-compass .cp-spoke[data-state="locked"] :is(circle, path) { fill: none; }
+.mm-compass .cp-spoke[data-state="locked"].key line { stroke: #e6c060; }
+.mm-compass .cp-spoke[data-state="locked"] path { fill: #c06a50; }
+.mm-compass .cp-spoke[data-state="sealed"] line { stroke: #8e8aa8; stroke-dasharray: 1 1.6; } .mm-compass .cp-spoke[data-state="sealed"] :is(circle, path) { fill: #6c6888; }
+.mm-compass .cp-spoke[data-state="death"] line { stroke: #ff3b2a; } .mm-compass .cp-spoke[data-state="death"] :is(circle, path) { fill: #ff3b2a; filter: drop-shadow(0 0 2px #ff3b2a); }
+.mm-compass .cp-spoke.ping line { stroke: #ff4a3a !important; stroke-width: 2.6; animation: cp-ping 2.6s ease-out; }
+.mm-compass .cp-spoke.ping :is(circle, path) { fill: #ff4a3a !important; animation: cp-ping 2.6s ease-out; }
+@keyframes cp-ping { 0%, 30%, 60% { opacity: 1; } 15%, 45% { opacity: .25; } 100% { opacity: 1; } }
+#minimap .mm-badges { display: flex; gap: 3px; margin-top: 3px; min-height: 0; }
+#minimap .mm-badges:empty { display: none; }
+.mm-badge { position: relative; width: 16px; height: 16px; display: grid; place-items: center; cursor: help; }
+.mm-badge img { width: 16px; height: 16px; opacity: .85; }
+.mm-badge.sector img { opacity: .6; }
+.mm-badge.off::after { content: ''; position: absolute; left: 1px; right: 1px; top: 50%; height: 1.6px; background: #ff6a4a; transform: rotate(-40deg); border-radius: 1px; box-shadow: 0 0 2px #000; }
+/* what waits and what is going on (alerts.js): the envelope, the world's events counting down */
+#minimap .mm-alerts { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: 6px; max-width: 196px; }
+#minimap .mm-alerts.hidden { display: none; }
+.al-mail { position: relative; width: 26px; height: 22px; padding: 0; border-radius: 5px; cursor: pointer; display: grid; place-items: center;
+  border: 1px solid var(--edge); background: linear-gradient(180deg, rgba(216,180,106,.22), rgba(216,180,106,.06)); animation: al-new 2.4s ease-in-out 3; }
+.al-mail:hover { box-shadow: 0 0 0 1px var(--gold-hi), 0 0 10px rgba(243,210,140,.45); }
+.al-mail img { width: 18px; height: 18px; }
+.al-mail b { position: absolute; right: -6px; top: -6px; min-width: 14px; height: 14px; padding: 0 3px; border-radius: 7px; font: 700 10px/14px var(--label); color: #fff; background: var(--hp); box-shadow: 0 0 0 1px #000; }
+@keyframes al-new { 50% { box-shadow: 0 0 0 1px var(--gold-hi), 0 0 12px rgba(243,210,140,.7); } }
+.al-events { display: contents; }
+.al-chip { display: inline-flex; align-items: center; gap: 3px; padding: 1px 7px 1px 3px; border-radius: 10px; cursor: help;
+  border: 1px solid rgba(255,154,74,.45); background: linear-gradient(180deg, rgba(255,154,74,.2), rgba(120,40,10,.25)); }
+.al-chip img { width: 16px; height: 16px; }
+.al-chip em { font: 600 11px var(--label); font-style: normal; color: var(--ink); letter-spacing: .03em; }
+@media (prefers-reduced-motion: reduce) { .al-mail { animation: none; } }
+/* the place's bite: heat, cold, the deep at the screen's edge; a held breath; shadow corruption */
+#env-vignette { inset: 0; z-index: 2; pointer-events: none; opacity: 0; transition: opacity 1.6s ease, background 1.6s ease; }
+html.env-hot #env-vignette { opacity: 1; background: radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 52%, rgba(255,110,30,.16) 80%, rgba(170,40,0,.34) 100%); }
+html.env-cold #env-vignette { opacity: 1; background: radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 52%, rgba(170,215,255,.14) 80%, rgba(220,240,255,.32) 100%); }
+html.env-under #env-vignette { opacity: 1; background: radial-gradient(ellipse at 50% 40%, rgba(10,60,90,.08) 30%, rgba(8,50,90,.3) 75%, rgba(2,20,50,.55) 100%); }
+#breath { left: 50%; top: 92px; transform: translateX(-50%) scale(var(--ui)); display: flex; gap: 4px; padding: 5px 9px; border-radius: 12px; background: rgba(4,18,32,.55); cursor: help; }
+#breath i { width: 11px; height: 11px; border-radius: 50%; border: 1px solid rgba(160,220,255,.55); background: rgba(160,220,255,.08); transition: background .4s, transform .4s; }
+#breath i.full { background: radial-gradient(circle at 35% 30%, #fff, #9fdcff 55%, #2a7cc0); border-color: #cfeaff; }
+#breath.low i.full { animation: need-pulse .8s ease-in-out infinite; }
+#corruption { left: 50%; top: 116px; transform: translateX(-50%) scale(var(--ui)); width: 140px; height: 5px; border-radius: 3px; background: rgba(0,0,0,.55); box-shadow: inset 0 0 0 1px rgba(170,110,255,.35); overflow: hidden; cursor: help; }
+#corruption i { display: block; height: 100%; width: var(--c, 0%); background: linear-gradient(90deg, #4a1a7a, #b070ff); box-shadow: 0 0 8px #8040e0; transition: width .6s; }
+@media (prefers-reduced-motion: reduce) { .mm-compass .cp-spoke.ping :is(line, circle, path), #breath.low i.full { animation: none; } }
 
 /* ---- action bar between two lanterns (bottom-centre) ---- */
 #actionbar { left: 50%; bottom: 10px; transform: translateX(-50%) scale(var(--ui)); transform-origin: bottom center;
@@ -363,6 +460,8 @@ button { font: inherit; color: inherit; }
 /* the blow-by-blow (msgkind.py) lives in the Combat tab; All shows it only when asked */
 #log[data-tab="all"]:not(.with-combat) > div.k-combat, #log[data-tab="all"]:not(.with-combat) > div.k-reward, #log[data-tab="combat"] > div:not(.k-combat):not(.k-reward) { display: none; }
 #log .k-reward { color: #f3d27a; }
+/* a line the HUD draws itself (msgkind.UI: the sky, hunger, a posture, mail, an event) stays, quieter */
+#log .k-ui { opacity: .5; transition: opacity .2s; } #log .k-ui:hover { opacity: .9; }
 #log .l-group { color: #8fe0ff; } #log .l-tell { color: #e8a8ff; } #log .l-say { color: #f6eed8; }
 .chat-row { display: flex; gap: 6px; margin: 2px 10px 10px; }
 #chat-mode { flex: none; min-width: 52px; font: 700 12px var(--label); letter-spacing: .05em; border-radius: 6px; cursor: pointer;
@@ -752,7 +851,7 @@ html.fallen #vignette { background: radial-gradient(ellipse at 50% 46%, rgba(30,
 .qc-reward b { color: var(--gold-hi); font-family: var(--title); }
 .qc-desc { font: 14px/1.4 var(--lore); margin-top: 3px; }
 .qc-meta { font: 500 12.5px var(--label); color: var(--ink-dim); margin-bottom: 12px; }
-#quest-tracker { right: 14px; top: calc(14px + 252px * var(--ui)); width: 240px; padding: 9px 11px; transform: scale(var(--ui)); transform-origin: top right; font: 13px var(--body); }
+#quest-tracker { right: 14px; top: calc(14px + var(--mm-h, 252px) * var(--ui) + 10px); width: 240px; padding: 9px 11px; transform: scale(var(--ui)); transform-origin: top right; font: 13px var(--body); }
 .qt-head { display: flex; align-items: center; gap: 6px; }
 .qt-star { color: #ffd86a; }
 .qt-name { flex: 1; font: 700 14px var(--title); color: var(--gold-hi); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

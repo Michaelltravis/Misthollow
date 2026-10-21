@@ -1187,10 +1187,13 @@ class Player(Character):
             self.password_hash = await security.hash_async(password)
         return ok
         
-    async def send(self, message: str, newline: bool = True):
-        """Send a message to the player."""
+    async def send(self, message: str, newline: bool = True, kind: str = None):
+        """Send a message to the player (kind: msgkind.UI for a line the page also draws)."""
         if self.connection:
-            await self.connection.send(message, newline)
+            if kind:
+                await self.connection.send(message, newline, kind=kind)
+            else:
+                await self.connection.send(message, newline)
             
     def _save_companions(self) -> List[Dict]:
         """Save persistent companions to dict format."""
@@ -2498,13 +2501,14 @@ class Player(Character):
         
         c = self.config.COLORS
         
-        # Epic level-up display!
+        # Epic level-up display! (/play has its own: the starfield comes dimmed, the gains below stay)
+        from msgkind import send_ui
         await self.send(f"\r\n")
-        await self.send(f"{c['bright_yellow']}    *  .  *       *  .    .  *    .   *   .     *")
-        await self.send(f"  .    *    .  *    .   *   . *  .    *    .")
-        await self.send(f"       .  *    L E V E L   U P !    *  .       ")
-        await self.send(f"  *  .    .  *    .   *   . *  .    *    .  *")
-        await self.send(f"    .   *    *  .  *       *  .    .  *    .{c['reset']}")
+        await send_ui(self, f"{c['bright_yellow']}    *  .  *       *  .    .  *    .   *   .     *")
+        await send_ui(self, f"  .    *    .  *    .   *   . *  .    *    .")
+        await send_ui(self, f"       .  *    L E V E L   U P !    *  .       ")
+        await send_ui(self, f"  *  .    .  *    .   *   . *  .    *    .  *")
+        await send_ui(self, f"    .   *    *  .  *       *  .    .  *    .{c['reset']}")
         await self.send(f"")
         
         # Level milestone messages
@@ -3640,8 +3644,14 @@ class Player(Character):
         if not hasattr(self, 'world') or not self.world or not hasattr(self.world, 'game_time'):
             return
 
-        game_time = self.world.game_time
-        current_hour = game_time.hour + (game_time.day * 24)  # Total hours elapsed
+        from msgkind import send_ui
+        current_hour = self.world.game_time.total_hours()
+        # only the hours lived through drain: a new character, one back from away, or a clock
+        # set back starts counting from now
+        for attr in ('last_hunger_hour', 'last_thirst_hour'):
+            last = getattr(self, attr, 0) or 0
+            if last <= 0 or not 0 <= current_hour - last <= 2:
+                setattr(self, attr, current_hour)
 
         # Decrease hunger by 1 per game hour (hungry after 24 hours, starving after 1 week)
         if current_hour != self.last_hunger_hour:
@@ -3652,17 +3662,17 @@ class Player(Character):
 
                 # Warnings and penalties based on hunger level
                 if self.hunger == 0:
-                    await self.send(f"{c['red']}You are starving! Your strength wanes.{c['reset']}")
+                    await send_ui(self, f"{c['red']}You are starving! Your strength wanes.{c['reset']}")
                     # Starving: apply debuff (reduced regen, -2 STR) instead of damage
                     # Debuff is checked in regen/combat — no HP loss from hunger
 
                 elif self.hunger <= 24:  # Less than 1 day of food
                     if self.hunger == 24:
-                        await self.send(f"{c['yellow']}You are extremely hungry!{c['reset']}")
+                        await send_ui(self, f"{c['yellow']}You are extremely hungry!{c['reset']}")
 
                 elif self.hunger <= 48:  # Less than 2 days of food
                     if self.hunger == 48:
-                        await self.send(f"{c['yellow']}You are hungry.{c['reset']}")
+                        await send_ui(self, f"{c['yellow']}You are hungry.{c['reset']}")
 
         # Decrease thirst by 1 per game hour (critical after 2.5 days = 60 hours)
         if current_hour != self.last_thirst_hour:
@@ -3673,17 +3683,17 @@ class Player(Character):
 
                 # Warnings and penalties based on thirst level
                 if self.thirst == 0:
-                    await self.send(f"{c['bright_red']}You are parched! Your focus falters.{c['reset']}")
+                    await send_ui(self, f"{c['bright_red']}You are parched! Your focus falters.{c['reset']}")
                     # Dehydrated: apply debuff (reduced regen, -2 DEX) instead of damage
                     # Debuff is checked in regen/combat — no HP loss from thirst
 
                 elif self.thirst <= 12:  # Less than half day of water
                     if self.thirst == 12:
-                        await self.send(f"{c['yellow']}You are extremely thirsty!{c['reset']}")
+                        await send_ui(self, f"{c['yellow']}You are extremely thirsty!{c['reset']}")
 
                 elif self.thirst <= 24:  # Less than 1 day of water
                     if self.thirst == 24:
-                        await self.send(f"{c['yellow']}You are thirsty.{c['reset']}")
+                        await send_ui(self, f"{c['yellow']}You are thirsty.{c['reset']}")
 
     def get_hunger_condition(self) -> str:
         """Get description of hunger condition (max 168 hours = 1 week)."""

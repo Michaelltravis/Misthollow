@@ -339,6 +339,8 @@
         const payload = JSON.parse(event.data);
         if (payload.type === 'map_data') handleMapData(payload);
         else if (payload.type === 'combat_update') handleCombatUpdate(payload);
+        // the hero's body out of a fight too (web_hud.py): pools, posture, hunger, a breath, mail
+        else if (payload.type === 'vitals') { if (MH.state.player) Object.assign(MH.state.player, payload.player); MH.bus.emit('vitals', payload); }
         else if (payload.type === 'mob_move') MH.bus.emit('mob.move', payload);
         else if (payload.type === 'player_move') { MH.bus.emit('player.move', payload); if (payload.name && payload.name !== MH.state.playerName && payload.action !== 'move') MH.bus.emit('ambient.echo', `${payload.name} ${payload.action === 'leave' ? 'leaves' : 'arrives'}.`); }
         else if (payload.type === 'ambient') MH.bus.emit('ambient.murmur', payload);   // a sound and a cue (world3d/hud/ambient.js)

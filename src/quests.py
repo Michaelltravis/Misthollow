@@ -29,6 +29,24 @@ def _push(player):
     except Exception:
         pass
 
+async def _progress(player, quest, obj):
+    """A step of an ordinary quest: the line (dimmed on /play), and a quest_progress event the
+    page shows as a toast (the tracker follows by _push)."""
+    import msgkind
+    c = player.config.COLORS
+    await msgkind.send_ui(player, f"{c['yellow']}Quest Progress: {obj.description} ({obj.current}/{obj.required}){c['reset']}")
+    if obj.completed:
+        await msgkind.send_ui(player, f"{c['bright_green']}Objective complete!{c['reset']}")
+    wm = getattr(getattr(player, 'world', None), 'web_map', None)
+    if wm is None or not hasattr(wm, 'has_play') or not wm.has_play(player):
+        return
+    try:
+        await wm.notify_event(player, {'type': 'quest_progress', 'quest': getattr(quest, 'name', ''),
+                                       'objective': obj.description, 'current': obj.current,
+                                       'required': obj.required, 'done': bool(obj.completed)})
+    except Exception:
+        pass
+
 if TYPE_CHECKING:
     from player import Player
     from mobs import Mobile
@@ -2375,10 +2393,9 @@ class QuestManager:
 
                         c = player.config.COLORS
                         _push(player)
-                        await player.send(f"{c['yellow']}Quest Progress: {obj.description} ({obj.current}/{obj.required}){c['reset']}")
+                        await _progress(player, quest, obj)
 
                         if obj.completed:
-                            await player.send(f"{c['bright_green']}Objective complete!{c['reset']}")
                             await QuestManager._tutorial_next_step(player, quest)
 
                 elif obj.type == 'collect' and event_type == 'collect':
@@ -2392,10 +2409,9 @@ class QuestManager:
 
                         c = player.config.COLORS
                         _push(player)
-                        await player.send(f"{c['yellow']}Quest Progress: {obj.description} ({obj.current}/{obj.required}){c['reset']}")
+                        await _progress(player, quest, obj)
 
                         if obj.completed:
-                            await player.send(f"{c['bright_green']}Objective complete!{c['reset']}")
                             await QuestManager._tutorial_next_step(player, quest)
 
                 elif obj.type == 'talk' and event_type == 'talk':
@@ -2408,10 +2424,9 @@ class QuestManager:
 
                         c = player.config.COLORS
                         _push(player)
-                        await player.send(f"{c['yellow']}Quest Progress: {obj.description} ({obj.current}/{obj.required}){c['reset']}")
+                        await _progress(player, quest, obj)
 
                         if obj.completed:
-                            await player.send(f"{c['bright_green']}Objective complete!{c['reset']}")
                             await QuestManager._tutorial_next_step(player, quest)
 
                 elif obj.type in ('visit', 'explore') and event_type in ('visit', 'explore'):
@@ -2422,10 +2437,9 @@ class QuestManager:
 
                         c = player.config.COLORS
                         _push(player)
-                        await player.send(f"{c['yellow']}Quest Progress: {obj.description} ({obj.current}/{obj.required}){c['reset']}")
+                        await _progress(player, quest, obj)
 
                         if obj.completed:
-                            await player.send(f"{c['bright_green']}Objective complete!{c['reset']}")
                             await QuestManager._tutorial_next_step(player, quest)
 
                 elif obj.type == 'command' and event_type == 'command':
@@ -2439,10 +2453,9 @@ class QuestManager:
 
                         c = player.config.COLORS
                         _push(player)
-                        await player.send(f"{c['yellow']}Quest Progress: {obj.description} ({obj.current}/{obj.required}){c['reset']}")
+                        await _progress(player, quest, obj)
 
                         if obj.completed:
-                            await player.send(f"{c['bright_green']}Objective complete!{c['reset']}")
                             await QuestManager._tutorial_next_step(player, quest)
 
             # Check if quest is complete

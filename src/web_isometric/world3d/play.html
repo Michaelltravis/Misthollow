@@ -32,6 +32,7 @@
     <div class="vbar mp"><b></b><span></span></div>
     <div class="pips hidden"></div>
     <div id="buffs"></div>
+    <div id="body-meters"></div>
     <button id="riding" class="hidden" data-tip-title="Riding" data-tip-sub="Click or press R to dismount"></button>
   </div>
 </div>
@@ -63,10 +64,15 @@
 <div id="rewards" class="hud"></div>
 
 <div id="minimap" class="hud panel ornate hidden">
-  <div class="mm-head"><span class="mm-zone"></span><span class="mm-time"></span></div>
+  <div class="mm-head"><span class="mm-zone"></span></div>
+  <div class="mm-sky"></div>
   <div class="mm-wrap"><canvas width="392" height="352"></canvas><button class="mm-north" title="North up (Home)"><i>N</i></button></div>
-  <div class="mm-room"></div>
+  <div class="mm-card"><div class="mm-card-txt"><div class="mm-room"></div><div class="mm-badges"></div></div></div>
+  <div class="mm-alerts hidden"></div>
 </div>
+<div id="env-vignette" class="hud"></div>
+<div id="breath" class="hud hidden"></div>
+<div id="corruption" class="hud hidden"><i></i></div>
 
 <div id="actionbar" class="hud hidden">
   <div class="orb hp"><div class="fill"></div><div class="gloss"></div><div class="val"></div><div class="lab">Health</div></div>

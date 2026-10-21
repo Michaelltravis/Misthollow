@@ -259,7 +259,8 @@ export function createMinimap(root, onPick, onNorth = null, { cell = 1, browse =
     setTime(t) {
       if (!t) return;
       const h = t.hour != null ? t.hour : null;
-      root.querySelector('.mm-time').textContent = h == null ? '' : `${String(h).padStart(2, '0')}:00${t.period ? ' · ' + t.period : ''}`;
+      const el = root.querySelector('.mm-time');     // (the small map has the sky dial instead: sky.js)
+      if (el) el.textContent = h == null ? '' : `${String(h).padStart(2, '0')}:00${t.period ? ' · ' + t.period : ''}`;
     },
     // camYaw: the camera's turn (0 = north up); the compass needle and the view wedge follow it
     update(pos, yaw, camYaw = 0) {

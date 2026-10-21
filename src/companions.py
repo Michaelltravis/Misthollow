@@ -118,7 +118,7 @@ class Companion(Mobile):
         # Initialize stats and loadout
         self._apply_type_config()
 
-    async def send(self, message: str, newline: bool = True):
+    async def send(self, message: str, newline: bool = True, kind: str = None):
         """Companion doesn't receive messages directly."""
         # Suppress self-directed messaging to avoid confusion.
         return

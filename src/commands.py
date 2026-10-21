@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     from player import Player
 
 from config import Config
+import msgkind
 import os
 import json
 
@@ -9939,8 +9940,10 @@ class CommandHandler:
             await player.send("You're already sitting.")
             return
         player.position = 'sitting'
-        await player.send("You sit down.")
+        await msgkind.send_ui(player, "You sit down.")
         await player.room.send_to_room(f"{player.name} sits down.", exclude=[player])
+        import web_hud
+        await web_hud.push_vitals(player, force=True)
         
     @classmethod
     async def cmd_rest(cls, player: 'Player', args: List[str]):
@@ -9952,8 +9955,10 @@ class CommandHandler:
             await player.send("You're already resting.")
             return
         player.position = 'resting'
-        await player.send("You rest and begin to recuperate.")
+        await msgkind.send_ui(player, "You rest and begin to recuperate.")
         await player.room.send_to_room(f"{player.name} rests.", exclude=[player])
+        import web_hud
+        await web_hud.push_vitals(player, force=True)
         # Revive knocked-out combat companion
         if hasattr(player, 'combat_companion') and player.combat_companion and player.combat_companion.knocked_out:
             if player.combat_companion.rest_revive():
@@ -9970,8 +9975,10 @@ class CommandHandler:
             await player.send("You're already asleep.")
             return
         player.position = 'sleeping'
-        await player.send("You go to sleep.")
+        await msgkind.send_ui(player, "You go to sleep.")
         await player.room.send_to_room(f"{player.name} goes to sleep.", exclude=[player])
+        import web_hud
+        await web_hud.push_vitals(player, force=True)
         # Revive knocked-out combat companion
         if hasattr(player, 'combat_companion') and player.combat_companion and player.combat_companion.knocked_out:
             if player.combat_companion.rest_revive():
@@ -9985,8 +9992,10 @@ class CommandHandler:
             await player.send("You're not sleeping!")
             return
         player.position = 'standing'
-        await player.send("You wake and stand up.")
+        await msgkind.send_ui(player, "You wake and stand up.")
         await player.room.send_to_room(f"{player.name} wakes up.", exclude=[player])
+        import web_hud
+        await web_hud.push_vitals(player, force=True)
         
     @classmethod
     async def cmd_stand(cls, player: 'Player', args: List[str]):
@@ -9995,11 +10004,13 @@ class CommandHandler:
             await player.send("You're already standing.")
             return
         if player.position == 'sleeping':
-            await player.send("You wake and stand up.")
+            await msgkind.send_ui(player, "You wake and stand up.")
         else:
-            await player.send("You stand up.")
+            await msgkind.send_ui(player, "You stand up.")
         player.position = 'standing'
         await player.room.send_to_room(f"{player.name} stands up.", exclude=[player])
+        import web_hud
+        await web_hud.push_vitals(player, force=True)
     
     # ==================== CONSUMABLES ====================
     
@@ -17835,6 +17846,8 @@ class CommandHandler:
         gt.hour = hour
         gt.tick_counter = 0
         await player.send(f"{c['bright_cyan']}The clock now reads {hour:02d}:00 ({'day' if gt.is_day() else 'night'}).{c['reset']}")
+        import web_hud
+        await web_hud.push_sky(player.world)
 
     @classmethod
     async def cmd_setweather(cls, player: 'Player', args: List[str]):
@@ -17857,6 +17870,8 @@ class CommandHandler:
             return
         weather.sky_condition = args[0].lower()
         await player.send(f"{c['bright_cyan']}The sky over {zone.name} is now {weather.sky_condition}.{c['reset']}")
+        import web_hud
+        await web_hud.push_sky(player.world, zone)
 
     @classmethod
     async def cmd_advance(cls, player: 'Player', args: List[str]):
@@ -21408,6 +21423,7 @@ class CommandHandler:
             mail delete <number>          - Delete a mail by ID
         """
         from mail_system import MailManager
+        import web_hud
         c = player.config.COLORS
 
         if not args:
@@ -21434,7 +21450,8 @@ class CommandHandler:
             if online:
                 target = player.world.players.get(recipient.lower())
                 if target:
-                    await target.send(f"\r\n{c['bright_yellow']}You have new mail from {player.name}! Type 'mail read' to read it.{c['reset']}")
+                    await msgkind.send_ui(target, f"\r\n{c['bright_yellow']}You have new mail from {player.name}! Type 'mail read' to read it.{c['reset']}")
+                    await web_hud.recount_mail(target)
 
         elif sub == 'read':
             messages = MailManager.get_unread_mail(player.name)
@@ -21446,6 +21463,7 @@ class CommandHandler:
                 await player.send(f"\r\n{c['bright_cyan']}═══ Mail #{m['msg_id']} from {m['sender']} ({ts}) ═══{c['reset']}")
                 await player.send(f"{c['white']}{m['body']}{c['reset']}")
                 MailManager.mark_read(player.name, m['msg_id'])
+            await web_hud.recount_mail(player)
 
         elif sub == 'list':
             messages = MailManager.get_all_mail(player.name)
@@ -21469,6 +21487,7 @@ class CommandHandler:
                 return
             if MailManager.delete_mail(player.name, msg_id):
                 await player.send(f"{c['green']}Mail #{msg_id} deleted.{c['reset']}")
+                await web_hud.recount_mail(player)
             else:
                 await player.send(f"{c['red']}Mail #{msg_id} not found.{c['reset']}")
         else:

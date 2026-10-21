@@ -155,6 +155,15 @@ class GameTime:
         """
         return self.MONTH_NAMES[self.month - 1]
 
+    def total_hours(self) -> int:
+        """Game hours since the calendar's start (counts on across a month and a year)."""
+        days = ((self.year * self.MONTHS_PER_YEAR) + (self.month - 1)) * self.DAYS_PER_MONTH + (self.day - 1)
+        return days * self.HOURS_PER_DAY + self.hour
+
+    def moon_phase(self) -> float:
+        """Where the moon is in its 28-day round: 0 new, 0.5 full."""
+        return round((self.total_hours() / self.HOURS_PER_DAY % 28) / 28, 3)
+
     def get_light_level(self) -> float:
         """
         Get the current ambient light level (0.0 to 1.0).

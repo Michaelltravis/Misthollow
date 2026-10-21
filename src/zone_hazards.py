@@ -25,6 +25,7 @@ Called on each room entered (commands.py, after the move), once a combat round (
 beside environment.tick), by pull/read/touch (commands.py), and once when the world loads
 (seed). Per-hero breath and corruption are transient; the steam is the world's.
 """
+import msgkind
 import time
 
 AIR_TICKS = 10          # breaths held: a minute at TICK_SECONDS
@@ -110,23 +111,23 @@ async def on_enter(player, room):
     if _deep(room) is not None and not breathes_water(player):
         if mech.get('type') == 'air_pocket':
             if getattr(player, '_breath', AIR_TICKS) < AIR_TICKS:
-                await player.send(f"{c['bright_cyan']}{mech.get('message') or 'You gulp fresh air.'}{c['reset']}")
+                await msgkind.send_ui(player, f"{c['bright_cyan']}{mech.get('message') or 'You gulp fresh air.'}{c['reset']}")
             player._breath = AIR_TICKS
         elif getattr(player, '_breath', None) is None:
             player._breath = AIR_TICKS
             player._breath_at = time.time()
-            await player.send(f"{c['bright_cyan']}You take a deep breath and go under. "
-                              f"(Air for about {AIR_TICKS * TICK_SECONDS} seconds; find an air pocket.){c['reset']}")
+            await msgkind.send_ui(player, f"{c['bright_cyan']}You take a deep breath and go under. "
+                                          f"(Air for about {AIR_TICKS * TICK_SECONDS} seconds; find an air pocket.){c['reset']}")
     elif _deep(room) is None and getattr(player, '_breath', None) is not None:
         player._breath = None
-        await player.send(f"{c['bright_cyan']}You break the surface and breathe again.{c['reset']}")
+        await msgkind.send_ui(player, f"{c['bright_cyan']}You break the surface and breathe again.{c['reset']}")
     # --- the dark
     zone = getattr(room, 'zone', None)
     rules = _mechanics(zone, 'shadow_corruption') if zone is not None else {}
     if not rules:
         if getattr(player, '_corruption', 0):
             player._corruption = 0
-            await player.send(f"{c['white']}The darkness in you thins and lifts in the open air.{c['reset']}")
+            await msgkind.send_ui(player, f"{c['white']}The darkness in you thins and lifts in the open air.{c['reset']}")
         await _shadow_fades(player)
         return
     if corruption_immune(player):
@@ -137,8 +138,8 @@ async def on_enter(player, room):
         eased = min(level, int(mech.get('corruption_reduction', 10)))
         player._corruption = level - eased
         if eased:
-            await player.send(f"{c['bright_yellow']}{mech.get('message') or 'The light eases the darkness in you.'} "
-                              f"(Shadow corruption: {player._corruption}%){c['reset']}")
+            await msgkind.send_ui(player, f"{c['bright_yellow']}{mech.get('message') or 'The light eases the darkness in you.'} "
+                                          f"(Shadow corruption: {player._corruption}%){c['reset']}")
         return
     gain = int((mech if mech.get('type') == 'shadow_corruption' else base).get('corruption_per_room', 5))
     player._corruption = min(100, level + gain)
@@ -148,7 +149,7 @@ async def on_enter(player, room):
         text = text.replace('{level}', str(player._corruption))
     else:
         text = f"{text} (Shadow corruption: {player._corruption}%)"
-    await player.send(f"{c['magenta']}{text}{c['reset']}")
+    await msgkind.send_ui(player, f"{c['magenta']}{text}{c['reset']}")
     threshold = int(base.get('clone_spawn_threshold', 75))
     if player._corruption >= threshold:
         await _shadow_clone(player, room, base)

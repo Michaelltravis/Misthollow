@@ -43,7 +43,12 @@ import { mountRider, makeRaft, setSteedFx } from './steed.js';
 import { groundItems } from './lootlogic.js';
 import { ReactionPrompt, threatens, REACTIONS } from './reactions.js';
 import { createWorldMap } from './hud/worldmap.js';
-import { createAmbient } from './hud/ambient.js';
+import { createAmbient, cueOf } from './hud/ambient.js';
+import { createRoomCard, createEnvLayer } from './hud/roomcard.js';
+import { createSkyDial } from './hud/sky.js';
+import { createBody } from './hud/body.js';
+import { createAlerts, progressText } from './hud/alerts.js';
+import { uiIcon } from './hud/icons.js';
 import { AimCircle, clampAim, aimCommand } from './aim.js';
 import { FAR, farKind } from './far.js';
 
@@ -502,6 +507,18 @@ async function runGame() {
     }
   };
   const mmSmall = createMinimap($('#minimap'), room => travelTo(room), () => engine.snapNorth());
+  // the sun or moon on its arc, the season, the weather over the zone (hud/sky.js)
+  // hunger, thirst, stamina and a posture to get up from, under the player frame (hud/body.js)
+  const body = createBody($('#body-meters'), { icon: name => uiIcon(name, { size: 40 }), send: cmd => MH.sendCommand(cmd) });
+  // the room's ways out and what holds there, under the minimap; the place's bite on screen (hud/roomcard.js)
+  const roomCard = createRoomCard($('#minimap .mm-card'), { icon: (name, o) => uiIcon(name, o) });
+  const envLayer = createEnvLayer({ breath: $('#breath'), corruption: $('#corruption') });
+  // unread mail and the world's events, at the minimap's foot (hud/alerts.js)
+  const alerts = createAlerts($('#minimap .mm-alerts'), { icon: name => uiIcon(name, { size: 36 }), openMail: () => hud.openPanel('mail') });
+  // the minimap grows with its sky, room card and alerts: what sits below it (the quest tracker) follows
+  // (its height as laid out, before the HUD's scale: the CSS multiplies by --ui)
+  if (window.ResizeObserver) new ResizeObserver(() => { const h = $('#minimap').offsetHeight; if (h) document.documentElement.style.setProperty('--mm-h', `${h}px`); }).observe($('#minimap'));
+  const skyDial = createSkyDial($('#minimap .mm-sky'), name => uiIcon(name, { size: 44, color: '#e6eef6', glow: 'rgba(190,215,240,.55)' }));
   // the big map (M): the same drawing, larger — the whole zone at a glance, click to walk there
   const bigEl = $('#bigmap');
   const mmBig = createMinimap(bigEl, room => { bigEl.classList.add('hidden'); travelTo(room); }, null, { cell: 1.7, browse: true });
@@ -581,7 +598,8 @@ async function runGame() {
     minimaps: [mmSmall, mmBig], root: $('#amb-cue'), caption: $('#amb-caption'),
     captions: () => { try { return localStorage.getItem('mh3d_ambcap') === 'on'; } catch (_) { return false; } },
   });
-  MH.bus.on('ambient.murmur', m => ambient.on(m));
+  // a creature heard next door: its way out flares on the room's compass too
+  MH.bus.on('ambient.murmur', m => { ambient.on(m); const c = cueOf(m); if (c && c.dir) roomCard.ping(c.dir); });
   const castbar = createCastbar($('#castbar'));
   const ctxMenu = createContextMenu($('#ctx-menu'));
   let zone = null, hero = null, ctl = null, sync = null, heroRoom = null;
@@ -599,7 +617,15 @@ async function runGame() {
   MH.bus.on('map', payload => {
     lastPayload = payload;
     if (zone) applySky();
-    if (payload.player) { hud.setPlayer(payload.player); ents.heroLevel = payload.player.level || 1; }
+    skyDial.set(payload.time, payload.weather);
+    if (payload.current_room) {
+      skyDial.setIndoors((payload.current_room.flags || []).includes('indoors'));
+      roomCard.update(payload.current_room);
+      envLayer.update(payload.current_room, payload.weather);
+    }
+    if (payload.player) { envLayer.body(payload.player); alerts.setMail(payload.player.mail); }
+    if ('world_events' in payload) alerts.setEvents(payload.world_events);
+    if (payload.player) { hud.setPlayer(payload.player); body.update(payload.player); ents.heroLevel = payload.player.level || 1; }
     // what the hero wears (gear_look.py): re-dressed when it changes
     if (hero && payload.player && payload.player.look) dress(hero, payload.player.look, payload.player.char_class);
     if (hero && payload.player) ride(payload.player);
@@ -618,11 +644,33 @@ async function runGame() {
   });
   MH.bus.on('combat.update', p => {
     if (p && 'group' in p) hud.party.update(p.group);
-    if (MH.state.player) hud.setPlayer(MH.state.player);
+    if (MH.state.player) { hud.setPlayer(MH.state.player); body.update(MH.state.player); }
     ents.combat(p);
     const t = ents.targeted;
     if (t) hud.setTarget({ kind: t.kind, ...t.data });
     // (swings, hits and casts are drawn from the server's combat events: combat.js)
+  });
+  // the hour turning, the sky changing over the zone (web_hud.py world_tick): the dial and the 3D sky
+  MH.bus.on('world.tick', e => {
+    if (lastPayload) { if (e.time) lastPayload.time = e.time; if (e.weather) lastPayload.weather = e.weather; }
+    skyDial.set(e.time, e.weather);
+    mm.setTime(e.time);
+    if (zone) applySky();
+    if (lastPayload && lastPayload.current_room) envLayer.update(lastPayload.current_room, lastPayload.weather);
+  });
+  // an invasion, double experience, a world boss begins or ends (web_hud.py world_event)
+  MH.bus.on('world.event', e => alerts.setEvents(e.events));
+  // a step of an ordinary quest (quests.py quest_progress): a toast, a chime when it is done
+  MH.bus.on('quest.progress', e => { hud.toast(progressText(e)); if (e.done) sound.play('quest_stage'); });
+  // the body between map payloads (web_hud.py): regeneration out of a fight, a posture taken
+  MH.bus.on('vitals', () => {
+    const p = MH.state.player;
+    if (!p) return;
+    hud.setPlayer(p);
+    body.update(p);
+    envLayer.body(p);
+    alerts.setMail(p.mail);
+    if (ctl) ctl.setPosture(p.position);
   });
   MH.bus.on('move.result', res => { if (sync) sync.onResult(res); });
   MH.bus.on('player.look', p => ents.look(p));      // another player changed gear
@@ -1337,6 +1385,15 @@ async function runGame() {
     return false;
   }
   MH.bus.on('door.update', ev => {
+    // the room card's compass: a door of the room you stand in opened, shut, locked
+    const cur = lastPayload && lastPayload.current_room;
+    if (cur) {
+      for (const d of ev.doors || []) {
+        const e = d.vnum === cur.vnum && cur.exits && cur.exits[d.dir];
+        if (e && e.door) Object.assign(e.door, { state: d.state, locked: d.locked, broken: d.broken });
+      }
+      roomCard.update(cur);
+    }
     if (!zone) return;
     let heard = false;
     for (const d of ev.doors || []) {

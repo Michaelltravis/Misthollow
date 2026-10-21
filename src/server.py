@@ -132,8 +132,8 @@ class Connection:
         
         logger.info(f"New connection from {self.address}")
         
-    async def send(self, message: str, newline: bool = True):
-        """Send a message to the client."""
+    async def send(self, message: str, newline: bool = True, kind: str = None):
+        """Send a message to the client (kind: a msgkind the line is, for a web page)."""
         try:
             if message is None:
                 return
@@ -144,7 +144,7 @@ class Connection:
             if not self.is_web:
                 message = _wrap_text(message, 80)
             elif self.state == self.STATE_PLAYING:
-                message = msgkind.mark(quest_guide.web_line(message))
+                message = msgkind.mark(quest_guide.web_line(message), kind)
             # Convert all newlines to \r\n for telnet compatibility
             message = message.replace('\r\n', '\n').replace('\n', '\r\n')
             if newline and not message.endswith('\r\n'):
@@ -737,8 +737,9 @@ class Connection:
             try:
                 from mail_system import MailManager
                 unread = MailManager.get_unread_count(self.player.name)
+                self.player.mail_unread = unread     # the page's envelope (web_hud.py)
                 if unread > 0:
-                    await self.send(f"{c['bright_yellow']}You have {unread} unread mail message{'s' if unread != 1 else ''}! Type 'mail read' to read.{c['reset']}")
+                    await self.send(f"{c['bright_yellow']}You have {unread} unread mail message{'s' if unread != 1 else ''}! Type 'mail read' to read.{c['reset']}", kind=msgkind.UI)
             except Exception:
                 pass
 
