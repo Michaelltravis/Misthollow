@@ -243,7 +243,7 @@ async def run(tmp):
     check(a is not None and a.characters == [] and save_of('Deckard') is None
           and conn.account is not None and conn.state == conn.STATE_SELECT_CHAR, '…and makes the account alone, opening its menu')
     m = re.search(r'\x1b\]ACCOUNT:(\{[^\x07]*\})\x07', out)
-    check(bool(m) and json.loads(m.group(1)) == {'account': 'deckard', 'max': 8, 'email': '', 'note': '', 'bad': False, 'chars': []},
+    check(bool(m) and json.loads(m.group(1)) == {'account': 'deckard', 'max': 8, 'email': '', 'note': '', 'bad': False, 'pending': '', 'chars': []},
           '…which a web page also gets as a hidden ACCOUNT signal')
     out = await say(conn, w, 'create', '')
     check(conn.state == conn.STATE_SELECT_CHAR and out.count('Available commands') == 1,
