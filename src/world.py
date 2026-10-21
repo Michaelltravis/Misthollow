@@ -70,6 +70,7 @@ class Room:
         self.extra_descs = {}  # keyword -> description
         self.hidden_items = []  # [{vnum, search_difficulty, requires_light, requires_detect_magic, reveal_message}, ...]
         self.puzzles = []  # Puzzle definitions for this room
+        self.zone_mechanic = None  # a hazard its zone states on it (zone_hazards.py)
         self.map = None  # its place on the zone's map, {x, y, z} (the atlas's; north is +y)
         self.stated_look = None  # a look its zone states (room_looks.py)
         self.look, self.look_why = None, None
@@ -558,6 +559,7 @@ class Room:
         room.extra_descs = data.get('extra_descs', {})
         room.hidden_items = data.get('hidden_items', [])
         room.puzzles = data.get('puzzles', [])
+        room.zone_mechanic = data.get('zone_mechanic')   # the deep, the dark (zone_hazards.py)
         room.mob_resets = data.get('mob_resets', [])
         room.obj_resets = data.get('obj_resets', [])
         room.map = data.get('map') or None
@@ -1242,6 +1244,12 @@ class World:
             await env_tick(self)
         except Exception as e:
             logger.debug(f"environment tick failed: {e}")
+        # the deep drowns, and crushes (zone_hazards.py)
+        try:
+            import zone_hazards
+            await zone_hazards.tick(self)
+        except Exception:
+            logger.exception('zone hazards tick')
 
         # Process player combat
         for player in list(self.players.values()):

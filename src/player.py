@@ -3403,8 +3403,10 @@ class Player(Character):
                 self.encore_active = False
                 await self.send(f"{c['cyan']}Your encore fades back to normal performance.{c['reset']}")
         
-        # Calculate effect multiplier
+        # Calculate effect multiplier (an encore doubles it; a worn instrument's song power adds
+        # a tenth per point: the Lyre of Orbits' 5 sings half again as strong)
         effect_mult = 2.0 if self.encore_active else 1.0
+        effect_mult *= 1 + max(0, self.get_equipment_bonus('song_power')) / 10
         
         # Apply song effects based on target type
         target_type = song.get('target', 'allies')
