@@ -6,15 +6,21 @@ the archmage's pieces and the game recolours it like any other.
 What it is and how it fits come from the spec's "kit" (tools/art3d/tripo/<name>.json):
   piece    the piece's name in the kit
   bone     the bone it is bound to wholly (handslot.r for what the right hand holds)
-  like     the KayKit mage's piece it stands in for: the new one runs along that one's long axis,
+  model    the KayKit adventurer whose rig and pieces it is measured on (Mage unless named)
+  like     that model's piece it stands in for: the new one runs along that one's long axis,
            foot to head (the head is the wider end), at its length
+  span     instead of like's ends: [foot, head] in metres along like's axis from the hand, toward
+           like's far end (a sword's point), for a piece the pack has none of (a mace, built in code
+           on the sword's mount, runs from 0.36 behind the hand to 0.91 ahead)
   budget   at most this many triangles
   colours  {key: kit palette column} the faces may take: each face takes the one whose ramp holds
-           the colour Tripo painted it nearest, at that colour's place along the ramp
+           the colour Tripo painted it nearest, at that colour's place along the ramp. A key may
+           be {"col": column, "match": [light, mid, dark]} instead: matched by what Tripo painted
+           (a charcoal wood no kit wood is), painted with the column (so it recolours as wood)
 
     tools/art3d/blender/run.sh models/tripo_prop.py --spec tripo/staff_crystal.json --preview --export
     [--src model.glb: else the kept tripo/<name>.glb]
-    -> out/tripo_<name>_preview.png (held by the KayKit mage, at rest and in a few clips) and
+    -> out/tripo_<name>_preview.png (held by the KayKit model, at rest and in a few clips) and
        out/equip/tripo_<name>.glb + .json for build.mjs equip
 """
 import json
@@ -31,8 +37,8 @@ from mhb.preview import preview
 
 ART = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..'))
 KAYKIT = os.path.join(ART, '.cache', 'kaykit-adventurers', 'addons', 'kaykit_character_pack_adventures', 'Characters',
-                      'gltf', 'Mage.glb')
-KEEP = ('Mage_Body', 'Mage_Head', 'Mage_ArmLeft', 'Mage_ArmRight', 'Mage_LegLeft', 'Mage_LegRight')
+                      'gltf', '{}.glb')
+BODY = ('Body', 'Head', 'ArmLeft', 'ArmRight', 'LegLeft', 'LegRight')
 RAMPS = json.load(open(os.path.join(ART, 'ramps.json')))
 
 
@@ -145,8 +151,11 @@ def main():
     name = f"tripo_{spec['name']}"
     src = argv[argv.index('--src') + 1] if '--src' in argv else os.path.join(ART, 'tripo', f"{spec['name']}.glb")
 
+    model = kit.get('model', 'Mage')
+    KEEP = tuple(f'{model}_{p}' for p in BODY)
+
     scene.reset()
-    bpy.ops.import_scene.gltf(filepath=KAYKIT)
+    bpy.ops.import_scene.gltf(filepath=KAYKIT.format(model))
     arm = next(o for o in bpy.data.objects if o.type == 'ARMATURE')
     # the importer leaves the rig posed in a clip's first frame (an attack): measure the piece the
     # new one stands in for at rest, where the kit binds it, or it hangs where a swinging hand is
@@ -182,10 +191,12 @@ def main():
     # what Tripo painted, matched to the kit's colours
     painted = lab(face_colours(piece))
     keys = list(kit['colours'])
-    ramps = {k: ramp_of(c) for k, c in kit['colours'].items()}
+    column = {k: c if isinstance(c, str) else c['col'] for k, c in kit['colours'].items()}
+    ramps = {k: ramp_of(c) for k, c in column.items()}
     cand, where, owner = [], [], []
     for k in keys:
-        cols, ts = ramp_samples(ramps[k])
+        c = kit['colours'][k]
+        cols, ts = ramp_samples(ramps[k] if isinstance(c, str) else c['match'])
         cand.append(lab(cols))
         where += list(ts)
         owner += [k] * len(ts)
@@ -195,11 +206,19 @@ def main():
     # stood where the KayKit piece stands: foot to foot, head to head, at its length, turned so their
     # flat sides agree
     P, L = world_points(piece), world_points(like)
+    hand = arm.matrix_world @ arm.pose.bones[kit['bone']].head
     arm.data.pose_position = 'POSE'
     pc, pa = axes(P)
     lc, la = axes(L)
     pf, ph = foot_head(P, pc, pa[0])
-    lf, lh = foot_head(L, lc, la[0])
+    if 'span' in kit:
+        t = (L - np.array(lc)) @ np.array(la[0])
+        th = (hand - Vector(lc)).dot(la[0])
+        far = la[0] if t.max() - th >= th - t.min() else -la[0]
+        grip = Vector(lc) + la[0] * th
+        lf, lh = grip + far * kit['span'][0], grip + far * kit['span'][1]
+    else:
+        lf, lh = foot_head(L, lc, la[0])
     rot = (ph - pf).normalized().rotation_difference((lh - lf).normalized()).to_matrix()
     d = (lh - lf).normalized()
     flat = lambda v: (v - d * v.dot(d)).normalized()
@@ -232,7 +251,7 @@ def main():
             filepath=path, export_format='GLB', use_selection=True, export_yup=True, export_apply=False,
             export_texcoords=True, export_normals=True, export_materials='NONE', export_skins=True,
             export_def_bones=False, export_animations=False, export_lights=False, export_cameras=False)
-        side = {'name': name, 'palette': {'cols': pal.cols, 'rows': pal.rows, 'keys': [kit['colours'][k] for k in pal.keys]},
+        side = {'name': name, 'palette': {'cols': pal.cols, 'rows': pal.rows, 'keys': [column[k] for k in pal.keys]},
                 'pieces': {piece.name: kit['bone']}, 'tris': {piece.name: tris(piece)},
                 'source': {'spec': os.path.relpath(spec_file if os.path.isabs(spec_file) else os.path.join(ART, spec_file), ART).replace(os.sep, '/')}}
         with open(os.path.join(out, f'{name}.json'), 'w') as f:
