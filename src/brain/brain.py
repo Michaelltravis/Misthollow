@@ -2,31 +2,36 @@
 (threat) and its own dice.
 
 Made the first time the creature thinks (brain.of) and kept on it as mob._brain. Its dice are a
-random.Random of its own, seeded from the creature's vnum and when it was made, so the brain's
-choices never draw on the world's random.* (the balance sims replay that one exactly).
+random.Random of its own, seeded from the creature's vnum and the order brains were made in, so
+the brain's choices never draw on the world's random.* (the balance sims replay that one exactly)
+and a scenario run the same way rolls the same.
 """
+import itertools
 import random
 import time
 from collections import deque
+
+_made = itertools.count()
 
 from .threat import ThreatTable
 
 
 class Brain:
-    __slots__ = ('mob', 'roles', 'profile', 'mode', 'threat', 'rng', 'decisions', 'encounter', 'born', 'last_target')
+    __slots__ = ('mob', 'roles', 'profile', 'mode', 'threat', 'rng', 'decisions', 'encounter', 'born', 'last_target', 'chase')
 
     def __init__(self, mob):
         from . import roles as roles_mod, profile as profile_mod
         self.mob = mob
         self.roles = roles_mod.roles_for(mob)
         self.profile = profile_mod.resolve(mob, self.roles)
-        self.mode = 'legacy'
+        self.mode = 'idle'                   # idle, alert, pursue, return, investigate (pursuit.py)
         self.threat = ThreatTable()
         self.born = time.time()
-        self.rng = random.Random(hash((getattr(mob, 'vnum', 0), id(mob))))
+        self.rng = random.Random((int(getattr(mob, 'vnum', 0) or 0) * 1000003) ^ next(_made))
         self.decisions = deque(maxlen=5)     # (when, what, score, why), newest last
         self.encounter = {}                  # cooldowns and once-a-fight flags, cleared on reset
         self.last_target = None              # the target it last chose (targeting.py)
+        self.chase = {}                      # noticing, chasing, going home (pursuit.py): outlives a fight
 
     def note(self, what, score=None, why=''):
         self.decisions.append((time.time(), what, score, why))
@@ -39,7 +44,11 @@ class Brain:
     def describe(self) -> list:
         """Lines for the immortal "brain" command."""
         m, p = self.mob, self.profile
-        out = [f"{getattr(m, 'name', m)} (vnum {getattr(m, 'vnum', '?')})  mode {self.mode}",
+        q = self.chase.get('quarry') or self.chase.get('alert')
+        home = self.chase.get('from')
+        out = [f"{getattr(m, 'name', m)} (vnum {getattr(m, 'vnum', '?')})  mode {self.mode}"
+               + (f" after {getattr(q, 'name', q)}" if q is not None else '')
+               + (f", home room {getattr(home, 'vnum', '?')}" if home is not None else ''),
                f"  tier {p.get('tier')}  rank {p.get('rank')}  roles {', '.join(sorted(self.roles)) or '-'}"]
         keys = ('leash_rooms', 'chase_secs', 'assist_rooms', 'assist_count', 'target_stickiness',
                 'focus_healers', 'cc_chain', 'windup_action_s', 'room_windup_cap')

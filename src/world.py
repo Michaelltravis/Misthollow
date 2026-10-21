@@ -1574,6 +1574,7 @@ class World:
         from brain import scheduler
         self._npc_tick = (getattr(self, '_npc_tick', 0) + 1) % self.NPC_SLEEP_EVERY
         awake = self._awake_zones()
+        self._awake_now = awake            # (brain/pursuit.py: only here is anyone to be seen)
         t0, thought = time.perf_counter(), 0
         for i, npc in enumerate(list(self.npcs)):
             if not scheduler.due(npc, i, self._npc_tick, awake, self.NPC_SLEEP_EVERY):     # (brain/scheduler.py)

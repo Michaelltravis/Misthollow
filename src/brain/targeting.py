@@ -23,16 +23,22 @@ OVERRIDE_SECS = 3.0      # about a round
 RETURN_GRACE = 6.0       # out of a fight this long, a creature forgets it (two rounds)
 
 
+_OWNED_KINDS = None
+
+
 def owned(ch) -> bool:
     """A player's creature: a pet, a hired companion, a raised servant."""
+    global _OWNED_KINDS
     if getattr(ch, 'owner', None) is not None:
         return True
-    try:
-        from pets import Pet
-        from companions import Companion
-        return isinstance(ch, (Pet, Companion))
-    except Exception:
-        return False
+    if _OWNED_KINDS is None:
+        try:
+            from pets import Pet
+            from companions import Companion
+            _OWNED_KINDS = (Pet, Companion)
+        except Exception:
+            return False
+    return isinstance(ch, _OWNED_KINDS)
 
 
 def players_side(ch) -> bool:

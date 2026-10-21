@@ -298,6 +298,8 @@ export class CombatView {
       case 'oor': return this.isHero(e.src) && this.onOutOfRange && this.onOutOfRange(e);   // only our own
       case 'fizzle': return this.fizzle(e);
       case 'aggro': return this.aggro(e);
+      case 'alert': return this.mark(e, '!', '#ffd23c');
+      case 'lost': return this.mark(e, '?', '#b8b0c8');
       case 'proc': return this.proc(e);
       case 'fade': return this.fade(e);
       case 'xp': case 'gold': case 'rep': return this.reward(e);
@@ -412,6 +414,15 @@ export class CombatView {
     if (dst) this.face(src, dst);
     const p = this.chest(src).add(new THREE.Vector3(0, 0.9, 0));
     this.fx.text(p, '!', { color: '#ff5a3c', size: 22, rise: 0.5, life: 0.9 });
+  }
+  // a creature notices someone (brain/pursuit.py: a yellow "!", turned to face them) or loses the
+  // trail (a grey "?")
+  mark(e, glyph, color) {
+    const src = this.resolve(e.src), dst = this.resolve(e.dst);
+    if (!src) return;
+    if (dst) this.face(src, dst);
+    const p = this.chest(src).add(new THREE.Vector3(0, 0.9, 0));
+    this.fx.text(p, glyph, { color, size: 24, rise: 0.5, life: 1.2 });
   }
   fizzle(e) {
     const src = this.resolve(e.src);

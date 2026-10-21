@@ -75,7 +75,7 @@ Each phase ships as its own pull request, behind its flag in `world/ai_profiles.
 | 0 | The brain in place, running the old rules unchanged; profiles, scoring, threat table, scheduler, debug commands; `ai.py` gone | none | done |
 | 1a | Threat and targeting: damage and healing make threat; a real `taunt` for warriors and paladins; Commanding Shout and rescue fixate; healers heal only their own side; pets get a companion profile | `threat` | on |
 | 1b | Tactics: creatures cast real spells; abilities cool down instead of happening once a life; heals that can be interrupted; Disrupt aimed at your healer; crowd control creatures **learn** (a school used again is resisted more, and they say so); **breakouts** (`rouse` a stunned friend, fire burns away roots and webs, damage wakes a sleeper) | `tactics` | on |
-| 2a | Awareness and pursuit: sight, hearing, invisibility; a path that opens, unlocks or breaks doors; every creature chases, leashes and walks home; bosses attack on sight and reset | `pursuit` | |
+| 2a | Awareness and pursuit: sight, hearing, invisibility; a path that opens, unlocks or breaks doors; every creature chases, leashes and walks home; bosses attack on sight and reset | `pursuit` | on |
 | 2b | Calling for help as one rule; trains in brutal zones; fleeing toward friends and coming back | `social` | |
 | 3 | A living world: sleep, food, territory, predators and prey, scavengers, townsfolk who run and fetch the watch, real shop hours | `life` | |
 | 4 | Conversation: NPCs remember you, answer by faction and deed, the LLM given what the brain knows | `talk` | |
@@ -129,9 +129,9 @@ every creature in the room into the fight, shopkeepers and pets included.
 
 **Measured** (`scenarios.py threat`: warrior, cleric and mage at level 30 against 3 regulars, an
 elite and 2, and boss 10050):
-- A taunting tank takes 97% of the creatures' blows in a readable zone and 95% in a brutal one.
-  The healer takes 3–5%.
-- Readable creatures switch 0.4 times a minute, brutal ones 1.8.
+- A taunting tank takes 96% of the creatures' blows in a readable zone and 100% in a brutal one.
+  The healer takes 0–4%.
+- Creatures switch target 0.7 times a minute, with no dithering.
 - With no taunts and heavy healing, a creature turns on the healer within 7 s.
 - `bosses.py` on 5 bosses: a lone hero's median worst health is 33% with threat on and off.
 
@@ -210,15 +210,94 @@ the same to the byte) and gives everyone else an answer.
 
 **Measured** (`scenarios.py tactics`, a warrior, cleric and mage at level 30 against a caster, a
 healer and an elite captain):
-- Answering every wind-up, 0–10% of the interruptible ones still land.
+- Answering every wind-up, 0–7% of the interruptible ones still land.
 - Every special that landed was warned of first.
 - With nobody interrupting, no player was ever held more than the zone allows in 18 s.
 - A mage sleeping 60 fresh creatures four times each lands:
 
   | Tier | Try 1 | Try 2 | Try 3 | Try 4 | Then entangle |
   |---|---|---|---|---|---|
-  | readable | 100% | 88% | 73% | 55% | 100% |
-  | brutal | 100% | 65% | 58% | 53% | 100% |
+  | readable | 100% | 93% | 72% | 52% | 100% |
+  | brutal | 100% | 82% | 50% | 48% | 100% |
+
+  (Each brain's dice are seeded from its creature and the order brains were made in, so a
+  scenario run the same way rolls the same.)
+
+## Phase 2a: awareness and pursuit
+
+Before, a creature saw only its own room (and, for /play players, the next room's near edge).
+It attacked a random player there after a random wait, and stood down the moment its foe stepped
+out. Only four creatures in the world could chase; nothing opened a door; bosses never attacked
+on sight. Now:
+
+**Eyes and ears** (`brain/perception.py`):
+- **Sight:** a creature sees its own room, and anyone in a room joined to it by an open way within
+  the profile's `sight_m` (readable 16 m, brutal 22 m).
+  - Distance is measured on the zone map for /play players. Telnet players count as half a room
+    away (12 m) instead of the rooms' centres.
+  - Dark halves the range. Nothing is seen through a closed door, or by a creature that is
+    asleep or blind.
+- **Invisible** players are seen only by a creature that detects invisibility or is `aware`.
+- **Hiders and sneakers:** one roll, the old one, now also across rooms and remembered for 5 s.
+  A spotted hider is revealed. An `aware` creature adds 25 to its eyes.
+- **Hostile on sight:**
+  - `aggressive` (or `hostile`);
+  - `aggr_good`, `aggr_evil` or `aggr_neutral` by the player's alignment, flags the data always
+    had and nothing read;
+  - a faction that hates the player;
+  - a `memory` creature (219 in the data) with a grudge less than 10 minutes old.
+  - Never a `no_attack` creature, a servant, anyone's pet, or an immortal it must leave alone.
+    Never in a peaceful room, and in a city never someone more than five levels below it.
+- **Hearing:** a fight or a door being pounded within `hear_rooms` (a closed door counts as an
+  extra room). It investigates only where the profile says so: brutal zones, plus `aware`,
+  `hunter` and `tracker` creatures anywhere.
+
+**The way** (`brain/path.py`): a cheapest-route search through the rooms, doors and all.
+- A creature with hands opens a door; one carrying the key unlocks it.
+- A brute (the big ones in a readable zone; in a brutal zone any humanoid of level 20 or more)
+  pounds a door down. It takes at least three blows, so the far side hears two BOOMs before the
+  door gives.
+- A wolf can't open a door at all.
+- No creature passes a door bound by magic, a barricade or a Block Door seal, a peaceful room, a
+  room creatures keep out of, or its home zone's border. In a readable zone it won't chase into a
+  city's streets.
+
+**Chasing** (`brain/pursuit.py`):
+- **Noticing:** idle → alert, a yellow "!" over it, turned to face you. It attacks after a beat
+  (0.6–1.5 s) in its own room, or charges after a full second across an open way.
+- **Pursuing:** a step every `move_secs` (readable 1.6 s, brutal 1.1 s: slower than someone
+  running in a readable zone, faster in a brutal one), opening, unlocking or pounding doors on
+  the way. A foe who flees or steps out of the fight is chased the same way.
+- **Losing you:** out of sight for more than 4 s, each step rolls `chase_persistence` (0.5,
+  brutal 0.85). Swept tracks lose it faster. Then a grey "?", "loses the trail".
+- **The leash:** `leash_rooms` from where the chase began (3, brutal 7), or `chase_secs` (30 s,
+  brutal 90 s). Then it gives up and walks home, healed when it gets there, and leaves you alone
+  for 30 s.
+- **Staying put:** a sentinel, a servant or any boss never leaves its post. It waits a moment,
+  then resets, healed and forgetting the fight. Bosses now notice who walks in, as their
+  `aggressive` flag always said.
+- The old hunter, aggression and charge-next-door code stands aside while `pursuit` is on (it
+  is still there for `MH_BRAIN_OFF=pursuit`). The hunters' one-room-every-0.3-s bug goes with it.
+
+**Measured** (`scenarios.py pursuit`: a row of eight rooms with a door, and a border):
+
+| Check | Readable | Brutal |
+|---|---|---|
+| S2 kiter (a room a second) | chased 2 rooms (leash 3), home healed in 2 s | caught them at the arena's end (leash 7, longer than the arena) |
+| S3 fleeing on foot (a room every 1.3 s), 20 tries | escaped 100% | caught 100% |
+| S3 crossed the zone border | never | never |
+| S4 sneak 60 / sneak 100 / aware creature / invisible | 100% / 23% / 100% / never | same |
+| S4 the "!" across an open way, before the attack | 1.1 s | 1.1 s |
+| S5 a raider opens the shut door | after 4.1 s | after 3.6 s |
+| S5 a wolf | gives up | gives up |
+| S5 an ogre at a locked door | two BOOMs, then through | same |
+| S5 a jailer with the key | unlocks it quietly | same |
+| S5 a door bound by magic | holds | holds |
+
+**Cost:** with a player in zone 54 (641 creatures thinking every tick), thinking takes 1.17× the
+time it did without the brain (about 3.1 ms a tick against 2.6). The first cut cost 3×. Two
+changes brought it down: a creature that could never be hostile (or has no player in its zone or
+the next) doesn't look at all, and a chasing creature works nothing out between its steps.
 
 ## Checks
 
@@ -233,9 +312,14 @@ healer and an elite captain):
   prayers, Disrupt, interrupt's reach, the zone's wind-up, learning and forgetting, rouse, fire
   and blows breaking holds, once-a-fight abilities, archers, `MH_BRAIN_OFF=tactics`).
 - `python3 tools/balance/scenarios.py tactics --check`: S7, above.
+- `python3 tests/test_brain_pursuit.py`: phase 2a's rules (hostile on sight, sight and its limits,
+  the way through doors and where it never goes, bosses resetting, sentinels, hearing, following
+  a foe who fled, `MH_BRAIN_OFF=pursuit`).
+- `python3 tools/balance/scenarios.py pursuit --check`: S2–S5, above.
 - `python3 tests/test_brain_parity.py`: with every feature off (`MH_BRAIN_OFF`),
   `tools/balance/sim.py` (rounds and real time) and `bosses.py` print the same to the byte as
   with no brain at all. `zones.py` can't be held to
   that: it gives a different answer from run to run on the same code, brain or none.
 - `python3 tools/balance/scenarios.py cadence --compare --check`: a player in zone 54 for a while;
-  moves, fights and thinking a tick agree with the brain on and off, and so does the time it takes.
+  moves, fights and thinking a tick agree with the brain on and off, and the time it takes stays
+  within 1.4× (measured 1.17×).
