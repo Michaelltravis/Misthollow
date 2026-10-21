@@ -303,7 +303,8 @@ async def unbroken_banner(player, args):
         if d is None or d <= 4.0:
             if _control(player, foe, 'stun', 1) == 'stun':
                 reeled += 1
-        foe.fighting = player
+        import brain
+        brain.taunted(foe, player, _rounds(2))      # (held on the warrior a while: brain/)
     # five rounds beside the banner: harder blows (on creatures), shaken off stuns and fear, health back
     until = time.time() + _rounds(5)
     for ally in _allies(player):

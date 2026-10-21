@@ -832,9 +832,14 @@ async def do_rally(player, args: list):
     
     # Taunt
     if taunt and player.room:
-        for mob in player.room.characters:
-            if mob != player and hasattr(mob, 'fighting') and not hasattr(mob, 'connection'):
-                mob.fighting = player
+        import brain
+        if brain.on('threat'):
+            for mob in brain.enemies_of(player):     # those fighting your side (brain/)
+                brain.taunted(mob, player, 6.0)
+        else:
+            for mob in player.room.characters:
+                if mob != player and hasattr(mob, 'fighting') and not hasattr(mob, 'connection'):
+                    mob.fighting = player
         await player.send(f"{c['yellow']}You taunt all enemies!{c['reset']}")
     
     # Eternal guardian death save

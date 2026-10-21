@@ -1322,9 +1322,12 @@ class World:
             if npc.is_fighting:
                 # Check if target is still valid
                 if npc.fighting is None or npc.fighting.hp <= 0 or (hasattr(npc.fighting, 'room') and npc.fighting not in npc.room.characters):
-                    npc.fighting = None
-                    npc.position = 'standing'
-                    continue
+                    # the next in its threat table who is still here, else the fight is over (brain/)
+                    import brain
+                    if await brain.next_target(npc) is None:
+                        npc.fighting = None
+                        npc.position = 'standing'
+                        continue
                 # Run intelligent mob AI before the auto-attack round
                 try:
                     await mob_ai_tick(npc)

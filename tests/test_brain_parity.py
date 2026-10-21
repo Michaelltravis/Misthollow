@@ -1,6 +1,7 @@
-"""The brain changes nothing it has not been told to (phase 0, and every feature left off since):
-the balance sims, which seed random and drive the real mob_ai and bosses code, print the same
-thing to the byte with the brain on and with it off (MH_BRAIN=0).
+"""The brain changes nothing it has not been told to: with every feature turned off
+(MH_BRAIN_OFF=threat,...) the balance sims, which seed random and drive the real mob_ai and bosses
+code, print the same thing to the byte as with no brain at all (MH_BRAIN=0). So turning a
+feature off in world/ai_profiles.json gives back the old rules exactly.
 
     python3 tests/test_brain_parity.py          # about a minute and a half
 
@@ -26,8 +27,11 @@ RUNS = [
 ]
 
 
+FEATURES = 'threat,tactics,pursuit,social,life,talk'
+
+
 def run(args, brain_on):
-    env = dict(os.environ, MH_BRAIN='1' if brain_on else '0', PYTHONHASHSEED='0')
+    env = dict(os.environ, MH_BRAIN='1' if brain_on else '0', MH_BRAIN_OFF=FEATURES, PYTHONHASHSEED='0')
     r = subprocess.run([sys.executable] + args, cwd=ROOT, env=env, capture_output=True, text=True, timeout=900)
     return r.returncode, r.stdout
 
@@ -42,7 +46,7 @@ def main():
                 if a != b:
                     print(f'     brain on : {a}\n     brain off: {b}')
                     break
-        check(bool(same), f'{what}: the same to the byte with the brain on and off ({len(on.splitlines())} lines)')
+        check(bool(same), f'{what}: the brain with its features off and no brain at all, the same to the byte ({len(on.splitlines())} lines)')
     print(f"\n{'ALL OK' if not failures else f'{len(failures)} FAILED'}")
     sys.exit(1 if failures else 0)
 

@@ -102,7 +102,9 @@ async def load_world():
     no_saves()
     import combat_hooks
     import mastery
+    import brain
     combat_hooks.install()
+    brain.install()               # (the threat hooks, as main.py has them)
     mastery.install()
     return world
 

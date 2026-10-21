@@ -1,6 +1,6 @@
 {
   "why": "How clever a creature fights, by how hard its zone is and its rank (src/brain/profile.py, docs/MOB_AI.md). A zone's tier comes from the median level of its creatures (zone_tiers.by_level); a population file can name one instead ({\"ai\": {\"tier\": \"brutal\"}}), and a creature can carry its own roles and numbers ({\"ai\": {\"roles\": [...], \"profile\": {...}}}). The floors only ever make things gentler than the code's own limits (brain/profile.py INVARIANTS), never harsher. A feature left false keeps the old behaviour.",
-  "features": {"threat": false, "tactics": false, "pursuit": false, "social": false, "life": false, "talk": false},
+  "features": {"threat": true, "tactics": false, "pursuit": false, "social": false, "life": false, "talk": false},
   "floors": {"windup_action_s": 1.2, "room_windup_cap_max": 4, "leash_rooms_max": 10, "chase_secs_max": 120, "train_cap": 6},
   "zone_tiers": {"by_level": [[0, "gentle"], [9, "readable"], [45, "brutal"]]},
   "tiers": {

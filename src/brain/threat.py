@@ -5,10 +5,34 @@ FIXATES: for a few seconds the taunter is the target whatever the numbers say. E
 the character itself (a name is not unique between a player and a creature), and forgotten when
 the character dies or leaves the fight.
 
-Phase 0 keeps the table and shows it (the immortal "brain" command); nothing reads it to choose
-a target yet (features.threat, phase 1a).
+Who adds how much (features.threat; brain.install hooks them up):
+- a blow or a spell that hurts the creature: the damage dealt, times the attacker's CLASS_MOD
+  (a warrior's blows count half again, an Iron Wall warrior's twice; a thief's less; a pet's
+  three times, so a necromancer's servant still holds what it fights);
+- healing someone the creature is fighting: HEAL_SHARE of the health restored, shared among the
+  creatures fighting the one healed;
+- a taunt (taunt, Commanding Shout, Rally's evolutions, the Unbroken Banner, rescue): above the
+  top, and held a while.
+Entries fade by DECAY_PER_SEC, so the opening blows don't decide a long fight on their own.
 """
 import time
+
+CLASS_MOD = {'warrior': 1.5, 'paladin': 1.3, 'thief': 0.8, 'assassin': 0.8}
+IRON_WALL = 2.0          # a warrior of the Iron Wall doctrine (warrior_abilities.DOCTRINES)
+PET = 3.0                # a player's creature hounds what it fights: a necromancer's servant holds it
+HEAL_SHARE = 0.5         # threat per point of health healed on a foe of the creature
+DECAY_PER_SEC = 0.006    # about a fifth gone in a minute of fighting
+
+
+def threat_mod(ch) -> float:
+    """How much a character's damage counts for (players by class, a player's creature PET)."""
+    if not hasattr(ch, 'connection'):
+        from .targeting import owned
+        return PET if owned(ch) else 1.0
+    cls = str(getattr(ch, 'char_class', '') or '').lower()
+    if cls == 'warrior' and getattr(ch, 'war_doctrine', None) == 'iron_wall':
+        return IRON_WALL
+    return CLASS_MOD.get(cls, 1.0)
 
 
 class ThreatTable:
@@ -18,6 +42,14 @@ class ThreatTable:
         self._threat = {}            # character -> threat
         self.fixated_on = None
         self.fixated_until = 0.0
+        self._faded_at = None
+
+    def fade(self, now=None):
+        """Decay by the time since the last fade (DECAY_PER_SEC)."""
+        now = time.time() if now is None else now
+        if self._faded_at is not None and now > self._faded_at:
+            self.decay(min(1.0, DECAY_PER_SEC * (now - self._faded_at)))
+        self._faded_at = now
 
     def __len__(self):
         return len(self._threat)
@@ -41,6 +73,7 @@ class ThreatTable:
     def clear(self):
         self._threat.clear()
         self.fixated_on, self.fixated_until = None, 0.0
+        self._faded_at = None
 
     def decay(self, share):
         """Let every entry fade by `share` (0..1), dropping those that are next to nothing."""

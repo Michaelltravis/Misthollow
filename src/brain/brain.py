@@ -13,7 +13,7 @@ from .threat import ThreatTable
 
 
 class Brain:
-    __slots__ = ('mob', 'roles', 'profile', 'mode', 'threat', 'rng', 'decisions', 'encounter', 'born')
+    __slots__ = ('mob', 'roles', 'profile', 'mode', 'threat', 'rng', 'decisions', 'encounter', 'born', 'last_target')
 
     def __init__(self, mob):
         from . import roles as roles_mod, profile as profile_mod
@@ -26,6 +26,7 @@ class Brain:
         self.rng = random.Random(hash((getattr(mob, 'vnum', 0), id(mob))))
         self.decisions = deque(maxlen=5)     # (when, what, score, why), newest last
         self.encounter = {}                  # cooldowns and once-a-fight flags, cleared on reset
+        self.last_target = None              # the target it last chose (targeting.py)
 
     def note(self, what, score=None, why=''):
         self.decisions.append((time.time(), what, score, why))
@@ -33,6 +34,7 @@ class Brain:
     def reset_encounter(self):
         self.encounter.clear()
         self.threat.clear()
+        self.last_target = None
 
     def describe(self) -> list:
         """Lines for the immortal "brain" command."""

@@ -595,10 +595,17 @@ async def _healer_tick(mob, target):
     # Find the most wounded ally (non-player NPC in same room, fighting)
     best_ally = None
     best_pct = 1.0
+    import brain
+    own_side = brain.on('threat')        # (brain/: never a player's pet, nor one it fights)
+    if own_side:
+        from brain.targeting import players_side
     for char in mob.room.characters:
         if char == mob or hasattr(char, 'connection'):
             continue
         if not char.is_alive:
+            continue
+        if own_side and (players_side(char) or getattr(char, 'fighting', None) is mob
+                         or 'charmed' in (getattr(char, 'affect_flags', None) or ())):
             continue
         pct = char.hp / max(1, char.max_hp)
         if pct < best_pct and pct < 0.7:

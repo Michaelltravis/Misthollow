@@ -2751,10 +2751,27 @@ HELP_TOPICS = {'auction': {'category': 'command',
                            '\n'
                            'MECHANICS:\n'
                            '- Success scales with rescue skill, STR/DEX, and stance\n'
-                           '- On success: attacker switches to you\n'
+                           '- On success: attacker switches to you, and stays on you about a round\n'
                            '- Short cooldown between attempts\n',
             'syntax': 'rescue',
             'title': 'Rescue'},
+ 'taunt': {'category': 'skill',
+           'classes': ['paladin', 'warrior'],
+           'description': '\n'
+                          'Draw a creature off your friends and onto yourself.\n'
+                          '\n'
+                          'MECHANICS:\n'
+                          '- In a fight: the creature (the one you fight, or one fighting your side)\n'
+                          '  turns on you and is held about 6 seconds (4 for a boss)\n'
+                          '- You go to the top of its hatred: it stays on you unless someone\n'
+                          '  clearly out-hurts or out-heals you\n'
+                          '- 8 second cooldown\n'
+                          '\n'
+                          "Creatures remember who hurts them: a warrior's blows count half again\n"
+                          "(an Iron Wall warrior's twice), and healing those they fight draws their\n"
+                          'eye to the healer. Out of a fight, or for other classes, taunt is a social.\n',
+           'syntax': 'taunt [creature]',
+           'title': 'Taunt'},
  'rest': {'category': 'command', 'description': 'Rest to regenerate faster.', 'syntax': 'rest', 'title': 'Rest'},
  'restore': {'category': 'command',
              'description': 'Fully restore HP/mana/move for self or a target (immortal only).\n'
@@ -3622,7 +3639,7 @@ HELP_TOPICS = {'auction': {'category': 'command',
      'title': 'Commanding Shout',
      'description': 'Let out a commanding shout that taunts all enemies in the room.\n\n'
                     'MECHANICS:\n'
-                    '- Forces all enemies to attack you\n'
+                    '- Forces every creature fighting your side to attack you\n'
                     '- Taunt lasts 12 seconds\n'
                     '- 30 second cooldown\n\n'
                     'REQUIREMENTS:\n'
