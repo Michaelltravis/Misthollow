@@ -64,6 +64,12 @@ class Misthollow:
             combat_hooks.install()
         except Exception as e:
             logger.error(f"combat hooks not installed: {e}")
+        # Mob brains: the immortal "brain" and "brainstat" commands (brain/, docs/MOB_AI.md)
+        try:
+            import brain
+            brain.install()
+        except Exception as e:
+            logger.error(f"mob brains not installed: {e}")
         # The marquee abilities (one per class, earned through a quest): their commands must
         # exist before mastery.install() wraps every class ability
         try:

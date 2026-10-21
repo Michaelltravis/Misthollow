@@ -188,6 +188,8 @@ There are 84 modules. The systems, and where they live:
   - `waves`: servants at thresholds;
   - `gloom`: the room darkens as the boss weakens.
 - **Creature behaviour:**
+  - **Brains** (`brain/`, [docs/MOB_AI.md](MOB_AI.md)): every creature thinks through one brain,
+    as clever as its zone's tier (gentle, readable, brutal) and its rank make it.
   - **Patrols** (`mobs.patrol_ai`) walk a route.
   - **Helpers** (`allies.py`): kin within a room or two come when one is attacked.
   - **Ranks:** regular, elite, sub-boss.
@@ -250,6 +252,7 @@ The owner's requests and what each became:
 |---|---|
 | `world/population/zone_<n>.json` | Who lives where in a zone (see below). Applied at load, so it survives rebuilds. |
 | `world/grants.json` | One-time gifts to named characters: `mounts`, `ride`, `explore_all`, `waypoints_all`, `room`, `gearup`, `immortal`, `gold`. Each part is given once; edit to add more. |
+| `world/ai_profiles.json` | How clever creatures fight: each tier's numbers (gentle, readable, brutal), ranks, roles, and which brain features are on ([docs/MOB_AI.md](MOB_AI.md)). |
 | `world/looks.json` | Pins a room's or zone's look (cave, crypt, forest…) when the classifier is wrong. |
 | `world/buildout/` | The hand-written build-out of connector rooms (descriptions, creatures, items), merged by `tools/atlas/build_world.py`. |
 | `world/marquee/`, `world/quests/` | Class marquee quests and quest data. |
@@ -260,7 +263,9 @@ The owner's requests and what each became:
 - `creatures`: new prototypes with `rank` (regular, elite, sub-boss) and `helpers`
   ({group, rooms, count});
 - `spawns`: which rooms each creature appears in;
-- `patrols`: routes to walk.
+- `patrols`: routes to walk;
+- `ai`: the zone's tier (`{"tier": "brutal"}`), and on a creature its own brain roles and numbers
+  (`{"roles": ["caster"], "profile": {"leash_rooms": 0}}`).
 
 **Immortal commands added or changed:**
 
@@ -269,6 +274,8 @@ The owner's requests and what each became:
 | `ambient` / `ambient now` | Shows a room's place tags; sends a murmur now |
 | `givemount <who> <mount>` | Gives a mount and puts them on it |
 | `gearup <who>` | The endgame kit, of the class's own kind |
+| `brain <creature>` | Its tier, rank, roles, profile numbers, threat table and last decisions |
+| `brainstat [reset]` | How long the creatures' thinking takes per tick |
 | `goto`, `set`, `slay`, `oload`, `restore` | As before |
 
 ---

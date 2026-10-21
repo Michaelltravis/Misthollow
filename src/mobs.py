@@ -169,7 +169,7 @@ class Mobile(Character):
         self.home_zone = None  # Zone number this mob belongs to
         self.ai_config = {}  # AI configuration (patrol routes, behaviors, etc.)
         self.ai_state = {}  # Runtime AI state (patrol index, buffed status, etc.)
-        self.ai_controller = None  # AIController instance
+        self.ai_data = {}  # the brain's roles and numbers from a population file (brain/profile.py)
         
         # Hunting AI state
         self.grudge_list = {}  # {player_name: {'target': player, 'time': timestamp, 'damage': total_damage}}
@@ -293,13 +293,10 @@ class Mobile(Character):
         mob.min_rep_shop = proto.get('min_rep_shop')
         mob.min_rep_shop_level = proto.get('min_rep_shop_level')
 
-        # Load AI configuration
+        # Load AI configuration (ai_config: an NPC's greeting and topics; ai: the brain's roles and
+        # numbers from a population file, brain/profile.py)
         mob.ai_config = proto.get('ai_config', {})
-
-        # Create AI controller if AI config exists
-        if mob.ai_config:
-            from ai import AIController
-            mob.ai_controller = AIController.create_from_config(mob, mob.ai_config)
+        mob.ai_data = proto.get('ai') or {}
 
         # Load equipment
         equipment_data = proto.get('equipment', {})
@@ -509,19 +506,19 @@ class Mobile(Character):
         self.loot_chance = 50 if is_boss else 20
             
     async def process_ai(self):
-        """Process mob AI behaviors."""
+        """Process mob AI behaviors: the creature's brain decides (brain/think_idle)."""
         if not self.is_alive:
             return
 
         if self.position in ('sleeping', 'stunned', 'incapacitated'):
             return
 
-        # Use advanced AI controller if available
-        if self.ai_controller:
-            await self.ai_controller.process()
-            return
+        import brain
+        await brain.think_idle(self)
 
-        # Otherwise, use simple fallback AI
+    async def legacy_idle_ai(self):
+        """The rules a creature lived by out of a fight before the brain (brain/legacy.py): each
+        phase of docs/MOB_AI.md moves a part of them into the brain."""
         # While fighting, combat actions are owned EXCLUSIVELY by mob_ai_tick
         # (world.combat_tick, once per 4s round). process_ai runs every 0.1s
         # tick, so calling combat_ai here rolled specials/spells ~10x/sec on

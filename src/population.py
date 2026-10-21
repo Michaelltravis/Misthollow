@@ -122,6 +122,10 @@ def apply(world, data=None) -> list:
     """Place the bosses and lock the doors; returns what could not be done."""
     problems = []
     for z, d in (data if data is not None else load()).items():
+        # how clever its creatures fight ({"tier": "brutal"}; brain/profile.py)
+        zone = (getattr(world, 'zones', None) or {}).get(int(z))
+        if zone is not None and d.get('ai'):
+            zone.ai = d['ai']
         # the zone's own items (prototypes, as the build-out makes them: words, level and kind;
         # the numbers from item_numbers). Its creatures carry or drop them by vnum.
         for v, it in (d.get('items') or {}).items():
