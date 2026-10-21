@@ -475,7 +475,8 @@ class Room:
                 import doors
                 door = doors.unsealed_door(e)
                 if door:
-                    ex['door'] = door
+                    # (its material and magic come from doors.json at load; a seal is for now)
+                    ex['door'] = {k: v for k, v in door.items() if k not in doors.NOT_SAVED}
                 else:
                     ex.pop('door')
             ex.pop('_unsealed_door', None)

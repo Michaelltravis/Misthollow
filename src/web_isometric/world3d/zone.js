@@ -293,7 +293,7 @@ export class Zone {
     d.closed = info.state === 'closed';
     d.locked = !!info.locked;
     d.broken = !!info.broken;
-    for (const k of ['label', 'has_key', 'can_pick', 'keyless', 'key_name', 'sealed', 'barricaded']) if (k in info) d[k] = info[k];
+    for (const k of ['label', 'has_key', 'can_pick', 'keyless', 'key_name', 'sealed', 'barricaded', 'material', 'arcane', 'can_block', 'can_break']) if (k in info) d[k] = info[k];
     const mesh = room.built && room.built.doors && room.built.doors[dir];
     if (mesh) {
       mesh.userData.setOpen(!d.closed);

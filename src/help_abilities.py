@@ -260,6 +260,13 @@ SPELL_PROSE = {
                 "unpredictable destination.",
     'resurrect': "Raises a dead player and restores lost experience. Cast it on a "
                  "corpse to bring an ally back.",
+    'block_door': "Weaves glowing sigils across a closed door: no one opens it for a few "
+                  "minutes (longer as you grow), and only great force breaks through. Slam it on "
+                  "pursuers, or hold a doorway shut. From the bar it seals the room's one closed "
+                  "door; otherwise name the way (cast 'block door' north).",
+    'break_door': "Strikes a closed door with holy force. A wooden door bursts at once; oak, "
+                  "iron and stone take more than one casting, and doors bound by old magic "
+                  "(wizards' towers, some temples) do not break at all. Breaks a mage's seal too.",
     'identify': "Reveals an item's hidden statistics and properties. Cast it before "
                 "deciding what to wear or sell.",
     'enchant_weapon': "Permanently augments a weapon with bonus to-hit and damage. "
