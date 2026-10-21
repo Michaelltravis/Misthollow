@@ -744,8 +744,8 @@ class Mobile(Character):
             if not ex or ex.get('room') is not target.room or 'door' not in ex:
                 continue
             door = ex['door']
-            if door.get('state') != 'closed':
-                continue
+            if door.get('state') != 'closed' or door.get('arcane'):
+                continue           # (an arcane door holds against any force: doors.py)
             from commands import CommandHandler
             c = self.config.COLORS
             max_hp = CommandHandler._door_max_hp(door)

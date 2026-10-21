@@ -386,24 +386,28 @@ SPELLS = {
     },
 
     # Door spells
-    'break_door': {
+    # Door spells (doors.py: what a door is made of decides how much force breaks it)
+    'break_door': {   # clerics: holy force against a closed door; strong doors take more than one
         'name': 'Break Door',
         'mana_cost': 40,
         'target': 'door',
         'special': 'break_door',
-        'message_self': 'You unleash magical force at the door!',
-        'message_room': '$n unleashes magical force at the door!',
-        'level_required': 8,
+        'message_self': 'You call down holy force upon the door!',
+        'message_room': '$n calls down holy force upon the door!',
+        'level_required': 19,
+        'description': 'Strike a closed door with holy force. A wooden door bursts at once; oak, iron and '
+                       'stone take more than one casting, and doors bound by old magic do not break at all.',
     },
-    'block_door': {
+    'block_door': {   # mages: a glowing seal no hand opens for a few minutes
         'name': 'Block Door',
         'mana_cost': 50,
         'target': 'door',
-        'duration_ticks': 600,  # 10 minutes
         'special': 'block_door',
-        'message_self': 'You seal the door with magical energy!',
-        'message_room': '$n seals the door with magical energy!',
-        'level_required': 10,
+        'message_self': 'You weave a seal across the door!',
+        'message_room': '$n weaves a glowing seal across the door!',
+        'level_required': 19,
+        'description': 'Seal a closed door with arcane sigils for a few minutes (longer as you grow): no one '
+                       'opens it, and only great force breaks through.',
     },
 
     # Additional Mage Spells
@@ -1988,9 +1992,22 @@ class SpellHandler:
             
         # Get target
         target = await cls.get_target(caster, spell, target_name)
+        if target is None and spell.get('target') == 'door':
+            import doors
+            shut = [d for d, _ex, door in doors.doors_in(getattr(caster, 'room', None)) if door.get('state') == 'closed']
+            ask = (f"Cast {spell.get('name', spell_name)} on which door? Name its way: "
+                   f"cast '{spell.get('name', spell_name).lower()}' <{'|'.join(shut)}>") if shut else "There's no closed door here."
+            await caster.send(f"{caster.config.COLORS['yellow']}{ask}{caster.config.COLORS['reset']}")
+            return
         if target is None and spell.get('target') in ('object', 'door'):
             await caster.send(f"{caster.config.COLORS['yellow']}Cast {spell.get('name', spell_name)} on what?{caster.config.COLORS['reset']}")
             return
+        # a door spell that cannot take hold costs nothing (no door, an open one, an arcane one)
+        if spell.get('special') in ('break_door', 'block_door'):
+            refused = cls._door_spell_refusal(caster, spell, target)
+            if refused:
+                await caster.send(f"{caster.config.COLORS['yellow']}{refused}{caster.config.COLORS['reset']}")
+                return
         if target is None and spell['target'] not in ('self', 'special', 'object', 'door', 'group', 'room'):
             await caster.send("Cast the spell on whom?")
             return
@@ -2082,6 +2099,11 @@ class SpellHandler:
         if target_type == 'self':
             return caster
 
+        if target_type == 'door' and not target_name:
+            # from the /play bar, with no direction: the room's one closed door
+            import doors
+            shut = [d for d, ex, door in doors.doors_in(getattr(caster, 'room', None)) if door.get('state') == 'closed']
+            return shut[0] if len(shut) == 1 else None
         if target_type in ('object', 'door'):
             # For object/door-target spells (like identify/break door), return the item name
             # The actual item will be found in handle_special_spell
@@ -3054,6 +3076,30 @@ class SpellHandler:
         """The verdict is the spell's own enormous blow, dealt above."""
 
     @classmethod
+    def _door_spell_refusal(cls, caster, spell, target):
+        """Why a door spell cannot take hold on this door ('' when it can)."""
+        import doors
+        import rites
+        direction, exit_data, door, err = doors.resolve(getattr(caster, 'room', None), str(target or '').split())
+        if err in ('what', 'noexit', 'noname') or not direction:
+            return "There's no door that way."
+        if err == 'nodoor' or not isinstance(door, dict):
+            return f"There's no door {direction}."
+        name = doors.label(door)
+        if doors.is_seal(door):
+            return doors.seal_message(door)
+        if door.get('state') != 'closed':
+            return f"The {name} stands open: close it first." if spell.get('special') == 'block_door' else f"The {name} is already open."
+        if spell.get('special') == 'break_door':
+            if doors.is_arcane(door):
+                return doors.arcane_message(door)
+            if rites.is_warded(door) and door.get('locked'):
+                return rites.ward_message(door)
+        elif door.get('magically_blocked') or door.get('sealed_until', 0) > time.time():
+            return f"The {name} is already sealed by magic."
+        return ''
+
+    @classmethod
     async def handle_special_spell(cls, caster: 'Player', target: 'Character', spell: dict):
         """Handle special spell effects."""
         from affects import AffectManager
@@ -3666,29 +3712,29 @@ class SpellHandler:
                 await caster.send(f"{c['bright_red']}You drain {drain} experience from {target.name}!{c['reset']}")
 
         elif special == 'break_door':
-            # Break a door (by direction or name: "cast 'break door' s", "... trapdoor")
+            # Holy force against a closed door (by direction or name: "cast 'break door' s"). Each
+            # casting does damage to the door's integrity as a bash does (commands._door_max_hp:
+            # its material, lock, seal and barricade); wood bursts at once, oak, iron and stone
+            # take more. An arcane door was refused before any mana was spent.
             import doors
+            from commands import CommandHandler
             direction, exit_data, door, err = doors.resolve(caster.room, str(target or '').split())
-            if err in ('what', 'noexit', 'noname') or not direction:
-                await caster.send(f"{c['red']}There's no door in that direction!{c['reset']}")
+            if not direction or not isinstance(door, dict) or door.get('state') != 'closed':
                 return
-            if err == 'nodoor':
-                await caster.send(f"{c['yellow']}There's no door {direction}.{c['reset']}")
-                return
-
-            import rites
-            if rites.is_warded(door) and door.get('locked'):
-                await caster.send(f"{c['yellow']}{rites.ward_message(door)}{c['reset']}")
-                return
-
-            # Make a loud noise
-            await caster.room.send_to_room(
-                f"{c['bright_red']}**CRASH** The {doors.label(door)} explodes into splinters!{c['reset']}"
-            )
-
-            # Break the door (both sides)
-            doors.apply(caster.room, direction, state='open', locked=False, broken=True,
-                        sealed_until=None, barricaded_until=None, magically_blocked=None, hp=None)
+            name = doors.label(door)
+            max_hp = CommandHandler._door_max_hp(door)
+            door.setdefault('hp', max_hp)
+            force = 35 + 3 * getattr(caster, 'level', 1) + 2 * getattr(caster, 'wis', 12) + random.randint(0, 20)
+            door['hp'] -= force
+            if door['hp'] <= 0:     # (_break_door_open tells both rooms)
+                await CommandHandler._break_door_open(caster, caster.room, direction, exit_data, door, caster.config)
+                doors.apply(caster.room, direction, magically_blocked=None)
+            else:
+                left = max(0.0, door['hp'] / max_hp)
+                bar = '▓' * max(1, round((1 - left) * 8)) + '░' * round(left * 8)
+                await caster.room.send_to_room(
+                    f"{c['yellow']}The {name} shudders under the blow, but holds. [{bar}] "
+                    f"({door.get('material', 'wood')}){c['reset']}")
 
             # Alert nearby mobs (aggressive behavior)
             for npc in caster.room.characters:
@@ -3708,16 +3754,14 @@ class SpellHandler:
                 await caster.send(f"{c['yellow']}There's no door {direction}.{c['reset']}")
                 return
 
-            # Check if already blocked
-            if door.get('magically_blocked', False) or door.get('sealed_until', 0) > time.time():
-                await caster.send(f"{c['yellow']}The {doors.label(door)} is already magically sealed!{c['reset']}")
+            # (an open door, or one sealed already, was refused before any mana was spent)
+            if door.get('state') != 'closed':
                 return
+            secs = 120 + getattr(caster, 'level', 1) * 2
+            doors.apply(caster.room, direction, mirror=('sealed_until',), sealed_until=time.time() + secs)
 
-            # Block the door
-            doors.apply(caster.room, direction, mirror=('sealed_until',),
-                        sealed_until=time.time() + 120 + getattr(caster, 'level', 1) * 2)
-
-            await caster.send(f"{c['bright_blue']}Magical energy surrounds the {doors.label(door)}, sealing it shut!{c['reset']}")
+            await caster.send(f"{c['bright_blue']}Glowing sigils spread across the {doors.label(door)}, sealing it shut "
+                              f"(about {secs // 60} minutes).{c['reset']}")
 
         elif special == 'identify':
             # Identify an item in inventory, equipped, or on the ground

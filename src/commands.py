@@ -1283,7 +1283,8 @@ class CommandHandler:
     async def cmd_webdoor(cls, player: 'Player', args: List[str]):
         """Internal, for the 3D web client (/play): "webdoor <vnum> <dir> <action>".
 
-        action: open | close | lock | unlock | unlockopen | pick | knock | bash. Runs the
+        action: open | close | lock | unlock | unlockopen | pick | knock | bash | block | break
+        (the door spells: Block Door, Break Door). Runs the
         ordinary door command on that exit (every rule applies: keys, locks, seals) and
         answers a structured door_result event on the map socket:
         {ok, action, vnum, dir, reason, door: {state, locked, broken, rev}, pending, secs}."""
@@ -1317,7 +1318,7 @@ class CommandHandler:
         if not isinstance(door, dict):
             await result(False, "There's no door there.")
             return
-        hp0 = door.get('hp')
+        hp0, sealed0 = door.get('hp'), door.get('sealed_until', 0)
         lines = []
         restore = cls._capture_output(player, lines)
         try:
@@ -1340,6 +1341,8 @@ class CommandHandler:
                 await cls.cmd_knock(player, [d])
             elif action == 'bash':
                 await cls._bash_door(player, d)
+            elif action in ('block', 'break'):
+                await cls.cmd_cast(player, [f"'{action} door'", d])
             else:
                 lines.append('Unknown door action.')
         finally:
@@ -1364,8 +1367,10 @@ class CommandHandler:
                 extra = {'pending': True, 'secs': int(m.group(1)) if m else 5}
         elif action == 'knock':
             ok = True
-        elif action == 'bash':
+        elif action in ('bash', 'break'):
             ok = bool(door.get('broken')) or (door.get('hp') is not None and door.get('hp') != hp0)
+        elif action == 'block':
+            ok = door.get('sealed_until', 0) > (sealed0 or 0)
         else:
             ok = False
         await result(ok, '' if ok else (said[-1] if said else "Nothing happens."), **extra)
@@ -5252,9 +5257,10 @@ class CommandHandler:
 
     @classmethod
     def _door_max_hp(cls, door):
-        """A door's total integrity: base strength, plus locks, seals, bracing."""
+        """A door's total integrity: what it is made of (doors.strength), plus locks, seals, bracing."""
+        import doors
         now = time.time()
-        hp = door.get('strength', 60)
+        hp = doors.strength(door)
         if door.get('locked'):
             hp += 25
         if door.get('sealed_until', 0) > now:
@@ -5297,6 +5303,9 @@ class CommandHandler:
         import rites
         if rites.is_warded(door) and door.get('locked'):
             await player.send(f"{c['yellow']}{rites.ward_message(door)}{c['reset']}")
+            return
+        if doors.is_arcane(door):
+            await player.send(f"{c['magenta']}{doors.arcane_message(door)}{c['reset']}")
             return
         max_hp = cls._door_max_hp(door)
         if 'hp' not in door:
