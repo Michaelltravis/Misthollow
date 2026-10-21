@@ -9,6 +9,9 @@ its start (web_client.py turns it into an empty <i data-k="kind"> the page reads
           (combat_events' action is open), and the lines the fight prints outside one (a wound
           over time ticking, an effect wearing off, a charge gained, a creature's health bar)
   reward  what a kill pays: experience, the streak and rested bonuses, reputation, the gold
+  ui      what the page draws itself (web_hud.py): the sun rising, the sky, hunger, a posture,
+          a breath held, mail waiting, a world event; the sender asks for it (send(kind=UI)) and
+          the log keeps the line, dimmed
 
 Everything else is unmarked: the room, speech, quests, loot, and the refusals a player has to
 read ("You don't have enough mana."), even when they come in the middle of a fight. Telnet never
@@ -17,6 +20,7 @@ sees a mark.
 import re
 
 MARK = '\x1b]K:{}\x07'
+UI = 'ui'
 
 REWARD_RE = re.compile(
     r'(You gain [\d,]+ experience|^Bonuses: |Reputation with .+: [+-]\d|gold coins? from the corpse|'
@@ -68,11 +72,15 @@ def in_action():
         return False
 
 
-def mark(message):
-    """The message with each of its lines marked by kind (for a web connection)."""
-    act = in_action() and not LOOK_RE.search(_ANSI.sub('', message))
+def mark(message, kind=None):
+    """The message with each of its lines marked by kind (for a web connection); a kind asked
+    for marks every line that has text."""
+    act = kind is None and in_action() and not LOOK_RE.search(_ANSI.sub('', message))
     out = []
     for line in message.split('\n'):
-        k = kind_of(line, act)
+        if kind:
+            k = kind if _ANSI.sub('', line).strip() else None
+        else:
+            k = kind_of(line, act)
         out.append(MARK.format(k) + line if k else line)
     return '\n'.join(out)

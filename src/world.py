@@ -17,6 +17,8 @@ if TYPE_CHECKING:
     from player import Player
 
 from config import Config
+import msgkind
+import web_hud
 from time_system import GameTime
 from weather import Weather
 
@@ -1413,48 +1415,26 @@ class World:
 
         # Check if hour changed
         if self.game_time.hour != old_hour:
-            # Get time announcement for significant events
+            # Get time announcement for significant events (the page draws the sun's arc, so the
+            # line stays in its log, dimmed); hunger and thirst drain in Player.hunger_thirst_tick
             announcement = self.game_time.get_time_announcement()
             if announcement:
                 # Announce to all players
                 c = self.config.COLORS
                 for player in self.players.values():
-                    await player.send(f"\r\n{c['yellow']}{announcement}{c['reset']}\r\n")
+                    await player.send(f"\r\n{c['yellow']}{announcement}{c['reset']}\r\n", kind=msgkind.UI)
                 logger.info(f"Time: {self.game_time.get_time_string()}")
-            
-            # Process hunger/thirst for all players (every game hour)
-            c = self.config.COLORS
-            for player in self.players.values():
-                # Decrement hunger (1 per game hour)
-                if hasattr(player, 'hunger') and player.hunger > 0:
-                    player.hunger -= 1
-                    if player.hunger == 20:
-                        await player.send(f"\r\n{c['yellow']}You are getting hungry.{c['reset']}\r\n")
-                    elif player.hunger == 10:
-                        await player.send(f"\r\n{c['bright_yellow']}You are hungry!{c['reset']}\r\n")
-                    elif player.hunger == 5:
-                        await player.send(f"\r\n{c['red']}You are very hungry!{c['reset']}\r\n")
-                    elif player.hunger == 0:
-                        await player.send(f"\r\n{c['bright_red']}You are STARVING! Find food soon!{c['reset']}\r\n")
-                
-                # Decrement thirst (1 per game hour)
-                if hasattr(player, 'thirst') and player.thirst > 0:
-                    player.thirst -= 1
-                    if player.thirst == 15:
-                        await player.send(f"\r\n{c['yellow']}You are getting thirsty.{c['reset']}\r\n")
-                    elif player.thirst == 8:
-                        await player.send(f"\r\n{c['bright_yellow']}You are thirsty!{c['reset']}\r\n")
-                    elif player.thirst == 3:
-                        await player.send(f"\r\n{c['red']}You are very thirsty!{c['reset']}\r\n")
-                    elif player.thirst == 0:
-                        await player.send(f"\r\n{c['bright_red']}You are DYING OF THIRST! Find water!{c['reset']}\r\n")
-            
+            await web_hud.push_sky(self)
+
             # Process NPC schedules (shopkeepers open/close, etc.)
             try:
                 from npc_schedules import schedule_tick
                 await schedule_tick(self)
             except Exception as e:
                 logger.debug(f"NPC schedule error: {e}")
+
+        # what the page draws of each player (web_hud.py), sent when it changed
+        await web_hud.tick(self)
 
         # Daily upkeep for companions
         new_day = (self.game_time.year, self.game_time.month, self.game_time.day)
@@ -1483,7 +1463,8 @@ class World:
 
                     for player in self.players.values():
                         if player.room and player.room.zone == zone:
-                            await player.send(f"\r\n{c['cyan']}{weather_desc}{c['reset']}\r\n")
+                            await player.send(f"\r\n{c['cyan']}{weather_desc}{c['reset']}\r\n", kind=msgkind.UI)
+                    await web_hud.push_sky(self, zone)
 
     async def pet_tick(self):
         """Process pet timers and expiration."""
@@ -1592,9 +1573,12 @@ class World:
             await player.save()
         logger.info(f"Saved all {len(self.players)} players")
         
-    async def broadcast(self, message: str, exclude: List = None):
-        """Broadcast a message to all players."""
+    async def broadcast(self, message: str, exclude: List = None, kind: str = None):
+        """Broadcast a message to all players (kind: msgkind.UI for a line the page also draws)."""
         exclude = exclude or []
         for player in self.players.values():
             if player not in exclude:
-                await player.send(f"\r\n{message}\r\n")
+                if kind:
+                    await player.send(f"\r\n{message}\r\n", kind=kind)
+                else:
+                    await player.send(f"\r\n{message}\r\n")

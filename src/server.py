@@ -132,8 +132,8 @@ class Connection:
         
         logger.info(f"New connection from {self.address}")
         
-    async def send(self, message: str, newline: bool = True):
-        """Send a message to the client."""
+    async def send(self, message: str, newline: bool = True, kind: str = None):
+        """Send a message to the client (kind: a msgkind the line is, for a web page)."""
         try:
             if message is None:
                 return
@@ -144,7 +144,7 @@ class Connection:
             if not self.is_web:
                 message = _wrap_text(message, 80)
             elif self.state == self.STATE_PLAYING:
-                message = msgkind.mark(quest_guide.web_line(message))
+                message = msgkind.mark(quest_guide.web_line(message), kind)
             # Convert all newlines to \r\n for telnet compatibility
             message = message.replace('\r\n', '\n').replace('\n', '\r\n')
             if newline and not message.endswith('\r\n'):

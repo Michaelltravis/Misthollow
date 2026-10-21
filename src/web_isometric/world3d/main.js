@@ -620,6 +620,13 @@ async function runGame() {
     if (t) hud.setTarget({ kind: t.kind, ...t.data });
     // (swings, hits and casts are drawn from the server's combat events: combat.js)
   });
+  // the body between map payloads (web_hud.py): regeneration out of a fight, a posture taken
+  MH.bus.on('vitals', () => {
+    const p = MH.state.player;
+    if (!p) return;
+    hud.setPlayer(p);
+    if (ctl) ctl.setPosture(p.position);
+  });
   MH.bus.on('move.result', res => { if (sync) sync.onResult(res); });
   MH.bus.on('player.look', p => ents.look(p));      // another player changed gear
   MH.bus.on('target.set', t => hud.setTarget(t));

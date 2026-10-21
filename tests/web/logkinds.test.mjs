@@ -32,3 +32,12 @@ test('the page hides combat lines in All unless asked, and the Combat tab shows 
   assert.match(html, /data-tab="combat"/);
   assert.match(html, /data-set="combattext"/);
 });
+
+test('a line the HUD draws itself (msgkind.UI) stays in All, dimmed, and groups on its own', async () => {
+  const g = splitByKind(['<i data-k="ui"></i>The sun rises on the eastern horizon.', 'The Bone Hall']);
+  assert.deepEqual(g.map(x => x.kind), ['ui', '']);
+  const fs = await import('node:fs');
+  const css = fs.readFileSync(new URL('../../src/web_isometric/world3d/hud/hud.css', import.meta.url), 'utf8');
+  assert.match(css, /#log \.k-ui \{ opacity: \.5/);
+  assert.doesNotMatch(css, /data-tab="all"\][^{]*\.k-ui/, 'All never hides a ui line');
+});
