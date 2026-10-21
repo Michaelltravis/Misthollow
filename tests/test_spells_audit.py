@@ -32,7 +32,7 @@ CLASSES = ['mage', 'cleric', 'paladin', 'necromancer', 'ranger', 'bard', 'assass
 # what a spell may honestly answer when there is nothing for it to do here
 HONEST = ('no magical effects', 'not cursed', 'not poisoned', 'whom?', 'need at least', 'legends whisper',
           'item:', 'glows with magical', 'conjure', 'create fresh water', 'frost power surges', 'lifts 0',
-          'font of the vigil', 'sanctify the ground', 'there is nothing here')
+          'font of the vigil', 'sanctify the ground', 'there is nothing here', "no closed door here")
 
 
 def said(h):

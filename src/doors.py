@@ -2,16 +2,24 @@
 
 An exit with a door carries a dict: {'name', 'state': 'open'|'closed', 'locked', 'key_vnum',
 and optionally 'broken', 'hp', 'sealed_until', 'barricaded_until', 'magically_blocked',
-'pickproof', 'pick_difficulty'}. Each side of a doorway keeps its own dict (the names can
+'pickproof', 'pick_difficulty', 'material', 'strength', 'arcane'}. Each side of a doorway keeps its own dict (the names can
 differ: "trapdoor" above, "up door" below); every change goes through apply(), which keeps
 both sides in step, stamps a revision and pushes one small event to the web clients of both
 zones: {"type": "door", "doors": [{vnum, dir, label, state, locked, broken, rev}]}.
 
 Names are CircleMUD keyword lists ("door wooden", "manhole man hole"); label() turns them
 into something to print ("wooden door", "manhole").
+
+What a door is made of decides how much force breaks it (strength(): bashing, Break Door): its
+own name first ("door steel", "tomb"), then its zone's profile (world/doors.json: a dwarf
+hall's doors are stone, a castle's iron), else wood. An `arcane` door is bound by old magic: no
+bash and no spell breaks it (a key, a pick or Block Door still work).
 """
 import asyncio
+import json
 import logging
+import os
+import re
 import time
 
 logger = logging.getLogger('Misthollow')
@@ -218,9 +226,13 @@ async def _flush():
 
 
 def public(vnum, d, door):
-    """What every viewer may know about a door."""
+    """What every viewer may know about a door (sealed and barricaded too: a mage's seal, set or
+    broken, shows in /play at once)."""
+    now = time.time()
     return {'vnum': vnum, 'dir': d, 'label': label(door), 'state': door.get('state', 'open'),
-            'locked': bool(door.get('locked')), 'broken': bool(door.get('broken')), 'rev': door.get('rev', 0)}
+            'locked': bool(door.get('locked')), 'broken': bool(door.get('broken')), 'rev': door.get('rev', 0),
+            'sealed': bool(door.get('sealed_until', 0) > now or door.get('magically_blocked') or is_seal(door)),
+            'barricaded': bool(door.get('barricaded_until', 0) > now)}
 
 
 # ---------------------------------------------------------------- keys and picks
@@ -276,7 +288,14 @@ def view(door, keys, player):
     v = {'name': door.get('name', 'door'), 'label': label(door), 'state': door.get('state', 'open'),
          'locked': bool(door.get('locked')), 'broken': bool(door.get('broken')),
          'keyless': key_vnum(door) is None, 'has_key': has_key(door, keys),
-         'can_pick': can_pick(player, door), 'rev': door.get('rev', 0)}
+         'can_pick': can_pick(player, door), 'rev': door.get('rev', 0),
+         'material': door.get('material', 'wood'), 'arcane': is_arcane(door)}
+    # the door spells its viewer knows (the /play door menu offers them)
+    known = getattr(player, 'spells', None) or {}
+    if 'block_door' in known:
+        v['can_block'] = True
+    if 'break_door' in known:
+        v['can_break'] = True
     if door.get('sealed_until', 0) > now or door.get('magically_blocked') or is_seal(door):
         v['sealed'] = True
     if door.get('barricaded_until', 0) > now:
@@ -343,6 +362,83 @@ def unsealed_door(ex):
     return door
 
 
+# ---------------------------------------------------------------- what a door is made of
+# how much force it takes to break each (a locked door, a seal and a barricade add to it)
+MATERIALS = {'cloth': 15, 'glass': 30, 'wood': 60, 'oak': 90, 'metal': 120, 'iron': 160, 'stone': 220}
+# worked out at load, or of the moment: never written back to a zone file (world.py)
+NOT_SAVED = ('material', 'arcane', 'hp', 'seal_power', 'sealed_until', 'barricaded_until', 'rev')
+# words in a door's name, strongest first
+_MATERIAL_WORDS = [
+    ('arcane', r'diamond|adamant\w*|mithril|rune\w*|ward\w*|enchanted|magic\w*'),
+    ('stone', r'stone|marble|granite|tomb|sarcophagus|lid|block|boulder|rock|slab|vault'),
+    ('iron', r'iron|steel|portcullis|cell|cage|bars|grate|grating|vent|manhole|safe'),
+    ('metal', r'metal|bronze|brass|copper|silver|gold\w*|black'),
+    ('oak', r'oak|sturdy|heavy|tall|huge|double|front'),
+    ('glass', r'glass|crystal|window'),
+    ('cloth', r'curtain|tapestry|drape|hanging|screen|bead\w*'),
+    ('wood', r'wood\w*|pine|hut|bookcase|cupboard|larder|trapdoor|hatch|small'),
+]
+_MATERIAL_RX = [(m, re.compile(rf'\b(?:{rx})\b', re.I)) for m, rx in _MATERIAL_WORDS]
+_PROFILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'world', 'doors.json')
+
+
+def _profiles():
+    try:
+        with open(_PROFILE, encoding='utf-8') as f:
+            data = json.load(f)
+        return data.get('zones') or {}, data.get('doors') or {}
+    except (OSError, ValueError):
+        return {}, {}
+
+
+def material_of(door, zone_profile=None):
+    """(material, arcane) of one side of a doorway: its own data, its name, its zone, else wood."""
+    zone_profile = zone_profile or {}
+    arcane = bool(door.get('arcane') or zone_profile.get('arcane'))
+    if door.get('material') in MATERIALS:
+        return door['material'], arcane
+    for m, rx in _MATERIAL_RX:
+        if rx.search(str(door.get('name') or '')):
+            if m == 'arcane':
+                return 'stone', True
+            return m, arcane
+    return (zone_profile.get('material') if zone_profile.get('material') in MATERIALS else 'wood'), arcane
+
+
+def strength(door):
+    """How much force breaks the door as it stands, before its lock, seal or barricade."""
+    if door.get('strength'):
+        return int(door['strength'])
+    return MATERIALS.get(door.get('material') or 'wood', MATERIALS['wood'])
+
+
+def is_arcane(door):
+    return bool((door or {}).get('arcane'))
+
+
+def unbreakable(door):
+    """No bash, spell or creature breaks it: bound by old magic, a quest's gate (magically
+    blocked), a sealed land's bar, or a rite's warded door while it is locked."""
+    if not isinstance(door, dict):
+        return False
+    import rites
+    return bool(door.get('arcane') or door.get('magically_blocked') or is_seal(door)
+                or (rites.is_warded(door) and door.get('locked')))
+
+
+def unbreakable_message(door):
+    if is_seal(door):
+        return seal_message(door)
+    import rites
+    if rites.is_warded(door) and door.get('locked'):
+        return rites.ward_message(door)
+    return f"Old magic binds the {label(door)}: no force and no spell will break it."
+
+
+def arcane_message(door):
+    return unbreakable_message(door)
+
+
 # ---------------------------------------------------------------- load and reset
 def normalize(world):
     """Tidy the converted door data once at load, then remember it as the zone's reset state.
@@ -375,6 +471,23 @@ def normalize(world):
                 for dd in (door, far):
                     if not key_vnum(dd):
                         dd['key_vnum'] = k
+    # what each doorway is made of (both sides agree: the stronger, and arcane if either is)
+    zones, singles = _profiles()
+    for room in world.rooms.values():
+        prof = zones.get(str(getattr(getattr(room, 'zone', None), 'number', ''))) or {}
+        for d, ex, door in doors_in(room):
+            one = singles.get(f'{room.vnum}:{d}') or {}
+            door.update({k: v for k, v in one.items() if k in ('material', 'strength', 'arcane')})
+            door['material'], door['arcane'] = material_of(door, prof)
+    for room in world.rooms.values():
+        for d, ex, door in doors_in(room):
+            to, od, far = other_side(room, d)
+            if far is None or not far.get('material'):
+                continue
+            if MATERIALS[far['material']] > MATERIALS[door['material']]:
+                door['material'] = far['material']
+            if far.get('arcane'):
+                door['arcane'] = True
     world.door_init = {}
     for room in world.rooms.values():
         for d, ex, door in doors_in(room):
@@ -395,11 +508,11 @@ def reset_zone(world, zone):
             if not want:
                 continue
             same = (door.get('state') == want['state'] and bool(door.get('locked')) == want['locked']
-                    and not door.get('broken'))
+                    and not door.get('broken') and door.get('hp') is None)
             if same:
                 continue
             to, od, far = other_side(room, d)
             if _occupied(room) or (to is not None and _occupied(to)):
                 continue
             apply(room, d, state=want['state'], locked=want['locked'], broken=None, hp=None,
-                  sealed_until=None, barricaded_until=None, magically_blocked=None)
+                  sealed_until=None, seal_power=None, barricaded_until=None, magically_blocked=None)

@@ -1,0 +1,33 @@
+{
+  "name": "spear",
+  "why": "The spear (gearlook.js PROC 'spear'), made by Tripo in place of the one procgear.js builds in code on the knight's sword mount.",
+  "concepts": 2,
+  "image": {
+    "model": "banana",
+    "size": "768x1344",
+    "prompt": "Stylized low-poly fantasy spear, a single game prop shown whole, standing perfectly upright and vertical with the point at the top, centered, seen from the side. Long straight sturdy wooden shaft with a wrapped leather grip at the middle and a small round iron cap at the foot. A broad leaf-shaped steel spearhead on top, with a thick socket bound by a thin gold band. Chunky readable shapes, a big spearhead, a thick shaft, hand-painted flat colours with soft light-to-dark gradients, no texture noise, no harsh shadows. Game-ready prop in the style of KayKit adventurers. Plain light grey background, nothing else in the picture. --no hands, character, text, multiple objects, ribbons, feathers, tassels"
+  },
+  "model": {
+    "model": "P2-20260801",
+    "face_limit": 400,
+    "texture": true,
+    "pbr": false,
+    "texture_version": "v3.5-20260815",
+    "delight": true
+  },
+  "kit": {
+    "piece": "Tripo_Spear",
+    "bone": "handslot.r",
+    "model": "Knight",
+    "like": "1H_Sword",
+    "span": [-0.93, 1.78],
+    "budget": 400,
+    "colours": {
+      "wood": "wood",
+      "grip": "leather_dark",
+      "steel": "steel",
+      "iron": "iron",
+      "gold": "gold"
+    }
+  }
+}

@@ -110,5 +110,8 @@ repaints it onto the equipment kit's palette, and `build.mjs equip` takes it in.
 | Piece | Made | Covers | Spec |
 |---|---|---|---|
 | Tripo_Staff_Crystal | 2026-10-20, concept by `banana`, model by `P2-20260801`, 120 credits | the mage's crystal staff (`gearlook.js` STAFF_PIECE), in place of the one `procgear.js` builds | `tools/art3d/tripo/staff_crystal.json` |
+| Tripo_Staff_Skull | 2026-10-21, concept by `banana`, model by `P2-20260801`, 120 credits | the necromancer's skull staff (`gearlook.js` STAFF_PIECE), in place of the one `procgear.js` builds | `tools/art3d/tripo/staff_skull.json` |
+| Tripo_Mace | 2026-10-21, concept by `banana`, model by `P2-20260801`, 120 credits | the one-handed mace, a cleric's own (`gearlook.js` PROC_PIECE), in place of the one `procgear.js` builds; fitted on the knight's sword mount | `tools/art3d/tripo/mace.json` |
+| Tripo_Spear | 2026-10-21, concept by `banana`, model by `P2-20260801`, 120 credits | the spear (`gearlook.js` PROC_PIECE), in place of the one `procgear.js` builds; fitted on the knight's sword mount | `tools/art3d/tripo/spear.json` |
 Another CC0 candidate: isaiah658's "50+ Monsters Pack 3D" (OpenGameArt, static OBJ, would need
 rigging in Blender).

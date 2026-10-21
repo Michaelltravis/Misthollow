@@ -29,6 +29,18 @@ test('menu: the actions that make sense now', () => {
   assert.deepEqual(acts(door({ closed: false })), ['close']);
 });
 
+test('menu: the door spells for those who know them, and doors no force breaks', () => {
+  const acts = info => doorVerbs(info).map(v => v.action);
+  assert.deepEqual(acts(door({ can_block: true })), ['open', 'knock', 'bash', 'block']);
+  assert.deepEqual(acts(door({ can_break: true })), ['open', 'knock', 'bash', 'break']);
+  assert.deepEqual(acts(door({ can_block: true, sealed: true })), ['open', 'knock', 'bash']);
+  assert.deepEqual(acts(door({ can_block: true, closed: false })), ['close']);
+  const warded = doorVerbs(door({ arcane: true, can_break: true, can_block: true }));
+  assert.deepEqual(warded.map(v => v.action), ['open', 'knock', null, 'block']);
+  assert.match(warded[2].label, /old magic/);
+  assert.match(doorVerbs(door({ material: 'iron' })).find(v => v.action === 'bash').label, /\(iron\)/);
+});
+
 test('anchor: the middle of the doorway on the room edge, or the stairs for a trapdoor', () => {
   const L = { gaps: { north: { x0: 9, x1: 14 }, east: { y0: 5, y1: 9 } }, stairsDown: { x: 7, y: 4 } };
   assert.deepEqual(doorAnchor(L, 'north', 24, 15), { x: 12, z: 0.15 });

@@ -1,0 +1,52 @@
+{
+  "name": "staff_skull",
+  "why": "The necromancer's skull staff (gearlook.js staffShape 'staff_skull', every necromancer's own), made by Tripo in place of the one procgear.js builds in code.",
+  "concepts": 2,
+  "image": {
+    "model": "banana",
+    "size": "768x1344",
+    "prompt": "Stylized low-poly fantasy necromancer staff, a single game prop shown whole, standing perfectly upright and vertical, centered, seen from the front. Twisted dark blackened wooden shaft with a wrapped dark leather grip a third of the way down and an iron spike at the foot. On top sits a large human skull facing the viewer, with glowing green eye sockets, held by an iron collar and a ring of small bones below it. Chunky readable shapes, big skull, hand-painted flat colours with soft light-to-dark gradients, no texture noise, no harsh shadows. Game-ready prop in the style of KayKit adventurers. Plain light grey background, nothing else in the picture. --no hands, character, text, multiple objects, cloth, chains"
+  },
+  "model": {
+    "model": "P2-20260801",
+    "face_limit": 600,
+    "texture": true,
+    "pbr": false,
+    "texture_version": "v3.5-20260815",
+    "delight": true
+  },
+  "kit": {
+    "piece": "Tripo_Staff_Skull",
+    "bone": "handslot.r",
+    "like": "2H_Staff",
+    "budget": 600,
+    "colours": {
+      "wood": {
+        "col": "wood_dark",
+        "match": [
+          "#5a505a",
+          "#343034",
+          "#141214"
+        ]
+      },
+      "grip": "leather_dark",
+      "iron": {
+        "col": "iron",
+        "match": [
+          "#a8a8a8",
+          "#888888",
+          "#646464"
+        ]
+      },
+      "skull": {
+        "col": "fur_white",
+        "match": [
+          "#e0dcc8",
+          "#c0b4a0",
+          "#9c8480"
+        ]
+      },
+      "eyes": "gem_green~glow"
+    }
+  }
+}
