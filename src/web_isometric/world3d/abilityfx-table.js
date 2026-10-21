@@ -73,6 +73,7 @@ export const RECIPES = {
   },
   cleric: {
     turn_undead: 'long | glyphs | wave | burst:cross | - | r=8',
+    break_door: 'blockhit lunge | flare | - | shatter | - | heavy shake',
     holy_smite: 'raise | flare | skyray | burst | - | ',
     divine_word: 'cheer | rings | - | nova | motes | r=12',
     pyre_of_faith: 'long | sigil | - | geyser | flames | fire',
@@ -142,6 +143,7 @@ export const RECIPES = {
     invisibility: 'channel | glyphs | - | - | fade | ally',
     detect_magic: 'channel | sigil | - | - | orbit:eye | ',
     identify: 'interact | - | - | burst:eye | - | ',
+    block_door: 'interact | glyphs | - | mark | - | ',
     enchant_weapon: 'use | gather | - | - | runes | ',
     meteor_swarm: 'raise | sigil+ | meteors:4 | blast | - | fire shake+',
     chain_lightning: 'shoot | flare | chain | hit | - | lightning',

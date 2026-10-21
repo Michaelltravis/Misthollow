@@ -325,7 +325,7 @@ class Config:
             'skills': ['scribe', 'charge_release', 'drink_the_leyline', 'towerbolt', 'dodge', 'singularity'],
             'spells': ['magic_missile', 'burning_hands', 'chill_touch', 'fireball', 'lightning_bolt',
                       'sleep', 'color_spray', 'teleport', 'fly', 'invisibility', 'detect_magic',
-                      'identify', 'enchant_weapon', 'meteor_swarm', 'chain_lightning',
+                      'identify', 'enchant_weapon', 'meteor_swarm', 'chain_lightning', 'block_door',
                       # Defensive spells
                       'armor', 'shield', 'stoneskin', 'tower_echoes', 'phase_step', 'mana_shield',
                       'ice_armor', 'fire_shield', 'mirrorward', 'stepwise',
@@ -349,7 +349,7 @@ class Config:
             'spells': ['cure_light', 'cure_serious', 'cure_critical', 'heal', 'group_heal',
                       'bless', 'armor', 'sanctuary', 'remove_curse', 'remove_poison',
                       'create_food', 'create_water', 'summon', 'word_of_recall', 'resurrect',
-                      'harm', 'dispel_evil', 'earthquake', 'flamestrike',
+                      'harm', 'dispel_evil', 'earthquake', 'flamestrike', 'break_door',
                       # Defensive spells
                       'shield_of_faith', 'divine_shield', 'barkskin', 'righteous_fury',
                       'divine_protection', 'aegis', 'holy_aura', 'protection_from_evil',

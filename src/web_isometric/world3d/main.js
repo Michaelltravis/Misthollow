@@ -1207,6 +1207,7 @@ async function runGame() {
     { label: 'Spellbook (K)', run: () => hud.spellbook.toggle(true) },
   ]));
   const NO_GCD = new Set(['brace', 'sidestep', 'interrupt', 'flee', 'escape', 'evade']);
+  const DOOR_SPELL_REACH = 9;     // how near a closed door must be for a door spell from the bar
   MH.bus.on('hud.ability', ab => {
     // an area spell: the key starts the aim (the same key again casts it where the circle is)
     if (ab.radius && !ab.at) {
@@ -1229,6 +1230,14 @@ async function runGame() {
     if (ab.ally) {
       begin(t && t.kind === 'player' ? t : null);
       return MH.sendCommand(abilityCommand(ab, t && t.kind === 'player' ? refFor(t) : null), 'combat');
+    }
+    // at a door (Block Door, Break Door): the nearest closed one, by its direction
+    if (ab.door) {
+      const nd = nearestDoor(DOOR_SPELL_REACH, { closedOnly: true });
+      if (!nd) return hud.toast('Stand by a closed door.');
+      begin(null);
+      if (ctl) ctl.face(nd.at.x, nd.at.z);
+      return MH.sendCommand(abilityCommand(ab, nd.dir), 'combat');
     }
     // aimed: turn to the circle, cast with its centre in the room's own metres
     if (ab.at) {
