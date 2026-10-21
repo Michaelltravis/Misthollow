@@ -48,7 +48,7 @@ const LORE = [
 ];
 
 export function setupLogin() {
-  const name = $('#login-name'), pass = $('#login-pass'), status = $('#login-status');
+  const name = $('#login-name'), pass = $('#login-pass'), acct = $('#login-acct'), status = $('#login-status');
   const create = $('#create');
   let creating = false, prime = '';
   const saved = ls.get(NAME_KEY);
@@ -81,7 +81,7 @@ export function setupLogin() {
     const go = () => ($('#loading').classList.contains('done') ? $('#resume-btn').click() : setTimeout(go, 250));
     go();
   }
-  $('#switch-btn').addEventListener('click', () => { showForm(); name.value = ''; pass.value = ''; name.focus(); say(''); });
+  $('#switch-btn').addEventListener('click', () => { showForm(); name.value = ''; pass.value = ''; acct.value = ''; name.focus(); say(''); });
   MH.bus.on('login.expired', who => { showForm(); if (who) name.value = who; pass.focus(); });
   // a line of lore, changing every few seconds while the title screen stands
   const lore = $('#login .lore-line');
@@ -99,14 +99,18 @@ export function setupLogin() {
     const n = name.value.trim(), p = pass.value;
     if (!n || !p) return say('Need both a name and a password.', true);
     if (isNew && !/^[a-zA-Z]{3,12}$/.test(n)) return say('A name is 3–12 letters (no spaces, numbers or symbols).', true);
+    // a new hero on an account you have (its password), or else a new account of the hero's name
+    const a = isNew ? acct.value.trim() : '';
+    if (a && !/^[a-zA-Z]{3,12}$/.test(a)) return say('An account name is 3–12 letters.', true);
     creating = isNew;
     if (isNew) wizard('', 'FORGE YOUR HERO', 'Summoning the loom of fate…', '');
-    MH.connect(n, p, isNew);
+    MH.connect(n, p, isNew, undefined, a);
   }
   $('#login-btn').addEventListener('click', () => begin(false));
   $('#create-btn').addEventListener('click', () => begin(true));
   pass.addEventListener('keydown', e => { if (e.key === 'Enter') begin(false); e.stopPropagation(); });
   name.addEventListener('keydown', e => { if (e.key === 'Enter') pass.focus(); e.stopPropagation(); });
+  acct.addEventListener('keydown', e => { if (e.key === 'Enter') begin(true); e.stopPropagation(); });
 
   // ---- creation wizard ----
   const send = v => { const s = MH.state.mudSocket; if (s && s.readyState === WebSocket.OPEN) s.send(v); };

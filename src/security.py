@@ -53,6 +53,16 @@ def verify(stored: str, password: str):
     return False, False
 
 
+def usable(stored: str) -> bool:
+    """Whether some password can match a stored hash (not empty, damaged or the old
+    "account_protected" one)."""
+    if not stored:
+        return False
+    if stored.startswith(ALGO + '$'):
+        return len(stored.split('$')) == 4
+    return len(stored) == 64 and stored != _SENTINEL
+
+
 async def hash_async(password: str) -> str:
     return await asyncio.to_thread(hash_password, password)
 

@@ -3,9 +3,9 @@
 Two admin accounts, password gauntlet1 (tools/gauntlet/README.md): `gauntlet` (Gauntlet, and the
 assassin Probeassn) and `gauntletb` (Gauntletb, a level-6 warrior, and a Probe* character of each
 other class). Only what is missing is made, so a run on a machine that has them changes nothing:
-a new name signs up over telnet, `account create` gives it its account, the rest are made from
-the account menu; the admin flag has no in-game switch and is set in the account file, as the
-README does.
+a new name signs up over telnet (the account and its first character, of the same name), the
+rest are made from the account menu; the admin flag has no in-game switch and is set in the
+account file, as the README does.
     python3 tests/gauntlet_accounts.py
 """
 import asyncio
@@ -86,19 +86,14 @@ async def ensure(verbose=True):
     made = []
     for acct, chars in ACCOUNTS.items():
         first, first_cls = chars[0]
-        if not Account.exists(acct):
+        if not Account.exists(acct) and saved(first) is None:
+            # a new name: the sign-up makes the account and its first character together (an
+            # older save of that name was given its account by the server's start, accounts.py)
             s = await _Session().open()
-            if saved(first) is None:
-                # a new name: the sign-up makes the character, then it takes an account of its name
-                await s.cmd(first, 1.0)
-                for line in ('y', PASSWORD, PASSWORD):
-                    await s.cmd(line, 0.8)
-                await _build(s, first_cls)
-            else:
-                await s.cmd(first, 1.0)
-                await s.cmd(PASSWORD, 1.2)
-                await s.cmd('n', 2.0)           # (the migrate offer: `account create` below does it)
-            await s.cmd('account create', 1.0)
+            await s.cmd(first, 1.0)
+            for line in ('y', PASSWORD, PASSWORD):
+                await s.cmd(line, 0.8)
+            await _build(s, first_cls)
             await s.close()
             made.append(f'account {acct} ({first})')
         for name, cls in chars[1:]:

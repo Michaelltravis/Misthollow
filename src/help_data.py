@@ -56,8 +56,24 @@ HELP_TOPICS = {'auction': {'category': 'command',
                'syntax': 'challenge <player>',
                'title': 'Challenge'},
  'account': {'category': 'command',
-             'description': 'View and manage your account. Usage: account [create|chars|info]',
-             'syntax': 'account [create|chars|info]',
+             'description': 'View and manage your account: every character is on one, and its password is the '
+                            'only way in. Log in with the account (or any of its characters) to make, play or '
+                            'delete characters.
+
+'
+                            '  account                      - this account and its characters
+'
+                            '  account chars                - its characters, with levels and classes
+'
+                            '  account claim <name> <pass>  - bring in a character from another account of yours '
+                            '(the password of the account it is on now)
+'
+                            '  account password <old> <new> - change the account password
+'
+                            '  account email <address>      - an address for password resets
+'
+                            '  account forgot / recover <token> <new> - reset a forgotten password',
+             'syntax': 'account [chars|info|claim|password|email|forgot|recover]',
              'title': 'Account'},
  'achievements': {'category': 'command',
                   'description': 'View your achievements and progress toward earning them.\n\n'

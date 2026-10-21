@@ -124,6 +124,7 @@
     playerPassword: '',
     resumeToken: '',           // signing in with a stored token instead of a password
     creatingAccount: false,
+    joinAccount: '',           // a new hero made on this existing account (its create menu)
     isLoggedIn: false,
     loginSequenceStarted: false,
     mudSocket: null,
@@ -158,7 +159,7 @@
   // --- command sending ---
   // a line carrying a password: what to show for it ('' when it carries none)
   MH.secretLine = function secretLine(command) {
-    const m = /^\s*account\s+(password|recover|reset)\b/i.exec(String(command || ''));
+    const m = /^\s*account\s+(password|recover|reset|claim)\b/i.exec(String(command || ''));
     return m ? `account ${m[1].toLowerCase()} ****` : '';
   };
   MH.sendCommand = function sendCommand(command, echo = true) {
@@ -183,7 +184,9 @@
       MH.sendCommand(`resume ${st.playerName} ${st.resumeToken}`, false);
       return;
     }
-    MH.sendCommand(st.playerName, false);
+    // a new hero on an existing account signs in to the account first (its password then
+    // follows its prompt, below)
+    MH.sendCommand(st.joinAccount || st.playerName, false);
     st._loginNameSent = true;   // a name re-prompt after this means it was rejected
     if (!st.creatingAccount) {
       // existing character: answer the password prompt (account or legacy)
@@ -198,7 +201,6 @@
 
   // pre-game prompts the scripted login should answer on the player's behalf
   const LOGIN_PROMPT_RESPONDERS = [
-    { test: /create an account for multiple characters\?\s*\(y\/n\)/i, send: 'n' },
     { test: /press (?:enter|return) to continue/i, send: '' },
     { test: /\[\s*press (?:enter|return)\s*\]/i, send: '' },
   ];
@@ -221,6 +223,19 @@
         if (sock && sock.readyState === WebSocket.OPEN) sock.send(val);
       }, 250);
     };
+    // a new hero on an existing account: its password, then its menu's create, then the
+    // hero's name; the race/class/stats prompts are the creation wizard's, as for a new account
+    if (st.creatingAccount && st.joinAccount) {
+      if (/invalid password|wrong password/i.test(text)) { MH.bus.emit('create.blocked', 'Wrong password for that account.'); return; }
+      if (/is a new name|create account\?/i.test(text)) { MH.bus.emit('create.blocked', `There is no account called ${st.joinAccount}.`); return; }
+      if (/can't be logged into/i.test(text)) { MH.bus.emit('create.blocked', `${st.joinAccount} can't be logged into.`); return; }
+      if (/maximum number of characters/i.test(text)) { MH.bus.emit('create.blocked', 'That account has no room for another hero.'); return; }
+      if (/already taken/i.test(text)) { MH.bus.emit('create.blocked', 'That hero name is taken — start over with a different one.'); return; }
+      if (/account password:/i.test(text)) { sendDelayed('join-pw', st.playerPassword); return; }
+      if (/enter name for new character/i.test(text)) { sendDelayed('join-name', st.playerName); return; }
+      if (/available commands:/i.test(text)) { sendDelayed('join-create', 'create'); return; }
+      return;
+    }
     // creation handshake: confirm new name, then give + confirm the password
     if (st.creatingAccount) {
       const t = text.toLowerCase();
@@ -436,12 +451,15 @@
   }
 
   // log in with a password, or (token given) with this browser's stored sign-in
-  MH.connect = function connect(name, password, createAccount, token) {
+  // (createAccount with joinAccount: a new hero called `name` on that existing account,
+  // `password` being the account's)
+  MH.connect = function connect(name, password, createAccount, token, joinAccount) {
     const st = MH.state;
     st.playerName = name;
     st.playerPassword = token ? '' : password;
     st.resumeToken = token || '';
     st.creatingAccount = !!createAccount;
+    st.joinAccount = createAccount ? (joinAccount || '') : '';
     st.loginSequenceStarted = false;
     st.isLoggedIn = false;
     st._loginNameSent = false;

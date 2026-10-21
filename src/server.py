@@ -93,12 +93,12 @@ class Connection:
     STATE_ACCOUNT_PASSWORD = 10
     STATE_SELECT_CHAR = 11
     STATE_CREATE_CHAR_NAME = 12
-    STATE_MIGRATE_OFFER = 13
     STATE_CHANGE_PASSWORD = 14
     STATE_CONFIRM_NEW_PASSWORD = 15
     STATE_CONFIRM_DELETE = 16
     STATE_GET_SEX = 17
     STATE_GET_STYLE = 18
+    STATE_CLAIM_PASSWORD = 19
     
     def __init__(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter, server):
         self.reader = reader
@@ -254,8 +254,8 @@ class Connection:
             await self.handle_select_char(line)
         elif self.state == self.STATE_CREATE_CHAR_NAME:
             await self.handle_create_char_name(line)
-        elif self.state == self.STATE_MIGRATE_OFFER:
-            await self.handle_migrate_offer(line)
+        elif self.state == self.STATE_CLAIM_PASSWORD:
+            await self.handle_claim_password(line)
         elif self.state == self.STATE_CHANGE_PASSWORD:
             await self.handle_change_password(line)
         elif self.state == self.STATE_CONFIRM_NEW_PASSWORD:
@@ -274,46 +274,38 @@ class Connection:
             await self.handle_resume(name.split())
             return
             
-        # Validate name
-        if len(name) < 3 or len(name) > 12:
-            await self.send("Names must be between 3 and 12 characters.")
-            await self.send("Enter account name (or character name): ")
-            return
-            
-        if not name.isalpha():
-            await self.send("Names must contain only letters.")
+        from accounts import AccountManager, name_problem, name_taken
+        why = name_problem(name)
+        if why:
+            await self.send(why)
             await self.send("Enter account name (or character name): ")
             return
         
         name_lower = name.lower()
         name_cap = name.capitalize()
         
-        # Check for account first
-        from accounts import Account
-        if Account.exists(name_lower):
-            self.temp_account_name = name_lower
-            await self.send(f"Account password: ")
+        # an account by that name, or the account of the character by that name: its password
+        # (the account's) is the only way in
+        choices = AccountManager.login_choices(name_lower)
+        if choices:
+            account, char_name = choices[0]
+            # (a character of that name on another account: its password is tried next)
+            self.login_alt = (choices[1][0].account_name, choices[1][1]) if len(choices) > 1 else None
+            self.temp_account_name = account.account_name
+            if char_name:
+                self.play_after = char_name
+                await self.send(f"{char_name} belongs to an account. Account password: ")
+            else:
+                await self.send(f"Account password: ")
             self.state = self.STATE_ACCOUNT_PASSWORD
             return
-        
-        # Check for legacy player file (not yet migrated to account)
-        player_file = os.path.join(self.config.PLAYER_DIR, f"{name_lower}.json")
-        if os.path.exists(player_file):
-            # a character that belongs to an account opens with the account's password
-            # only (its own stored password is not a way in)
-            owner = self._account_of(player_file)
-            if owner and Account.exists(owner):
-                self.temp_account_name = owner
-                self.play_after = name_cap
-                await self.send(f"{name_cap} belongs to an account. Account password: ")
-                self.state = self.STATE_ACCOUNT_PASSWORD
-                return
-            self.temp_name = name_cap
-            await self.send(f"Welcome back, {name_cap}! Enter your password: ")
-            self.state = self.STATE_GET_PASSWORD
+        if name_taken(name_lower):
+            # a character with no account and no password (accounts.migrate_saves left it)
+            await self.send(f"{name_cap} can't be logged into: it has no account. Ask an immortal for help.")
+            await self.send("Enter account name (or character name): ")
             return
         
-        # New player/account - offer to create account
+        # A new name: a new account, and its first character of the same name
         self.temp_account_name = name_lower
         self.temp_name = name_cap
         await self.send(f"'{name_cap}' is a new name. Create account? (Y/N) ")
@@ -325,60 +317,24 @@ class Connection:
             await self.send("Choose a password: ")
             self.state = self.STATE_GET_PASSWORD
         else:
-            self.temp_name = None
+            self.temp_name = self.temp_account_name = None
             await self.send("What name shall you be known by? ")
             self.state = self.STATE_GET_NAME
             
     async def handle_password(self, password: str):
-        """Handle password entry."""
+        """The new account's password (a sign-up: the account and its first character are
+        made together when the character is finished)."""
         if not password:
             await self.send("Password cannot be empty. Enter password: ")
             return
-            
-        player_file = os.path.join(self.config.PLAYER_DIR, f"{self.temp_name.lower()}.json")
-        
-        if os.path.exists(player_file):
-            # Existing player - verify password
-            import security
-            wait = security.locked(self.temp_name)
-            if wait:
-                await self._locked_out(wait)
-                return
-            from player import Player
-            self.player = Player.load(self.temp_name, self.world)
-            
-            if self.player and getattr(self.player, 'account_name', None):
-                # it joined an account since the name was typed: the account opens it
-                self.player = None
-                await self.send(f"{self.temp_name} belongs to an account. Log in with the account's name.")
-                self.temp_name = None
-                await self.send("What name shall you be known by? ")
-                self.state = self.STATE_GET_NAME
-            elif self.player and await self.player.check_password(password):
-                security.succeeded(self.temp_name)
-                # Offer migration to account system
-                self.temp_password = password
-                await self.send("\r\n")
-                await self.send("Would you like to create an account for multiple characters? (Y/N)")
-                await self.send("(You can always do this later with 'account create')")
-                self.state = self.STATE_MIGRATE_OFFER
-            else:
-                await self._wrong_password(self.temp_name)
-                self.player = None
-                self.temp_name = None
-                if not self.writer.is_closing():
-                    await self.send("What name shall you be known by? ")
-                self.state = self.STATE_GET_NAME
-        else:
-            # New player - set password
-            import security
-            why = security.weak(password)
-            if why:
-                await self.send(f"{why} Enter password: ")
-                return
-            self.temp_password = password
-            await self.send("Confirm password: ")
-            self.state = self.STATE_CONFIRM_PASSWORD
+        import security
+        why = security.weak(password)
+        if why:
+            await self.send(f"{why} Enter password: ")
+            return
+        self.temp_password = password
+        await self.send("Confirm password: ")
+        self.state = self.STATE_CONFIRM_PASSWORD
             
     async def handle_confirm_new_char_password(self, password: str):
         """Confirm new character password."""
@@ -544,33 +500,26 @@ class Connection:
             await self.show_stats()
             
     async def create_character(self):
-        """Create the new character."""
-        from player import Player
-        
-        # A character made from the account menu has no password of its own: its account
-        # opens it (security.py). One made at the name prompt keeps the one it chose.
-        self.player = Player.create_new(
-            name=self.temp_name,
-            password=None,
-            race=self.temp_race,
-            char_class=self.temp_class,
-            stats=self.temp_stats,
-            world=self.world,
-            sex=self.temp_sex or 'neutral',
-            look_style=getattr(self, 'temp_style', '') or '',
-        )
-        if self.temp_password and not self.account:
-            import security
-            self.player.password_hash = await security.hash_async(self.temp_password)
-        self.temp_password = None
-        
-        # Link to account if creating via account flow
+        """Create the new character: on the account logged into, or (a sign-up) on a new
+        account of its name, made with it (accounts.AccountManager)."""
+        from accounts import AccountManager
+        char = dict(race=self.temp_race, char_class=self.temp_class, stats=self.temp_stats, world=self.world,
+                    sex=self.temp_sex or 'neutral', look_style=getattr(self, 'temp_style', '') or '')
         if self.account:
-            self.player.account_name = self.account.account_name
-            self.account.add_character(self.player.name)
-            self.account.save()
-        
-        await self.player.save()
+            self.player, why = await AccountManager.create_character(self.account, self.temp_name, **char)
+        else:
+            self.account, self.player, why = await AccountManager.sign_up(self.temp_account_name, self.temp_password or '', **char)
+        self.temp_password = None
+        if self.player is None:
+            # the name was taken while the character was being made
+            await self.send(f"{why} Your character was not made.")
+            if self.account:
+                await self.show_character_menu()
+            else:
+                self.temp_name = self.temp_account_name = None
+                await self.send("Enter account name (or character name): ")
+                self.state = self.STATE_GET_NAME
+            return
         await self.enter_game()
         
     async def enter_game(self):
@@ -816,6 +765,12 @@ class Connection:
             await self._locked_out(wait)
             return
         self.account = await AccountManager.authenticate(self.temp_account_name, password)
+        alt, self.login_alt = getattr(self, 'login_alt', None), None
+        if self.account is None and alt and not security.locked(alt[0]):
+            # the name is an account's and another account's character's: that one's password
+            self.account = await AccountManager.authenticate(alt[0], password)
+            if self.account:
+                self.temp_account_name, self.play_after = alt
         
         if self.account:
             security.succeeded(self.temp_account_name)
@@ -920,6 +875,7 @@ class Connection:
         await self.send(f"  {c['bright_green']}move <name> <up|down> [n]{c['reset']}   - Reorder character list")
         await self.send(f"  {c['bright_green']}password{c['reset']}                    - Change account password")
         await self.send(f"  {c['bright_green']}delete <name>{c['reset']}               - Delete a character")
+        await self.send(f"  {c['bright_green']}claim <name>{c['reset']}                - Move in a character from another account of yours")
         await self.send(f"  {c['bright_green']}time{c['reset']}                        - Display game time")
         await self.send(f"  {c['bright_green']}link{c['reset']}                        - Show connection info")
         await self.send(f"  {c['bright_green']}quit{c['reset']}                        - Disconnect")
@@ -952,6 +908,7 @@ class Connection:
         await self.send(f"  {c['bright_green']}link{c['reset']}                - Show information about your connection")
         await self.send(f"  {c['bright_green']}lag{c['reset']}                 - Show network latency")
         await self.send(f"  {c['bright_green']}delete <name>{c['reset']}       - Delete a character (permanent!)")
+        await self.send(f"  {c['bright_green']}claim <name>{c['reset']}        - Move in a character from another account of yours")
         await self.send(f"  {c['bright_green']}menu{c['reset']}                - Show this menu again")
         await self.send(f"  {c['bright_green']}help{c['reset']}                - Display this help")
         await self.send(f"  {c['bright_green']}quit{c['reset']}                - Leave the account menu")
@@ -1217,11 +1174,22 @@ class Connection:
             if char_name not in self.account.characters:
                 await self.send("Character not found.")
                 return
+            if char_name.lower() in self.world.players:
+                await self.send(f"{char_name} is in the world right now: quit them first.")
+                return
             c = self.config.COLORS
             self.temp_delete_char = char_name
             await self.send(f"\r\n{c['bright_red']}WARNING: This will PERMANENTLY delete {char_name}!{c['reset']}")
             await self.send(f"{c['yellow']}To confirm, type the character name in ALL CAPS: {c['reset']}", newline=False)
             self.state = self.STATE_CONFIRM_DELETE
+        
+        elif cmd == 'claim':
+            if not args:
+                await self.send("Usage: claim <name> (a character on another account of yours: you are asked for that account's password)")
+                return
+            self.temp_claim_char = args[0].capitalize()
+            await self.send(f"Password of the account {self.temp_claim_char} is on now: ", newline=False)
+            self.state = self.STATE_CLAIM_PASSWORD
         
         elif cmd == 'list' or cmd == 'l':
             sort_by = args[0] if args else None
@@ -1374,21 +1342,17 @@ class Connection:
             await self.send("Enter name for new character: ")
             return
         
-        if len(name) < 3 or len(name) > 12:
-            await self.send("Names must be between 3 and 12 characters.")
-            await self.send("Enter name for new character: ")
-            return
-        
-        if not name.isalpha():
-            await self.send("Names must contain only letters.")
+        from accounts import name_problem, name_taken
+        why = name_problem(name)
+        if why:
+            await self.send(why)
             await self.send("Enter name for new character: ")
             return
         
         name = name.capitalize()
         
-        # Check if name is taken
-        from player import Player
-        if Player.exists(name):
+        # Check if name is taken (a character's, or another account's)
+        if name_taken(name, self.account):
             await self.send("That name is already taken. Choose another: ")
             return
         
@@ -1396,19 +1360,33 @@ class Connection:
         await self.show_race_menu()
         self.state = self.STATE_GET_RACE
     
-    async def handle_migrate_offer(self, response: str):
-        """Handle offer to migrate to account system."""
-        if response.lower() in ('y', 'yes'):
-            from accounts import AccountManager
-            account = await AccountManager.migrate_legacy_player(self.temp_name, self.temp_password, self.player)
-            if account:
-                self.account = account
-                await self.send(f"\r\nAccount '{account.account_name}' created!")
-                await self.send(f"Character '{self.temp_name}' linked to account.")
-        
-        # Enter game regardless
-        self.temp_password = None
-        await self.enter_game()
+    async def handle_claim_password(self, password: str):
+        """`claim <name>` from the account menu: the password of the account the character is
+        on now moves it to this one (accounts.AccountManager.claim)."""
+        import security
+        from accounts import AccountManager
+        name, self.temp_claim_char = getattr(self, 'temp_claim_char', None), None
+        self.state = self.STATE_SELECT_CHAR
+        if not name or not password:
+            await self.send("Nothing claimed.")
+            return
+        # wrong passwords count against the account being tried, as at the login prompt
+        source, _ = AccountManager.account_for(name)
+        key = source.account_name if source else name.lower()
+        wait = security.locked(key)
+        if wait:
+            await self.send(f"Too many wrong passwords for {name}. Try again in {max(1, (wait + 59) // 60)} minutes.")
+            return
+        ok, why = await AccountManager.claim(self.account, name, password, online=set(self.world.players))
+        if ok:
+            security.succeeded(key)
+            await self.send(f"{name} is now on this account.")
+            await self.show_character_menu()
+            return
+        if why == "Wrong password.":
+            await self._wrong_password(key, f"Wrong password for {name}'s account.")
+            return
+        await self.send(why)
         
     async def handle_command(self, line: str):
         """Handle a game command."""
@@ -1513,7 +1491,7 @@ class Connection:
         if not words:
             return ''
         first = words[0].lower()
-        if first == 'account' and len(words) > 1 and words[1].lower() in ('password', 'recover', 'reset'):
+        if first == 'account' and len(words) > 1 and words[1].lower() in ('password', 'recover', 'reset', 'claim'):
             return f"account {words[1].lower()} ****"
         return ''
 
@@ -1646,6 +1624,13 @@ class MUDServer:
         
     async def start(self):
         """Start the server."""
+        # every character on an account before anyone logs in (accounts.py; once all are,
+        # this changes nothing)
+        try:
+            from accounts import migrate_saves
+            migrate_saves()
+        except Exception:
+            logger.exception('accounts migration')
         self.server = await asyncio.start_server(
             self.handle_connection,
             self.config.HOST,

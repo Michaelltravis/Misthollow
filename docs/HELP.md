@@ -117,9 +117,9 @@ SKILL TREE / PROGRESSION:
 ## Command
 
 ### Account
-**Syntax:** `account [create|chars|info]`
+**Syntax:** `account [chars|info|claim|password|email|forgot|recover]`
 
-View and manage your account. Usage: account [create|chars|info]
+View and manage your account: every character is on one, and its password is the only way in. Log in with the account (or any of its characters) to make, play or delete characters. `account claim <name> <password>` brings in a character from another account of yours (the password of the account it is on now).
 
 ### Achievements
 **Syntax:** `achievements [all|progress]`

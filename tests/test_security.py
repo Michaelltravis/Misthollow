@@ -250,7 +250,7 @@ NAME, PW = 'Sec' + ''.join(__import__('random').choice('abcdefghijklmnopqrstuvwx
 
 
 async def make_sectest():
-    """The throwaway character (no account) the limits are tried on."""
+    """The throwaway character (on an account of its own name) the limits are tried on."""
     s = await Raw().open()
     out = await s.cmd(NAME, 1.0)
     if 'is a new name' in out:
@@ -264,7 +264,6 @@ async def make_sectest():
         await s.cmd('quit', 1.0)
     else:
         await s.cmd(PW, 2.0)
-        await s.cmd('n', 2.0)
         await s.cmd('quit', 1.0)
     s.close()
 
