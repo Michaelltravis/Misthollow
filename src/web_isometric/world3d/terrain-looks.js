@@ -418,7 +418,8 @@ export function outdoorEdge(theme, kits, layout) {
   // boulders between them, a lone pine or two
   if (theme === 'stones') return { trees: [menhir(0), menhir(1), menhir(2), menhir(0), menhir(1), N.get('Pine_2')], treeP: 0.32, rock: k => tinted(N.get(k), MOUNTAIN_ROCK, 'mtnrock'), bush: null };
   if (theme === 'desert') return { trees: [], treeP: 0, rock: k => tinted(N.get(k), 0xffc890, 'sandstone'), bush: null };
-  if (theme === 'water_swim' || theme === 'water_noswim') return { trees: ['CommonTree_1', 'CommonTree_3', 'Pine_1'].map(k => N.get(k)), treeP: 0.18, rock: k => N.get(k), bush: null, banks: true };
+  // (only a water room's land sides keep a bank: its open-sea sides are water, roomgen.js `deep`)
+  if (theme === 'water_swim' || theme === 'water_noswim') return { trees: ['CommonTree_1', 'CommonTree_3', 'Pine_1'].map(k => N.get(k)), treeP: 0.18, rock: k => N.get(k), bush: null };
   if (theme === 'mountain') return { trees: ['Pine_1', 'Pine_2'].map(k => tinted(N.get(k), 0x8aa08a, 'alpine')), treeP: 0.12, rock: k => tinted(N.get(k), MOUNTAIN_ROCK, 'mtnrock'), bush: null, cliffs: true };
   // under the sea (Atal'narath): tall dark kelp for trees, blue-grey rock, no grass
   if (theme === 'underwater') return { trees: [kelp(0), kelp(1), kelp(2), kelp(1)], treeP: 0.45, rock: k => tinted(N.get(k), SEA_ROCK, 'searock'), bush: null };

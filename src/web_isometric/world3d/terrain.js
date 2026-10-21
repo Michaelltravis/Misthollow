@@ -272,8 +272,9 @@ export function buildRoom(layout, ox, oz, kits, room) {
       ['CommonTree_1', 'CommonTree_2', 'CommonTree_3', 'CommonTree_1', 'Pine_1', 'Pine_2'].map(k => N.get(k));
     const treeP = edge ? edge.treeP : theme === 'forest' ? 0.78 : theme === 'swamp' ? 0.3 : 0.22;
     const bare = !!edge;   // no bushes, ferns or grass
+    const deep = new Set(layout.deep || []);   // a water room's open-sea edge: water, no bank
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-      if (at(x, y) !== BLOCK || (edge && edge.cliffs)) continue;     // a mountain's cliffs: below
+      if (at(x, y) !== BLOCK || (edge && edge.cliffs) || deep.has(y * W + x)) continue;     // a mountain's cliffs: below
       const dd = depth[y * W + x];
       const jx = (rng() - 0.5) * 0.6, jz = (rng() - 0.5) * 0.6;
       const px = ox + x + 0.5 + jx, pz = oz + y + 0.5 + jz, yaw = rng() * Math.PI * 2;
@@ -367,7 +368,9 @@ export function buildRoom(layout, ox, oz, kits, room) {
 // out through each way out (no paths: a cave's floor is rock all over), darker under the edge
 function groundSheet(layout, ox, oz, pal, group, owned, { paths = true } = {}) {
   const { grid, W, H } = layout;
-  const at = (x, y) => (x < 0 || y < 0 || x >= W || y >= H) ? BLOCK : grid[y * W + x];
+  // (a water room's open-sea edge, roomgen.js `deep`: blocked, but water to look at)
+  const deep = new Set(layout.deep || []);
+  const at = (x, y) => (x < 0 || y < 0 || x >= W || y >= H) ? BLOCK : deep.has(y * W + x) ? WATER : grid[y * W + x];
   const SEG = 2;
   const geo = new THREE.PlaneGeometry(W, H, W * SEG, H * SEG);
   geo.rotateX(-Math.PI / 2);
@@ -412,7 +415,8 @@ function groundSheet(layout, ox, oz, pal, group, owned, { paths = true } = {}) {
 function waterSurface(layout, ox, oz, group) {
   const { grid, W, H } = layout;
   const wq = [];
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (grid[y * W + x] === WATER) wq.push([x, y]);
+  const deep = new Set(layout.deep || []);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (grid[y * W + x] === WATER || deep.has(y * W + x)) wq.push([x, y]);
   if (!wq.length) return;
   const wm = new THREE.InstancedMesh(WATER_GEO, WATER_MAT, wq.length);
   wq.forEach(([x, y], i) => wm.setMatrixAt(i, trs(ox + x + 0.5, -0.12, oz + y + 0.5, 0, 1.02)));
@@ -468,15 +472,17 @@ function fillerLand(c, theme) {
   if (!patches.length) return;
   const cA = new THREE.Color(pal.a), cB = new THREE.Color(pal.b), col = new THREE.Color();
   for (const [x0, z0, w, d, axis, sign, [bx, bz, bw, bd]] of patches) {
+    // past a water room's side that is land (edges.js landSides), the land runs on, not the sea
+    const side = axis === 'z' ? (sign < 0 ? 'north' : 'south') : axis === 'x' ? (sign < 0 ? 'west' : 'east') : null;
+    const ashore = !!(spec.water && side && (layout.land || {})[side]);
+    const sp = ashore ? FILL.field : spec;
+    cA.set(ashore ? GROUND.field.a : pal.a); cB.set(ashore ? GROUND.field.b : pal.b);
     // how far out from the room a point lies (0 at its edge, 1 at the patch's far edge), on the
     // whole patch this piece is cut from (skirt.js: where it meets another room's land)
     const outAt = (px, pz) => axis === 'z' ? (sign < 0 ? (bz + bd - pz) / bd : (pz - bz) / bd) : axis === 'x' ? (sign < 0 ? (bx + bw - px) / bw : (px - bx) / bw) : 1;
-    if (spec.water) {
-      const m = new THREE.Mesh(WATER_GEO, WATER_MAT);
-      m.scale.set(w, 1, d); m.position.set(x0 + w / 2, -0.12, z0 + d / 2);
-      group.add(m);
-      continue;
-    }
+    // (water past a water room's edge: the far view's filler cells are that water, the same bed
+    // under the same surface as the room's own, out to the haze: far.js)
+    if (sp.water) continue;
     // the ground skirt (a mountain's rises away from the room)
     const geo = new THREE.PlaneGeometry(w, d, Math.ceil(w), Math.ceil(d));
     geo.rotateX(-Math.PI / 2);
@@ -488,7 +494,7 @@ function fillerLand(c, theme) {
       col.copy(cA).lerp(cB, THREE.MathUtils.smoothstep(n, 0.3, 0.75)).multiplyScalar(0.92);
       arr[i * 3] = col.r; arr[i * 3 + 1] = col.g; arr[i * 3 + 2] = col.b;
       const out = outAt(wx, wz);
-      pos.setY(i, (n - 0.5) * 0.12 - 0.02 + (spec.cliff ? out * out * 2.5 : 0));
+      pos.setY(i, (n - 0.5) * 0.12 - 0.02 + (sp.cliff ? out * out * 2.5 : 0));
     }
     geo.setAttribute('color', new THREE.BufferAttribute(arr, 3));
     geo.computeVertexNormals();
@@ -497,7 +503,7 @@ function fillerLand(c, theme) {
     ground.receiveShadow = true;
     group.add(ground);
     // a town: blocks of houses, roofs to the edge of sight, a tree here and there
-    if (spec.houses) {
+    if (sp.houses) {
       for (let gz = z0 + 3.5; gz < z0 + d - 1; gz += 7) for (let gx = x0 + 3.5; gx < x0 + w - 1; gx += 7) {
         if (rng() < 0.1) {
           const tree = kits.town.get(rng() < 0.5 ? 'tree_single_A' : 'trees_A_medium');
@@ -514,24 +520,24 @@ function fillerLand(c, theme) {
     for (let gz = z0 + 0.5; gz < z0 + d; gz += step) for (let gx = x0 + 0.5; gx < x0 + w; gx += step) {
       const px = gx + (rng() - 0.5) * 0.9, pz = gz + (rng() - 0.5) * 0.9, yaw = rng() * 6.28;
       const out = outAt(px, pz);
-      const y = spec.cliff ? out * out * 2.5 : 0;
+      const y = sp.cliff ? out * out * 2.5 : 0;
       const r = rng();
       // thinner the further out (beyond the fog's reach it is only a haze anyway)
-      let acc = (spec.trees || 0) * (1 - 0.65 * Math.min(1, out));
+      let acc = (sp.trees || 0) * (1 - 0.65 * Math.min(1, out));
       // none in the land just south of the room, where the camera stands (13-18 m back): their
       // crowns would fill the view and bury the hero (A Leader Strand, in the webbed woods)
       const front = pz > oz + H && pz < oz + H + CAMERA_BACK && px > ox - 1 && px < ox + W + 1;
       if (r < acc && front) continue;
       if (r < acc && trees.length) { b.add(occ(trees[Math.floor(rng() * trees.length)]), trs(px, y, pz, yaw, 0.55 + rng() * 0.35), { shadow: false }); continue; }
-      acc += spec.rocks || 0;
+      acc += sp.rocks || 0;
       if (r < acc) {
-        const big = spec.cliff ? 1.4 + rng() * 1.6 + out * 1.5 : 0.35 + rng() * 0.35;
+        const big = sp.cliff ? 1.4 + rng() * 1.6 + out * 1.5 : 0.35 + rng() * 0.35;
         b.add(occ(rockOf(`Rock_Medium_${1 + Math.floor(rng() * 3)}`)), trs(px, y - 0.1, pz, yaw, big), { shadow: false });
         continue;
       }
-      acc += spec.bushes || 0;
+      acc += sp.bushes || 0;
       if (r < acc) { b.add(N.get(rng() < 0.75 ? 'Bush_Common' : 'Bush_Common_Flowers'), trs(px, y, pz, yaw, 0.7 + rng() * 0.4), { shadow: false }); continue; }
-      acc += spec.grass || 0;
+      acc += sp.grass || 0;
       if (r < acc) b.add(N.get(rng() < 0.7 ? 'Grass_Common_Short' : 'Grass_Wispy_Tall'), trs(px, y, pz, yaw, 0.7 + rng() * 0.4), { shadow: false });
     }
   }
@@ -822,7 +828,7 @@ const DOOR_MAT = new THREE.MeshStandardMaterial({ color: 0x6b4426, roughness: 0.
 const GROUND_MAT = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.95, metalness: 0 });
 const WATER_GEO = new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2);
 
-const WATER_MAT = new THREE.MeshStandardMaterial({ color: 0x2f6f86, roughness: 0.12, metalness: 0.2, transparent: true, opacity: 0.82 });
+export const WATER_MAT = new THREE.MeshStandardMaterial({ color: 0x2f6f86, roughness: 0.12, metalness: 0.2, transparent: true, opacity: 0.82 });
 const FLAME_GEO = new THREE.SphereGeometry(0.11, 10, 8);
 const FLAME_MAT = new THREE.MeshBasicMaterial({ color: new THREE.Color(6, 3.2, 1.1) });
 const GHOST_FLAME_MAT = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.2, 5, 2.4) });

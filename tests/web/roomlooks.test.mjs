@@ -107,6 +107,23 @@ test('outdoor rooms that open onto each other share their whole side; a building
   assert.ok(pOpen <= 5, 'a passage (not side by side) keeps its doorway');
 });
 
+test("a water room's open sides are open water past its edge, blocked still; a side that is land keeps its bank", () => {
+  // the Sea of Storms: ways out north and east; the beach and its cliffs lie south (zone.js landSides)
+  const L = MH.generateRoomTopDown({ vnum: 8809, name: 'The Sea Of Storms', description: '', sector: 'water_noswim', look: 'water_noswim', flags: [], zone: 120,
+    exits: { north: { to_room: 1, kind: 'open', nlook: 'water_noswim' }, east: { to_room: 2, kind: 'open', nlook: 'water_noswim' } }, land: { south: true } });
+  const deep = new Set(L.deep);
+  const west = [], south = [];
+  for (let y = 1; y < H - 1; y++) west.push(y * W);
+  for (let x = 1; x < W - 1; x++) south.push((H - 1) * W + x);
+  assert.ok(west.every(i => deep.has(i)), 'the side with no way out (west) is drawn as water');
+  assert.ok(west.every(i => L.grid[i] === BLOCK), '... and no boat leaves that way');
+  assert.ok(south.every(i => !deep.has(i) && L.grid[i] === BLOCK), 'the side that is land keeps its bank');
+  assert.deepEqual(L.land, { south: true });
+  const dry = MH.generateRoomTopDown({ vnum: 6000, name: 'The Edge Of The Forest', description: '', sector: 'forest', look: 'forest', flags: [], zone: 60,
+    exits: { east: { to_room: 1 }, west: { to_room: 2 } } });
+  assert.equal(dry.deep.length, 0, 'a land room has no open-sea edge');
+});
+
 test('a water room is water from bank to bank, and you cross it', () => {
   for (const look of ['water_swim', 'water_noswim']) {
     const L = MH.generateRoomTopDown({ vnum: 777, name: 'On Mira Retrum', description: 'The river runs wide.', sector: look, look, flags: [], zone: 1,

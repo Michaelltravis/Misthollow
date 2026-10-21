@@ -8,6 +8,7 @@ import { createEngine } from './engine.js';
 import { loadKit, GRASS } from './assets.js';
 import { WeatherView, weatherKind } from './weather.js';
 import { Wildlife } from './wildlife.js';
+import { Vistas } from './vista.js';
 import { GatherNodes } from './nodes.js';
 import { Zone, fetchZonemap, REV } from './zone.js';
 import { ROOM_W, ROOM_H, LABEL_FADE } from './terrain.js';
@@ -179,6 +180,8 @@ async function runGame() {
   // the sky over the hero (weather.js: the server's weather for the zone, under open sky only) and
   // the small life about them (wildlife.js: birds, fireflies, a leaping fish)
   const sky = new WeatherView(engine, fx, sound);
+  // land in the distance, where the hero's room's words put it (vista.js)
+  const vistas = new Vistas(engine.scene);
   const wild = new Wildlife(engine, fx, sky.ripples, sound, (x, z) => {
     const r = zone && zone.roomAt(x, z);
     return !!(r && zone.tile(r, x, z) === WATER_TILE);
@@ -745,6 +748,7 @@ async function runGame() {
     applySky();
     wild.set(L.theme, skyOpen, hourNow >= 20 || hourNow < 5, { x0: room.ox, z0: room.oz, x1: room.ox + ROOM_W, z1: room.oz + ROOM_H });
     applyFar(L);
+    vistas.set(room, zone && zone.cells, skyOpen);
     const hour = lastPayload && lastPayload.time ? lastPayload.time.hour : 12;
     // the room's look (room_looks.py): rock is darkest, then crypts and sewers; sand, snow and ash
     // colour the day
@@ -757,6 +761,7 @@ async function runGame() {
       : L.theme === 'volcanic' ? 'volcanic' : L.theme === 'underwater' ? 'underwater'
       // (snow keeps its cold light at dawn and dusk: the warm dusk sun made a snowfield sand)
       : L.theme === 'snow' && !night ? 'snow' : night ? 'night' : dusk ? 'dusk'
+      : L.theme === 'water_swim' || L.theme === 'water_noswim' ? 'sea'
       : L.theme === 'desert' ? 'desert' : L.theme === 'snow' ? 'snow' : L.theme === 'forest' ? 'forest' : 'day';
     engine.setMood(mood);
     // a zone's light (zone_tone.py): green ghost-fire, cold moonlight, the warmth of torches
@@ -776,6 +781,7 @@ async function runGame() {
     zone.far.range = f.range;      // (the zones next door follow it: zone.update)
     const kind = farKind(L && L.theme);
     zone.far.outdoors = !!L && !L.dark && kind !== 'none' && kind !== 'roof';
+    zone.far.sea = kind === 'water';     // the far hills lie down into a sea horizon
   }
 
   // ---- walking between rooms ----
