@@ -436,9 +436,12 @@ class CommandHandler:
         # Clear stale fighting state
         if player.position == 'fighting':
             # Check if actually fighting someone valid
+            ahead = (player.room.exits.get(direction) or {}).get('door')
             if not player.fighting or player.fighting.hp <= 0 or player.fighting not in player.room.characters:
                 player.fighting = None
                 player.position = 'standing'
+            elif isinstance(ahead, dict) and ahead.get('state') == 'closed':
+                pass        # a shut door ahead: told so below, with no parting blows for trying it
             elif getattr(player, 'web_pos', None) is not None:
                 # /play: walking on out of the fight (combat.walk_out: a parting blow from each foe,
                 # and they may come after you); telnet still flees
@@ -619,6 +622,12 @@ class CommandHandler:
             await zone_hazards.on_enter(player, target_room)
         except Exception:
             logger.exception('zone hazards on enter')
+        # a boss's lair: the door slams behind you, and he comes (lairs.py)
+        try:
+            import lairs
+            await lairs.on_enter(player, target_room)
+        except Exception:
+            logger.exception('lair on enter')
 
         # Deathtrap rooms
         if player.room and ('deathtrap' in player.room.flags or 'death' in player.room.flags):
@@ -14461,7 +14470,12 @@ class CommandHandler:
         if not player.room:
             await player.send(f"{c['red']}You are nowhere!{c['reset']}")
             return
-        
+        import lairs
+        held = lairs.holds(player)
+        if held:
+            await player.send(f"{c['red']}{held}{c['reset']}")
+            return
+
         # If no args, look for obvious entrance
         if not args:
             # Check for portals or buildings in room
@@ -16477,10 +16491,16 @@ class CommandHandler:
             await player.send(f"{c['yellow']}You can now use 'recall' to return here from anywhere.{c['reset']}")
             return
 
-        # Can't recall while fighting
-        if player.is_fighting:
+        # Can't recall while fighting, save out of a sealed lair (lairs.py): there it is a way out
+        import lairs
+        if player.is_fighting and not lairs.holds(player):
             await player.send(f"{c['red']}You can't recall while fighting!{c['reset']}")
             return
+        if player.is_fighting:
+            from combat import CombatHandler
+            await CombatHandler.end_combat(player, player.fighting)
+            for foe in [ch for ch in list(player.room.characters) if getattr(ch, 'fighting', None) is player]:
+                foe.fighting = None
 
         # Can't recall from no_recall rooms
         if player.room and 'no_recall' in player.room.flags:

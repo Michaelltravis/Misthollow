@@ -93,7 +93,7 @@ def plan(world, zones):
         # a creature the zone's population places by design (a guard post, a boss) keeps its number
         pop = (world._population or {}).get(z, {}) if hasattr(world, '_population') else {}
         # (a guard post is a few rooms; a spawn over many rooms is the kind's spread, and a patrol kind may also stand about)
-        placed = {int(x['vnum']) for x in (pop.get('bosses') or [])} | \
+        placed = {int(x['vnum']) for x in (pop.get('bosses') or []) + (pop.get('lairs') or [])} | \
             {int(x['vnum']) for x in (pop.get('spawns') or []) if len(x.get('rooms') or []) <= 3}
         for mv in placed:
             homes.pop(mv, None)

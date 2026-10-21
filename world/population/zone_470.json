@@ -1,6 +1,6 @@
 {
  "zone": 470,
- "_about": "Built from its writer's creatures (world/buildout/parts): ranks, helpers, and Ostragoth, the sorcerer-lord as the boss.",
+ "_about": "Built from its writer's creatures (world/buildout/parts): ranks, helpers, and Ostragoth, the vampire lord, who comes to his bedchamber as a bat when someone walks in and bolts them in with him (lairs.py). His key opens the House of Death, where the Starbringer is chained: the castle's raid at the level cap.",
  "creatures": {
   "647000": {
    "helpers": {
@@ -66,46 +66,223 @@
     "sentinel",
     "boss"
    ],
-   "why": "Ostragoth, the sorcerer-lord",
+   "why": "Ostragoth, the vampire lord",
+   "loot_table": [
+    {
+     "vnum": 747005,
+     "chance": 100
+    },
+    {
+     "vnum": 747003,
+     "chance": 35
+    },
+    {
+     "vnum": 747004,
+     "chance": 35
+    },
+    {
+     "vnum": 210,
+     "chance": 5
+    },
+    {
+     "vnum": 211,
+     "chance": 5
+    },
+    {
+     "vnum": 212,
+     "chance": 5
+    },
+    {
+     "vnum": 213,
+     "chance": 5
+    }
+   ],
    "boss_config": {
     "enrage_time": 180,
     "enrage_multiplier": 1.5,
     "ability_interval": 5.0,
     "phases": [
      {
-      "threshold": 50,
-      "message": "Ostragoth, the sorcerer-lord rages, and the fight turns deadlier!"
+      "threshold": 60,
+      "message": "Ostragoth bursts apart into a shrieking cloud of bats and comes together again across the room. \"My children! Come, and drink!\""
+     },
+     {
+      "threshold": 30,
+      "message": "Ostragoth's eyes flood red. \"Enough. I am THIRSTY.\" The air grows thick with the smell of blood: keep moving, or he drinks from you!"
      }
     ],
     "abilities": [
      {
-      "name": "Fury",
-      "telegraph": "Ostragoth, the sorcerer-lord gathers itself for a sweeping assault!",
-      "cast_time": 2,
-      "cooldown": 12,
-      "damage_dice": "3d8+5",
-      "aoe": true,
-      "radius": 4.5
-     },
-     {
-      "name": "Crushing Blow",
-      "telegraph": "Ostragoth, the sorcerer-lord raises a killing blow at you!",
-      "cast_time": 1,
+      "name": "Crimson Lash",
+      "telegraph": "Ostragoth draws back a hand tipped with black talons. DODGE!",
+      "cast_time": 1.2,
       "cooldown": 7,
       "damage_dice": "3d10+4",
       "dodge": true
      },
      {
-      "name": "Doom",
-      "telegraph": "Ostragoth, the sorcerer-lord begins something terrible!",
+      "name": "Night's Embrace",
+      "telegraph": "Ostragoth spreads his cloak wide, and every shadow in the room rushes toward him. Get clear of him!",
+      "cast_time": 2.5,
+      "cooldown": 14,
+      "damage_dice": "3d8+5",
+      "aoe": true,
+      "radius": 4.5,
+      "element": "necrotic"
+     },
+     {
+      "name": "Blood Drain",
+      "telegraph": "Ostragoth's eyes fix on his prey and he lunges for the throat. Break his hold! (bash or kick)",
+      "cast_time": 3,
+      "cooldown": 16,
+      "damage_dice": "3d8+4",
+      "heal_pct": 6,
+      "interruptible": true,
+      "element": "necrotic",
+      "on_success_message": "Ostragoth lifts his head, his lips red, and his wounds close before your eyes."
+     },
+     {
+      "name": "Grave Hex",
+      "telegraph": "Ostragoth begins a whispered curse in the old tongue of his sorcery. Stop him!",
       "cast_time": 2.5,
       "cooldown": 18,
       "damage_dice": "4d8+7",
       "interruptible": true,
-      "min_phase": 1
+      "min_phase": 1,
+      "element": "arcane"
      }
     ]
    }
+  },
+  "647007": {
+   "name": "starbringer star fallen",
+   "short_desc": "the Starbringer",
+   "long_desc": "The Starbringer hangs above the ring of glassy floor, a burning wound in the air, too bright to look at.",
+   "description": "It was a star once, or the thing that carried one: a shape of white fire\nthe height of three men, its body a lattice of light around a heart that\nburns blue-white. It fell long before the castle was raised, and\nOstragoth's sorcery bound it under his house and drank from it for\ncenturies. The shrouded dead in the niches came to free it, or to steal\nit. Where it looks, the dust smokes.",
+   "level": 60,
+   "rank": "boss",
+   "raid": true,
+   "alignment": 0,
+   "max_hp": 120000,
+   "hp": 120000,
+   "damage_dice": "16d12+160",
+   "hitroll": 34,
+   "damroll": 40,
+   "xp": 150000,
+   "gold": 2500,
+   "flags": [
+    "aggressive",
+    "sentinel",
+    "boss",
+    "stay_zone"
+   ],
+   "why": "the Starbringer, the castle raid at the level cap",
+   "loot_table": [
+    {
+     "vnum": 747006,
+     "chance": 40
+    },
+    {
+     "vnum": 747007,
+     "chance": 40
+    },
+    {
+     "vnum": 747008,
+     "chance": 40
+    }
+   ],
+   "boss_config": {
+    "enrage_time": 420,
+    "enrage_multiplier": 2.0,
+    "ability_interval": 6.0,
+    "phases": [
+     {
+      "threshold": 70,
+      "message": "The Starbringer's light breaks into a crown of burning motes, and they come down to fight!"
+     },
+     {
+      "threshold": 40,
+      "message": "The Starbringer's heart begins to fall in on itself. The floor groans, and every stone in the room is dragged toward it: keep moving!"
+     }
+    ],
+    "abilities": [
+     {
+      "name": "Comet Lance",
+      "telegraph": "The Starbringer draws a lance of white fire out of its own body and levels it. DODGE!",
+      "cast_time": 1.5,
+      "cooldown": 12,
+      "damage_dice": "16d20+260",
+      "dodge": true,
+      "element": "fire"
+     },
+     {
+      "name": "Corona",
+      "telegraph": "The Starbringer's corona swells, the air shimmering for yards around it. Get away from it!",
+      "cast_time": 3,
+      "cooldown": 20,
+      "damage_dice": "12d20+220",
+      "aoe": true,
+      "radius": 4.5,
+      "element": "fire"
+     },
+     {
+      "name": "Event Horizon",
+      "telegraph": "The light about the Starbringer bends and folds in on itself. Spells will slide from it like water: take up your blades!",
+      "cooldown": 30,
+      "magic_immune_duration": 8,
+      "min_phase": 1
+     },
+     {
+      "name": "Supernova",
+      "telegraph": "The Starbringer's heart blazes white and the whole room begins to sing. STOP IT before it goes nova! (bash or kick)",
+      "cast_time": 4,
+      "cooldown": 35,
+      "damage_dice": "30d20+400",
+      "aoe": true,
+      "radius": 40,
+      "interruptible": true,
+      "vulnerable_after": 6,
+      "min_phase": 2,
+      "element": "fire"
+     }
+    ]
+   }
+  },
+  "647008": {
+   "name": "bat vampire",
+   "short_desc": "a vampire bat",
+   "long_desc": "A vampire bat flits about the room, its red eyes glinting.",
+   "description": "A bat with a wingspan as wide as a man's arms, its fur matted dark and its little face all teeth. It shrieks as it dives.",
+   "level": 16,
+   "rank": "regular",
+   "flags": [
+    "aggressive"
+   ],
+   "why": "Ostragoth's children, who answer his call"
+  },
+  "647009": {
+   "name": "bat great black",
+   "short_desc": "a great black bat",
+   "long_desc": "A great black bat wheels about the canopy of the bed.",
+   "description": "A bat the size of a wolf, black as the inside of a coffin, with eyes like two points of cold light.",
+   "level": 21,
+   "rank": "regular",
+   "flags": [
+    "sentinel"
+   ],
+   "why": "Ostragoth, flying in (lairs.py: the herald, a moment only)"
+  },
+  "647010": {
+   "name": "mote star burning",
+   "short_desc": "a burning star-mote",
+   "long_desc": "A burning star-mote drifts here, humming.",
+   "description": "A knot of white fire the size of a man's head, shedding sparks. It hums the Starbringer's note, and it dives at whatever moves.",
+   "level": 58,
+   "rank": "regular",
+   "flags": [
+    "aggressive"
+   ],
+   "why": "the Starbringer's motes, its waves"
   }
  },
  "patrols": [
@@ -123,33 +300,50 @@
  ],
  "bosses": [
   {
-   "vnum": 647006,
-   "room": 8403,
-   "why": "Ostragoth, the sorcerer-lord in its lair",
+   "vnum": 647007,
+   "room": 8424,
+   "why": "the Starbringer, chained in the House of Death",
    "mechanics": [
     {
-     "type": "call_guards",
-     "at": [
-      70,
-      40
-     ],
-     "count": 3,
-     "rooms": 4,
-     "raise": [
-      647000
-     ],
-     "shout": "Ostragoth, the sorcerer-lord calls for help!",
-     "why": "its followers"
+     "type": "plague_pools",
+     "label": "Starfall",
+     "school": "fire",
+     "every": 6,
+     "radius": 3,
+     "last": 12,
+     "pct": 0.06,
+     "why": "step out"
     },
     {
-     "type": "plague_pools",
-     "label": "Ruin",
+     "type": "waves",
+     "at": [
+      70,
+      50,
+      25
+     ],
+     "adds": {
+      "647010": 3
+     },
+     "shout": "Burning motes tear free of the Starbringer and dive at you!",
+     "why": "its motes"
+    },
+    {
+     "type": "gloom",
+     "max": 0.7,
+     "shout": "The Starbringer's light gutters: the House of Death goes dark around a dying star.",
+     "why": "it dims as it dies"
+    },
+    {
+     "type": "hunger",
+     "below": 40,
+     "every": 3,
+     "pct": 0.03,
+     "stamina": 12,
+     "label": "Gravity Well",
      "school": "arcane",
-     "every": 9,
-     "radius": 2.5,
-     "last": 10,
-     "pct": 0.045,
-     "why": "step out"
+     "warn": "The Starbringer's collapsing heart drags at everything in the room: whoever stands still is crushed. Keep moving!",
+     "hit": "The star's pull crushes you!",
+     "why": "keep moving"
     }
    ]
   }
@@ -205,5 +399,112 @@
    "why": "a barrow skeleton"
   }
  ],
- "_fill": "tools/audit/densify.py: 28 more of the zone's own ordinary creatures in its empty rooms, 0.45 hostile per walkable room as the aim"
+ "_fill": "tools/audit/densify.py: 28 more of the zone's own ordinary creatures in its empty rooms, 0.45 hostile per walkable room as the aim",
+ "items": {
+  "747005": {
+   "keywords": "key black iron star ostragoth",
+   "short_desc": "Ostragoth's star-key",
+   "room_desc": "A long key of black iron, its bow worked into a seven-pointed star, lies here.",
+   "description": "A key of black iron as long as a hand, cold as a grave. Its bow is a seven-pointed star, and it hums faintly, as if it remembers the door it was made for: the House of Death, below the castle.",
+   "kind": "key",
+   "level": 21
+  },
+  "747006": {
+   "keywords": "dawnshard blade sword starmetal",
+   "short_desc": "Dawnshard, a blade of starmetal",
+   "room_desc": "A long blade of pale starmetal lies here, giving off its own faint light.",
+   "description": "A long blade forged from a splinter of the Starbringer's lattice. It is cool to the touch and lighter than it looks, and in the dark it glows like the sky just before sunrise.",
+   "kind": "weapon",
+   "level": 60,
+   "weapon_type": "slash",
+   "bonus": {
+    "hitroll": 4,
+    "damroll": 4
+   }
+  },
+  "747007": {
+   "keywords": "mantle cloak fallen star",
+   "short_desc": "the Mantle of the Fallen Star",
+   "room_desc": "A cloak of deep blue, scattered with points of light, lies here.",
+   "description": "A cloak the deep blue of the night sky, scattered with points of light that drift slowly across it as you watch. It is warm, always, as if a small sun were folded inside it.",
+   "kind": "armor",
+   "level": 60,
+   "wear_slot": "about",
+   "bonus": {
+    "hp": 60,
+    "con": 2
+   }
+  },
+  "747008": {
+   "keywords": "ring last star",
+   "short_desc": "the Ring of the Last Star",
+   "room_desc": "A thin ring holding a single burning point of light lies here.",
+   "description": "A thin band of black glass from the House of Death's floor, closed around a single point of white light no bigger than a seed. It is the last of the Starbringer's fire.",
+   "kind": "armor",
+   "level": 60,
+   "wear_slot": "finger",
+   "bonus": {
+    "int": 2,
+    "wis": 2
+   }
+  }
+ },
+ "lairs": [
+  {
+   "vnum": 647006,
+   "room": 8403,
+   "herald": 647009,
+   "why": "Ostragoth comes to his bedchamber as a bat when someone walks in, and bolts them in with him",
+   "seal": "Behind you the black iron door swings shut of itself, and a bolt shoots home with a sound like a coffin lid falling. The curtains stir, though there is no wind.",
+   "heard": "The black iron door to the north slams shut, and a bolt shoots home.",
+   "arrive": "The heavy curtains bulge and tear aside: a great black bat bursts in out of the night and wheels about the canopy of the bed, shrieking.",
+   "transform": "The bat folds its wings about itself and drops to the floor. The wings become a cloak, and the cloak a man: Ostragoth rises, the vampire lord, his eyes two points of cold light. \"You came into my bedchamber uninvited,\" he whispers. \"You will not leave it.\"",
+   "freed": "Ostragoth crumbles to grave-dust, and with a groan of iron the bolt draws back of itself: the door stands open.",
+   "retreat": "With no one left to feed on, Ostragoth bursts into a cloud of shrieking bats that pour out through the torn curtains, and the bolt draws back.",
+   "held": "The black iron door is bolted by Ostragoth's will: only his death, a recall or a summons takes you out of this room.",
+   "barred": "Ostragoth's bedchamber is sealed: nothing living may be brought into it now.",
+   "mechanics": [
+    {
+     "type": "waves",
+     "at": [
+      60,
+      30
+     ],
+     "adds": {
+      "647008": 3
+     },
+     "shout": "Ostragoth's children answer: vampire bats pour in through the torn curtains!",
+     "why": "his bats"
+    },
+    {
+     "type": "plague_pools",
+     "label": "Blood Pool",
+     "school": "necrotic",
+     "every": 10,
+     "radius": 2.5,
+     "last": 10,
+     "pct": 0.045,
+     "why": "step out"
+    },
+    {
+     "type": "gloom",
+     "max": 0.8,
+     "shout": "The candles gutter out one by one. The dark belongs to Ostragoth.",
+     "why": "the dark is his"
+    },
+    {
+     "type": "hunger",
+     "below": 30,
+     "every": 3,
+     "pct": 0.02,
+     "stamina": 8,
+     "label": "Drained",
+     "school": "necrotic",
+     "warn": "Ostragoth's thirst fills the room: whoever stands still, he drinks from. Keep moving!",
+     "hit": "Ostragoth drinks from you!",
+     "why": "keep moving"
+    }
+   ]
+  }
+ ]
 }

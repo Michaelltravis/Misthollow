@@ -68,7 +68,19 @@ async def main():
                 placed[mv] = placed.get(mv, 0) + 1
                 if r.flags & {'no_mob', 'imm_only', 'peaceful', 'deathtrap', 'death'} or (r.zone and r.zone.sealed):
                     wrong.append((mv, r.vnum))
-    check(set(placed) == set(new_mobs), f'every new creature stands somewhere ({sorted(set(new_mobs) - set(placed))[:5]})')
+    # (or comes when it is called: a lair's boss and the herald that flies in first, lairs.py, and a
+    # boss's waves and raised followers, boss_mechanics.py)
+    import population
+    for d in population.load().values():
+        for b in d.get('lairs') or []:
+            placed.setdefault(int(b['vnum']), 0)
+            if b.get('herald'):
+                placed.setdefault(int(b['herald']), 0)
+        for b in (d.get('bosses') or []) + (d.get('lairs') or []):
+            for m in b.get('mechanics') or []:
+                for v in list((m.get('adds') or {}).keys()) + list(m.get('raise') or []):
+                    placed.setdefault(int(v), 0)
+    check(set(placed) >= set(new_mobs), f'every new creature stands somewhere ({sorted(set(new_mobs) - set(placed))[:5]})')
     check(not wrong, f'none where creatures may not be ({wrong[:4]})')
     homes = {}
     for r in world.rooms.values():
