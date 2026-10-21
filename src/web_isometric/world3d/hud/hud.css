@@ -304,6 +304,21 @@ button { font: inherit; color: inherit; }
 .mm-badge img { width: 16px; height: 16px; opacity: .85; }
 .mm-badge.sector img { opacity: .6; }
 .mm-badge.off::after { content: ''; position: absolute; left: 1px; right: 1px; top: 50%; height: 1.6px; background: #ff6a4a; transform: rotate(-40deg); border-radius: 1px; box-shadow: 0 0 2px #000; }
+/* what waits and what is going on (alerts.js): the envelope, the world's events counting down */
+#minimap .mm-alerts { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: 6px; max-width: 196px; }
+#minimap .mm-alerts.hidden { display: none; }
+.al-mail { position: relative; width: 26px; height: 22px; padding: 0; border-radius: 5px; cursor: pointer; display: grid; place-items: center;
+  border: 1px solid var(--edge); background: linear-gradient(180deg, rgba(216,180,106,.22), rgba(216,180,106,.06)); animation: al-new 2.4s ease-in-out 3; }
+.al-mail:hover { box-shadow: 0 0 0 1px var(--gold-hi), 0 0 10px rgba(243,210,140,.45); }
+.al-mail img { width: 18px; height: 18px; }
+.al-mail b { position: absolute; right: -6px; top: -6px; min-width: 14px; height: 14px; padding: 0 3px; border-radius: 7px; font: 700 10px/14px var(--label); color: #fff; background: var(--hp); box-shadow: 0 0 0 1px #000; }
+@keyframes al-new { 50% { box-shadow: 0 0 0 1px var(--gold-hi), 0 0 12px rgba(243,210,140,.7); } }
+.al-events { display: contents; }
+.al-chip { display: inline-flex; align-items: center; gap: 3px; padding: 1px 7px 1px 3px; border-radius: 10px; cursor: help;
+  border: 1px solid rgba(255,154,74,.45); background: linear-gradient(180deg, rgba(255,154,74,.2), rgba(120,40,10,.25)); }
+.al-chip img { width: 16px; height: 16px; }
+.al-chip em { font: 600 11px var(--label); font-style: normal; color: var(--ink); letter-spacing: .03em; }
+@media (prefers-reduced-motion: reduce) { .al-mail { animation: none; } }
 /* the place's bite: heat, cold, the deep at the screen's edge; a held breath; shadow corruption */
 #env-vignette { inset: 0; z-index: 2; pointer-events: none; opacity: 0; transition: opacity 1.6s ease, background 1.6s ease; }
 html.env-hot #env-vignette { opacity: 1; background: radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 52%, rgba(255,110,30,.16) 80%, rgba(170,40,0,.34) 100%); }

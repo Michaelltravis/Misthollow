@@ -65,5 +65,7 @@ export function createServices(root, { fetchServices, send, prefill }) {
     root.classList.toggle('hidden', !open);
     if (open) { data = null; render(); refresh(); }
   }
-  return { toggle, get open() { return open; } };
+  // open on one tab (the minimap's envelope: the mail)
+  function show(t) { if (t) tab = t; if (open) render(); else toggle(true); }
+  return { toggle, show, get open() { return open; } };
 }

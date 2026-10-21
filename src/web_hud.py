@@ -169,6 +169,20 @@ async def push_events(world):
             logger.debug(f"events push failed: {e}")
 
 
+async def recount_mail(player):
+    """Count the player's unread mail again (at login, after mail is sent, read or deleted) and
+    show it on their page's envelope."""
+    if player is None:
+        return
+    try:
+        from mail_system import MailManager
+        player.mail_unread = MailManager.get_unread_count(player.name)
+    except Exception as e:
+        logger.debug(f"mail count failed for {getattr(player, 'name', '?')}: {e}")
+        return
+    await push_vitals(player, force=True)
+
+
 def _play_players(world, wm):
     names = {c.player_name.lower() for c in list(getattr(wm, 'clients', ())) if getattr(c, 'player_name', None)}
     return [p for key, p in list(getattr(world, 'players', {}).items())

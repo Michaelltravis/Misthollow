@@ -144,7 +144,8 @@ class CombatHandler:
         if player.max_hp > 0 and 0 < player.hp < player.max_hp * cls.config.LOW_HP_WARN_PCT:
             player._low_hp_warned = True
             c = cls.config.COLORS
-            await player.send(f"{c['bright_red']}Your health is low! Flee now, or brace for the next heavy blow.{c['reset']}")
+            import msgkind   # (/play reddens the screen's edge: the line comes dimmed)
+            await msgkind.send_ui(player, f"{c['bright_red']}Your health is low! Flee now, or brace for the next heavy blow.{c['reset']}")
 
     # Damage word -> (3rd-person verb, adjective) for grammatical hit lines:
     #   attacker:  "Your slash wounds the rat! [20 damage]"

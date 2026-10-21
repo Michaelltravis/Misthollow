@@ -1166,7 +1166,7 @@ export function createHud() {
   function useAbility(id) { use(id); }
   function unslot(i) { if (st.bar[i]) editBar(takeOffBar(st.bar, i)); }
   function prefill(text) { els.input.value = text; els.input.focus(); }
-  function openPanel(name) { if (name === 'inventory') inventory.toggle(true); else if (name === 'character') character.toggle(true); }
+  function openPanel(name) { if (name === 'inventory') inventory.toggle(true); else if (name === 'character') character.toggle(true); else if (name === 'mail') services.show('mail'); }
   function openTrainer(name) { trainer.toggle(true, name || ''); if (MH.refreshState) MH.refreshState(); }
   function openShop(kw) { shop.toggle(true, kw || ''); }
   // give someone something: a short list of what you carry, by the word the MUD knows it by

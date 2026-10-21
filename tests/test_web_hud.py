@@ -172,6 +172,37 @@ async def main():
     await web_hud.push_events(world)
     check(len([e for n, e in wm.events if e['type'] == 'world_event']) == 2, 'an event starting tells each page once')
     em.active_events = []
+
+    # ---- mail: the envelope counts what is unread, at once
+    import mail_system
+    from mail_system import MailManager
+    mail_system.MAIL_DIR = tempfile.mkdtemp()      # (not the game's own mailboxes)
+    wm.events.clear()
+    await CommandHandler.cmd_mail(other, ['send', 'Eater', 'Meet', 'me', 'at', 'the', 'fountain'])
+    sent = [e for n, e in wm.events if n == 'Eater' and e['type'] == 'vitals']
+    check(sent and sent[-1]['player']['mail'] == MailManager.get_unread_count('Eater') >= 1,
+          f"mail sent to someone online shows on their envelope ({sent and sent[-1]['player']['mail']})")
+    await CommandHandler.cmd_mail(h, ['read'])
+    sent = [e for n, e in wm.events if n == 'Eater' and e['type'] == 'vitals']
+    check(sent[-1]['player']['mail'] == 0, 'reading it empties the envelope')
+
+    # ---- an ordinary quest's step: an event for the toast
+    from quests import QuestManager, ActiveQuest, QuestObjective
+    q = ActiveQuest.__new__(ActiveQuest)
+    q.name = 'Rat Trouble'
+    obj = QuestObjective.__new__(QuestObjective)
+    obj.type, obj.target, obj.description, obj.current, obj.required, obj.completed = 'kill', 'rat', 'Rats slain', 0, 2, False
+    q.objectives = [obj]
+    h.active_quests = [q]
+    wm.events.clear()
+    try:
+        await QuestManager.check_quest_progress(h, 'kill', {'mob_name': 'a sewer rat'})
+    except Exception:
+        pass
+    prog = [e for n, e in wm.events if e['type'] == 'quest_progress']
+    check(prog and prog[0]['current'] == 1 and prog[0]['required'] == 2 and prog[0]['quest'] == 'Rat Trouble',
+          f"a quest's step tells the page ({prog})")
+    h.active_quests = []
     world.web_map = None
 
     print(f"\n{'ALL OK' if not failures else f'{len(failures)} FAILED'}")

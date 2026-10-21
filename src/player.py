@@ -2501,13 +2501,14 @@ class Player(Character):
         
         c = self.config.COLORS
         
-        # Epic level-up display!
+        # Epic level-up display! (/play has its own: the starfield comes dimmed, the gains below stay)
+        from msgkind import send_ui
         await self.send(f"\r\n")
-        await self.send(f"{c['bright_yellow']}    *  .  *       *  .    .  *    .   *   .     *")
-        await self.send(f"  .    *    .  *    .   *   . *  .    *    .")
-        await self.send(f"       .  *    L E V E L   U P !    *  .       ")
-        await self.send(f"  *  .    .  *    .   *   . *  .    *    .  *")
-        await self.send(f"    .   *    *  .  *       *  .    .  *    .{c['reset']}")
+        await send_ui(self, f"{c['bright_yellow']}    *  .  *       *  .    .  *    .   *   .     *")
+        await send_ui(self, f"  .    *    .  *    .   *   . *  .    *    .")
+        await send_ui(self, f"       .  *    L E V E L   U P !    *  .       ")
+        await send_ui(self, f"  *  .    .  *    .   *   . *  .    *    .  *")
+        await send_ui(self, f"    .   *    *  .  *       *  .    .  *    .{c['reset']}")
         await self.send(f"")
         
         # Level milestone messages

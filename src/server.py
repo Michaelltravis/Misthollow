@@ -737,8 +737,9 @@ class Connection:
             try:
                 from mail_system import MailManager
                 unread = MailManager.get_unread_count(self.player.name)
+                self.player.mail_unread = unread     # the page's envelope (web_hud.py)
                 if unread > 0:
-                    await self.send(f"{c['bright_yellow']}You have {unread} unread mail message{'s' if unread != 1 else ''}! Type 'mail read' to read.{c['reset']}")
+                    await self.send(f"{c['bright_yellow']}You have {unread} unread mail message{'s' if unread != 1 else ''}! Type 'mail read' to read.{c['reset']}", kind=msgkind.UI)
             except Exception:
                 pass
 

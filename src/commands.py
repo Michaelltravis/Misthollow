@@ -21414,6 +21414,7 @@ class CommandHandler:
             mail delete <number>          - Delete a mail by ID
         """
         from mail_system import MailManager
+        import web_hud
         c = player.config.COLORS
 
         if not args:
@@ -21440,7 +21441,8 @@ class CommandHandler:
             if online:
                 target = player.world.players.get(recipient.lower())
                 if target:
-                    await target.send(f"\r\n{c['bright_yellow']}You have new mail from {player.name}! Type 'mail read' to read it.{c['reset']}")
+                    await msgkind.send_ui(target, f"\r\n{c['bright_yellow']}You have new mail from {player.name}! Type 'mail read' to read it.{c['reset']}")
+                    await web_hud.recount_mail(target)
 
         elif sub == 'read':
             messages = MailManager.get_unread_mail(player.name)
@@ -21452,6 +21454,7 @@ class CommandHandler:
                 await player.send(f"\r\n{c['bright_cyan']}═══ Mail #{m['msg_id']} from {m['sender']} ({ts}) ═══{c['reset']}")
                 await player.send(f"{c['white']}{m['body']}{c['reset']}")
                 MailManager.mark_read(player.name, m['msg_id'])
+            await web_hud.recount_mail(player)
 
         elif sub == 'list':
             messages = MailManager.get_all_mail(player.name)
@@ -21475,6 +21478,7 @@ class CommandHandler:
                 return
             if MailManager.delete_mail(player.name, msg_id):
                 await player.send(f"{c['green']}Mail #{msg_id} deleted.{c['reset']}")
+                await web_hud.recount_mail(player)
             else:
                 await player.send(f"{c['red']}Mail #{msg_id} not found.{c['reset']}")
         else:

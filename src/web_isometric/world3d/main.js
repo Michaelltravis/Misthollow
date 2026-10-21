@@ -46,6 +46,7 @@ import { createAmbient, cueOf } from './hud/ambient.js';
 import { createRoomCard, createEnvLayer } from './hud/roomcard.js';
 import { createSkyDial } from './hud/sky.js';
 import { createBody } from './hud/body.js';
+import { createAlerts, progressText } from './hud/alerts.js';
 import { uiIcon } from './hud/icons.js';
 import { AimCircle, clampAim, aimCommand } from './aim.js';
 import { FAR, farKind } from './far.js';
@@ -508,6 +509,8 @@ async function runGame() {
   // the room's ways out and what holds there, under the minimap; the place's bite on screen (hud/roomcard.js)
   const roomCard = createRoomCard($('#minimap .mm-card'), { icon: (name, o) => uiIcon(name, o) });
   const envLayer = createEnvLayer({ breath: $('#breath'), corruption: $('#corruption') });
+  // unread mail and the world's events, at the minimap's foot (hud/alerts.js)
+  const alerts = createAlerts($('#minimap .mm-alerts'), { icon: name => uiIcon(name, { size: 36 }), openMail: () => hud.openPanel('mail') });
   const skyDial = createSkyDial($('#minimap .mm-sky'), name => uiIcon(name, { size: 44, color: '#e6eef6', glow: 'rgba(190,215,240,.55)' }));
   // the big map (M): the same drawing, larger — the whole zone at a glance, click to walk there
   const bigEl = $('#bigmap');
@@ -613,7 +616,8 @@ async function runGame() {
       roomCard.update(payload.current_room);
       envLayer.update(payload.current_room, payload.weather);
     }
-    if (payload.player) envLayer.body(payload.player);
+    if (payload.player) { envLayer.body(payload.player); alerts.setMail(payload.player.mail); }
+    if ('world_events' in payload) alerts.setEvents(payload.world_events);
     if (payload.player) { hud.setPlayer(payload.player); body.update(payload.player); ents.heroLevel = payload.player.level || 1; }
     // what the hero wears (gear_look.py): re-dressed when it changes
     if (hero && payload.player && payload.player.look) dress(hero, payload.player.look, payload.player.char_class);
@@ -647,6 +651,10 @@ async function runGame() {
     if (zone) applySky();
     if (lastPayload && lastPayload.current_room) envLayer.update(lastPayload.current_room, lastPayload.weather);
   });
+  // an invasion, double experience, a world boss begins or ends (web_hud.py world_event)
+  MH.bus.on('world.event', e => alerts.setEvents(e.events));
+  // a step of an ordinary quest (quests.py quest_progress): a toast, a chime when it is done
+  MH.bus.on('quest.progress', e => { hud.toast(progressText(e)); if (e.done) sound.play('quest_stage'); });
   // the body between map payloads (web_hud.py): regeneration out of a fight, a posture taken
   MH.bus.on('vitals', () => {
     const p = MH.state.player;
@@ -654,6 +662,7 @@ async function runGame() {
     hud.setPlayer(p);
     body.update(p);
     envLayer.body(p);
+    alerts.setMail(p.mail);
     if (ctl) ctl.setPosture(p.position);
   });
   MH.bus.on('move.result', res => { if (sync) sync.onResult(res); });
