@@ -46,7 +46,42 @@
   },
   "5200": {
    "rank": "boss",
-   "why": "the beholder"
+   "why": "the beholder; Disintegration Ray can be interrupted: a wind-up to answer (docs/MOB_AI.md, phase 1b)",
+   "boss_config": {
+    "enrage_time": 120,
+    "enrage_multiplier": 1.8,
+    "ability_interval": 5.0,
+    "phases": [
+     {
+      "threshold": 70,
+      "message": "The beholder's eyestalks begin to glow!"
+     },
+     {
+      "threshold": 35,
+      "message": "The beholder floats higher, eyes blazing!"
+     }
+    ],
+    "abilities": [
+     {
+      "name": "Disintegration Ray",
+      "telegraph": "A central eye locks onto you with lethal focus!",
+      "cast_time": 2,
+      "cooldown": 14,
+      "damage_dice": "6d6+10",
+      "dodge": true,
+      "interruptible": true
+     },
+     {
+      "name": "Mind Spike",
+      "telegraph": "Psychic energy ripples from the beholder!",
+      "cast_time": 1,
+      "cooldown": 10,
+      "damage_dice": "4d8+8",
+      "aoe": true,
+      "dodge": true
+     }
+    ]
+   }
   },
   "52500": {
    "name": "lamia matriarch",

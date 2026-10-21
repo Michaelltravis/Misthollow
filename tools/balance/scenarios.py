@@ -7,6 +7,7 @@ with pass/fail checks for each phase of docs/MOB_AI.md.
     python3 tools/balance/scenarios.py cadence --compare       # brain on vs off (MH_BRAIN), --check exits 1 on a miss
 
     python3 tools/balance/scenarios.py threat --check          # S1 (phase 1a): a tank, a healer, a mage
+    python3 tools/balance/scenarios.py tactics --check         # S7 (phase 1b): interrupts, holds, learning
 
 Scenarios:
 - threat (S1): a warrior, a cleric and a mage at level 30 against 3 plain creatures, an elite and
@@ -15,6 +16,11 @@ Scenarios:
   healer under 15%, and no creature may switch targets more than 2 (brutal 4) times a minute or
   twice inside its switch cooldown. With no taunts and heavy healing, a creature must turn on the
   healer within 30 s.
+- tactics (S7): the same party against a caster, a healer and an elite captain, interrupting
+  every wind-up it can: at most 30% of the interruptible ones may land, every special that lands
+  must have been warned of, and no player may be held more than the zone allows in 18 s. Then a
+  mage sleeps 60 fresh creatures four times each: the share that lands must fall try by try, and
+  a hold of another school (entangle) must land every time.
 - cadence: a hero stands in a busy zone while world.process_npcs runs ten times a second;
   counts the creatures' moves (a step to another room), the fights they start, how many think a
   tick and how long the thinking takes (brain/scheduler STATS). --compare runs it with the brain
@@ -249,6 +255,195 @@ async def threat_fight(world, room, tier, spec, taunting, healing, secs, seed):
             'healer_drawn_s': healer_drawn[0]}
 
 
+# ---------------------------------------------------------------- S7: tactics (phase 1b)
+S7_PASS = {'resolved_max': 0.30}     # of the interruptible wind-ups, at most this many land when every one is answered
+
+
+def _numbered(room, me, ch):
+    """'2.mage': how a player names the second of a name in the room."""
+    kw = str(ch.name).split()[-1].lower()
+    same = [c for c in room.characters if c is not me and kw in str(getattr(c, 'name', '')).lower()]
+    return f"{same.index(ch) + 1}.{kw}"
+
+
+async def tactics_fight(world, room, tier, secs, seed, interrupting=True):
+    """A warrior, cleric and mage (level 30) against a caster, a healer and an elite captain, the
+    heroes interrupting every wind-up they can. Returns what was declared, landed and held."""
+    import sim
+    import brain
+    import mob_ai
+    import combat_range as cr
+    from bosses import create_mob_from_prototype
+    from combat import CombatHandler
+    from commands import CommandHandler
+    random.seed(seed)
+    room.zone.ai = {'tier': tier}
+    for ch in list(room.characters):
+        if not hasattr(ch, 'connection'):
+            room.characters.remove(ch)
+    level = 30
+    party = []
+    for cls in ('warrior', 'cleric', 'mage'):
+        h = await sim.make_hero(world, cls, level, f'S7{cls[:3].title()}{seed}{tier[0]}', 0.75)
+        h.max_hp = h.hp = h.max_hp * 6
+        sim._put(h, room)
+        party.append(h)
+    tank, healer, mage = party
+    plain = _plain_foe(world, level)
+    foes = []
+    for name, roles, rank in (('conjurer', ['caster'], None), ('priest', ['healer'], None), ('captain', ['guarded'], 'elite')):
+        p = dict(world.mob_prototypes[plain])
+        p['level'], p['ai'] = level + 2, {'roles': roles}
+        if rank:
+            p['rank'] = rank
+        f = create_mob_from_prototype(p, world)
+        f.name = name
+        f.max_hp = f.hp = 4000
+        f.max_mana = f.mana = 10 ** 5
+        f.home_zone = None
+        f._brain = None
+        sim._put(f, room)
+        world.npcs.append(f)
+        foes.append(f)
+    for j, f in enumerate(foes):
+        cr.set_pos(f, 11.5 + j * 0.8, 7)
+        f.fighting, f.position = tank, 'fighting'
+    for j, h in enumerate(party):
+        cr.set_pos(h, 10.5, 6 + j)
+        h.fighting, h.position = foes[0], 'fighting'
+
+    announced, landed, seen = set(), {'all': 0, 'interruptible': 0, 'unannounced': 0}, {'interruptible': 0}
+    real_announce, real_resolve = mob_ai._announce, mob_ai._resolve_intent
+
+    async def announce(mob, intent):
+        announced.add(id(intent))
+        if intent.get('interruptible'):
+            seen['interruptible'] += 1
+        return await real_announce(mob, intent)
+
+    async def resolve(mob):
+        it = getattr(mob, 'pending_intent', None)
+        if it:
+            landed['all'] += 1
+            landed['interruptible'] += 1 if it.get('interruptible') else 0
+            landed['unannounced'] += 0 if id(it) in announced else 1
+        return await real_resolve(mob)
+    mob_ai._announce, mob_ai._resolve_intent = announce, resolve
+    held_max = {h: 0 for h in party}
+    t0 = sim.CLOCK.t
+    try:
+        while sim.CLOCK.t - t0 < secs:
+            for f in foes:
+                f.hp = max(f.hp, 2000)               # nobody falls: the scenario is about what they try
+                await mob_ai.declare_intents(f)
+            if interrupting:
+                for f in foes:
+                    if (getattr(f, 'pending_intent', None) or {}).get('interruptible'):
+                        who = min(party, key=lambda h: getattr(h, 'interrupt_cooldown_until', 0))
+                        who.interrupt_cooldown_until = 0       # (every wind-up answered)
+                        await CommandHandler.execute(who, 'interrupt', [_numbered(room, who, f)])
+            for h in party:
+                h.hp = max(h.hp, h.max_hp // 2)
+                if h.fighting is not None:
+                    await CombatHandler.one_round(h, h.fighting)
+            sim.CLOCK.advance(sim.NPC_DELAY)
+            for f in foes:
+                if f.fighting is not None:
+                    await mob_ai.mob_ai_tick(f)
+                    if f.fighting is not None:
+                        await CombatHandler.one_round(f, f.fighting)
+            from brain import cast
+            for h in party:
+                held_max[h] = max(held_max[h], cast.holds_on(h, sim.CLOCK.t))
+            sim.CLOCK.advance(sim.ROUND - sim.NPC_DELAY)
+    finally:
+        mob_ai._announce, mob_ai._resolve_intent = real_announce, real_resolve
+        for f in foes:
+            if f in world.npcs:
+                world.npcs.remove(f)
+            if f in room.characters:
+                room.characters.remove(f)
+        for h in party:
+            if h in room.characters:
+                room.characters.remove(h)
+            world.players.pop(h.name.lower(), None)
+        room.zone.ai = None
+    return {'declared': seen['interruptible'], 'landed': landed['interruptible'], 'unannounced': landed['unannounced'],
+            'resolved_all': landed['all'], 'held_max': max(held_max.values()),
+            'cc_chain': brain.of(foes[0]).profile.get('cc_chain', 1)}
+
+
+async def adaptation(world, room, tier, n=60, seed=7):
+    """A mage puts the same hold (sleep) on n fresh creatures four times each, waking them between,
+    then a hold of another school: the share that lands, attempt by attempt."""
+    import sim
+    import brain
+    from spells import SpellHandler, SPELLS
+    import combat_range as cr
+    from bosses import create_mob_from_prototype
+    random.seed(seed)
+    room.zone.ai = {'tier': tier}
+    mage = await sim.make_hero(world, 'mage', 30, f'S7Ada{tier[0]}', 0.75)
+    sim._put(mage, room)
+    plain = _plain_foe(world, 30)
+    first = second = None
+    landed = [0] * 5
+    for i in range(n):
+        f = create_mob_from_prototype(dict(world.mob_prototypes[plain]), world)
+        f.home_zone = None
+        f.name = f'sleeper{i}'
+        sim._put(f, room)
+        b = brain.of(f)
+        b.encounter['fought_at'] = sim.CLOCK.t
+        for k, (spell, aff) in enumerate([('sleep', {'type': 'sleep', 'value': 1})] * 4 + [('entangle', {'type': 'entangled', 'value': 1})]):
+            sch = cr.spell_school(spell, SPELLS.get(spell), mage)
+            if k == 0:
+                first = sch
+            if k == 4:
+                second = sch
+            await SpellHandler.apply_affect(f, dict(aff), 2, SPELLS[spell]['name'], mage.level, caster=mage, spell_key=spell)
+            kind = 'sleeping' if spell == 'sleep' else 'entangled'
+            if kind in (getattr(f, 'affect_flags', None) or set()):
+                landed[k] += 1
+            SpellHandler._cleanse(f, {kind})
+            f.position = 'standing'
+        room.characters.remove(f)
+    room.characters.remove(mage)
+    world.players.pop(mage.name.lower(), None)
+    room.zone.ai = None
+    return [x / n for x in landed], first, second
+
+
+async def tactics(args):
+    import sim
+    world = await sim.load_world()
+    sim.patch_deaths(world)
+    room = world.rooms[3054] if 3054 in world.rooms else next(iter(world.rooms.values()))
+    ok = True
+    for tier in ('readable', 'brutal'):
+        r = await tactics_fight(world, room, tier, args.secs, args.seed)
+        share = r['landed'] / max(1, r['declared'])
+        good = r['declared'] >= 5 and share <= S7_PASS['resolved_max']
+        ok &= good
+        print(f"{'ok  ' if good else 'FAIL'} {tier:8} every wind-up answered: {r['landed']} of {r['declared']} interruptible "
+              f"wind-ups landed ({share:.0%}, at most {S7_PASS['resolved_max']:.0%})")
+        good = r['unannounced'] == 0 and r['resolved_all'] > 0
+        ok &= good
+        print(f"{'ok  ' if good else 'FAIL'} {tier:8} every special that landed was warned of first "
+              f"({r['resolved_all']} landed, {r['unannounced']} unwarned)")
+        free = await tactics_fight(world, room, tier, args.secs * 2, args.seed + 1, interrupting=False)
+        good = 1 <= free['held_max'] <= free['cc_chain']
+        ok &= good
+        print(f"{'ok  ' if good else 'FAIL'} {tier:8} nobody interrupting: holds on one player in any 18 s at most "
+              f"{free['held_max']} (the zone allows {free['cc_chain']}; at least one must land)")
+        rates, s1, s2 = await adaptation(world, room, tier)
+        good = rates[0] == 1.0 and rates[3] < rates[1] <= rates[0] and rates[4] == 1.0 and s1 != s2
+        ok &= good
+        print(f"{'ok  ' if good else 'FAIL'} {tier:8} creatures learn: {s1} sleep landed "
+              f"{' / '.join(f'{x:.0%}' for x in rates[:4])} on tries 1-4; then {s2} (entangle) {rates[4]:.0%}")
+    return ok
+
+
 async def threat(args):
     import sim
     world = await sim.load_world()
@@ -306,7 +501,7 @@ def compare(args):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
-    ap.add_argument('scenario', choices=['cadence', 'threat'])
+    ap.add_argument('scenario', choices=['cadence', 'threat', 'tactics'])
     ap.add_argument('--zone', type=int, default=54)
     ap.add_argument('--secs', type=float, default=60)
     ap.add_argument('--seed', type=int, default=54)
@@ -319,8 +514,8 @@ def main():
     if args.compare:
         ok = compare(args)
         sys.exit(0 if ok or not args.check else 1)
-    if args.scenario == 'threat':
-        ok = asyncio.run(threat(args))
+    if args.scenario in ('threat', 'tactics'):
+        ok = asyncio.run({'threat': threat, 'tactics': tactics}[args.scenario](args))
         sys.exit(0 if ok or not args.check else 1)
     r = asyncio.run(cadence(args.zone, args.secs, args.seed))
     if args.json:

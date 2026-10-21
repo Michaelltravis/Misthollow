@@ -137,7 +137,8 @@
       "damage_dice": "3d8+6",
       "aoe": true,
       "radius": 4.0,
-      "min_phase": 1
+      "min_phase": 1,
+      "interruptible": true
      }
     ]
    },
@@ -150,7 +151,8 @@
      "vnum": 3298,
      "chance": 35
     }
-   ]
+   ],
+   "why": "Den Collapse can be interrupted: a wind-up to answer (docs/MOB_AI.md, phase 1b)"
   },
   "3282": {
    "name": "ghoul temple",

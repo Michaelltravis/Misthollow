@@ -15,6 +15,9 @@ switched on feature by feature there ("features"):
     threat   whom it fights: a threat table from damage, healing and taunts (targeting.py); a
              real taunt; healers heal only their own side; a player's creatures fight as their
              owner bids, without the generic creature specials (phase 1a)
+    tactics  how it fights: real spells, declared heals, Disrupt on your healer, holds it learns
+             to resist, breakouts (rouse, fire, a blow), once-a-fight abilities that come back
+             next fight, the zone's own wind-up length and cap (cast.py, cc.py; phase 1b)
 
 MH_BRAIN=0 in the environment (or Config.BRAIN = False) skips the brain altogether: the kill
 switch while the phases land. MH_BRAIN_OFF=threat,... turns single features off.
@@ -72,17 +75,65 @@ def _thinks_for_itself(mob) -> bool:
     return not owned(mob)
 
 
+# what a creature's ai_state keeps for a fight only: it has them again the next fight (tactics)
+ONCE_A_FIGHT = ('buffed', 'pack_called', 'spell_cd', 'heal_cd', 'guard_cd')
+
+
+def end_encounter(mob, b):
+    """The fight is over: its threat and memory of tricks go, and (tactics) what it could do once
+    a fight comes back, an enrage wears off."""
+    b.reset_encounter()
+    if not on('tactics'):
+        return
+    st = getattr(mob, 'ai_state', None) or {}
+    for k in ONCE_A_FIGHT:
+        st.pop(k, None)
+    if st.pop('enraged', None):
+        mob.enrage_multiplier = 1.0
+        mob.hitroll = getattr(mob, 'hitroll', 0) - 5
+        mob.damroll = getattr(mob, 'damroll', 0) - 5
+
+
 async def think_idle(mob):
     if not enabled():
         return await legacy.idle(mob)
     b = of(mob)
-    if on('threat') and not mob.fighting and len(b.threat) and _thinks_for_itself(mob):
+    if (on('threat') or on('tactics')) and not mob.fighting and 'fought_at' in b.encounter             and _thinks_for_itself(mob):
         from . import targeting
-        if await targeting.pick_up(mob, b) is not None:
+        if on('threat') and len(b.threat) and await targeting.pick_up(mob, b) is not None:
             return                       # someone who hurt it is still here: back at them
         if time.time() - b.encounter.get('fought_at', 0) > targeting.RETURN_GRACE:
-            b.reset_encounter()          # the fight is over
+            end_encounter(mob, b)        # the fight is over
     return await legacy.idle(mob)
+
+
+def _may_declare(mob):
+    """The old declare's gates (mob_ai._legacy_declare_intents), for what the brain declares itself."""
+    import mob_ai
+    target = mob.fighting
+    if getattr(mob, 'pending_intent', None) or not mob.is_fighting or target is None or not mob.room:
+        return False
+    if not getattr(target, 'is_alive', False) or mob_ai._intent_exempt(mob, target):
+        return False
+    if time.time() < getattr(mob, 'staggered_until', 0):
+        return False
+    if getattr(mob, 'ai_state', None) is None:
+        mob.ai_state = {}
+    pending = sum(1 for ch in mob.room.characters if getattr(ch, 'pending_intent', None))
+    return pending < mob_ai._room_cap(mob)
+
+
+async def _declare_own(mob, b):
+    """A heal or a Disrupt, declared by the brain itself (cast.py). True if it declared one."""
+    from . import cast
+    import mob_ai
+    intent = cast.choose_heal(mob, b) or cast.choose_disrupt(mob, b)
+    if intent is None:
+        return False
+    intent['declared_at'] = time.time()
+    mob.pending_intent = intent
+    await mob_ai._announce(mob, intent)
+    return True
 
 
 async def declare(mob):
@@ -95,6 +146,16 @@ async def declare(mob):
         if mob.fighting is not None:
             from . import targeting
             await targeting.retarget(mob, b)
+    if on('tactics') and _thinks_for_itself(mob):
+        b.encounter['fought_at'] = time.time()
+        before = getattr(mob, 'pending_intent', None)
+        if not (_may_declare(mob) and await _declare_own(mob, b)):
+            await legacy.declare(mob)
+        intent = getattr(mob, 'pending_intent', None)
+        if intent is not None and intent is not before:
+            # on the real-time clock, the zone's own wind-up (readable 2 s, brutal 1.4 s; never under 1.2)
+            intent.setdefault('windup_action', b.profile.get('windup_action_s', 2.0))
+        return None
     return await legacy.declare(mob)
 
 
@@ -161,6 +222,7 @@ def install():
     if _installed:
         return
     _installed = True
-    from . import debug, hooks
+    from . import debug, hooks, cc
     debug.install()
     hooks.install()
+    cc.install()

@@ -256,7 +256,7 @@ async def mob_turn(mob, now):
     comes every MOB_EVERY s, in a round's order (declare, specials, swing)."""
     import mob_ai
     intent = getattr(mob, 'pending_intent', None)
-    if intent and now - intent.get('declared_at', now) >= WINDUP:
+    if intent and now - intent.get('declared_at', now) >= intent.get('windup_action', WINDUP):
         await mob_ai._resolve_intent(mob)
     nxt = getattr(mob, '_turn_at', None)
     engaged = getattr(mob, '_turn_foe', None)

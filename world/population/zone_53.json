@@ -104,7 +104,42 @@
   },
   "5360": {
    "rank": "boss",
-   "why": "Aurexus the Bronze Dragon"
+   "why": "Aurexus the Bronze Dragon; Lightning Breath can be interrupted: a wind-up to answer (docs/MOB_AI.md, phase 1b)",
+   "boss_config": {
+    "enrage_time": 120,
+    "enrage_multiplier": 1.7,
+    "ability_interval": 5.0,
+    "phases": [
+     {
+      "threshold": 70,
+      "message": "Aurexus crackles with lightning!"
+     },
+     {
+      "threshold": 35,
+      "message": "Aurexus beats its wings, storm winds roaring!"
+     }
+    ],
+    "abilities": [
+     {
+      "name": "Lightning Breath",
+      "telegraph": "Aurexus draws lightning into its maw!",
+      "cast_time": 3,
+      "cooldown": 18,
+      "damage_dice": "6d6+10",
+      "aoe": true,
+      "dodge": true,
+      "interruptible": true
+     },
+     {
+      "name": "Thunderclap",
+      "telegraph": "Aurexus slams the ground in a thunderous clap!",
+      "cast_time": 1,
+      "cooldown": 10,
+      "damage_dice": "3d8+6",
+      "dodge": true
+     }
+    ]
+   }
   }
  },
  "patrols": [
