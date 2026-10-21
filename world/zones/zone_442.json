@@ -616,7 +616,8 @@
     }
    },
    "description": "A broad courtyard of beaten earth opens behind the barricade, rutted by\ncart wheels and pocked with puddles from the last rain. Grey cloud hangs\nlow over it, snagged on the peaks of the mountain. The barricade gate\nstands close by to the east, and the dark mouth of the big cave yawns in\nthe rock to the south. A broken water trough lies on its side near a\nhitching rail with no horses left to tie. The courtyard stretches on\nwest, and to the north a path follows the foot of the mountain wall.",
-   "extra_descs": {}
+   "extra_descs": {},
+   "look": "castle"
   },
   "16321": {
    "vnum": 16321,

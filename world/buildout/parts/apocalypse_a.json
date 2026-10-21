@@ -1,16 +1,46 @@
 {
  "job": "apocalypse_a",
  "rooms": {
-  "22001": "A vaulted passage of black stone runs beneath the castle's outer works, its roof lost in a darkness no torch has warmed in an age. To the north the floor drops away into a tangle of braced sticks, the old way toward the Lost Castle. An iron-bound door in the south wall gives onto the entrance chambers, while the pathway around the castle leads off east and west through low arches crusted with ash. The air is still and smells of cold iron.",
-  "14205": "The pathway hugs the foot of the castle wall, a ledge of cracked flagstones scattered with bone splinters and windblown ash. Overhead the sky is a low lid of grey cloud that never seems to move. The vaulted passage toward the Lost Castle lies back to the west, and the path runs on east beneath a line of iron spikes driven into the stone. Every gust carries a faint taste of smoke.",
-  "14206": "Here the wall bellies outward over the path, its black blocks scorched in long tongues as if great fires once licked up their face. A burned banner hangs from a rusted bracket, nothing left of it but a blackened rag that snaps in the wind. The flagstones are split and heaved, and the path picks its way between them east and west. Somewhere above, a loose shutter bangs without rhythm.",
-  "14207": "A row of pikes stands along the outer edge of the path, each crowned with a weathered skull turned to face the castle. Beyond them the ground falls away into a grey haze where nothing grows. The wall here bears a deep crack wide enough to take an arm, and cold air breathes out of it. The path continues east and west along the stones.",
-  "14208": "Ash lies ankle-deep on this stretch of the pathway, soft and grey and marked by nothing at all. The wind lifts it in slow curls that drift along the foot of the wall and settle again. Iron rings set into the stonework at shoulder height still hold the rusted ends of chains, their other ends long since gone. The way runs on east, and back west toward the castle's dark passage.",
-  "14209": "A fallen buttress has spilled its blocks across half the path, leaving a narrow gap between rubble and wall to squeeze through. Shattered bones are mixed into the debris, old enough to have taken on the colour of the stone. Far off, beyond the haze, a bell tolls once and falls silent. The pathway runs east toward a turn in the wall and west along the castle's flank.",
-  "14210": "The pathway reaches a corner of the castle, where two great walls meet in a tower of black stone that rises out of sight into the cloud. Arrow slits stare down from its face, dark and empty. The path bends here, running south along the next face of the wall and west back the way it came. The wind is fiercer at the corner, moaning through the slits like a voice.",
-  "14211": "Along this face of the castle the wall is studded with iron spikes, each as long as a man's arm and red with rust. Scraps of cloth and leather cling to some of them, faded to the grey of everything else. The pathway runs north to the corner tower and south along the foot of the wall. Underfoot the stones are slick with a dark, oily grime that never dries.",
-  "14212": "The pathway ends abruptly where a great slab of the wall has fallen outward and buried the way beneath a mound of broken stone. Nothing lies beyond the slab but grey haze and the endless wind. A charred standard pole juts from the rubble, its banner burned away to a few blackened threads. The only way on is north, back along the wall.",
-  "14102": "The entrance chambers open into a broad room of black stone, its ceiling held up by squat pillars bound in iron bands. Heavy doors stand to the north, where the dark passage leads out toward the pathway and the Lost Castle. Halls run off east and west along the inner wall, and to the south a wide arch opens on the Inner Hall. Burned banners hang in tatters from the pillars, and the floor is scored by countless iron-shod feet.",
+  "22001": {
+   "description": "A vaulted passage of black stone runs beneath the castle's outer works, its roof lost in a darkness no torch has warmed in an age. To the north the floor drops away into a tangle of braced sticks, the old way toward the Lost Castle. An iron-bound door in the south wall gives onto the entrance chambers, while the pathway around the castle leads off east and west through low arches crusted with ash. The air is still and smells of cold iron.",
+   "look": "castle"
+  },
+  "14205": {
+   "description": "The pathway hugs the foot of the castle wall, a ledge of cracked flagstones scattered with bone splinters and windblown ash. Overhead the sky is a low lid of grey cloud that never seems to move. The vaulted passage toward the Lost Castle lies back to the west, and the path runs on east beneath a line of iron spikes driven into the stone. Every gust carries a faint taste of smoke.",
+   "look": "castle"
+  },
+  "14206": {
+   "description": "Here the wall bellies outward over the path, its black blocks scorched in long tongues as if great fires once licked up their face. A burned banner hangs from a rusted bracket, nothing left of it but a blackened rag that snaps in the wind. The flagstones are split and heaved, and the path picks its way between them east and west. Somewhere above, a loose shutter bangs without rhythm.",
+   "look": "castle"
+  },
+  "14207": {
+   "description": "A row of pikes stands along the outer edge of the path, each crowned with a weathered skull turned to face the castle. Beyond them the ground falls away into a grey haze where nothing grows. The wall here bears a deep crack wide enough to take an arm, and cold air breathes out of it. The path continues east and west along the stones.",
+   "look": "castle"
+  },
+  "14208": {
+   "description": "Ash lies ankle-deep on this stretch of the pathway, soft and grey and marked by nothing at all. The wind lifts it in slow curls that drift along the foot of the wall and settle again. Iron rings set into the stonework at shoulder height still hold the rusted ends of chains, their other ends long since gone. The way runs on east, and back west toward the castle's dark passage.",
+   "look": "castle"
+  },
+  "14209": {
+   "description": "A fallen buttress has spilled its blocks across half the path, leaving a narrow gap between rubble and wall to squeeze through. Shattered bones are mixed into the debris, old enough to have taken on the colour of the stone. Far off, beyond the haze, a bell tolls once and falls silent. The pathway runs east toward a turn in the wall and west along the castle's flank.",
+   "look": "castle"
+  },
+  "14210": {
+   "description": "The pathway reaches a corner of the castle, where two great walls meet in a tower of black stone that rises out of sight into the cloud. Arrow slits stare down from its face, dark and empty. The path bends here, running south along the next face of the wall and west back the way it came. The wind is fiercer at the corner, moaning through the slits like a voice.",
+   "look": "castle"
+  },
+  "14211": {
+   "description": "Along this face of the castle the wall is studded with iron spikes, each as long as a man's arm and red with rust. Scraps of cloth and leather cling to some of them, faded to the grey of everything else. The pathway runs north to the corner tower and south along the foot of the wall. Underfoot the stones are slick with a dark, oily grime that never dries.",
+   "look": "castle"
+  },
+  "14212": {
+   "description": "The pathway ends abruptly where a great slab of the wall has fallen outward and buried the way beneath a mound of broken stone. Nothing lies beyond the slab but grey haze and the endless wind. A charred standard pole juts from the rubble, its banner burned away to a few blackened threads. The only way on is north, back along the wall.",
+   "look": "castle"
+  },
+  "14102": {
+   "description": "The entrance chambers open into a broad room of black stone, its ceiling held up by squat pillars bound in iron bands. Heavy doors stand to the north, where the dark passage leads out toward the pathway and the Lost Castle. Halls run off east and west along the inner wall, and to the south a wide arch opens on the Inner Hall. Burned banners hang in tatters from the pillars, and the floor is scored by countless iron-shod feet.",
+   "look": "castle"
+  },
   "14104": "This hall runs straight along the inner face of the castle wall, low-roofed and narrow, its stones sweating a cold damp. Iron sconces line the wall at regular intervals, every one of them empty and furred with rust. Mold spreads in pale grey blooms along the seams of the floor. The hall continues east and west into gloom.",
   "14105": "The hall widens slightly around a stone bench set into the wall, its seat worn hollow by long-dead sentries. Above it someone has scratched a tally into the stone, hundreds of marks in rows until the last line breaks off unfinished. The smell of old ash hangs heavy in the air. Narrow passages lead on east and west.",
   "14107": "A spiral stair climbs out of the corner of this hall, its steps cracked and slick, rising up toward the ragged walkway atop the castle. A thin draught falls down the stairwell, carrying the moan of wind from the battlements. The hall itself turns here, running west along the wall and south into deeper shadow. Rusted chains hang from the ceiling at the foot of the stair, swaying a little in the draught.",
