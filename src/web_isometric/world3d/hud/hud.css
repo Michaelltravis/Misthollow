@@ -234,6 +234,28 @@ button { font: inherit; color: inherit; }
 #minimap .mm-north i { font: 800 11px var(--title); font-style: normal; display: block; transition: color .2s; }
 #minimap .mm-north.turned { box-shadow: 0 0 0 1px rgba(243,217,153,.55), 0 0 10px rgba(243,217,153,.45); }
 #minimap .mm-room { font: 500 12.5px var(--label); color: var(--ink-dim); margin-top: 6px; max-width: 196px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; letter-spacing: .02em; }
+/* the sky dial (sky.js): the sun or the moon on its arc, the hour and season, the weather */
+#minimap .mm-sky { display: flex; align-items: center; gap: 7px; margin: -2px 0 6px; cursor: help; }
+#minimap .mm-sky.hidden { display: none; }
+.sky-arc { flex: none; overflow: visible; }
+.sky-track { fill: none; stroke: rgba(207,224,238,.28); stroke-width: 1; stroke-dasharray: 2 2.5; }
+.sky-horizon { stroke: rgba(216,180,106,.45); stroke-width: 1; }
+.sky-body { transition: transform 1.2s ease; }
+.sky-sun { fill: #ffd36a; filter: drop-shadow(0 0 3px rgba(255,200,90,.9)); }
+.sky-moon-dark { fill: rgba(40,52,74,.9); stroke: rgba(207,224,238,.35); stroke-width: .6; }
+.sky-moon-lit { fill: #e8eef8; filter: drop-shadow(0 0 2px rgba(200,220,255,.8)); }
+.sky-dial[data-body="sun"] .sky-moon, .sky-dial[data-body="moon"] .sky-sun { display: none; }
+.sky-dial[data-period="dawn"] .sky-sun, .sky-dial[data-period="dusk"] .sky-sun { fill: #ff9a4a; }
+.sky-read { display: flex; flex-direction: column; line-height: 1.05; min-width: 0; }
+.sky-hour { font: 700 12.5px var(--label); color: var(--mist-hi); letter-spacing: .04em; }
+.sky-season { font: italic 500 11px var(--lore); color: var(--ink-dim); }
+.sky-weather { margin-left: auto; display: flex; align-items: center; gap: 3px; }
+.sky-weather.hidden { display: none; }
+.sky-weather img { width: 22px; height: 22px; }
+.sky-weather.indoors img { opacity: .35; filter: grayscale(1); }
+.sky-temp { font: 600 12px var(--label); font-style: normal; color: var(--ink); }
+.sky-temp[data-band="frigid"] { color: #9fd4ff; } .sky-temp[data-band="cold"] { color: #c4e0f6; }
+.sky-temp[data-band="warm"] { color: #ffd08a; } .sky-temp[data-band="hot"] { color: var(--ember); }
 
 /* ---- action bar between two lanterns (bottom-centre) ---- */
 #actionbar { left: 50%; bottom: 10px; transform: translateX(-50%) scale(var(--ui)); transform-origin: bottom center;

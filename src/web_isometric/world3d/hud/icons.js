@@ -250,6 +250,20 @@ export const PICTO = {
     }
     c.globalAlpha = 1;
   },
+  // ---- the HUD's world (web_hud.py): the sky, the body's needs, the room, mail ----
+  moon(c) { disc(c, 0, 0, 38); c.globalCompositeOperation = 'destination-out'; disc(c, 18, -12, 34); c.globalCompositeOperation = 'source-over'; },
+  cloud(c) { for (const [x, y, r] of [[-24, 8, 20], [0, -8, 26], [24, 6, 20]]) disc(c, x, y, r); c.fillRect(-44, 8, 88, 22); },
+  envelope(c) {
+    c.fillRect(-42, -28, 84, 58);
+    c.globalCompositeOperation = 'destination-out'; c.strokeStyle = '#000'; line(c, 6, [[-40, -26], [0, 6], [40, -26]]); c.globalCompositeOperation = 'source-over';
+  },
+  padlock(c) { c.strokeStyle = '#fff'; c.lineWidth = 10; c.beginPath(); c.arc(0, -10, 22, Math.PI, 0); c.stroke(); c.fillRect(-32, -10, 64, 52); c.globalCompositeOperation = 'destination-out'; disc(c, 0, 10, 7); c.fillRect(-3, 10, 6, 18); c.globalCompositeOperation = 'source-over'; },
+  bread(c) { c.beginPath(); c.ellipse(0, 4, 44, 28, 0, Math.PI, 0); c.lineTo(44, 26); c.lineTo(-44, 26); c.closePath(); c.fill(); c.globalCompositeOperation = 'destination-out'; c.strokeStyle = '#000'; for (const x of [-20, 0, 20]) line(c, 5, [[x - 8, -6], [x + 8, -16]]); c.globalCompositeOperation = 'source-over'; },
+  mug(c) { c.fillRect(-30, -30, 46, 70); c.strokeStyle = '#fff'; c.lineWidth = 9; c.beginPath(); c.arc(18, 4, 18, -Math.PI / 2, Math.PI / 2); c.stroke(); c.globalAlpha = .55; c.fillRect(-34, -40, 54, 12); c.globalAlpha = 1; },
+  seat(c) { c.fillRect(-30, -42, 10, 84); c.fillRect(-30, 0, 60, 10); c.fillRect(20, 0, 10, 42); },
+  house(c) { fillPath(c, [[-44, -2], [0, -42], [44, -2]]); c.fillRect(-32, -4, 64, 46); c.globalCompositeOperation = 'destination-out'; c.fillRect(-9, 14, 18, 28); c.globalCompositeOperation = 'source-over'; },
+  dove(c) { c.beginPath(); c.ellipse(0, 8, 30, 16, -0.2, 0, TAU); c.fill(); disc(c, 26, -6, 11); fillPath(c, [[36, -8], [48, -4], [36, -2]]); fillPath(c, [[-6, 0], [-30, -40], [12, -6]]); fillPath(c, [[-26, 12], [-48, 4], [-46, 24]]); },
+  boat(c) { fillPath(c, [[-46, 12], [46, 12], [30, 34], [-30, 34]]); c.fillRect(-3, -44, 6, 56); fillPath(c, [[4, -40], [34, 4], [4, 4]]); },
 };
 
 // a picture of their own for abilities of one class that would otherwise look alike

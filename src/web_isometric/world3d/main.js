@@ -43,6 +43,8 @@ import { groundItems } from './lootlogic.js';
 import { ReactionPrompt, threatens, REACTIONS } from './reactions.js';
 import { createWorldMap } from './hud/worldmap.js';
 import { createAmbient } from './hud/ambient.js';
+import { createSkyDial } from './hud/sky.js';
+import { uiIcon } from './hud/icons.js';
 import { AimCircle, clampAim, aimCommand } from './aim.js';
 import { FAR, farKind } from './far.js';
 
@@ -498,6 +500,8 @@ async function runGame() {
     }
   };
   const mmSmall = createMinimap($('#minimap'), room => travelTo(room), () => engine.snapNorth());
+  // the sun or moon on its arc, the season, the weather over the zone (hud/sky.js)
+  const skyDial = createSkyDial($('#minimap .mm-sky'), name => uiIcon(name, { size: 44, color: '#e6eef6', glow: 'rgba(190,215,240,.55)' }));
   // the big map (M): the same drawing, larger — the whole zone at a glance, click to walk there
   const bigEl = $('#bigmap');
   const mmBig = createMinimap(bigEl, room => { bigEl.classList.add('hidden'); travelTo(room); }, null, { cell: 1.7, browse: true });
@@ -595,6 +599,8 @@ async function runGame() {
   MH.bus.on('map', payload => {
     lastPayload = payload;
     if (zone) applySky();
+    skyDial.set(payload.time, payload.weather);
+    if (payload.current_room) skyDial.setIndoors((payload.current_room.flags || []).includes('indoors'));
     if (payload.player) { hud.setPlayer(payload.player); ents.heroLevel = payload.player.level || 1; }
     // what the hero wears (gear_look.py): re-dressed when it changes
     if (hero && payload.player && payload.player.look) dress(hero, payload.player.look, payload.player.char_class);
@@ -619,6 +625,13 @@ async function runGame() {
     const t = ents.targeted;
     if (t) hud.setTarget({ kind: t.kind, ...t.data });
     // (swings, hits and casts are drawn from the server's combat events: combat.js)
+  });
+  // the hour turning, the sky changing over the zone (web_hud.py world_tick): the dial and the 3D sky
+  MH.bus.on('world.tick', e => {
+    if (lastPayload) { if (e.time) lastPayload.time = e.time; if (e.weather) lastPayload.weather = e.weather; }
+    skyDial.set(e.time, e.weather);
+    mm.setTime(e.time);
+    if (zone) applySky();
   });
   // the body between map payloads (web_hud.py): regeneration out of a fight, a posture taken
   MH.bus.on('vitals', () => {

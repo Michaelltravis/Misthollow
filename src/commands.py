@@ -17826,6 +17826,8 @@ class CommandHandler:
         gt.hour = hour
         gt.tick_counter = 0
         await player.send(f"{c['bright_cyan']}The clock now reads {hour:02d}:00 ({'day' if gt.is_day() else 'night'}).{c['reset']}")
+        import web_hud
+        await web_hud.push_sky(player.world)
 
     @classmethod
     async def cmd_setweather(cls, player: 'Player', args: List[str]):
@@ -17848,6 +17850,8 @@ class CommandHandler:
             return
         weather.sky_condition = args[0].lower()
         await player.send(f"{c['bright_cyan']}The sky over {zone.name} is now {weather.sky_condition}.{c['reset']}")
+        import web_hud
+        await web_hud.push_sky(player.world, zone)
 
     @classmethod
     async def cmd_advance(cls, player: 'Player', args: List[str]):
