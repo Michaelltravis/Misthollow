@@ -586,6 +586,7 @@ html.fallen #vignette { background: radial-gradient(ellipse at 50% 46%, rgba(30,
 #item-tip .tt-proc { color: #c8a8ff; font-family: var(--lore); font-style: italic; }
 #item-tip .tt-bar { color: #ff7a6a; font-weight: 700; margin-top: 4px; }
 #item-tip .tt-foot { color: var(--ink-faint); margin-top: 5px; font-style: italic; }
+#item-tip .tt-price { color: var(--gold-hi); font-style: normal; font-weight: 700; }     /* a shop's price (shop.js) */
 #item-menu { position: fixed; z-index: 51; min-width: 150px; padding: 5px; border-radius: 8px; background: rgba(14,12,18,.97); border: 1px solid var(--edge); box-shadow: 0 10px 26px rgba(0,0,0,.6); animation: unfurl .12s ease-out; }
 #item-menu button { display: block; width: 100%; text-align: left; padding: 7px 11px; border: 0; border-radius: 5px; background: none; cursor: pointer; font: 500 14px var(--body); }
 #item-menu button:hover { background: rgba(216,180,106,.16); color: var(--gold-hi); }
