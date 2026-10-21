@@ -363,9 +363,9 @@ class CommandHandler:
             except Exception:
                 logger.exception('gear look relay failed')
         else:
-            # Check if it's a direction
+            # Check if it's a direction (typed: in /play you walk instead, typed_move)
             if cmd in Config.DIRECTIONS:
-                await cls.cmd_move(player, cmd)
+                await cls.typed_move(player, cmd)
             else:
                 # Check partial direction matching
                 dir_matches = [d for d in Config.DIRECTIONS if d.startswith(cmd)]
@@ -374,7 +374,7 @@ class CommandHandler:
                     c = player.config.COLORS
                     if original_cmd != dir_matches[0]:
                         await player.send(f"{c['cyan']}[{dir_matches[0]}]{c['reset']}")
-                    await cls.cmd_move(player, dir_matches[0])
+                    await cls.typed_move(player, dir_matches[0])
                 elif len(dir_matches) > 1:
                     c = player.config.COLORS
                     dir_list = f"{c['bright_yellow']}, {c['bright_green']}".join(dir_matches)
@@ -385,7 +385,7 @@ class CommandHandler:
                         exits = list(player.room.exits.keys())
                         # Exact match
                         if cmd in exits:
-                            await cls.cmd_move(player, cmd)
+                            await cls.typed_move(player, cmd)
                             return
                         # Prefix match (unique)
                         exit_matches = [e for e in exits if e.startswith(cmd)]
@@ -393,12 +393,12 @@ class CommandHandler:
                             c = player.config.COLORS
                             if original_cmd != exit_matches[0]:
                                 await player.send(f"{c['cyan']}[{exit_matches[0]}]{c['reset']}")
-                            await cls.cmd_move(player, exit_matches[0])
+                            await cls.typed_move(player, exit_matches[0])
                             return
                         # Match first token of multi-word exit keys
                         token_matches = [e for e in exits if e.split()[0] == cmd]
                         if len(token_matches) == 1:
-                            await cls.cmd_move(player, token_matches[0])
+                            await cls.typed_move(player, token_matches[0])
                             return
                     await player.send(f"Huh?!? '{original_cmd}' is not a valid command. Type 'help' for a list.")
 
@@ -415,12 +415,15 @@ class CommandHandler:
     @classmethod
     async def cmd_move(cls, player: 'Player', direction: str):
         """Move in a direction."""
-        # (typed as a command, `move north`, it comes with the words typed: `move` alone failed)
+        # (typed as a command, `move north`, it comes with the words typed: `move` alone failed;
+        # and in /play it is a typed direction like `north`, refused there: typed_move)
         if isinstance(direction, list):
             if not direction:
                 await player.send("Move which way? (north, south, east, west, up or down)")
                 return
             direction = cls.ALIASES.get(direction[0].lower(), direction[0].lower())
+            await cls.typed_move(player, direction)
+            return
         if not player.room:
             await player.send("You are nowhere!")
             return

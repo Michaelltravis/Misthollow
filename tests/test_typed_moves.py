@@ -56,8 +56,23 @@ async def main():
                     check(not moved and any('WASD' in s for s in p.said), f'{name}: typed {d} is refused with how to walk')
         check(CommandHandler.COMMAND_ALIASES.get('n') == 'north' or CommandHandler.ALIASES.get('n') == 'north',
               '`n` is still north (refused in /play by cmd_north)')
+        # `move north` typed: the words come as a list; refused in /play, moves on telnet
+        for name, web, pos, walks in [('/play', True, True, False), ('telnet', False, False, True)]:
+            moved.clear()
+            p = Body(web, pos)
+            await real.__func__(CommandHandler, p, ['north'])
+            if walks:
+                check(moved == ['north'], f'{name}: typed `move north` moves')
+            else:
+                check(not moved and any('WASD' in s for s in p.said), f'{name}: typed `move north` is refused with how to walk')
     finally:
         CommandHandler.cmd_move = real
+    # what the dispatcher does with a typed word that is a direction, or a part of one, or an exit's
+    # name: the same refusal in /play (typed_move), never straight to cmd_move
+    disp = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'src', 'commands.py'), encoding='utf-8').read()
+    fallback = disp[disp.index("# Check if it's a direction"):disp.index("is not a valid command. Type 'help'")]
+    check('cmd_move(' not in fallback and fallback.count('typed_move(') == 5,
+          'a typed direction, part of one, or an exit\'s name goes through typed_move')
     src = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'src', 'commands.py'), encoding='utf-8').read()
     body = src[src.index('async def cmd_webmove'):src.index('async def cmd_webmove') + 4000]
     check('typed_move' not in body and 'cmd_move' in body, '`webmove` (how /play walks) goes straight to cmd_move')
