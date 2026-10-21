@@ -87,7 +87,7 @@ def load_world(rev=None):
     zones, rooms = {}, {}
     for path, text in _zone_files(rev):
         z = json.loads(text)
-        z['_file'] = os.path.relpath(path, ROOT)
+        z['_file'] = os.path.relpath(path, ROOT).replace(os.sep, '/')   # (the same on Windows)
         zones[z['number']] = z
         for key, r in (z.get('rooms') or {}).items():
             vnum = int(r.get('vnum', key))
