@@ -1,6 +1,6 @@
 {
  "zone": 442,
- "_about": "Outcast Fortress (levels 15-32): the outcasts are gone or hiding; Yarick the Outcast, who built the place, still holds his quarters in the keep.",
+ "_about": "Outcast Fortress (levels 15-32): grey wolves in the deep forest on the way in; exile scouts in the light forest, the outpost and at the barricade; outcast brigands in the courtyard, along the mountain wall, in the tunnels and the Grieving Griffon; deserter soldiers holding the keep; feral exiles in the dark, damp tunnels; and Yarick the Outcast, who built the place, in his quarters in the keep.",
  "items": {
   "44290": {
    "keywords": "broadsword notched yarick",
@@ -91,8 +91,149 @@
      "chance": 35
     }
    ]
+  },
+  "44201": {
+   "name": "wolf grey forest",
+   "short_desc": "a grey forest wolf",
+   "long_desc": "A grey forest wolf slips between the ancient trunks, watching you with yellow eyes.",
+   "description": "A lean grey wolf of the deep forest, ribs showing under a winter coat. The packs here have learned that travellers on the fortress path are slow and alone.",
+   "level": 15,
+   "flags": [
+    "aggressive",
+    "stay_zone"
+   ],
+   "race": "canine",
+   "alignment": 0
+  },
+  "44202": {
+   "name": "exile scout outcast",
+   "short_desc": "an exile scout",
+   "long_desc": "An exile scout crouches in the ferns, a bow half drawn.",
+   "description": "A wiry figure in a mottled green cloak, a short bow in hand and an exile's brand on the back of one hand. The scouts still watch the way in, though there is less and less to guard.",
+   "level": 19,
+   "flags": [
+    "aggressive",
+    "stay_zone"
+   ],
+   "race": "human",
+   "alignment": -200
+  },
+  "44203": {
+   "name": "brigand outcast bandit",
+   "short_desc": "an outcast brigand",
+   "long_desc": "An outcast brigand lounges here, a hand never far from his axe.",
+   "description": "A hard-faced brigand in a patchwork of stolen leather, an axe through his belt and a broken-chain brooch at his throat. Every man here was thrown out of somewhere; few of them were thrown out for nothing.",
+   "level": 23,
+   "flags": [
+    "aggressive",
+    "stay_zone"
+   ],
+   "race": "human",
+   "alignment": -400,
+   "loot_table": [
+    {
+     "vnum": 44291,
+     "chance": 8
+    }
+   ]
+  },
+  "44204": {
+   "name": "deserter soldier mercenary",
+   "short_desc": "a deserter soldier",
+   "long_desc": "A deserter soldier stands guard here in a faded tabard with the badge cut away.",
+   "description": "A trained soldier in battered mail, the badge of whatever army he fled torn from his tabard. Yarick pays the deserters to hold the keep, and they hold it well.",
+   "level": 27,
+   "flags": [
+    "aggressive",
+    "stay_zone"
+   ],
+   "race": "human",
+   "alignment": -300
+  },
+  "44205": {
+   "name": "exile feral outcast",
+   "short_desc": "a feral exile",
+   "long_desc": "A feral exile crouches in the dark, gnawing on something.",
+   "description": "Once a man, cast out so long ago he has forgotten speech: matted hair, bare filthy feet, nails like claws and a sharpened bone in his fist. He lives in the tunnels and hunts whatever comes down.",
+   "level": 29,
+   "flags": [
+    "aggressive",
+    "stay_zone"
+   ],
+   "race": "human",
+   "alignment": -600
   }
  },
+ "spawns": [
+  {
+   "vnum": 44201,
+   "rooms": [
+    6119,
+    6121,
+    16301,
+    16302,
+    16304,
+    16306,
+    16307,
+    16308,
+    16309
+   ]
+  },
+  {
+   "vnum": 44202,
+   "rooms": [
+    16311,
+    16312,
+    16313,
+    16315,
+    16316,
+    16318
+   ]
+  },
+  {
+   "vnum": 44203,
+   "rooms": [
+    16319,
+    16320,
+    16321,
+    16322,
+    16324,
+    16327,
+    16329,
+    16331,
+    16335,
+    16339
+   ]
+  },
+  {
+   "vnum": 44204,
+   "rooms": [
+    16344,
+    16346,
+    16348,
+    16351,
+    16354,
+    16357,
+    16358,
+    16359,
+    16360,
+    16362
+   ]
+  },
+  {
+   "vnum": 44205,
+   "rooms": [
+    16377,
+    16378,
+    16380,
+    16382,
+    16384,
+    16386,
+    16393,
+    16395
+   ]
+  }
+ ],
  "bosses": [
   {
    "vnum": 44200,

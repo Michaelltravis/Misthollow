@@ -452,8 +452,8 @@
      4
     ]
    ],
-   "creatures": 13,
-   "items": 19,
+   "creatures": 22,
+   "items": 24,
    "bosses": [
     "Grubbak the stable troll (3290)"
    ],
@@ -5074,15 +5074,15 @@
      11
     ]
    ],
-   "creatures": 2,
-   "items": 6,
+   "creatures": 45,
+   "items": 16,
    "bosses": [
     "Yarick the Outcast (44200)"
    ],
    "services": [],
    "level_band": {
-    "min": 30,
-    "median": 31,
+    "min": 15,
+    "median": 23,
     "max": 32
    },
    "needs": [],

@@ -957,7 +957,7 @@ What the atlas left unjoined (rooms with no way in, or no way back out) was join
 ### Outcast Fortress (zone 442, atlas 42)
 
 - **matched**, open. 102 rooms; inside 69, forest 18, field 11.
-- Creatures 2, items 6, levels 30-32 (median 31); bosses: Yarick the Outcast (44200).
+- Creatures 45, items 16, levels 15-32 (median 23); bosses: Yarick the Outcast (44200).
 - Joins: Plains ×2; Arachnos ×1.
 - 1 one-way exits (as the atlas has them); 6 doors the atlas locks, unlocked until keys are made; 1 water rooms (boat or raft).
 
@@ -1027,7 +1027,7 @@ What the atlas left unjoined (rooms with no way in, or no way back out) was join
 ### Stable & Temple (zone 32, atlas 22)
 
 - **similar**, open. 50 rooms; inside 41, city 5, forest 4.
-- Creatures 13, items 19, levels 13-27 (median 19); bosses: Grubbak the stable troll (3290); services: stable_master.
+- Creatures 22, items 24, levels 13-27 (median 19); bosses: Grubbak the stable troll (3290); services: stable_master.
 - Joins: Trade Road ×1.
 - 1 ways added to connect it; 7 one-way exits (as the atlas has them); 5 doors the atlas locks, unlocked until keys are made.
 

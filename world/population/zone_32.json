@@ -1,6 +1,6 @@
 {
  "zone": 32,
- "_about": "Stable & Temple (levels 10-27): Brynn keeps the Royal Stables above; under them giant tunnel rats in the dusty and endless tunnels, skeletal guards still at their posts in the old temple's hallways, and in the Monster's Lair Grubbak the stable troll, who has been dragging the horses down.",
+ "_about": "Stable & Temple (levels 13-27): Brynn keeps the Royal Stables above, and nothing hostile comes up into them; under them giant tunnel rats and giant cave centipedes in the dusty and endless tunnels, skeletal guards still at their posts and temple ghouls in the old temple's hallways, cells and holes, and in the Monster's Lair Grubbak the stable troll, who has been dragging the horses down.",
  "items": {
   "3294": {
    "keywords": "glaive bronze temple guard",
@@ -151,6 +151,39 @@
      "chance": 35
     }
    ]
+  },
+  "3282": {
+   "name": "ghoul temple",
+   "short_desc": "a temple ghoul",
+   "long_desc": "A temple ghoul hunches here, sniffing the air.",
+   "description": "A grey, hairless thing that was once a priest, its vestments rotted to rags and its teeth filed by gnawing. It feeds on what the troll leaves and on what it can catch in the forgotten temple.",
+   "level": 21,
+   "flags": [
+    "aggressive",
+    "undead",
+    "stay_zone"
+   ],
+   "race": "undead",
+   "alignment": -700,
+   "loot_table": [
+    {
+     "vnum": 3295,
+     "chance": 12
+    }
+   ]
+  },
+  "3283": {
+   "name": "centipede giant cave",
+   "short_desc": "a giant cave centipede",
+   "long_desc": "A giant cave centipede ripples across the dirt, its many legs clicking.",
+   "description": "A centipede as long as a man, its armoured segments the colour of old rust and its fangs dripping. It hunts the rats in the tunnels under the stables.",
+   "level": 16,
+   "flags": [
+    "aggressive",
+    "stay_zone"
+   ],
+   "race": "insect",
+   "alignment": 0
   }
  },
  "spawns": [
@@ -173,6 +206,25 @@
     203644,
     203649,
     203652
+   ]
+  },
+  {
+   "vnum": 3282,
+   "rooms": [
+    3213,
+    203617,
+    203638,
+    203641,
+    203645
+   ]
+  },
+  {
+   "vnum": 3283,
+   "rooms": [
+    203612,
+    203618,
+    203623,
+    203635
    ]
   }
  ],
