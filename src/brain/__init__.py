@@ -18,6 +18,9 @@ switched on feature by feature there ("features"):
     tactics  how it fights: real spells, declared heals, Disrupt on your healer, holds it learns
              to resist, breakouts (rouse, fire, a blow), once-a-fight abilities that come back
              next fight, the zone's own wind-up length and cap (cast.py, cc.py; phase 1b)
+    pursuit  what it notices and where it goes: eyes and ears (perception.py), chasing a foe
+             through doors (path.py, pursuit.py), giving up at its leash and walking home
+             healed; bosses notice you and reset (phase 2a)
 
 MH_BRAIN=0 in the environment (or Config.BRAIN = False) skips the brain altogether: the kill
 switch while the phases land. MH_BRAIN_OFF=threat,... turns single features off.
@@ -25,28 +28,35 @@ switch while the phases land. MH_BRAIN_OFF=threat,... turns single features off.
 import os
 import time
 
-from . import legacy
+from . import legacy, profile as _profile, pursuit as _pursuit, targeting as _targeting
 
 ENABLED = os.environ.get('MH_BRAIN', '1') != '0'
 FORCED_OFF = {f.strip() for f in os.environ.get('MH_BRAIN_OFF', '').split(',') if f.strip()}
 
 
+_config = None
+
+
 def enabled() -> bool:
+    global _config
     if not ENABLED:
         return False
-    try:
-        from config import Config
-        return getattr(Config, 'BRAIN', True)
-    except Exception:
-        return True
+    if _config is None:
+        try:
+            from config import Config
+            _config = Config
+        except Exception:
+            return True
+    return getattr(_config, 'BRAIN', True)
 
 
 def on(feature) -> bool:
-    """Whether a brain feature is in play (the brain on, the feature on in ai_profiles.json)."""
+    """Whether a brain feature is in play (the brain on, the feature on in ai_profiles.json).
+    (Asked thousands of times a tick: kept to a few lookups.)"""
     if feature in FORCED_OFF or not enabled():
         return False
-    from . import profile
-    return profile.feature(feature)
+    d = _profile._data if _profile._data is not None else _profile.data()
+    return bool((d.get('features') or {}).get(feature))
 
 
 def of(mob):
@@ -97,14 +107,35 @@ def end_encounter(mob, b):
 async def think_idle(mob):
     if not enabled():
         return await legacy.idle(mob)
-    b = of(mob)
-    if (on('threat') or on('tactics')) and not mob.fighting and 'fought_at' in b.encounter             and _thinks_for_itself(mob):
-        from . import targeting
-        if on('threat') and len(b.threat) and await targeting.pick_up(mob, b) is not None:
-            return                       # someone who hurt it is still here: back at them
-        if time.time() - b.encounter.get('fought_at', 0) > targeting.RETURN_GRACE:
-            end_encounter(mob, b)        # the fight is over
+    if await think_own(mob):
+        return
     return await legacy.idle(mob)
+
+
+async def think_own(mob) -> bool:
+    """The brain's own turn out of a fight (before the old rules): picking the fight back up,
+    ending it, noticing, chasing, going home. True if it did something. A boss (bosses.py) has
+    only this, never the old wandering rules. (Run every tick for every creature near a player:
+    kept cheap for the many who have nothing to do.)"""
+    if not enabled():
+        return False
+    b = of(mob)
+    chasing = on('pursuit')
+    if 'fought_at' in b.encounter and not mob.fighting and _thinks_for_itself(mob):
+        threat = on('threat')
+        if chasing or threat or on('tactics'):
+            if threat and len(b.threat) and await _targeting.pick_up(mob, b) is not None:
+                return True              # someone who hurt it is still here: back at them
+            if chasing:
+                _pursuit.after_fight(mob, b)   # its foe left the fight: after them
+            if time.time() - b.encounter.get('fought_at', 0) > _targeting.RETURN_GRACE and b.mode not in ('pursue', 'return'):
+                end_encounter(mob, b)    # the fight is over
+    if chasing:
+        if b.mode == 'idle' and (time.time() < b.chase.get('look_at', 0) or not _pursuit.could_hunt(mob, b)):
+            return False
+        if _thinks_for_itself(mob):
+            return await _pursuit.think(mob, b)
+    return False
 
 
 def _may_declare(mob):

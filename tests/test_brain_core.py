@@ -119,9 +119,9 @@ def profiles():
     d = pr.reload()
     check({'readable', 'gentle', 'brutal'} <= set(d.get('tiers') or {}), 'world/ai_profiles.json loads, with its three tiers')
     feats = d.get('features') or {}
-    shipped = {'threat', 'tactics'}
+    shipped = {'threat', 'tactics', 'pursuit'}
     check(all(feats.get(k) is True for k in shipped) and not any(v for k, v in feats.items() if k not in shipped),
-          f'phase 1b ships with threat and tactics on, the rest off ({feats})')
+          f'phase 2a ships with threat, tactics and pursuit on, the rest off ({feats})')
 
 
 def main():

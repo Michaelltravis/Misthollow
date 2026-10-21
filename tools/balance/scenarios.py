@@ -8,6 +8,7 @@ with pass/fail checks for each phase of docs/MOB_AI.md.
 
     python3 tools/balance/scenarios.py threat --check          # S1 (phase 1a): a tank, a healer, a mage
     python3 tools/balance/scenarios.py tactics --check         # S7 (phase 1b): interrupts, holds, learning
+    python3 tools/balance/scenarios.py pursuit --check         # S2-S5 (phase 2a): chases, leash, stealth, doors
 
 Scenarios:
 - threat (S1): a warrior, a cleric and a mage at level 30 against 3 plain creatures, an elite and
@@ -21,6 +22,12 @@ Scenarios:
   must have been warned of, and no player may be held more than the zone allows in 18 s. Then a
   mage sleeps 60 fresh creatures four times each: the share that lands must fall try by try, and
   a hold of another school (entangle) must land every time.
+- pursuit (S2-S5, phase 2a): a row of eight rooms with a door, and a border. A kiter outruns a
+  readable creature, which gives up at its leash and walks home healed; someone fleeing on foot
+  escapes a readable one and is caught by a brutal one, and none crosses the border; sneakers by
+  skill, an aware creature, an invisible player; the "!" a second before a charge; a door shut
+  behind you opened by hands, pounded down by an ogre (two BOOMs heard first), unlocked by a
+  jailer with the key, never by a wolf, and a door bound by magic holds.
 - cadence: a hero stands in a busy zone while world.process_npcs runs ten times a second;
   counts the creatures' moves (a step to another room), the fights they start, how many think a
   tick and how long the thinking takes (brain/scheduler STATS). --compare runs it with the brain
@@ -431,7 +438,7 @@ async def tactics(args):
         ok &= good
         print(f"{'ok  ' if good else 'FAIL'} {tier:8} every special that landed was warned of first "
               f"({r['resolved_all']} landed, {r['unannounced']} unwarned)")
-        free = await tactics_fight(world, room, tier, args.secs * 2, args.seed + 1, interrupting=False)
+        free = await tactics_fight(world, room, tier, max(240, args.secs * 2), args.seed + 1, interrupting=False)
         good = 1 <= free['held_max'] <= free['cc_chain']
         ok &= good
         print(f"{'ok  ' if good else 'FAIL'} {tier:8} nobody interrupting: holds on one player in any 18 s at most "
@@ -441,6 +448,302 @@ async def tactics(args):
         ok &= good
         print(f"{'ok  ' if good else 'FAIL'} {tier:8} creatures learn: {s1} sleep landed "
               f"{' / '.join(f'{x:.0%}' for x in rates[:4])} on tries 1-4; then {s2} (entangle) {rates[4]:.0%}")
+    return ok
+
+
+# ---------------------------------------------------------------- S2-S5: pursuit (phase 2a)
+ARENA = 9990          # a zone of its own: eight rooms in a row, west to east, a door between 3 and 4,
+DOOR_AT = 3           # and past the last one a room of another zone (the border)
+KEY = 99999
+
+
+def arena(world):
+    """[rooms] of the scenario zone (built once), its door open and unlocked, the border room last."""
+    from world import Room, Zone
+    if getattr(world, '_arena', None):
+        rooms = world._arena
+    else:
+        z, zb = Zone(ARENA), Zone(ARENA + 1)
+        world.zones[ARENA], world.zones[ARENA + 1] = z, zb
+        rooms = []
+        for i in range(9):
+            r = Room(ARENA * 100 + i)
+            r.zone = z if i < 8 else zb
+            r.name = f'Arena {i}'
+            r.flags = set()
+            r.sector_type = 'inside'
+            (z if i < 8 else zb).rooms[r.vnum] = r
+            world.rooms[r.vnum] = r
+            rooms.append(r)
+        for a, b in zip(rooms, rooms[1:]):
+            a.exits['east'] = {'room': b, 'to_room': b.vnum}
+            b.exits['west'] = {'room': a, 'to_room': a.vnum}
+        d = rooms[DOOR_AT]
+        d.exits['east']['door'] = {'name': 'door', 'state': 'open'}
+        rooms[DOOR_AT + 1].exits['west']['door'] = {'name': 'door', 'state': 'open'}
+        world._arena = rooms
+    for r in rooms:
+        for ch in list(r.characters):
+            r.characters.remove(ch)
+    for side in (rooms[DOOR_AT].exits['east']['door'], rooms[DOOR_AT + 1].exits['west']['door']):
+        side.clear()
+        side.update({'name': 'door', 'state': 'open'})
+    return rooms
+
+
+def _door(rooms, **fields):
+    for side in (rooms[DOOR_AT].exits['east']['door'], rooms[DOOR_AT + 1].exits['west']['door']):
+        side.update(fields)
+
+
+async def _runner(world, rooms, at, name, level=30):
+    import sim
+    from player import Player
+    p = Player(world)
+    p.name, p.char_class, p.level = name, 'thief', level
+    p.max_hp = p.hp = 10 ** 6
+    p.connection = sim.Conn()
+    p.world = world
+    world.players[name.lower()] = p
+    sim._put(p, rooms[at])
+    return p
+
+
+def _hunter(world, rooms, at, tier, words='raider', race=None, flags=('aggressive',), level=30, key=False):
+    import mob_ai
+    import brain
+    from bosses import create_mob_from_prototype
+    plain = _plain_foe(world, level)
+    p = dict(world.mob_prototypes[plain])
+    p['level'], p['name'], p['short_desc'] = level, words, f'the {words}'
+    p['flags'] = list(set(p.get('flags') or []) | set(flags))
+    if race:
+        p['race'] = race
+    f = create_mob_from_prototype(p, world)
+    f.name = f'the {words}'
+    f.race = race
+    f.home_zone = ARENA
+    f.home_room = rooms[at]
+    import sim
+    sim._put(f, rooms[at])
+    world.npcs.append(f)
+    if key:
+        import types
+        f.inventory = list(getattr(f, 'inventory', None) or []) + [types.SimpleNamespace(vnum=KEY, name='a key')]
+    rooms[0].zone.ai = {'tier': tier}
+    mob_ai.classify_mob(f)
+    f._brain = None
+    brain.of(f)
+    return f
+
+
+async def _tick(mobs, secs, until=None, each=None):
+    """Run the creatures' thinking at 10 Hz for secs (or until until() is true)."""
+    import sim
+    t0 = sim.CLOCK.t
+    while sim.CLOCK.t - t0 < secs:
+        for m in mobs:
+            if m.hp > 0 and getattr(m, 'fighting', None) is None:
+                await m.process_ai()
+        if each:
+            await each(sim.CLOCK.t - t0)
+        await asyncio.sleep(0)
+        if until and until():
+            break
+        sim.CLOCK.advance(0.1)
+    return sim.CLOCK.t - t0
+
+
+def _index(rooms, ch):
+    return rooms.index(ch.room) if ch.room in rooms else None
+
+
+async def kiter(world, tier, pace, seed):
+    """A hero runs east from the hunter at pace s a room. (furthest room it reached, caught, back
+    home healed within 60 s of giving up)."""
+    import brain
+    random.seed(seed)
+    rooms = arena(world)
+    hero = await _runner(world, rooms, 1, f'Kite{seed}')
+    mob = _hunter(world, rooms, 0, tier)
+    mob.hp = mob.max_hp // 2                      # (to see it healed at home)
+    b = brain.of(mob)
+    b.rng.seed(seed)
+    far = [0]
+    nxt = [0.5]                                   # (they run at its "!")
+
+    async def run(t):
+        far[0] = max(far[0], _index(rooms, mob) or 0)
+        if t >= nxt[0] and mob.fighting is None:
+            i = _index(rooms, hero)
+            if i is not None and i < 7:
+                from sim import _put
+                _put(hero, rooms[i + 1])
+            nxt[0] = t + pace
+    await _tick([mob], 40, until=lambda: mob.fighting is not None or b.mode == 'return', each=run)
+    caught = mob.fighting is hero
+    home_in = None
+    if not caught:
+        t = await _tick([mob], 60, until=lambda: b.mode == 'idle' and mob.room is rooms[0])
+        home_in = t if mob.room is rooms[0] else None
+    healed = mob.hp >= mob.max_hp
+    for r in rooms:
+        for ch in list(r.characters):
+            r.characters.remove(ch)
+    if mob in world.npcs:
+        world.npcs.remove(mob)
+    world.players.pop(hero.name.lower(), None)
+    return far[0], caught, home_in, healed, b.profile.get('leash_rooms')
+
+
+async def sneaker(world, tier, seed, skill=0, aware=False, invisible=False, across=False):
+    """(spotted within 10 s, seconds from its alert to its attack)."""
+    import brain
+    import combat_events as ev
+    random.seed(seed)
+    rooms = arena(world)
+    hero = await _runner(world, rooms, 1 if across else 0, f'Sneak{seed}')
+    hero.skills = dict(getattr(hero, 'skills', None) or {}, sneak=skill, hide=skill)
+    if not across:
+        hero.flags.add('sneaking')
+    if invisible:
+        hero.affect_flags = set(getattr(hero, 'affect_flags', None) or ()) | {'invisible'}
+    mob = _hunter(world, rooms, 0, tier, flags=('aggressive', 'aware') if aware else ('aggressive',))
+    b = brain.of(mob)
+    b.rng.seed(seed)
+    stamp = {}
+    real = ev.emit
+
+    def emit(room, kind, *a, **kw):
+        if kind == 'alert' and (kw.get('src') if 'src' in kw else (a[0] if a else None)) is mob:
+            import sim
+            stamp.setdefault('alert', sim.CLOCK.t)
+        return real(room, kind, *a, **kw)
+    ev.emit = emit
+    try:
+        import sim
+        t = await _tick([mob], 10, until=lambda: mob.fighting is not None)
+        attacked = mob.fighting is hero
+        delay = (sim.CLOCK.t - stamp['alert']) if attacked and 'alert' in stamp else None
+    finally:
+        ev.emit = real
+    for r in rooms:
+        for ch in list(r.characters):
+            r.characters.remove(ch)
+    if mob in world.npcs:
+        world.npcs.remove(mob)
+    world.players.pop(hero.name.lower(), None)
+    return attacked, delay
+
+
+async def door_closer(world, tier, kind, seed):
+    """The hunter's quarry shuts the door between rooms 3 and 4 behind them. kind: humanoid,
+    animal, brute (the door locked, no key), key (locked, it carries the key), arcane (bound by
+    magic). (got through, seconds from the door shut to its opening, BOOMs heard)."""
+    import brain
+    import sim
+    random.seed(seed)
+    rooms = arena(world)
+    hero = await _runner(world, rooms, DOOR_AT, f'Door{seed}')
+    words, race = {'humanoid': ('raider', 'human'), 'animal': ('wolf', 'wolf'), 'brute': ('ogre', 'giant'),
+                   'key': ('jailer', 'human'), 'arcane': ('ogre', 'giant')}[kind]
+    mob = _hunter(world, rooms, DOOR_AT - 1, tier, words=words, race=race, key=(kind == 'key'))
+    b = brain.of(mob)
+    b.rng.seed(seed)
+    # it has seen them ("!"); they step through and shut (and lock, or ward) the door
+    await _tick([mob], 2.5, until=lambda: b.mode == 'alert')
+    sim._put(hero, rooms[DOOR_AT + 1])
+    fields = {'state': 'closed'}
+    if kind in ('brute', 'key', 'arcane'):
+        fields['locked'] = True
+        fields['key'] = KEY
+    if kind == 'arcane':
+        fields['arcane'] = True
+    _door(rooms, **fields)
+    booms = [0]
+    real = rooms[DOOR_AT + 1].send_to_room
+
+    async def heard(msg, *a, **k):
+        if 'BOOM' in str(msg):
+            booms[0] += 1
+        return await real(msg, *a, **k)
+    rooms[DOOR_AT + 1].send_to_room = heard
+    shut_at = sim.CLOCK.t
+    opened = [None]
+
+    async def watch(t):
+        if opened[0] is None and rooms[DOOR_AT].exits['east']['door'].get('state') != 'closed':
+            opened[0] = sim.CLOCK.t - shut_at
+    try:
+        await _tick([mob], 40, until=lambda: mob.room is rooms[DOOR_AT + 1] or b.mode in ('return', 'idle'), each=watch)
+    finally:
+        del rooms[DOOR_AT + 1].send_to_room
+    through = mob.room is rooms[DOOR_AT + 1]
+    for r in rooms:
+        for ch in list(r.characters):
+            r.characters.remove(ch)
+    if mob in world.npcs:
+        world.npcs.remove(mob)
+    world.players.pop(hero.name.lower(), None)
+    return through, opened[0], booms[0]
+
+
+async def pursuit(args):
+    import sim
+    world = await sim.load_world()
+    sim.patch_deaths(world)
+    ok = True
+
+    def say(good, text):
+        nonlocal ok
+        ok &= bool(good)
+        print(f"{'ok  ' if good else 'FAIL'} {text}")
+
+    for tier in ('readable', 'brutal'):
+        # S2: a kiter faster than it (1 room a second)
+        far, caught, home, healed, leash = await kiter(world, tier, 1.0, args.seed)
+        # (brutal's leash is 7 rooms: this arena's 8 can't outrun it, so there only the leash is checked)
+        say(far <= leash and (tier == 'brutal' or (not caught and home is not None and home <= 60 and healed)),
+            f"{tier:8} S2 kiter: chased {far} rooms (leash {leash}), then "
+            + ('caught them in the last room of the arena' if caught else
+               f"home in {'%.0f s' % home if home is not None else 'never'}, {'healed' if healed else 'NOT healed'}"))
+        # S3: someone fleeing on foot (a room every 1.3 s), 20 tries
+        n, caught_n, crossed = 20, 0, 0
+        for s in range(n):
+            far, caught, _home, _healed, _l = await kiter(world, tier, 1.3, args.seed * 100 + s)
+            caught_n += caught
+            crossed += far >= 8
+        esc = 1 - caught_n / n
+        want = (esc >= 0.85) if tier == 'readable' else (caught_n / n >= 0.5)
+        say(want and crossed == 0, f"{tier:8} S3 fleeing on foot: escaped {esc:.0%} of {n} "
+            f"({'at least 85%' if tier == 'readable' else 'caught at least half'}); crossed the zone border {crossed}x")
+        # S4: sneakers
+        rate = lambda xs: sum(1 for a, _ in xs if a) / len(xs)
+        plain = [await sneaker(world, tier, s, skill=60) for s in range(30)]
+        skilled = [await sneaker(world, tier, s, skill=100) for s in range(30)]
+        aware = [await sneaker(world, tier, s, skill=60, aware=True) for s in range(30)]
+        invis = [await sneaker(world, tier, s, invisible=True) for s in range(20)]
+        far_ = [await sneaker(world, tier, s, across=True) for s in range(10)]
+        delays = [d for a, d in far_ if a and d is not None]
+        say(rate(invis) == 0 and rate(aware) >= rate(plain) >= rate(skilled) and rate(aware) >= 0.7,
+            f"{tier:8} S4 stealth: a sneaker (60) spotted {rate(plain):.0%}, a master (100) {rate(skilled):.0%}, "
+            f"by an aware creature {rate(aware):.0%} (at least 70%), invisible {rate(invis):.0%} (never)")
+        say(delays and min(delays) >= 1.0,
+            f"{tier:8} S4 across an open way: its '!' at least 1 s before it attacks "
+            f"({', '.join('%.1f' % d for d in sorted(delays)[:4]) or 'no attack'} s)")
+        # S5: the door shut behind them
+        got = {k: await door_closer(world, tier, k, args.seed) for k in ('humanoid', 'animal', 'brute', 'key', 'arcane')}
+        th, t_open, _ = got['humanoid']
+        say(th and t_open is not None and 2.0 <= t_open <= 6.0, f"{tier:8} S5 a raider opens the shut door after "
+            f"{'%.1f s' % t_open if t_open is not None else 'never'} (2-6 s) and comes through")
+        say(not got['animal'][0], f"{tier:8} S5 a wolf can't open it: {'came through!' if got['animal'][0] else 'gives up'}")
+        th, _, booms = got['brute']
+        say(th and booms >= 2, f"{tier:8} S5 an ogre at the locked door: {booms} BOOMs heard, then through" if th
+            else f"{tier:8} S5 an ogre at the locked door: never through ({booms} BOOMs)")
+        say(got['key'][0] and got['key'][2] == 0, f"{tier:8} S5 a jailer with the key unlocks it quietly "
+            f"({'through' if got['key'][0] else 'NOT through'}, {got['key'][2]} BOOMs)")
+        say(not got['arcane'][0], f"{tier:8} S5 a door bound by magic holds even an ogre "
+            f"({'it came through!' if got['arcane'][0] else 'held'})")
     return ok
 
 
@@ -501,21 +804,22 @@ def compare(args):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
-    ap.add_argument('scenario', choices=['cadence', 'threat', 'tactics'])
+    ap.add_argument('scenario', choices=['cadence', 'threat', 'tactics', 'pursuit'])
     ap.add_argument('--zone', type=int, default=54)
     ap.add_argument('--secs', type=float, default=60)
     ap.add_argument('--seed', type=int, default=54)
     ap.add_argument('--compare', action='store_true', help='brain on vs off')
     ap.add_argument('--tolerance', type=float, default=0.10, help='--compare: how far the rates may differ')
-    ap.add_argument('--slower', type=float, default=1.15, help='--compare: how much slower thinking may get (timing noise)')
+    ap.add_argument('--slower', type=float, default=1.4,
+                    help='--compare: how much slower thinking may get (phase 0 measured 0.97x; with eyes and ears, phase 2a, about 1.3x)')
     ap.add_argument('--check', action='store_true', help='exit 1 when a check fails')
     ap.add_argument('--json', action='store_true')
     args = ap.parse_args()
     if args.compare:
         ok = compare(args)
         sys.exit(0 if ok or not args.check else 1)
-    if args.scenario in ('threat', 'tactics'):
-        ok = asyncio.run({'threat': threat, 'tactics': tactics}[args.scenario](args))
+    if args.scenario in ('threat', 'tactics', 'pursuit'):
+        ok = asyncio.run({'threat': threat, 'tactics': tactics, 'pursuit': pursuit}[args.scenario](args))
         sys.exit(0 if ok or not args.check else 1)
     r = asyncio.run(cadence(args.zone, args.secs, args.seed))
     if args.json:

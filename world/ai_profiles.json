@@ -1,6 +1,6 @@
 {
   "why": "How clever a creature fights, by how hard its zone is and its rank (src/brain/profile.py, docs/MOB_AI.md). A zone's tier comes from the median level of its creatures (zone_tiers.by_level); a population file can name one instead ({\"ai\": {\"tier\": \"brutal\"}}), and a creature can carry its own roles and numbers ({\"ai\": {\"roles\": [...], \"profile\": {...}}}). The floors only ever make things gentler than the code's own limits (brain/profile.py INVARIANTS), never harsher. A feature left false keeps the old behaviour.",
-  "features": {"threat": true, "tactics": true, "pursuit": false, "social": false, "life": false, "talk": false},
+  "features": {"threat": true, "tactics": true, "pursuit": true, "social": false, "life": false, "talk": false},
   "floors": {"windup_action_s": 1.2, "room_windup_cap_max": 4, "leash_rooms_max": 10, "chase_secs_max": 120, "train_cap": 6},
   "zone_tiers": {"by_level": [[0, "gentle"], [9, "readable"], [45, "brutal"]]},
   "tiers": {
@@ -8,14 +8,16 @@
                  "leash_rooms": 3, "chase_secs": 30, "chase_persistence": 0.5, "move_secs": 1.6,
                  "target_stickiness": 0.3, "switch_cooldown_s": 6, "focus_casters": 0.2, "focus_healers": 0.2, "finisher": 0.1,
                  "cc_chain": 1, "adapt_rate": 0.15, "windup_s": 3.0, "windup_action_s": 2.0, "room_windup_cap": 2,
-                 "regroup": false, "flee_limit": 1, "opens_doors": "humanoid", "bash_doors": "brutes", "return_heal": true},
+                 "regroup": false, "flee_limit": 1, "opens_doors": "humanoid", "bash_doors": "brutes", "return_heal": true,
+                 "investigate": false},
     "gentle":   {"inherit": "readable", "assist_rooms": 0, "assist_count": 0, "leash_rooms": 2, "chase_secs": 20,
                  "focus_casters": 0.0, "focus_healers": 0.0, "cc_chain": 0, "windup_action_s": 2.4},
     "brutal":   {"inherit": "readable", "sight_m": 22, "hear_rooms": 2, "assist_rooms": 4, "assist_count": 4,
                  "pull_isolates": false, "train": true, "leash_rooms": 7, "chase_secs": 90, "chase_persistence": 0.85,
                  "move_secs": 1.1, "target_stickiness": 0.1, "switch_cooldown_s": 3, "focus_casters": 0.5,
                  "focus_healers": 0.7, "finisher": 0.3, "cc_chain": 3, "adapt_rate": 0.25, "root_and_nuke": true,
-                 "windup_action_s": 1.4, "room_windup_cap": 3, "regroup": true, "flee_limit": 2, "bash_doors": "strong"}
+                 "windup_action_s": 1.4, "room_windup_cap": 3, "regroup": true, "flee_limit": 2, "bash_doors": "strong",
+                 "investigate": true}
   },
   "ranks": {
     "regular":  {},

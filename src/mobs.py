@@ -525,14 +525,18 @@ class Mobile(Character):
         # top of the round AI — mobs double-acted wildly.
         if self.is_fighting:
             return
+        # with the brain's pursuit on, noticing, chasing and going home are the brain's
+        # (brain/pursuit.py): the old hunter, aggression and charge below stand aside
+        import brain
+        pursuing = brain.on('pursuit')
 
         # a chase it gave up: it walks back to where the chase began
-        if getattr(self, 'returning', None) is not None:
+        if not pursuing and getattr(self, 'returning', None) is not None:
             if await self._return_home():
                 return
 
         # Hunting AI - track players who attacked us
-        if await self.hunting_ai():
+        if not pursuing and await self.hunting_ai():
             return
 
         # Trapsmiths rig their lair while idle (~once per 30s of ticks)
@@ -573,7 +577,7 @@ class Mobile(Character):
                 self.ai_state.pop('track_until', None)
 
         # Hostile faction attack on sight
-        if await self.faction_aggressive_ai():
+        if not pursuing and await self.faction_aggressive_ai():
             return
 
         # a patrol walks its route, room by room, a step every few seconds (population.py)
@@ -593,7 +597,8 @@ class Mobile(Character):
 
         # Check for aggressive behavior
         if 'aggressive' in self.flags:
-            await self.aggressive_ai()
+            if not pursuing:
+                await self.aggressive_ai()
             return
 
         # Check for special behaviors

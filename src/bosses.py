@@ -99,6 +99,10 @@ class Boss(Mobile):
             self.ai_state['enraged'] = False
             for m in getattr(self, 'mechanics', ()):
                 m.reset(self)
+            # with the brain's pursuit on, a boss notices who walks in, and resets when they leave
+            import brain
+            if brain.on('pursuit'):
+                await brain.think_own(self)
             return
 
         now = time.time()
