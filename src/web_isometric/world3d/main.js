@@ -512,7 +512,8 @@ async function runGame() {
   // unread mail and the world's events, at the minimap's foot (hud/alerts.js)
   const alerts = createAlerts($('#minimap .mm-alerts'), { icon: name => uiIcon(name, { size: 36 }), openMail: () => hud.openPanel('mail') });
   // the minimap grows with its sky, room card and alerts: what sits below it (the quest tracker) follows
-  if (window.ResizeObserver) new ResizeObserver(() => document.documentElement.style.setProperty('--mm-bottom', `${Math.round($('#minimap').getBoundingClientRect().bottom)}px`)).observe($('#minimap'));
+  // (its height as laid out, before the HUD's scale: the CSS multiplies by --ui)
+  if (window.ResizeObserver) new ResizeObserver(() => { const h = $('#minimap').offsetHeight; if (h) document.documentElement.style.setProperty('--mm-h', `${h}px`); }).observe($('#minimap'));
   const skyDial = createSkyDial($('#minimap .mm-sky'), name => uiIcon(name, { size: 44, color: '#e6eef6', glow: 'rgba(190,215,240,.55)' }));
   // the big map (M): the same drawing, larger — the whole zone at a glance, click to walk there
   const bigEl = $('#bigmap');

@@ -851,7 +851,7 @@ html.fallen #vignette { background: radial-gradient(ellipse at 50% 46%, rgba(30,
 .qc-reward b { color: var(--gold-hi); font-family: var(--title); }
 .qc-desc { font: 14px/1.4 var(--lore); margin-top: 3px; }
 .qc-meta { font: 500 12.5px var(--label); color: var(--ink-dim); margin-bottom: 12px; }
-#quest-tracker { right: 14px; top: calc(var(--mm-bottom, calc(14px + 252px * var(--ui))) + 10px); width: 240px; padding: 9px 11px; transform: scale(var(--ui)); transform-origin: top right; font: 13px var(--body); }
+#quest-tracker { right: 14px; top: calc(14px + var(--mm-h, 252px) * var(--ui) + 10px); width: 240px; padding: 9px 11px; transform: scale(var(--ui)); transform-origin: top right; font: 13px var(--body); }
 .qt-head { display: flex; align-items: center; gap: 6px; }
 .qt-star { color: #ffd86a; }
 .qt-name { flex: 1; font: 700 14px var(--title); color: var(--gold-hi); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
