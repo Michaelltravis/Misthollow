@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Deploy Misthollow on frostpine: pull the branch, install the one Python dep, restart the server.
 # Idempotent; run by hand, by OpenClaw, or by deploy/autopull.sh (the GitHub-driven path).
-#   bash deploy/frostpine.sh [branch]          (default: claude/nice-johnson-slpinu)
+#   bash deploy/frostpine.sh [branch]          (default: main)
 #   NO_RESTART=1 bash deploy/frostpine.sh      (update files only)
 set -euo pipefail
-BRANCH="${1:-claude/nice-johnson-slpinu}"
+BRANCH="${1:-main}"
 REPO_DIR="${MUD_DIR:-$HOME/MUDNEW}"
 cd "$REPO_DIR"
 
@@ -31,7 +31,10 @@ keep=$(mktemp -d)
 git status --porcelain --untracked-files=no | awk '{print $2}' | { grep -E "$RUNTIME_RE" || true; } | while read -r f; do
   mkdir -p "$keep/$(dirname "$f")"; cp -p "$f" "$keep/$f"
 done
-git checkout -q "$BRANCH" 2>/dev/null || git checkout -q -B "$BRANCH" "origin/$BRANCH"
+# (onto the branch as GitHub has it, forced: a stale local branch of that name, or a runtime file
+#  changed on the box, must not stop the switch. Code edits made on the box were refused above,
+#  and the runtime files are kept aside and put back below.)
+git checkout -q -f -B "$BRANCH" "origin/$BRANCH"
 git reset -q --hard "origin/$BRANCH"
 ( cd "$keep" && find . -type f | while read -r f; do mkdir -p "$REPO_DIR/$(dirname "$f")"; cp -p "$f" "$REPO_DIR/$f"; done )
 rm -rf "$keep"

@@ -4,7 +4,8 @@
 # when something the server runs has changed (records and docs alone do not kick players).
 # Needs no inbound access: frostpine reaches out to GitHub, nothing reaches in.
 set -uo pipefail
-BRANCH="${DEPLOY_BRANCH:-claude/nice-johnson-slpinu}"
+# (main: what is merged is what is live; a working branch pushed mid-task no longer reaches players)
+BRANCH="${DEPLOY_BRANCH:-main}"
 REPO_DIR="${MUD_DIR:-$HOME/MUDNEW}"
 LOG="$REPO_DIR/deploy.log"
 LOCK="/tmp/mud-autopull.lock"

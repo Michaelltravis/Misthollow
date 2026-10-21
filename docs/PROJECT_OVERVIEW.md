@@ -29,7 +29,8 @@ and the server answers with structured payloads and events.
 
 **Where it runs:** the owner's Mac mini, `frostpine`.
 - It pulls the deploy branch from GitHub every minute (`deploy/autopull.sh`; the branch is set by
-  `DEPLOY_BRANCH`, default `claude/nice-johnson-slpinu`).
+  `DEPLOY_BRANCH`, default `main`: what is merged is what is live). It was
+  `claude/nice-johnson-slpinu` until 2026-10-20, when any push to that working branch went live.
 - It restarts the server only when code changed.
 - No inbound access is needed.
 
