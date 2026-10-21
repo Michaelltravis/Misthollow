@@ -155,13 +155,19 @@ There are 84 modules. The systems, and where they live:
 - **Water** needs a boat or raft (`Room.admits`).
 
 ### Characters
-- **Accounts and security:** `player.py`, `accounts.py`, `security.py`. Salted hashing, resume
-  tokens, and immortals (an account's `is_admin`).
+- **Accounts and security:** `accounts.py`, `security.py`, `player.py`. Every character is on exactly one
+  account, and the account's password is the only way in (docs/ACCOUNT_SYSTEM_PLAN.md):
+  - `AccountManager` is the one place accounts and characters are made, claimed, renamed and
+    deleted, for the telnet login, /play (Forge a Hero, optionally onto an account you have) and
+    the in-game `account` command;
+  - at start, `migrate_saves` puts any older accountless save on an account of its own name with
+    the same password (backed up first);
+  - salted hashing, resume tokens, and immortals (an account's `is_admin`).
 - **Gifts** (`grants.py` + `world/grants.json`):
   - one-time gifts by character name, given part by part: mounts, ride, the whole map, waypoints,
     room, the endgame kit (`gearup`), gold;
-  - `immortal`, which makes the account an admin one and creates an account for a /play-made
-    character.
+  - `immortal`, which names an account (`"immortal": "<account>"`) and makes it an admin one, only
+    when the character is on it (so taking a character name never gives admin).
 - **Abilities:**
   - learned by level and improved by use (mastery), with trainers and a spellbook;
   - marquee abilities from class quests (`marquee.py`, `quests`);

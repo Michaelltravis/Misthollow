@@ -1,5 +1,5 @@
 {
-  "_about": "One-time gifts to named characters, given on their next login (src/grants.py). Keys are character names; each part of a gift is given once (editing an entry gives only the parts added or changed). Mounts: the keys in src/mounts.py MOUNT_TEMPLATES. immortal: the character's account becomes an admin (immortal) one.",
+  "_about": "One-time gifts to named characters, given on their next login (src/grants.py). Keys are character names; each part of a gift is given once (editing an entry gives only the parts added or changed). Mounts: the keys in src/mounts.py MOUNT_TEMPLATES. immortal: the name of an account, made an admin (immortal) one only when the character is on it (true is refused: anyone could take a character name). Deckard's true was given before this rule.",
   "xtc": {
     "mounts": [
       "griffin",

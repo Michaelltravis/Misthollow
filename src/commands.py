@@ -2442,7 +2442,7 @@ class CommandHandler:
 
     @classmethod
     async def cmd_account(cls, player: 'Player', args: List[str]):
-        """View and manage your account. Usage: account [create|chars|info]"""
+        """View and manage your account. Usage: account [chars|info|claim|password|email|forgot|recover|reset]"""
         c = player.config.COLORS
         from accounts import Account, AccountManager
         
@@ -2460,35 +2460,41 @@ class CommandHandler:
                     await player.send(f"{c['yellow']}Account not found.{c['reset']}")
             else:
                 await player.send(f"{c['yellow']}You are not linked to an account.{c['reset']}")
-                await player.send(f"{c['cyan']}Use 'account create' to create one.{c['reset']}")
             return
         
         cmd = args[0].lower()
         
         if cmd == 'create':
-            # Create account from current character
-            if player.account_name:
-                await player.send(f"{c['yellow']}You already have an account: {player.account_name}{c['reset']}")
+            # every character is made on an account now (accounts.py)
+            await player.send(f"{c['cyan']}{player.name} is on the account '{player.account_name}'. Log in with it to make more characters, "
+                              f"or 'account claim <name> <password>' to bring in one from another account of yours.{c['reset']}")
+        
+        elif cmd == 'claim':
+            # account claim <name> <password of the account it is on now>
+            if not player.account_name:
+                await player.send(f"{c['yellow']}You are not linked to an account.{c['reset']}")
                 return
-            
-            # Use character name as account name
-            account_name = player.name.lower()
-            if Account.exists(account_name):
-                await player.send(f"{c['red']}Account '{account_name}' already exists!{c['reset']}")
+            if len(args) < 3:
+                await player.send(f"{c['yellow']}Usage: account claim <name> <password of the account it is on now>{c['reset']}")
                 return
-            
-            # Create account with same password as character
-            account = Account(account_name)
-            account.password_hash = player.password_hash  # Copy password
-            account.add_character(player.name)
-            account.save()
-            
-            player.account_name = account_name
-            await player.save()
-            
-            await player.send(f"{c['bright_green']}Account '{account_name}' created!{c['reset']}")
-            await player.send(f"{c['cyan']}Your character '{player.name}' is now linked.{c['reset']}")
-            await player.send(f"{c['cyan']}You can create more characters by logging in with your account.{c['reset']}")
+            account = Account.load(player.account_name)
+            if not account:
+                await player.send(f"{c['red']}Account not found.{c['reset']}")
+                return
+            import security
+            source, _ = AccountManager.account_for(args[1])
+            key = source.account_name if source else args[1].lower()
+            if security.locked(key):
+                await player.send(f"{c['red']}Too many wrong passwords for that account. Try again later.{c['reset']}")
+                return
+            ok, why = await AccountManager.claim(account, args[1], args[2], online=set(player.world.players))
+            if ok:
+                security.succeeded(key)
+                await player.send(f"{c['bright_green']}{args[1].capitalize()} is now on your account.{c['reset']}")
+            else:
+                if why == "Wrong password.":
+                    security.failed(key)
+                await player.send(f"{c['red']}{why}{c['reset']}")
         
         elif cmd == 'chars':
             if not player.account_name:
@@ -2599,7 +2605,7 @@ class CommandHandler:
                 await player.send(f"{c['yellow']}Usage: account reset <account> <newpass>{c['reset']}")
                 return
             # Immortal check
-            if getattr(player, 'level', 0) < player.config.IMMORTAL_LEVEL:
+            if not player.is_immortal:
                 await player.send(f"{c['red']}You do not have permission to do that.{c['reset']}")
                 return
             target_account = args[1].lower()
@@ -2621,7 +2627,7 @@ class CommandHandler:
             await cls.cmd_account(player, [])  # Same as no args
         
         else:
-            await player.send(f"{c['yellow']}Usage: account [create|chars|info|password|email|forgot|recover|reset]{c['reset']}")
+            await player.send(f"{c['yellow']}Usage: account [chars|info|claim|password|email|forgot|recover|reset]{c['reset']}")
 
     @classmethod
     async def cmd_map(cls, player: 'Player', args: List[str]):

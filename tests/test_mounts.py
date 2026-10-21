@@ -182,28 +182,34 @@ async def main():
     xr.grants_received = [grants.grant_key('Xtc', xg)]
     check(grants.apply_grants(xr) == [] and xr.mount is None, "XTC's gift, had whole, gives nothing more (no griffin again)")
 
-    # ---- an immortal gift makes the account an admin one (Deckard)
+    # ---- an immortal gift makes the account it names an admin one (accounts.py: every character
+    # has an account; the gift makes none)
     from accounts import Account
     import accounts
     real_dir = accounts.ACCOUNTS_DIR
     accounts.ACCOUNTS_DIR = tempfile.mkdtemp()
     try:
+        check(grants.load_grants()['deckard'].get('immortal') is True, "Deckard's gift was given as true (before the account rule)")
         dk = hero('Deckard')
-        check(grants.load_grants()['deckard'].get('immortal') is True, 'Deckard is to be immortal')
-        check(grants.apply_grants(dk) == [] and not dk.is_immortal, 'not while logging in (only on entering the world)')
         dk.password_hash = 'x$hash'
-        lines = grants.apply_grants(dk, entering=True)
-        a = Account.load('deckard')
-        check(a and a.is_admin and a.characters == ['Deckard'] and a.password_hash == 'x$hash' and dk.account_name == 'deckard'
-              and dk.is_immortal and any('immortal' in l for l in lines),
-              f'a character with no account (as /play makes them) gets one of its own name and password, an admin one ({lines})')
-        check(grants.apply_grants(dk, entering=True) == [], 'once')
+        check(grants.apply_grants(dk, entering=True) == [] and not dk.is_immortal and not os.listdir(accounts.ACCOUNTS_DIR),
+              'a true immortal gift now gives nothing, and makes no account')
+        gift = {'deckard': {'immortal': 'deckard'}}
+        dk.grants_received = []
+        dk.account_name = 'deckard'
+        a = Account('deckard'); a.characters = ['Deckard']; a.save()
+        check(grants.apply_grants(dk, gift) == [] and not dk.is_immortal, 'not while logging in (only on entering the world)')
+        lines = grants.apply_grants(dk, gift, entering=True)
+        check(Account.load('deckard').is_admin and dk.is_immortal and any('immortal' in l for l in lines),
+              f'a character on the account its gift names makes that account an admin one ({lines})')
+        check(grants.apply_grants(dk, gift, entering=True) == [], 'once')
         other = hero('Deckard2')
         other.name = 'Deckard'
         other.grants_received = []
-        a2 = Account('deckard'); a2.characters = ['Someone']; a2.is_admin = False; a2.save()
-        check(grants.apply_grants(other, entering=True) == [] and not Account.load('deckard').is_admin,
-              "an account of that name that isn't theirs is never made immortal")
+        other.account_name = 'squat'
+        a2 = Account('squat'); a2.characters = ['Deckard']; a2.save()
+        check(grants.apply_grants(other, gift, entering=True) == [] and not Account.load('squat').is_admin,
+              "a Deckard on another account (the name taken by someone else) is never made immortal")
     finally:
         accounts.ACCOUNTS_DIR = real_dir
 

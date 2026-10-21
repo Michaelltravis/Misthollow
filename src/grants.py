@@ -2,12 +2,16 @@
 
     {"xtc": {"mounts": ["griffin", "horse"], "ride": "griffin", "explore_all": true,
              "waypoints_all": true, "room": 14804, "gearup": true, "gold": 0, "why": "..."},
-     "deckard": {"immortal": true}}
+     "deckard": {"immortal": "deckard"}}
 
 Each part of a gift is given once: the save records it in `grants_received` (by its own key,
 "<name>:<part>:<value>"), so editing a character's entry gives only the parts added or changed
 (adding a mount never puts them back on the one they rode). Mounts already owned aren't given
 twice; unknown mounts are skipped.
+
+`immortal` names an account: it is made an admin one only when the character is on that account
+(a character name anyone could take never gives admin). Every character has an account
+(accounts.py); none is made here.
 """
 import json
 import logging
@@ -40,7 +44,7 @@ def part_key(name, part, value) -> str:
 def apply_grants(player, grants=None, entering=False) -> list:
     """Give this player the parts of their gift they haven't had; returns lines to tell them.
     `entering`: they are entering the world now (World.add_player), past the login; an immortal
-    part waits for that (it may give them an account, which the login must not see half-way)."""
+    part waits for that (the account they logged in with is settled by then)."""
     gift = (grants if grants is not None else load_grants()).get(str(getattr(player, 'name', '')).lower())
     if not gift:
         return []
@@ -103,27 +107,20 @@ def apply_grants(player, grants=None, entering=False) -> list:
             # them through the game's own level-up, which talks to them)
             player._grant_gearup = True
         elif part == 'immortal':
-            # an immortal: their account is made an admin one (Player.is_immortal), so every
-            # wizard command is theirs, on every character of that account
+            # the account the gift names is made an admin one (Player.is_immortal: every wizard
+            # command, on every character of it), and only when this character is on it
             from accounts import Account
-            acct = Account.load(player.account_name) if getattr(player, 'account_name', None) else None
+            want = value.lower() if isinstance(value, str) else ''
+            if not want:
+                logger.warning(f"grants: {player.name}: immortal must name the account (\"immortal\": \"<account>\")")
+                continue
+            if (getattr(player, 'account_name', None) or '').lower() != want:
+                logger.warning(f"grants: {player.name}: not on the account {want!r}; no immortal")
+                continue
+            acct = Account.load(want)
             if acct is None:
-                # a character made on its own (as /play makes them) has no account: it gets one
-                # of its own name and password, which it logs in with just as before
-                key = player.name.lower()
-                acct = Account.load(key)
-                if acct is not None and player.name not in acct.characters:
-                    logger.warning(f"grants: {player.name}: account {key!r} is someone else's")
-                    continue
-                if acct is None:
-                    if not getattr(player, 'password_hash', ''):
-                        logger.warning(f"grants: {player.name}: no password to make an account with")
-                        continue
-                    acct = Account(key)
-                    acct.password_hash = player.password_hash
-                    acct.characters = [player.name]
-                player.account_name = acct.account_name
-                player._grant_save = True
+                logger.warning(f"grants: {player.name}: no account {want!r}")
+                continue
             if not acct.is_admin:
                 acct.is_admin = True
                 acct.save()
