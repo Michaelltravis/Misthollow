@@ -21,6 +21,8 @@ export const QUALITY = {
 // rig blends to when the hero's room is enclosed (a crypt under an open sky).
 export const MOODS = {
   day: { sky: 0xcfe2ff, ground: 0x5a4a32, hemi: 1.15, sun: 0xfff1d6, sunI: 2.6, fog: 0xa9bfd0, near: 34, far: 90, exposure: 1.0, bg: 1.0 },
+  // open water by day: a blue-grey haze the far sea fades into (far.js fills the sea to it)
+  sea: { sky: 0xc8dcef, ground: 0x2a4a5a, hemi: 1.1, sun: 0xfff1d6, sunI: 2.5, fog: 0x7194ad, near: 40, far: 110, exposure: 1.0, bg: 1.0 },
   forest: { sky: 0xbfe0c8, ground: 0x3a3424, hemi: 1.0, sun: 0xffe6b8, sunI: 2.3, fog: 0x8fae9a, near: 30, far: 80, exposure: 1.0, bg: 1.0 },
   crypt: { sky: 0x6a7a9a, ground: 0x2a221a, hemi: 0.65, sun: 0x8c9cc8, sunI: 0.5, fog: 0x12141c, near: 20, far: 56, exposure: 1.25, bg: 0.35 },
   // a lit interior (temple, shop, inn): warm and readable, no strong sun

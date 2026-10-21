@@ -288,7 +288,7 @@ export const ICON_OVERRIDE = {
     power_word_shield: {picto: 'rings'}, aegis_ward: {glyph: 'ring'}, cleansing_rite: {glyph: 'sun'},
     font_of_the_vigil: {glyph: 'drop'}, shadow_word_pain: {picto: 'rings'}, inner_focus: {glyph: 'eye'},
     holy_aura: {glyph: 'feather'}, protection_from_evil: {picto: 'cage'}, pain_suppression: {glyph: 'wisp'},
-    guardian_spirit: {glyph: 'bone'},
+    guardian_spirit: {glyph: 'bone'}, break_door: {picto: 'crack'},
   },
   mage: {
     enchant_weapon: {picto: 'sword'}, tower_echoes: {picto: 'rings'}, phase_step: {glyph: 'wisp'},
@@ -296,7 +296,7 @@ export const ICON_OVERRIDE = {
     arcane_missiles: {picto: 'blast'}, summon: {picto: 'people'}, singularity: {glyph: 'ring'},
     rimeheart: {picto: 'crack'}, deep_freeze: {picto: 'cage'}, pyroblast: {picto: 'blast'},
     identify: {picto: 'book'}, meteor_storm: {picto: 'rain'}, shield: {picto: 'armor'},
-    mana_shield: {picto: 'helm'}, resonance_burst: {glyph: 'sun'},
+    mana_shield: {picto: 'helm'}, resonance_burst: {glyph: 'sun'}, block_door: {picto: 'chain'},
   },
   necromancer: {
     imbue: {glyph: 'rune'}, soulstone: {picto: 'lich'}, leechcraft: {glyph: 'drop'},

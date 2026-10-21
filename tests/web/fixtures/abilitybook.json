@@ -714,6 +714,14 @@
     "type": "spell"
    },
    {
+    "id": "break_door",
+    "level": 19,
+    "school": "holy",
+    "shape": "ranged",
+    "target": "object",
+    "type": "spell"
+   },
+   {
     "id": "shield_of_faith",
     "level": 10,
     "school": "holy",
@@ -1086,6 +1094,14 @@
     "school": "lightning",
     "shape": "ranged",
     "target": "enemy",
+    "type": "spell"
+   },
+   {
+    "id": "block_door",
+    "level": 19,
+    "school": "arcane",
+    "shape": "ranged",
+    "target": "object",
     "type": "spell"
    },
    {

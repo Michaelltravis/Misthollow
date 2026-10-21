@@ -10,6 +10,7 @@ from typing import Dict, Tuple, Set, List, Optional
 from config import Config
 from affects import AffectManager
 import nodes as _nodes
+import room_vistas
 
 DIR_OFFSETS = {
     'north': (0, -1, 0),
@@ -1413,6 +1414,9 @@ def build_zonemap(world, zone_num: int) -> Optional[dict]:
             'features': getattr(room, 'features', None) or [],
             'tone': getattr(room, 'tone', None),
             'setpiece': getattr(room, 'setpiece', None),
+            # what its words say lies beyond it: land across the water, a shore at hand
+            # (room_vistas.py; world3d/vista.js and edges.js draw it)
+            'vista': room_vistas.vistas(room),
             'cell': [cx, cy], 'level': coords[v][2], 'exits': exits,
         })
     w = max(c[0] for c in cells.values()) + 1

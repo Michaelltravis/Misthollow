@@ -3,7 +3,7 @@
 //
 // `info` is the zone's record for one side of a doorway, kept current by the server's map
 // payloads and 'door' pushes: {label, closed, locked, broken, sealed, barricaded, has_key,
-// can_pick, keyless, key_name}.
+// can_pick, keyless, key_name, material, arcane, can_block, can_break}.
 const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
 
 export function doorPrompt(info) {
@@ -34,7 +34,16 @@ export function doorVerbs(info) {
     if (info.can_pick) out.push({ label: 'Pick the lock', action: 'pick' });
     if (!key && !info.can_pick) out.push({ label: info.key_name ? `Needs ${info.key_name}` : 'Locked — needs a key', action: null });
   }
-  if (info.closed) out.push({ label: 'Knock', action: 'knock' }, { label: 'Bash it down', action: 'bash' });
+  if (info.closed) {
+    out.push({ label: 'Knock', action: 'knock' });
+    // what force can do against it (doors.py: an arcane door holds against any)
+    if (info.arcane) out.push({ label: 'Bound by old magic: nothing breaks it', action: null });
+    else {
+      out.push({ label: info.material && info.material !== 'wood' ? `Bash it down (${info.material})` : 'Bash it down', action: 'bash' });
+      if (info.can_break) out.push({ label: 'Break Door (spell)', action: 'break' });
+    }
+    if (info.can_block && !info.sealed) out.push({ label: 'Block Door (spell)', action: 'block' });
+  }
   return out;
 }
 

@@ -8,6 +8,7 @@ import { buildRoom, ROOM_W, ROOM_H, isIndoor } from './terrain.js';
 import { passageSpot, arrivalSpot, wantsPassage } from './passages.js';
 import { isDeadly } from './deathlogic.js';
 import { FarView } from './far.js';
+import { landSides } from './edges.js';
 
 const FLOOR = 0, BLOCK = 1, WATER = 4;
 const LIGHTS = 6;
@@ -56,6 +57,8 @@ export class Zone {
     this._lightClock = 0;
     // the rooms past the built ones, drawn cheaply, and the far hills (far.js)
     this.far = new FarView(this);
+    // (a filler cell where a zone next door has a room: that zone's stand-in is drawn there)
+    this.far.taken = (x, y) => this.ghosts.some(g => g.view.hasCell(x - g.ocx, y - g.ocy));
     // the zones next door, drawn past the border the same way (seamless borders: addGhost)
     this.ghosts = [];
     this._releaseClock = 0;
@@ -77,6 +80,7 @@ export class Zone {
       room.layout = MH.generateRoomTopDown({
         vnum: r.vnum, name: r.name, description: r.description, sector: r.sector, look: r.look, features: r.features, tone: r.tone, setpiece: r.setpiece,
         flags: r.flags, zone: this.num, exits,
+        land: landSides(room, this, MH.themeForSector),     // a water room's sides that are land (edges.js)
       });
     }
     return room.layout;
@@ -293,7 +297,7 @@ export class Zone {
     d.closed = info.state === 'closed';
     d.locked = !!info.locked;
     d.broken = !!info.broken;
-    for (const k of ['label', 'has_key', 'can_pick', 'keyless', 'key_name', 'sealed', 'barricaded']) if (k in info) d[k] = info[k];
+    for (const k of ['label', 'has_key', 'can_pick', 'keyless', 'key_name', 'sealed', 'barricaded', 'material', 'arcane', 'can_block', 'can_break']) if (k in info) d[k] = info[k];
     const mesh = room.built && room.built.doors && room.built.doors[dir];
     if (mesh) {
       mesh.userData.setOpen(!d.closed);

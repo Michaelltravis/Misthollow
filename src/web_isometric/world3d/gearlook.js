@@ -80,7 +80,7 @@ export const staffShape = (p, cls) => `staff_${STAFF_HEADS.has(p.v) ? p.v : STAF
 // the kit's palette by blender/models/tripo_prop.py): held in the right hand in place of the
 // shape built in code
 export const STAFF_PIECE = { staff_crystal: 'Tripo_Staff_Crystal', staff_skull: 'Tripo_Staff_Skull' };
-export const PROC_PIECE = { mace: 'Tripo_Mace' };
+export const PROC_PIECE = { mace: 'Tripo_Mace', spear: 'Tripo_Spear' };
 // a hat by its shape (gear_look.py HATS), else the class's: casters the pack's wizard hat, the
 // rest a brimmed hat with a feather; brim, cap and mitre are built in code (procgear.js)
 const HAT_SHAPES = new Set(['wizard', 'brim', 'cap', 'mitre']);
