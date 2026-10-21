@@ -70,6 +70,30 @@ class JournalManager:
             for entry in player.journal:
                 if isinstance(entry, dict) and 'key' in entry:
                     player.journal_keys.add(entry['key'])
+        if not player.__dict__.get('_journal_people_named'):
+            player.__dict__['_journal_people_named'] = True     # once a session
+            JournalManager._retitle_people(player)
+
+    @staticmethod
+    def _retitle_people(player):
+        """People met before the journal named them as the game shows them kept their keyword
+        ("guildmaster", four of them alike, each with Thrain's lore): name them again from the
+        creature their entry was made for."""
+        protos = getattr(getattr(player, 'world', None), 'mob_prototypes', None) or {}
+        thrain = NOTABLE_NPCS['guildmaster_thrain']
+        for e in player.journal:
+            if not isinstance(e, dict) or e.get('category') != 'npc':
+                continue
+            title, key = str(e.get('title') or ''), str(e.get('key') or '')
+            vnum = key[4:].split('_', 1)[0] if key.startswith('npc:') else ''
+            proto = protos.get(int(vnum)) if vnum.isdigit() else None
+            shown = str((proto or {}).get('short_desc') or '').strip()
+            if not shown or not title or title[:1] != title[:1].lower() or shown.lower() == title.lower():
+                continue
+            e['title'] = shown[:1].upper() + shown[1:]
+            if e.get('content') == thrain['content'] and 'thrain' not in shown.lower():
+                desc = (proto or {}).get('description') or (proto or {}).get('long_desc') or 'A resident of the realm.'
+                e['content'] = e['text'] = desc
     
     @staticmethod
     def get_stats(player) -> dict:

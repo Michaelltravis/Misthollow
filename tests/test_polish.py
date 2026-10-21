@@ -739,6 +739,15 @@ async def main():
     import journal
     for i in range(10):
         await journal.JournalManager.discover_creature(reader, f'test{i}', f'creature {i}', 'seen', silent=True)
+    # a guildmaster met before the journal named people as the game shows them is named again
+    old = Player.create_new(name='Oldreader', password=None, race='human', char_class='warrior',
+                            stats={s: 16 for s in ('str', 'int', 'wis', 'dex', 'con', 'cha')}, world=world)
+    old.world = world
+    thrain = journal.NOTABLE_NPCS['guildmaster_thrain']['content']
+    old.journal = [{'category': 'npc', 'key': 'npc:3023_guildmaster', 'title': 'guildmaster', 'text': thrain, 'content': thrain}]
+    met = journal.JournalManager.get_entries(old, 'npc')
+    check(met and met[0].title == "The fighters' guildmaster" and met[0].content != thrain,
+          f"an old journal's 'guildmaster' is named again, without Thrain's lore ({met and met[0].title})")
     check('bestiary_10' in (getattr(reader, 'achievements', None) or {}), 'ten creatures catalogued: the bestiary\'s first milestone, rewarded')
 
     # guidance (docs/GAMEPLAY_POLISH.md group 5): what the step wants, picked out in the world;
