@@ -22,6 +22,8 @@ Positions and ranges live in combat_range.py; the event transport in combat_even
 Telnet players have no position, so for them every range check passes.
 """
 import asyncio
+import contextvars
+import itertools
 import logging
 import time
 
@@ -36,24 +38,36 @@ def _is_player(ch):
     return hasattr(ch, 'account_name')
 
 
+# the captures the running task is inside (asyncio gives each task its own copy of the context)
+_CAPTURING = contextvars.ContextVar('combat_hooks_capturing', default=frozenset())
+_capture_ids = itertools.count(1)
+
+
 def _capture(ch, lines):
-    """Record what `ch` is sent while a wrapped call runs (it is still delivered)."""
+    """Record what `ch` is sent while a wrapped call runs (it is still delivered). Only what the
+    call itself sends is recorded: a line another task sends meanwhile (the action tick's "You
+    are stunned and cannot attack!") was taken for the skill's refusal, and a kick that landed
+    lost its cooldown and its event."""
     if ch is None or not hasattr(ch, 'send'):
         return lambda: None
     had = 'send' in getattr(ch, '__dict__', {})
     own = ch.__dict__.get('send') if had else None
     real = ch.send
+    me = next(_capture_ids)
 
     async def send(msg='', *a, **k):
-        lines.append(str(msg))
+        if me in _CAPTURING.get():
+            lines.append(str(msg))
         return await real(msg, *a, **k)
 
     try:
         ch.send = send
     except Exception:
         return lambda: None
+    _CAPTURING.set(_CAPTURING.get() | {me})
 
     def restore():
+        _CAPTURING.set(_CAPTURING.get() - {me})
         try:
             if had:
                 ch.send = own

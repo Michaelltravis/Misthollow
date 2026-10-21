@@ -1,7 +1,6 @@
 {
  "zone": 110,
- "_about": "The Elven Village (a living village, no boss): its original creatures restored from the area files (circle-contrib-areas/elven) where ours lacked them: the elven soldiers and guardian, the mage, Quintor, the bartender, the Chief of the elven guard (a sub-boss) and the Champion. Villagers call the guard, and the guard and the rangers come; a ranger walks the forest path.",
- "no_boss": "a living village",
+ "_about": "The Elven Village (a living village): its original creatures restored from the area files (circle-contrib-areas/elven) where ours lacked them: the elven soldiers and guardian, the mage, Quintor, the bartender, the Chief of the elven guard (a sub-boss) and the Champion. Villagers call the guard, and the guard and the rangers come; a ranger walks the forest path. The High Elven Guardian keeps the end of the fine path, the heart of the village, and the guard answers his horn.",
  "creatures": {
   "11050": {
    "name": "Elf Guardian Elven",
@@ -206,6 +205,35 @@
     "shout": "An elven horn sounds through the trees: the guard is coming!"
    },
    "why": "rangers answer the guard"
+  },
+  "11057": {
+   "name": "high elven guardian elf",
+   "short_desc": "the High Elven Guardian",
+   "long_desc": "The High Elven Guardian stands motionless at the end of the path, a great silver bow in hand.",
+   "description": "Taller than any elf of the village, clad in mail of living silver leaves that shift with his breath, the High Elven Guardian has kept this forest for longer than Garathorm has had walls. His eyes are the green of deep leaves, and they miss nothing that moves among the trees.",
+   "level": 34,
+   "rank": "boss",
+   "race": "elf",
+   "alignment": 900,
+   "flags": [
+    "sentinel"
+   ],
+   "helpers": {
+    "group": "elven_guard",
+    "rooms": 3,
+    "count": 3,
+    "shout": "The High Elven Guardian sounds a silver horn: the whole guard of the forest answers!"
+   },
+   "loot_table": [
+    {
+     "vnum": 11090,
+     "chance": 40
+    },
+    {
+     "vnum": 11091,
+     "chance": 35
+    }
+   ]
   }
  },
  "spawns": [
@@ -276,6 +304,39 @@
     11010
    ],
    "why": "a ranger walks the path through the forest"
+  }
+ ],
+ "items": {
+  "11090": {
+   "keywords": "bow silver longbow guardian",
+   "short_desc": "the Guardian's silver longbow",
+   "room_desc": "A tall longbow of pale silvered wood lies here.",
+   "description": "A longbow taller than a man, of pale wood that gleams like silver, strung with something finer than gut. It hums faintly when drawn.",
+   "kind": "weapon",
+   "level": 34,
+   "weapon_type": "pierce",
+   "bonus": {
+    "dex": 1
+   }
+  },
+  "11091": {
+   "keywords": "mail leaf silver living",
+   "short_desc": "a coat of living silver leaves",
+   "room_desc": "A coat of silver leaves lies here, stirring as if in a breeze.",
+   "description": "A coat of mail made of overlapping silver leaves, each one alive and shifting. It is lighter than cloth and turns blades like steel.",
+   "kind": "armor",
+   "level": 33,
+   "wear_slot": "body",
+   "bonus": {
+    "hp": 15
+   }
+  }
+ },
+ "bosses": [
+  {
+   "vnum": 11057,
+   "room": 11010,
+   "why": "the High Elven Guardian at the end of the fine path, the heart of the village"
   }
  ]
 }

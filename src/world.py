@@ -706,6 +706,12 @@ class World:
             population.apply(self)
         except Exception as e:
             logger.error(f"population failed: {e}")
+        # secret ways hidden until found (zone_hazards.py: Shadowspire's mirror door and library)
+        try:
+            import zone_hazards
+            zone_hazards.seed(self)
+        except Exception:
+            logger.exception('zone hazards seed')
         # rites of passage (world/rites.json): keyed gates and their keepers, toll-keepers
         try:
             import rites

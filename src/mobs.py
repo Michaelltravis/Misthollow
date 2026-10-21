@@ -588,6 +588,12 @@ class Mobile(Character):
         if random.randint(1, 100) > 2:
             return
 
+        # one who came from afar to help (allies.py) goes back to its post first
+        if getattr(self, '_post', None) is not None:
+            import allies
+            if await allies.return_to_post(self):
+                return
+
         # Check for aggressive behavior
         if 'aggressive' in self.flags:
             await self.aggressive_ai()

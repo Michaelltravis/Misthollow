@@ -659,7 +659,7 @@ What the atlas left unjoined (rooms with no way in, or no way back out) was join
 ### Elven Village (zone 110, atlas 17)
 
 - **similar**, open. 35 rooms; inside 19, forest 15, mountain 1.
-- Creatures 44, items 9, levels 6-50 (median 16); services: shopkeeper.
+- Creatures 45, items 11, levels 6-50 (median 16); bosses: the High Elven Guardian (11057); services: shopkeeper.
 - Joins: Plains ×1.
 - 2 doors the atlas locks, unlocked until keys are made.
 
@@ -718,7 +718,7 @@ What the atlas left unjoined (rooms with no way in, or no way back out) was join
 ### Garathorm Wall (zone 403, atlas 3)
 
 - **atlas-only**, open. 50 rooms; city 50.
-- Creatures 12, items 15, levels 5-15 (median 6).
+- Creatures 13, items 17, levels 5-18 (median 6); bosses: Captain Brannoc Greywatch (40305).
 - Joins: Garathorm Inner City ×4.
 
 ### Ghenna (zone 481, atlas 81)

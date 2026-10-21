@@ -1008,7 +1008,7 @@
   "28512": {
    "vnum": 28512,
    "name": "Brine-Swept Cloister",
-   "description": "Barnacles crust the ancient walls over collapsed arches. strands of kelp sway\nlike curtains. The silence is broken only by the slow creak of the temple as\nit settles in the deep.",
+   "description": "Barnacles crust the ancient walls over collapsed arches. strands of kelp\nsway like curtains. The silence is broken only by the slow creak of the\ntemple as it settles in the deep. Where the cloister's vault still\nholds, a silver sheet of trapped air clings to the stone overhead, and\nyou can rise into it and breathe.",
    "sector_type": "underwater",
    "exits": {
     "north": {
@@ -1029,7 +1029,12 @@
      "vnum": 28503,
      "max": 2
     }
-   ]
+   ],
+   "zone_mechanic": {
+    "type": "air_pocket",
+    "heals_drowning": true,
+    "message": "You break into the cloister's trapped air and gulp it down."
+   }
   },
   "28513": {
    "vnum": 28513,
@@ -1206,7 +1211,7 @@
   "28519": {
    "vnum": 28519,
    "name": "Chorus of Bubbles",
-   "description": "The current tugs at your cloak over algae-darkened tiles. ghostly bells ring\nwithout source. The silence is broken only by the slow creak of the temple as\nit settles in the deep.",
+   "description": "The current tugs at your cloak over algae-darkened tiles. ghostly bells\nring without source. The silence is broken only by the slow creak of the\ntemple as it settles in the deep. The bubbles gather under a cracked\ndome into a pocket of stale but breathable air, wide enough to put your\nhead into.",
    "sector_type": "underwater",
    "exits": {
     "north": {
@@ -1231,7 +1236,12 @@
      "vnum": 28501,
      "max": 2
     }
-   ]
+   ],
+   "zone_mechanic": {
+    "type": "air_pocket",
+    "heals_drowning": true,
+    "message": "You push up into the pocket of air beneath the dome and breathe."
+   }
   },
   "28520": {
    "vnum": 28520,
@@ -1408,7 +1418,7 @@
   "28526": {
    "vnum": 28526,
    "name": "The Flooded Spire",
-   "description": "Silt curls into the water with each step over coral-laced pillars. a current\ncircles like a watchful eye. The silence is broken only by the slow creak of\nthe temple as it settles in the deep.",
+   "description": "Silt curls into the water with each step over coral-laced pillars. a\ncurrent circles like a watchful eye. The silence is broken only by the\nslow creak of the temple as it settles in the deep. High in the spire\nthe water ends against a bright ceiling of trapped air; a ledge lets you\nclimb half out of the flood.",
    "sector_type": "underwater",
    "exits": {
     "north": {
@@ -1433,12 +1443,17 @@
      "vnum": 28508,
      "max": 2
     }
-   ]
+   ],
+   "zone_mechanic": {
+    "type": "air_pocket",
+    "heals_drowning": true,
+    "message": "You haul yourself onto the spire's ledge and breathe the trapped air."
+   }
   },
   "28527": {
    "vnum": 28527,
    "name": "Echoing Rotunda",
-   "description": "Faint blue light pulses from runes over sea-polished stone. the water smells\nfaintly of incense. The silence is broken only by the slow creak of the temple\nas it settles in the deep.",
+   "description": "Faint blue light pulses from runes over sea-polished stone. the water\nsmells faintly of incense. The silence is broken only by the slow creak\nof the temple as it settles in the deep. The rotunda's dome holds a\ngreat bubble of old air, its surface trembling with every echo.",
    "sector_type": "underwater",
    "exits": {
     "north": {
@@ -1463,7 +1478,12 @@
      "vnum": 28509,
      "max": 2
     }
-   ]
+   ],
+   "zone_mechanic": {
+    "type": "air_pocket",
+    "heals_drowning": true,
+    "message": "You surface into the rotunda's dome and fill your lungs."
+   }
   },
   "28528": {
    "vnum": 28528,
@@ -1498,7 +1518,7 @@
   "28529": {
    "vnum": 28529,
    "name": "Deepwater Transept",
-   "description": "Schools of pale fish drift by over broken statuary. the water smells faintly\nof incense. The silence is broken only by the slow creak of the temple as it\nsettles in the deep.",
+   "description": "Schools of pale fish drift by over broken statuary. the water smells\nfaintly of incense. The silence is broken only by the slow creak of the\ntemple as it settles in the deep. Above the transept a cracked\nclerestory holds a last pocket of air before the throne.",
    "sector_type": "underwater",
    "exits": {
     "north": {
@@ -1519,7 +1539,12 @@
      "vnum": 28502,
      "max": 2
     }
-   ]
+   ],
+   "zone_mechanic": {
+    "type": "air_pocket",
+    "heals_drowning": true,
+    "message": "You rise into the clerestory's air and breathe before the throne."
+   }
   },
   "28530": {
    "vnum": 28530,

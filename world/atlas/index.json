@@ -2164,9 +2164,11 @@
      1
     ]
    ],
-   "creatures": 44,
-   "items": 9,
-   "bosses": [],
+   "creatures": 45,
+   "items": 11,
+   "bosses": [
+    "the High Elven Guardian (11057)"
+   ],
    "services": [
     "shopkeeper"
    ],
@@ -3557,14 +3559,16 @@
      50
     ]
    ],
-   "creatures": 12,
-   "items": 15,
-   "bosses": [],
+   "creatures": 13,
+   "items": 17,
+   "bosses": [
+    "Captain Brannoc Greywatch (40305)"
+   ],
    "services": [],
    "level_band": {
     "min": 5,
     "median": 6,
-    "max": 15
+    "max": 18
    },
    "needs": [],
    "need_description": [],

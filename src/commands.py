@@ -1574,8 +1574,21 @@ class CommandHandler:
         if not args:
             await player.send("Pull what?")
             return
+        import zone_hazards
+        if await zone_hazards.act(player, 'pull', args):     # the Foundry's steam levers
+            return
         from puzzles import PuzzleManager
         await PuzzleManager.handle_pull(player, ' '.join(args))
+
+    @classmethod
+    async def cmd_touch(cls, player: 'Player', args: List[str]):
+        """Touch something in the room: a mirror, a carving (puzzle rooms)."""
+        if not args:
+            await player.send("Touch what?")
+            return
+        import zone_hazards
+        if not await zone_hazards.act(player, 'touch', args):
+            await player.send("You touch it. Nothing happens.")
 
     @classmethod
     async def cmd_push(cls, player: 'Player', args: List[str]):
@@ -1690,6 +1703,9 @@ class CommandHandler:
         """Read a book, scroll, or readable item."""
         if not args:
             await player.send("Read what?")
+            return
+        import zone_hazards
+        if await zone_hazards.act(player, 'read', args):     # a puzzle room's books (the Shadow Library)
             return
 
         target_name = ' '.join(args).lower()

@@ -645,7 +645,13 @@
     "type": "lever",
     "lever_id": "lever_alpha",
     "state": "up",
-    "effect": "Pulling this lever redirects steam from Steam Tunnel Alpha, making it safe but flooding Steam Tunnel Beta."
+    "effect": "Pulling this lever redirects steam from Steam Tunnel Alpha, making it safe but flooding Steam Tunnel Beta.",
+    "steam_from": [
+     24803
+    ],
+    "steam_to": [
+     24810
+    ]
    },
    "exits": {
     "south": {
@@ -818,7 +824,13 @@
     "type": "lever",
     "lever_id": "lever_beta",
     "state": "down",
-    "effect": "Pulling this lever redirects steam from Tunnel Beta, opening a shortcut but flooding the Furnace Approach."
+    "effect": "Pulling this lever redirects steam from Tunnel Beta, opening a shortcut but flooding the Furnace Approach.",
+    "steam_from": [
+     24810
+    ],
+    "steam_to": [
+     24821
+    ]
    },
    "exits": {
     "south": {
@@ -1009,7 +1021,11 @@
     "type": "lever",
     "lever_id": "lever_gamma",
     "state": "up",
-    "effect": "Operating this valve system shuts down Steam Tunnel Gamma, clearing the path to the Furnace Core."
+    "effect": "Operating this valve system shuts down Steam Tunnel Gamma, clearing the path to the Furnace Core.",
+    "steam_from": [
+     24818
+    ],
+    "steam_to": []
    },
    "exits": {
     "south": {
@@ -1087,7 +1103,15 @@
      "vnum": 24802,
      "max": 1
     }
-   ]
+   ],
+   "zone_mechanic": {
+    "type": "steam_damage",
+    "damage_per_tick": 50,
+    "message": "Rerouted steam blasts across the approach!",
+    "lever_controlled": true,
+    "controlling_lever": "lever_beta",
+    "currently_active": false
+   }
   },
   "24822": {
    "vnum": 24822,

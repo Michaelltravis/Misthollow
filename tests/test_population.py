@@ -64,6 +64,36 @@ async def main():
     await C.execute(h, 'unlock', ['south'])
     await C.execute(h, 'open', ['south'])
     check(not door.get('locked') and door.get('state') == 'open', f"with Kirgan's key it opens ({' '.join(h.connection.sent[-2:])[:120]})")
+
+    # the wall's captain answers any watchman attacked on the wall, and goes back to his post after
+    import allies
+    from mobs import Mobile
+
+    def mob_in(vnum, room=None):
+        rooms = [world.rooms[room]] if room else world.rooms.values()
+        return next((m for r in rooms for m in r.characters if isinstance(m, Mobile) and getattr(m, 'vnum', None) == vnum), None)
+    captain = mob_in(40305, 2926)
+    check(captain is not None and 'boss' in (captain.flags or ()), f'Captain Greywatch keeps the banner corner, a boss ({captain})')
+    sentry = mob_in(40300)
+    far = sentry is not None and captain not in [m for m, _r in allies.nearby_allies(sentry, 3, 99)]   # beyond an ordinary call
+    check(sentry is not None, 'a sentry walks the wall')
+    raider = Player.create_new(name='Wallraider', password=None, race='human', char_class='warrior',
+                               stats={s: 13 for s in ('str', 'int', 'wis', 'dex', 'con', 'cha')}, world=world)
+    raider.connection = tae.Conn()
+    raider.room = sentry.room
+    sentry.room.characters.append(raider)
+    post = captain.room
+    came = await allies.rally(sentry, raider)
+    check(far and captain in came and captain.room is sentry.room and captain.fighting is raider,
+          f'when a sentry is attacked the captain comes, from beyond an ordinary call ({far}), and fights')
+    captain.fighting, captain.position = None, 'standing'
+    await allies.return_to_post(captain)
+    check(captain.room is post, 'with the fight done he goes back to the banner')
+    raider.room.characters.remove(raider)
+
+    guardian = mob_in(11057, 11010)
+    check(guardian is not None and 'boss' in (guardian.flags or ()) and guardian.short_desc == 'the High Elven Guardian',
+          f'the High Elven Guardian keeps the end of the fine path, a boss ({guardian})')
     print(f"\n{'ALL OK' if not failures else f'{len(failures)} FAILED'}")
     sys.exit(1 if failures else 0)
 
