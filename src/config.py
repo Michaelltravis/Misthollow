@@ -63,6 +63,7 @@ class Config:
     # creatures NPC_PHASE_DELAY (combat_range.py) later, so blows alternate. Windows that
     # used to be hard-coded for 4 s scale with this.
     COMBAT_ROUND_SECONDS = 3.0
+    BRAIN = True                 # mob brains (src/brain/); False (or MH_BRAIN=0) runs the old rules alone
     # Real-time combat for the 3D client (action_combat.py): a /play player who asks for it
     # swings on their own 3-s clock (first blow on the key press), skills behind a 1-s global
     # cooldown, creatures on staggered clocks with 2-s wind-ups. False: everyone fights in rounds.

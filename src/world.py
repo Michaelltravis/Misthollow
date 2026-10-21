@@ -1549,18 +1549,20 @@ class World:
         """Process NPC AI. One creature's error is logged and the rest go on: before, one (a
         creature attacking a rider) took the whole server down. Creatures in zones no player is
         in (or next to) run one tick in NPC_SLEEP_EVERY, each on its own turn."""
+        from brain import scheduler
         self._npc_tick = (getattr(self, '_npc_tick', 0) + 1) % self.NPC_SLEEP_EVERY
         awake = self._awake_zones()
+        t0, thought = time.perf_counter(), 0
         for i, npc in enumerate(list(self.npcs)):
-            room = getattr(npc, 'room', None)
-            if (i + self._npc_tick) % self.NPC_SLEEP_EVERY and getattr(getattr(room, 'zone', None), 'number', None) not in awake \
-                    and not getattr(npc, 'fighting', None):
+            if not scheduler.due(npc, i, self._npc_tick, awake, self.NPC_SLEEP_EVERY):     # (brain/scheduler.py)
                 continue
             if hasattr(npc, 'process_ai'):
+                thought += 1
                 try:
                     await npc.process_ai()
                 except Exception:
                     logger.exception(f"AI of {getattr(npc, 'name', npc)} (vnum {getattr(npc, 'vnum', '?')}) failed")
+        scheduler.STATS.record((time.perf_counter() - t0) * 1000.0, thought)
                 
     async def autosave(self):
         """Autosave all players."""

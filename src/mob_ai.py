@@ -67,6 +67,20 @@ def classify_mob(mob) -> set:
     if cached is not None:
         return cached
 
+    # roles a population file gives it ("ai": {"roles": [...]}) are its roles; a bosses.py Boss
+    # still runs its own rotation on top
+    data_roles = (getattr(mob, 'ai_data', None) or {}).get('roles')
+    if data_roles:
+        roles = {str(r) for r in data_roles}
+        try:
+            from bosses import Boss
+            if isinstance(mob, Boss):
+                roles.add('scripted')
+        except Exception:
+            pass
+        ai_state['_ai_roles'] = roles
+        return roles
+
     roles = set()
     flags = getattr(mob, 'flags', set())
     name = _name_lower(mob)
@@ -934,7 +948,14 @@ def _choose_bruiser_intent(mob, target):
 
 async def declare_intents(mob):
     """Pre-pass (top of world.combat_tick): a fighting mob with no pending
-    wind-up may choose and DECLARE its next special. It resolves next round."""
+    wind-up may choose and DECLARE its next special. It resolves next round.
+    The creature's brain decides (brain.declare); combat_hooks wraps this name."""
+    import brain
+    return await brain.declare(mob)
+
+
+async def _legacy_declare_intents(mob):
+    """declare_intents as it was before the brain (brain/legacy.py)."""
     if getattr(mob, 'pending_intent', None):
         return
     if not mob.is_fighting or not mob.fighting or not mob.room:
@@ -1151,7 +1172,14 @@ async def mob_ai_tick(mob):
     Run intelligent combat AI for a fighting mob.
     Called once per combat round from world.combat_tick().
     Returns True if the mob took a special action this round.
+    The creature's brain decides (brain.combat_turn).
     """
+    import brain
+    return await brain.combat_turn(mob)
+
+
+async def _legacy_mob_ai_tick(mob):
+    """mob_ai_tick as it was before the brain (brain/legacy.py)."""
     held = getattr(mob, 'affect_flags', None) or set()
     if held & {'paralyzed', 'charmed', 'feared'} or (getattr(mob, 'stunned_rounds', 0) or 0) > 0:
         return False       # held by a spell (spells.py): no special this round either
