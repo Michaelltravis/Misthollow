@@ -87,6 +87,8 @@ def html_escape(text: str) -> str:
 
 KIND_PATTERN = re.compile(r'\x1b\]K:([a-z]+)\x07')
 RESUME_PATTERN = re.compile(r'\x1b\]RESUME:([A-Za-z0-9_\-]+)\x07')
+# the account menu's characters (server.show_character_menu), for the page's character screen
+ACCOUNT_PATTERN = re.compile(r'\x1b\]ACCOUNT:(\{[^\x07]*\})\x07')
 # a colour code not finished at the end of what was read ("\x1b", "\x1b[", "\x1b[1;3")
 CSI_TAIL = re.compile(rb'\x1b(?:\[[0-9;]*)?$')
 
@@ -137,7 +139,8 @@ class TelnetBridge:
                 carry = b''
                 # a hidden signal cut in two by the read: keep its start for the next one
                 cut = data.rfind(b'\x1b]')
-                if cut != -1 and data.find(b'\x07', cut) == -1 and len(data) - cut < 256:
+                # (an account's character list runs to a few hundred bytes)
+                if cut != -1 and data.find(b'\x07', cut) == -1 and len(data) - cut < 4096:
                     data, carry = data[:cut], data[cut:]
                 # and a colour code cut in two ("\x1b[3" | "7m"): the same
                 tail = CSI_TAIL.search(data)
@@ -167,7 +170,13 @@ class TelnetBridge:
                 for m in list(RESUME_PATTERN.finditer(text)):
                     await self.ws.send_json({'type': 'resume', 'token': m.group(1)})
                 text = RESUME_PATTERN.sub('', text)
-                
+                for m in list(ACCOUNT_PATTERN.finditer(text)):
+                    try:
+                        await self.ws.send_json({'type': 'account', **json.loads(m.group(1))})
+                    except ValueError:
+                        pass
+                text = ACCOUNT_PATTERN.sub('', text)
+
                 # Only send output if there's remaining text
                 if KIND_PATTERN.sub('', text).strip():
                     # each line's kind (msgkind.py) as an empty mark the page reads
