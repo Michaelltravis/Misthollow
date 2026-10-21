@@ -61,6 +61,7 @@ class Boss(Mobile):
         self.ability_interval = self.boss_config.get('ability_interval', 4.0)
         self.enrage_time = self.boss_config.get('enrage_time')
         self.enrage_multiplier = self.boss_config.get('enrage_multiplier', 1.5)
+        self.raid = bool(proto.get('raid'))     # built for a group at its level: keeps its file's numbers
         # what makes the fight more than blows (boss_mechanics.py: pools, guards, hunger, waves, gloom)
         try:
             import boss_mechanics
@@ -111,6 +112,8 @@ class Boss(Mobile):
 
         await self._check_phase_transitions()
         for m in getattr(self, 'mechanics', ()):
+            if m.spec.get('below') is not None and self._hp_pct() > m.spec['below']:
+                continue                    # a mechanic for the fight's last stretch only
             try:
                 await m.tick(self, now)
             except Exception:
@@ -531,7 +534,7 @@ ZONE_BOSS_DAMAGE = {
     645407: 0.48,   # L21 the Pale Man, a bone-white ogre lord
     645506: 0.45,   # L21 Aldric, the Barrow-King
     646507: 0.49,   # L21 a towering balrog
-    647006: 0.17,   # L21 Ostragoth, the sorcerer-lord
+    647006: 0.15,   # L21 Ostragoth, the vampire lord
     650206: 0.29,   # L21 Zhaarok, the draconian high priest
     2537: 0.39,     # L22 the Master Summoner
     3503: 0.59,     # L22 the Goblin King (and his goblins)
@@ -622,7 +625,8 @@ def size_zone_boss(boss):
     import marquee_scale as ms
     from config import Config
     level = getattr(boss, 'level', 1) or 1
-    if level > getattr(Config, 'MAX_MORTAL_LEVEL', 60) or 9700 <= (getattr(boss, 'vnum', 0) or 0) <= 9799:
+    if (level > getattr(Config, 'MAX_MORTAL_LEVEL', 60) or getattr(boss, 'raid', False)
+            or 9700 <= (getattr(boss, 'vnum', 0) or 0) <= 9799):
         return                  # a raid boss, or a marquee quest's own (marquee_quests.py: 9700-9799)
     want = int(ZONE_BOSS_ROUNDS * ms.dpr(level))
     boss.max_hp = boss.hp = want
