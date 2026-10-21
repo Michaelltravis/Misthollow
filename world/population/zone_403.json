@@ -1,7 +1,6 @@
 {
  "zone": 403,
- "_about": "Garathorm Wall: the walk along the top of the city wall. The night watch walks it in two halves; a sergeant keeps each far turn; gulls and crows ride the wind; a cutpurse uses the wall as a road over the rooftops.",
- "no_boss": "the city's wall walk: the watch keeps it",
+ "_about": "Garathorm Wall: the walk along the top of the city wall. The night watch walks it in two halves; a sergeant keeps each far turn; gulls and crows ride the wind; a cutpurse uses the wall as a road over the rooftops. Captain Brannoc Greywatch, captain of the wall, keeps the banner corner; when any watchman on the wall is attacked he hears the horn and comes, wherever on the wall it is, and goes back to the banner after.",
  "creatures": {
   "40300": {
    "name": "wall watchman sentry",
@@ -110,6 +109,36 @@
     {
      "vnum": 40394,
      "chance": 25
+    }
+   ]
+  },
+  "40305": {
+   "name": "captain brannoc greywatch wall",
+   "short_desc": "Captain Brannoc Greywatch",
+   "long_desc": "Captain Brannoc Greywatch, captain of the wall, stands beneath the great banner with his sword drawn.",
+   "description": "A tall, iron-grey soldier in a long blue cloak over polished mail, the city's badge at his throat. Thirty years on the wall have weathered him like its stones; he hears every horn from gate to gate and has never yet failed to answer one.",
+   "level": 18,
+   "rank": "boss",
+   "race": "human",
+   "alignment": 600,
+   "flags": [
+    "sentinel"
+   ],
+   "helpers": {
+    "group": "wall_watch",
+    "rooms": 3,
+    "count": 2,
+    "anywhere": true,
+    "shout": "Captain Greywatch roars: \"To me, the watch!\""
+   },
+   "loot_table": [
+    {
+     "vnum": 40396,
+     "chance": 45
+    },
+    {
+     "vnum": 40397,
+     "chance": 35
     }
    ]
   }
@@ -267,6 +296,37 @@
    "description": "A hard heel of the dark bread the sentries carry in their coats. The gulls have learned to wait for it.",
    "kind": "food",
    "level": 5
+  },
+  "40396": {
+   "keywords": "longsword captain greywatch",
+   "short_desc": "the captain's longsword",
+   "room_desc": "A plain, well-kept longsword lies here.",
+   "description": "A soldier's longsword, plain and perfectly kept, its grip rewound so often the leather is black. The city's badge is stamped on the guard.",
+   "kind": "weapon",
+   "level": 18,
+   "weapon_type": "slash",
+   "bonus": {
+    "hitroll": 2
+   }
+  },
+  "40397": {
+   "keywords": "cloak blue captain wall",
+   "short_desc": "a wall captain's blue cloak",
+   "room_desc": "A long blue cloak lies folded here.",
+   "description": "A long cloak of heavy blue wool, lined against the wind on the wall, its hem frayed by years of stone.",
+   "kind": "armor",
+   "level": 17,
+   "wear_slot": "about",
+   "bonus": {
+    "hp": 15
+   }
   }
- }
+ },
+ "bosses": [
+  {
+   "vnum": 40305,
+   "room": 2926,
+   "why": "Captain Greywatch under the great banner at the flagstaff corner; he answers any watchman attacked on the wall"
+  }
+ ]
 }
