@@ -1019,6 +1019,110 @@ def _gear_wards(player):
         return []
 
 
+def _dice_span(dice):
+    """The least and most a dice string ('2d6+4') rolls; combat.roll_dice's 1d6 when unreadable."""
+    try:
+        m = re.fullmatch(r'\s*(\d+)d(\d+)\s*(?:([+-])\s*(\d+))?\s*', str(dice))
+        n, size = int(m.group(1)), int(m.group(2))
+        add = (int(m.group(4)) if m.group(4) else 0) * (-1 if m.group(3) == '-' else 1)
+        return n + add, n * size + add
+    except Exception:
+        return 1, 6
+
+
+def _combat_sheet(player):
+    """What a player's blows and defences come to, worked out the way a round works them
+    (combat.py one_round, bonus_attack, offhand_attack; Player.take_damage), for the character
+    sheet's calculator. A swing lands when d20 + `hit` reaches the target's 10 - AC//10; its
+    damage runs `min`..`max` before criticals. A creature's blow at them must reach `defense`
+    past dodge, parry, block and evasion, then loses `toughness`, the ward of its kind and `pb`
+    percent, in that order. None for a creature."""
+    if not hasattr(player, 'resistance'):
+        return None
+    try:
+        from combat import CombatHandler as CH
+        from player import RESIST_KEYS
+        cfg = CH.config
+        lvl = getattr(player, 'level', 1) or 1
+        eq = getattr(player, 'equipment', None) or {}
+        hit = player.get_hit_bonus()
+        dam = player.get_damage_bonus()
+        try:
+            from talents import TalentManager
+            talent_pct = TalentManager.get_talent_bonus(player, 'damage_mod')
+        except Exception:
+            talent_pct = 0
+
+        def span(item, scale=1.0, dam_share=1.0, bare=(1, 3), talents=False):
+            lo, hi = _dice_span(item.damage_dice) if item is not None and hasattr(item, 'damage_dice') else bare
+            out = []
+            for d in (int(lo * scale) if item is not None else lo, int(hi * scale) if item is not None else hi):
+                d = CH.scale_player_weapon_damage(player, d) + int(dam * dam_share)
+                if talents and talent_pct > 0:
+                    d = int(d * (1 + talent_pct / 100))
+                out.append(max(1, d))
+            return out
+
+        weapon, offhand = eq.get('wield'), eq.get('dual_wield')
+        lo, hi = span(weapon, talents=True)
+        skills = getattr(player, 'skills', None) or {}
+        # extra swings: no level to hit, no critical, no talent damage (bonus_attack/offhand_attack)
+        extra = []
+        if 'second_attack' in skills:
+            extra.append({'name': 'Second attack', 'chance': int(skills['second_attack'] * 0.6), 'hit': hit})
+        if 'third_attack' in skills:
+            extra.append({'name': 'Third attack', 'chance': int(skills['third_attack'] * 0.3), 'hit': hit})
+        if 'haste' in (getattr(player, 'affect_flags', None) or set()) or player.gear_hasted():
+            extra.append({'name': 'Haste', 'chance': 50, 'hit': hit})
+        for e in extra:
+            e['min'], e['max'] = span(weapon)
+        if 'dual_wield' in skills and offhand is not None:
+            omin, omax = span(offhand, scale=0.75, dam_share=0.5, bare=(1, 2))
+            extra.append({'name': 'Off-hand', 'chance': int(skills['dual_wield'] * 0.6), 'hit': hit - 2, 'min': omin, 'max': omax})
+        ac = player.get_armor_class()
+        # the creature they are fighting, as its blows and hide come to (Mobile's own sums)
+        foe, foe_sheet = getattr(player, 'fighting', None), None
+        if foe is not None and _in_combat(player) and not hasattr(foe, 'resistance'):
+            fw = (getattr(foe, 'equipment', None) or {}).get('wield')
+            flo, fhi = _dice_span(fw.damage_dice) if fw is not None and hasattr(fw, 'damage_dice') else (1, 3)
+            fdam = foe.get_damage_bonus()
+            foe_sheet = {
+                'name': getattr(foe, 'name', ''), 'level': getattr(foe, 'level', 1) or 1,
+                'ac': foe.get_armor_class(), 'hit': foe.get_hit_bonus(),
+                'min': max(1, flo + fdam), 'max': max(1, fhi + fdam),
+                'hp': getattr(foe, 'hp', 0), 'max_hp': getattr(foe, 'max_hp', 1),
+                'pb': int(getattr(foe, 'damage_reduction', 0) or 0),
+                'boss': CH.is_boss_mob(foe),
+            }
+        return {
+            'foe': foe_sheet,
+            'weapon': getattr(weapon, 'name', None) if weapon is not None else None,
+            'dice': getattr(weapon, 'damage_dice', None) if weapon is not None else '1d3',
+            'hit': hit + lvl // cfg.PLAYER_LEVEL_HIT_DIV,
+            'damroll': dam,
+            'min': lo, 'max': hi,
+            'crit': CH.crit_chance(player),
+            'crit_mult': CH.crit_mult(player),
+            'extra': [e for e in extra if e['chance'] > 0],
+            'ac': ac,
+            'defense': 10 - ac // 10,
+            'avoid': {k: max(0, min(100, v)) for k, v in CH.avoid_chances(player).items()},
+            'toughness': round(CH.player_toughness(player) * 100, 2),
+            # a landed blow is cut to 70% this percent of the time (the evasion skill itself)
+            'soften': int(skills.get('evasion', 0) or 0),
+            'foe_crit': cfg.MOB_CRIT_CHANCE,
+            'boss_cap': cfg.BOSS_SWING_CAP_PCT,
+            'round_secs': cfg.COMBAT_ROUND_SECONDS,
+            'pb': player.get_pb_value(),
+            'resist': {k: player.resistance(k) for k in RESIST_KEYS},
+            'spell_resist': int(player.gear_bonus('spell_resist')),
+            'saves': player.gear_saves(),
+            'stance': getattr(player, 'stance', 'normal') or 'normal',
+        }
+    except Exception:
+        return None
+
+
 def _npc_look(mob):
     """A creature's look, when its zone dressed it (not the gear every creature is handed) and
     something of it shows: a weapon, a shield, a helm, armour or a cloak."""
@@ -2091,7 +2195,9 @@ def build_map_payload(player, mode: str = 'full') -> dict:
             'hitroll': player.get_hit_bonus() if hasattr(player, 'get_hit_bonus') else getattr(player, 'hitroll', 0),
             'damroll': player.get_damage_bonus() if hasattr(player, 'get_damage_bonus') else getattr(player, 'damroll', 0),
             'armor_class': player.get_armor_class() if hasattr(player, 'get_armor_class') else getattr(player, 'armor_class', 0),
-            'gold': getattr(player, 'gold', 0),
+            # what a blow comes to, both ways (the character sheet's calculator)
+            'combat': _combat_sheet(player),
+            'gold':getattr(player, 'gold', 0),
             'exp': getattr(player, 'exp', 0),
             'exp_floor': _exp_thresholds(player)[0],
             'exp_to_level': _exp_thresholds(player)[1],
