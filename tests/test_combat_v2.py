@@ -22,6 +22,7 @@ import aiohttp
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'src'))
 import test_webmove as tw  # noqa: E402  (Telnet helper, check(), failures)
+import gauntlet_accounts  # noqa: E402  (the test characters, made if missing)
 
 ROOM, SPECTRE = 18620, 18610          # a quiet crypt room; "the dark spectre", level 6
 check, failures = tw.check, tw.failures
@@ -98,6 +99,7 @@ def offline_targets():
 async def main():
     await cast_parser()
     offline_targets()
+    await gauntlet_accounts.ensure()
     tw.ACCOUNT, tw.PASSWORD, tw.CHAR = 'gauntletb', 'gauntlet1', 'Gauntletb'
     tn = tw.Telnet()
     await tn.open()

@@ -17,6 +17,7 @@ import types
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'src'))
 import test_webmove as tw  # noqa: E402  (Telnet helper, check(), failures)
+import gauntlet_accounts  # noqa: E402  (the test characters, made if missing)
 from config import Config  # noqa: E402
 import doors  # noqa: E402
 
@@ -226,6 +227,7 @@ def server_up():
 
 async def live():
     import aiohttp
+    await gauntlet_accounts.ensure()
     tw.ACCOUNT, tw.PASSWORD, tw.CHAR = 'gauntletb', 'gauntlet1', 'Gauntletb'
     tn = tw.Telnet()
     await tn.open()

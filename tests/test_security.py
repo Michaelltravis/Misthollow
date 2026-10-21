@@ -23,6 +23,7 @@ import types
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'src'))
 import test_webmove as tw  # noqa: E402  (check(), failures, hosts)
+import gauntlet_accounts  # noqa: E402  (the test characters, made if missing)
 from config import Config  # noqa: E402
 import security  # noqa: E402
 import accounts  # noqa: E402
@@ -118,7 +119,11 @@ async def offline(tmp):
           'a made-up token, or one for another name, is refused')
     stored = open(security.TOKENS_FILE).read()
     check(t2 not in stored and hashlib.sha256(t2.encode()).hexdigest() in stored, 'tokens are kept as hashes only')
-    check(oct(os.stat(security.TOKENS_FILE).st_mode & 0o777) == '0o600', '…in a file only the server can read')
+    if os.name == 'nt':
+        # os.chmod on Windows sets only the read-only bit: the mode always reads 0o666
+        print('skip …in a file only the server can read (Unix file modes: none on Windows)')
+    else:
+        check(oct(os.stat(security.TOKENS_FILE).st_mode & 0o777) == '0o600', '…in a file only the server can read')
     many = [security.issue_token('Sample') for _ in range(6)]
     check(len(security._load()['sample']) == security.TOKEN_DEVICES, 'at most five devices a character')
     check(security.use_token('Sample', t2) is None and security.use_token('Sample', many[0]) is None,
@@ -266,6 +271,7 @@ async def make_sectest():
 
 async def live():
     import aiohttp
+    await gauntlet_accounts.ensure()
     # 1. the old way into an account character is shut
     s = await Raw().open()
     out = await s.cmd('Probemage', 1.0)

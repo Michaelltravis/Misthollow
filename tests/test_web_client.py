@@ -19,6 +19,7 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 from server import WEB_MARK  # noqa: E402
 from test_webmove import Telnet, check, failures, HOST, MAP, ANSI  # noqa: E402
+import gauntlet_accounts  # noqa: E402  (the test characters, made if missing)
 
 
 def get(path):
@@ -102,7 +103,8 @@ async def windows():
     status, _, body = get(f'/state?player=Gauntlet&mode=near&t={tw.TOKEN}')
     rooms = json.loads(body).get('nearby', []) if status == 200 else []
     items = [it for r in rooms if r.get('vnum') == 3001 for it in r.get('items', [])]
-    check(items and all(it.get('fixed') for it in items if it.get('name') in ('fountain', 'atm')),
+    # (the fountain itself must be there: a room emptied by an earlier `purge` proves nothing)
+    check(any(it.get('name') == 'fountain' for it in items) and all(it.get('fixed') for it in items if it.get('name') in ('fountain', 'atm')),
           f'the payload marks fixtures ({[(it.get("name"), it.get("fixed")) for it in items]})')
     await tn.cmd('quit', 0.6)
 
@@ -130,6 +132,7 @@ async def progression():
 
 async def main():
     pages()
+    await gauntlet_accounts.ensure()
     await wrapping()
     await windows()
     await progression()
