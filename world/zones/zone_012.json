@@ -118,8 +118,8 @@
      "description": "To the east lies The Immortal Room Of Relaxation."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The floor is\nworn smooth by long use. Ways lead north and east.",
-   "placeholder": true
+   "description": "Two deep armchairs sit before a crackling hearth in this cosy room, a\npatchwork rug between them and a kettle singing on its hook over the\nfire. Shelves crammed with curious keepsakes from every corner of the\nrealm cover the walls: a ship in a bottle, a jar of captured starlight,\na cracked mortal crown. A door to the north opens, quite impossibly,\nonto the shore of the Long Lake, and another to the east leads to the\nImmortal Room of Relaxation. Time seems to pass here at whatever pace it\nlikes.",
+   "extra_descs": {}
   },
   "1203": {
    "vnum": 1203,

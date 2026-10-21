@@ -58,8 +58,9 @@
      "description": "The path heads toward the main city of Garathorm."
     }
    },
-   "description": "Gorse and heather cling to the windy rise. From the crest the land below\nspreads out like a map. Ways lead north and south.",
-   "placeholder": true
+   "description": "The path runs straight into the mountainside here, where a tunnel mouth\nhas been cut square and true through the living rock by dwarven hands.\nRunes of welcome are carved into the stone lintel, and iron brackets for\ntorches line the rock walls. Ahead to the north the tunnel climbs on\ninto darkness, while behind you daylight and the open path fall away to\nthe south.",
+   "look": "cave",
+   "extra_descs": {}
   },
   "6502": {
    "vnum": 6502,
@@ -872,8 +873,8 @@
      "description": "To the south lies A Wooden Room."
     }
    },
-   "description": "The floor is worn smooth by long use. Shadows gather where the light\ndoes not reach. A way leads south.",
-   "placeholder": true
+   "description": "Unlike the stone halls around it, this room is panelled from floor to\nceiling in dark wood, the boards fitted so tightly no seam shows. Dust\nlies thick across the floor, unmarked by any footprints, and cobwebs\nhang in the corners. A stale smell of old timber and closed air fills\nthe room. The only way out is south into another wooden room.",
+   "extra_descs": {}
   },
   "6528": {
    "vnum": 6528,
@@ -975,8 +976,10 @@
      "description": "A passage leads to At The Top Of The Stairs"
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Stone walls close in,\ncool to the touch. Ways lead north and west.",
-   "placeholder": true
+   "description": "The throne of Rock-Haven stands on a dais of polished granite, its back\ncarved into a mountain peak inlaid with veins of silver. Pillars hewn\nfrom the rock rise to a vaulted ceiling, and braziers burn on either\nside of the throne, glinting off the shields of old dwarf-kings hung on\nthe walls. A carved door to the north leads to the master chambers, and\nthe top of the stairs is west.",
+   "extra_descs": {
+    "throne dais": "The throne is carved from a single block of dark granite, its high back\nshaped into a mountain whose peak is capped with a band of silver. Runes\naround its base name the kings who have sat upon it."
+   }
   },
   "6532": {
    "vnum": 6532,
@@ -1045,8 +1048,8 @@
      "description": "To the west lies The Master Chambers of Greymalken."
     }
    },
-   "description": "Stone walls close in, cool to the touch. Dust lies thick in the corners,\nundisturbed for some time. A way leads west.",
-   "placeholder": true
+   "description": "This is a snug sleeping chamber cut from warm red stone, with a broad\nbed of carved oak piled with furs and wool blankets. A small hearth set\ninto the wall glows low, and the smell of woodsmoke and pipeweed\nlingers. Neatly mortared niches hold a few candle stubs. The only door\nleads west back to the master chambers.",
+   "extra_descs": {}
   },
   "6534": {
    "vnum": 6534,

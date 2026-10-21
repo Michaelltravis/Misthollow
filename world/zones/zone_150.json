@@ -1669,8 +1669,10 @@
      "description": "To the east lies Under the Tower."
     }
    },
-   "description": "The floor is worn smooth by long use. Shadows gather where the light\ndoes not reach. Ways lead east and down.",
-   "placeholder": true
+   "description": "A white marble altar stands at the heart of this quiet chapel, draped\nwith a cloth embroidered in gold and lit by tall candles in silver\nholders. Stained glass throws soft colours over the polished floor, and\nthe hush is deep enough that your footsteps seem loud. Behind the altar,\na narrow stair hidden in the floor leads down into darkness. An archway\neast opens toward the foot of the castle tower.",
+   "extra_descs": {
+    "altar marble": "The altar is carved from one block of white marble, veined with faint\ngold. Its face shows a sunburst above the crowned arms of King Welmar,\nworn smooth at the edges by generations of kneeling hands."
+   }
   },
   "15055": {
    "vnum": 15055,

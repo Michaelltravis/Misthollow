@@ -14,6 +14,8 @@ keeps a creature out of rooms its terrains would otherwise give it).
     python3 tools/atlas/buildout.py --check world/buildout/parts/<job>.json   # a writer's check
     python3 tools/atlas/buildout.py --merge <job>        # fold parts/<job>.p1.json, .p2.json ... in
     python3 tools/atlas/buildout.py --check-all                                # every part
+    python3 tools/atlas/buildout.py --fold <job>         # write a rooms-only part's text into
+                                                         # world/zones now, without a rebuild
 """
 import collections
 import glob
@@ -28,6 +30,7 @@ sys.path.insert(0, HERE)
 import briefs  # noqa: E402
 sys.path.insert(0, os.path.join(HERE, '..', '..', 'src'))
 import room_looks  # noqa: E402
+from population import SLOTS, item_numbers  # noqa: E402  (the numbers population items get too)
 
 ROOT = briefs.ROOT
 PARTS = os.path.join(ROOT, 'world', 'buildout', 'parts')
@@ -38,9 +41,6 @@ SENTENCES = (3, 6)
 KINDS = ('animal', 'humanoid', 'monster', 'undead')
 ITEM_KINDS = ('weapon', 'armor', 'treasure', 'food', 'potion', 'light')
 WEAPON_TYPES = ('slash', 'pierce', 'pound')
-SLOTS = {'body': 'body', 'head': 'head', 'legs': 'legs', 'feet': 'feet', 'hands': 'hands', 'arms': 'arms',
-         'shield': 'shield', 'about': 'about', 'waist': 'waist', 'wrist': 'wrist1', 'neck': 'neck1',
-         'finger': 'finger1', 'hold': 'hold'}
 BONUS = {'str': 1, 'dex': 1, 'con': 1, 'int': 1, 'wis': 1, 'cha': 1, 'hitroll': 2, 'damroll': 2, 'hp': 15}
 SECTORS = ('inside', 'city', 'field', 'forest', 'hills', 'mountain', 'water_swim', 'water_noswim',
            'water_surface', 'underwater', 'flying', 'desert', 'swamp', 'cave')
@@ -271,9 +271,6 @@ def where(c, zs, w, only=None):
 # 1.5 + 1.45L, armour 97 - 3L, experience 55L + 20. Weapons and armour follow the world's gear
 # below level 50 (a weapon's blow about 4 + 0.15L; armour a few points a piece).
 KIND_HP = {'animal': 0.9, 'humanoid': 1.0, 'monster': 1.2, 'undead': 1.1}
-SLOT_ARMOR = {'body': (3, 8, 10), 'shield': (3, 12, 6), 'head': (2, 12, 3), 'legs': (2, 12, 3), 'feet': (2, 12, 3),
-              'hands': (2, 12, 2), 'arms': (2, 12, 2), 'about': (1, 12, 3), 'waist': (1, 15, 1), 'wrist': (1, 15, 1),
-              'neck': (1, 15, 1), 'finger': (1, 15, 1), 'hold': (0, 99, 1)}
 MOB_BASE, OBJ_BASE = 600000, 700000          # + zone * 100 + n (world/buildout/vnums.json keeps them)
 REGISTRY = os.path.join(ROOT, 'world', 'buildout', 'vnums.json')
 
@@ -287,31 +284,6 @@ def stats(level, kind):
             'damage_dice': f'{dn}d6+{max(0, round(dmg - dn * 3.5))}',
             'armor_class': max(-20, 97 - 3 * L - (5 if kind == 'monster' else 0)),
             'exp': 55 * L + 20, 'gold': 12 * L if kind == 'humanoid' else 0}
-
-
-def item_numbers(i):
-    L, kind = max(1, int(i['level'])), i['kind']
-    out = {'item_type': kind, 'type': kind, 'min_level': L}
-    if kind == 'weapon':
-        avg = 4 + 0.15 * L
-        n = 1 if L < 10 else 2
-        s = max(4, min(12, round(2 * avg - 1))) if n == 1 else max(3, round(avg - 1))
-        out.update(damage_dice=f'{n}d{s}', weapon_type=i['weapon_type'], weight=6, value=25 * L + 40)
-    elif kind == 'armor':
-        base, per, weight = SLOT_ARMOR[i['wear_slot']]
-        out.update(wear_slot=SLOTS[i['wear_slot']], armor=base + L // per, weight=weight, value=20 * L + 30)
-    elif kind == 'treasure':
-        out.update(weight=1, value=30 * L + 25)
-    elif kind == 'food':
-        out.update(food_value=12 + L // 3, nutrition=12 + L // 3, weight=1, value=5 + L)
-    elif kind == 'potion':
-        out.update(spell_effects=['cure_light' if L < 12 else 'cure_serious' if L < 25 else 'cure_critical'],
-                   weight=1, value=40 + 10 * L)
-    elif kind == 'light':
-        out.update(light_hours=48, weight=2, value=15 + 2 * L)
-    if i.get('bonus'):
-        out['affects'] = [{'type': k, 'value': int(v)} for k, v in i['bonus'].items()]
-    return out
 
 
 def _crc(s):
@@ -498,7 +470,60 @@ def merge(job):
     print(f'{os.path.relpath(out_path, ROOT)}: {len(merged["rooms"])} rooms from {len(pieces)} piece(s)')
 
 
+def fold(job):
+    """Write a checked part's rooms and extras into world/zones as they stand, the way apply() does
+    in a rebuild, touching nothing else: the world has changed by hand since its last rebuild
+    (the class sets' boss loot, for one), and a rebuild would undo that. The part stays in
+    parts/ so the next rebuild writes the same text."""
+    path = os.path.join(PARTS, f'{job}.json')
+    if check(path):
+        sys.exit(1)
+    if briefs.JOBS[job][3]:
+        sys.exit(f'{job} designs creatures and items: those need a rebuild (tools/atlas/build_world.py)')
+    with open(path, encoding='utf-8') as f:
+        part = json.load(f)
+    files, where = {}, {}
+    for zp in sorted(glob.glob(os.path.join(briefs.ZONES, 'zone_*.json'))):
+        with open(zp, encoding='utf-8') as f:
+            z = json.load(f)
+        for v in (z.get('rooms') or {}):
+            where[int(v)] = zp
+        files[zp] = z
+    touched, n = set(), 0
+    for k, text in (part.get('rooms') or {}).items():
+        zp = where.get(int(k))
+        if zp is None:
+            continue
+        r = files[zp]['rooms'][str(k)]
+        if isinstance(text, dict):
+            if text.get('look') and r.get('sector_type') not in WATER:
+                r['look'] = text['look']
+            text = text.get('description') or ''
+        r['description'] = textwrap.fill(' '.join(text.split()), 72)
+        r.pop('placeholder', None)
+        r['extra_descs'] = {}
+        touched.add(zp)
+        n += 1
+    for k, xs in (part.get('extras') or {}).items():
+        zp = where.get(int(k))
+        if zp is None:
+            continue
+        r = files[zp]['rooms'][str(k)]
+        ex = r.get('extra_descs') if isinstance(r.get('extra_descs'), dict) else {}
+        for x in xs if isinstance(xs, list) else [xs]:
+            ex[' '.join(str(x['keywords']).split())] = textwrap.fill(' '.join(str(x['description']).split()), 72)
+        r['extra_descs'] = ex
+    for zp in sorted(touched):
+        with open(zp, 'w', encoding='utf-8') as f:
+            json.dump(files[zp], f, indent=1, ensure_ascii=False)
+            f.write('\n')
+    print(f'{job}: {n} rooms written into {len(touched)} zone file(s)')
+
+
 def main():
+    if '--fold' in sys.argv and len(sys.argv) > sys.argv.index('--fold') + 1:
+        fold(sys.argv[sys.argv.index('--fold') + 1])
+        return
     if '--merge' in sys.argv and len(sys.argv) > sys.argv.index('--merge') + 1:
         merge(sys.argv[sys.argv.index('--merge') + 1])
         return

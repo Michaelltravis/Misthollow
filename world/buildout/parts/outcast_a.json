@@ -1,0 +1,168 @@
+{
+ "job": "outcast_a",
+ "rooms": {
+  "16396": {
+   "description": "A square trap door is set in the planks overhead, and a ladder of split poles climbs up to it and the cabin above. The rungs are worn pale by hands and boots. Below, the earth has been dug away into a low chamber shored with rough timber, its floor of packed mud sucking at each step. The air is cold and smells of wet clay and old smoke drifting down through the cracks. A dark, dripping tunnel leads off south into the earth.",
+   "look": "cave"
+  },
+  "16395": {
+   "description": "The tunnel here is barely wide enough for one, its walls of raw earth and broken stone weeping with water. Roots hang from the ceiling like old rope, and drops gather on their tips and fall into the mud below. The way climbs gently north toward the trap door and runs on west into deeper darkness. Somewhere ahead water trickles steadily, a sound that never stops.",
+   "look": "cave"
+  },
+  "16394": {
+   "description": "Here the earth gives way to bare grey rock, rough and slick under the fingers. Someone hacked this passage out long ago with crude tools, and the gouges still score the walls in long uneven rows. A thin stream runs along one side of the floor, ankle-deep in places and cold enough to ache. The tunnel stretches on east and west, black in both directions.",
+   "look": "cave"
+  },
+  "16393": {
+   "description": "The passage turns sharply here, and the drip of water becomes a steady patter from cracks in the low ceiling. Pale mineral crusts streak the rock in white and rust-red ribbons where the water has run for years. The floor dips south, and from that way comes the hollow murmur of a larger stream. Back east, the tunnel climbs toward the far-off trap door.",
+   "look": "cave"
+  },
+  "16392": {
+   "description": "Water bursts from a cleft in the rock and gathers in a deep, churning pool, the birthplace of a black river that slides away west through a low arch of stone. The roar of it fills the cavern and throws a fine cold spray over everything. The ledge you stand on is slick and narrow, worn smooth by years of rushing water. A tunnel leads back north, away from the noise and into the dry dark.",
+   "look": "cave"
+  },
+  "16391": "You drift on a crude raft of lashed logs, the black water hissing past its edges as the current carries you along. The roof hangs so low in places that you must crouch, its stone dripping onto your shoulders. Upstream to the east the river roars out of its spring, and downstream to the west a ledge of rock shows faintly at the water's edge. The cold rising off the water bites through any cloak.",
+  "16390": {
+   "description": "A shelf of flat stone runs beside the river here, and the black water sweeps past it into a cleft far too low for any raft. Iron rings hammered into the rock show where boats were once tied off, though the ropes have long since rotted away. East, the river runs back up toward its spring. A dark tunnel opens south, leaving the water's noise behind.",
+   "look": "cave"
+  },
+  "16389": {
+   "description": "The roar of the river fades behind you as this tunnel winds through the roots of the mountain. Water seeps everywhere, beading on the walls and gathering in shallow pools that hide the uneven floor. The air is heavy and close, tasting of stone and rot. The passage runs north toward the river and south into a blacker dark.",
+   "look": "cave"
+  },
+  "16388": {
+   "description": "A rough chimney rises from the ceiling here, its sides notched with footholds cut by hand. Water streams down it and splashes into a basin worn into the floor beneath, so that climbing up means climbing through a cold shower. The tunnel itself runs back north toward the sound of the river. Moss of a sickly yellow grows thick around the foot of the climb.",
+   "look": "cave"
+  },
+  "16387": {
+   "description": "The climb from below ends on a narrow ledge, and a tunnel leads off south from the top of it. The notched footholds drop away down into the dark, wet and treacherous. Here the rock is warmer, and the dripping eases to a slow, patient tick. Old soot marks the ceiling where someone once rested a torch against the stone.",
+   "look": "cave"
+  },
+  "16386": {
+   "description": "This stretch of tunnel is straighter than the rest, as if those who dug it grew tired of following the whims of the rock. Puddles lie in a line down the middle of the floor, each one reflecting nothing but darkness. A faint draught comes from the south, carrying a cold smell of stone. To the north the passage leads to the top of the climb.",
+   "look": "cave"
+  },
+  "16385": {
+   "description": "The tunnel bends hard here, swinging from north to west around a great knuckle of rock that juts out of the wall. The bulge is polished smooth at shoulder height, rubbed by countless travellers steadying themselves on the turn. Water drips from its underside into a shallow pool. Westward the passage runs level into the deep of the mountain.",
+   "look": "cave"
+  },
+  "16384": {
+   "description": "Rough timbers prop the ceiling here, black with damp and bowed under the weight of the rock above. One post has split and leans drunkenly, and loose stones have trickled down around its foot. The walls glisten wherever a light falls on them. The tunnel continues east toward the bend and west toward a faint sound of dripping.",
+   "look": "cave"
+  },
+  "16383": {
+   "description": "The floor drops into a long trough of standing water, cold and knee-deep, with a slimy bottom that shifts underfoot. Ripples run ahead of you into the dark and slap faintly against unseen rock. The ceiling is so low here that tall folk must stoop. Beyond the water the tunnel climbs out to the west, while east it rises toward the timbered stretch.",
+   "look": "cave"
+  },
+  "16382": {
+   "description": "A thin wind whistles through cracks in the rock here, cold and smelling faintly of pine, as though the forest lies not far beyond. The draught has dried the stone a little, and pale lichen spreads across it in rings. Rows of scratches, tallies of days perhaps, are cut into one wall at shoulder height. The tunnel leads on east and west.",
+   "look": "cave"
+  },
+  "16381": {
+   "description": "Here the tunnel widens into a small round chamber, as if someone meant to make a resting place and gave up halfway. A ledge of rock has been chipped flat along one side, wide enough to sit on. The ceiling drips constantly, and the floor is a skin of mud over hard stone. Narrow passages lead away east and west.",
+   "look": "cave"
+  },
+  "16380": {
+   "description": "The tunnel ends against a heavy door of black planks bound with iron, set into the rock on the west side. Its hinges are scabbed with rust, yet the bolt shows bright scratches where it has been worked not long ago. Water has pooled at the foot of the door, and the planks have swollen and darkened. Back east the dark tunnel winds away toward the distant river.",
+   "look": "cave"
+  },
+  "16379": {
+   "description": "At first sight this is a dead end, a short stub of tunnel closed off by a fall of rubble. Look closer and a gap shows between the fallen stones on the west side, wide enough to squeeze through into the passages beyond. The iron-bound door stands in the east wall, its inner face scored with deep gouges. The air is stale and still, and the rock sweats a cold, oily damp.",
+   "look": "cave"
+  },
+  "16378": {
+   "description": "Three passages meet here in a rough chamber hacked from the grey rock. A foul smell drifts down from the north, thick and sour enough to water the eyes. Eastward a short tunnel leads to a dead end, while to the south the way runs on, rougher and wider. Someone has scratched crude arrows into the rock beside each opening, though time and damp have worn them almost away.",
+   "look": "cave"
+  },
+  "16398": {
+   "description": "A ragged hole gapes in the floor here, and from its depths rises a stench of rot and old filth that clings to everything. The rock around its lip is stained black and slick. Nobody has bothered to cover it, and perhaps nobody dared to go close enough. The east wall looks oddly smooth and squared, unlike the rough rock elsewhere. The tunnel leads back south to the three-way junction.",
+   "look": "cave"
+  },
+  "16397": "Behind the hidden door lies a small square room, its walls dressed with fitted stone rather than left raw. A stone bench runs along one side, and iron hooks are set in the wall above it. The air is dry and still, untouched by the damp of the tunnels, and dust lies thick over every surface. A single narrow door leads back west to the stinking hole.",
+  "16377": {
+   "description": "The tunnel here is wider but far rougher, its walls a jumble of jutting edges as if the rock was split by force rather than dug. Loose scree litters the floor and slides underfoot with a dry rattle. The damp has eased, and the air carries a hint of woodsmoke from somewhere above. The passage leads north to a junction and south to the foot of a staircase.",
+   "look": "cave"
+  },
+  "16376": {
+   "description": "A staircase of cut stone climbs up from here into the mountain, its steps hollowed in the middle by years of feet. The stairs mark the end of the wild tunnels, for the rock above looks shaped by masons rather than hacked by desperate hands. A faint glow of torchlight leaks down from the top. To the north a rough tunnel leads off into the dark.",
+   "look": "cave"
+  },
+  "16336": {
+   "description": "The stairs end on a landing hewn square out of the rock, with iron torch brackets fixed in its walls. Smooth, man-made tunnels lead off north and east, their floors levelled and swept. A worn stair drops down into the rougher dark below. The air here is drier, and a smell of smoke and cooking drifts faintly from the north.",
+   "look": "cave"
+  },
+  "16335": {
+   "description": "This tunnel was cut with care, its walls squared and its ceiling arched in neat courses of chisel marks. A door on the west side bears a crude red cross painted on its planks, marking the hospital beyond. North the tunnel leads toward the smell of an alehouse, and south it ends at the head of a stone stair. Torches once burned in the brackets here, and only black stains remain above them.",
+   "look": "cave"
+  },
+  "16334": {
+   "description": "The tunnel widens into a small square here before the door of the Grieving Griffon, the outcasts' tavern, which opens in the west wall. Above the door hangs a carved wooden sign of a griffon with its head bowed and its wings drooping. The smell of stale ale and old pipe smoke hangs thick in the air. Man-made tunnels run off north and south through the rock.",
+   "look": "cave"
+  },
+  "16333": {
+   "description": "A door in the west wall leads into the Church Of Outcasts, its lintel carved with a simple circle broken by a single gap. The walls nearby have been whitewashed, though the damp has bled grey streaks through the lime. To the south lies the little tavern square, and north the tunnel reaches the foot of another stone staircase. The quiet here feels deliberate, as if the rock itself were holding its breath.",
+   "look": "cave"
+  },
+  "16332": {
+   "description": "A second stone staircase climbs up from this corner of the tunnels toward a corridor in the keep above. Its steps are narrower than those below and edged with iron strips to save them from wear. Man-made tunnels lead away east and south. A cold draught pours down the stairwell, carrying the smell of the open air.",
+   "look": "cave"
+  },
+  "16331": {
+   "description": "This short tunnel ends at a stout door in its south wall, beyond which lie the open grounds along the face of the mountain. Grey light seeps under the door in a thin pale line, the first in a long while. The walls are rough here, finished in haste, and old wooden pegs for cloaks are driven into the rock beside the door. West, the tunnel leads back to the foot of the stairs.",
+   "look": "cave"
+  },
+  "16329": "The grey face of the mountain rises sheer above you, and set into its foot is a heavy door leading north into the tunnels. A strip of trampled ground runs along the base of the cliff, east toward the barricade and west to where the mountain bends away. South, the land opens into the big courtyard of the fortress. Stones fallen from the heights lie half-sunk in the mud along the rock.",
+  "16328": "Water trickles down the mountain wall here in thin silver threads, staining the rock dark and feeding a muddy ditch at its foot. Someone laid planks across the worst of the mud, though most of them have sunk or split. The end of the barricade stands close by to the east, and the trodden ground runs back west along the cliff. South lies the open courtyard, bare and scoured by the wind.",
+  "16327": "The timber barricade ends here against the foot of the mountain, its sharpened stakes lashed together and packed at the base with earth and rubble. A rickety platform of planks gives a view over the top toward the forest beyond. The wall of stakes runs south toward the gate. West, a trodden path follows the mountain wall along the edge of the courtyard.",
+  "16319": "The barricade gate stands in the east, two great leaves of lashed logs hung on iron straps and barred from this side with a heavy beam. The wall of sharpened stakes stretches north and south from the gate to its two ends. West lies the big courtyard, its ground churned to mud by many feet. Arrow slits have been hacked between the stakes on either side of the gate.",
+  "16316": "A wall of sharpened logs blocks the way here, the barricade of the outcasts, with a heavy gate of lashed timbers set shut in its middle. The ground before it has been cleared of trees, leaving a bare stretch of stumps and trampled bracken where nothing could approach unseen. The barricade runs north and south toward its two ends, and east the fringe of the forest closes in again. The stakes are blackened in places where fire was once set against them.",
+  "16318": "Here the stakes of the barricade meet the bare rock of the mountain and leave no way around. Brambles have grown thick along the foot of the wall, half hiding old pits dug to catch the unwary. The only way on is back south along the barricade to the gate. Above, the mountain wall climbs grey and sheer into drifting cloud.",
+  "16315": "The forest thins abruptly here, as if it had been cut back with axes, and stumps stand in ragged rows among the bracken. West the trees give way to a clearing before a timber barricade, its sharpened tops plain against the mountain behind. East a small path leads back into the light forest of birch and young oak. The smell of old cookfires hangs faintly on the wind.",
+  "16314": "A narrow path threads between slender trees whose leaves let the sunlight through in shifting patches. Ferns crowd the edges of the trail, and the ground is soft with last year's leaves. Here and there a branch has been cut cleanly away to keep the way open. The path runs east deeper into the woods and west toward the edge of the forest.",
+  "16312": "The path dips through a hollow where a little brook crosses it over smooth pebbles, easy to step across. Hazel and rowan grow close along the banks, bright with berries in their season. The canopy is open here, and the sky shows plain between the leaves. The trail climbs out east toward a junction and west toward the fringe of the trees.",
+  "16311": "Three paths meet beneath a broad beech here, its bark scarred with old carved marks. South a narrow track leads toward a fortress outpost hidden in the trees, while west the path continues through the light forest. East the trees grow suddenly taller and greyer, marking the edge of the Deep, Dark Forest. A tumbled cairn of stones stands at the meeting of the ways.",
+  "16310": "Ancient grey trees close in overhead, and the light dims to a green twilight at this fork in the path. One trail winds north between massive trunks, and another bends south through a tangle of roots. West the trees thin and brighten into lighter forest. The air is cool and still, heavy with the smell of moss and rotting wood.",
+  "16308": "The path squeezes between two huge grey trunks so close together that their roots have knotted into one. Thick moss hangs from the low branches like ragged curtains. The trail turns here, leading east along the forest floor and south back to the junction. Little light reaches the ground, and the earth is damp and black underfoot.",
+  "16309": "Fallen trees lie across the path in several places, and the trail climbs over and around their rotting bulk. Fungus in pale shelves grows from the dead wood, glistening faintly in the gloom. The great grey trees stand silent all around, their crowns lost in shadow. The path leads east to another junction and west among the knotted trunks.",
+  "16303": "The path forks beside a grey trunk so vast that a dozen people with linked arms could not circle it. From the north comes the rush of fast water, while the southern trail sinks into a darker hollow. West the way winds back among fallen trees. Roots as thick as a man's leg cross the ground like the ribs of some buried beast.",
+  "16302": "The roar of a river grows louder to the north, and the ground underfoot turns soft and wet. Tall ferns brush your shoulders as the path picks its way between the grey trees. Mist drifts low among the trunks and beads on every leaf. South the trail leads back to the fork beside the giant tree.",
+  "16301": "A fast river races past here, grey-green and cold, foaming white over hidden rocks. A wooden bridge leads north across it, its planks dark with spray. The bank is a tangle of roots and slick stones where the ancient trees lean out over the water. A path leads away south into the forest.",
+  "16300": "The bridge is roofed with mossy shingles and walled with planks, a covered crossing that keeps the worst of the spray off those who use it. Through gaps between the boards the river can be seen rushing below, loud enough to drown out speech. The floor timbers flex and creak with every step. The bridge leads north to the far bank and south back into the forest.",
+  "16304": "The path drops into a damp hollow where water stands in black pools between the roots. The grey trees here are hung with long beards of lichen that stir in the faintest breeze. Footing is treacherous, all mud and slick bark. The trail climbs north to the junction and continues south through the gloom.",
+  "16305": "One ancient tree leans over the path here, its lowest limbs close enough to reach, and its upper branches are strung with pale threads that glint in the gloom. Knots and broken stubs make a rough ladder up the trunk into the canopy. The path itself turns from north to west, skirting the roots of the great tree. The forest around is unnaturally quiet.",
+  "16306": "The path runs straight for a short stretch between two lines of grey trunks, almost as if they were planted long ago. The ground is carpeted with brown needles and the crumbled bark of the old trees. Thin beams of weak light fall through rare gaps in the canopy. East and west the trail continues through the deep, dark forest.",
+  "16307": "The path bends here around a mound of earth heaped over an old, fallen giant whose roots still claw at the air. Toadstools ring the mound in a near-perfect circle. North the trail leads to a junction, and east it runs on beneath the grey trees. Somewhere far off the river murmurs, more felt than heard."
+ },
+ "extras": {
+  "16382": [
+   {
+    "keywords": "scratches tallies wall",
+    "description": "Short upright strokes are scored into the rock in bundles of five, row after row of them, far more than a few weeks' worth. The last bundle is unfinished, with only two strokes made."
+   }
+  ],
+  "16334": [
+   {
+    "keywords": "sign griffon carved",
+    "description": "The griffon is carved from a single slab of dark wood, its beak tucked against its breast as if in mourning. Someone has painted a single white tear beneath its eye, now flaking away."
+   }
+  ],
+  "16333": [
+   {
+    "keywords": "lintel circle carving",
+    "description": "The circle is cut deep and clean, but a finger's width of it has been left uncarved, so that it never quite closes. It is the only ornament on the whole doorway."
+   }
+  ],
+  "16311": [
+   {
+    "keywords": "cairn stones",
+    "description": "The cairn is knee-high and carelessly kept, its top stones scattered in the leaves. One flat stone at its base bears a scratched arrow pointing toward the outpost track."
+   }
+  ],
+  "16319": [
+   {
+    "keywords": "gate beam bar",
+    "description": "The bar is a whole trimmed log dropped into iron brackets, scarred along its length by blows from the far side. It would take two strong backs to lift it clear."
+   }
+  ]
+ }
+}

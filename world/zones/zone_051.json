@@ -31,8 +31,10 @@
      "description": "To the east lies The Tunnel Of Ornate Arches."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Shadows gather where\nthe light does not reach. Ways lead north and east.",
-   "placeholder": true
+   "description": "The adamantium gates loom over this guardroom, two vast leaves of grey\nmetal so heavy that only magic could swing them. Their inner faces are\nengraved with a warning in the drow tongue that runs from top to bottom\nin tall, angular script. Murder holes pierce the ceiling, and the stone\nfloor is marked with grooves where the gates have turned. The gates open\nnorth into the city, while a passage leads east into the Tunnel of\nOrnate Arches.",
+   "extra_descs": {
+    "warning script engraving inscription": "The angular drow script reads, roughly: Who enters without leave of the\nHouses feeds the Spider. Beneath it the metal is scored with old\nscratches, as if someone once tried to tear at it with bare hands."
+   }
   },
   "205101": {
    "vnum": 205101,
@@ -58,8 +60,8 @@
      "description": "To the west lies A Bend In The City Street."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet.\nVoices and the clatter of carts carry from somewhere nearby. Ways lead\neast, south and west.",
-   "placeholder": true
+   "description": "The street broadens before the city's great adamantium gates, which\nstand to the south in a wall of black stone cut sheer from the cavern.\nSpikes of grey metal crown the gatehouse, and a lantern of faerie fire\nburns above the arch. The street runs east past a large building and\nwest to a bend by the fungus forest. Everything here is built to be\ndefended, and nothing is built to welcome.",
+   "extra_descs": {}
   },
   "5102": {
    "vnum": 5102,
@@ -169,8 +171,8 @@
      "description": "To the down lies The Entrance To The Third House."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. Ways lead up and down.",
-   "placeholder": true
+   "description": "This broad chamber fills the hollow heart of the stalagmite, its ceiling\nvaulted into a point far overhead. Tapestries woven of grey spider silk\nhang between narrow windows, showing hunts and sacrifices in threads of\ndull silver. Low couches of dark wood and cushions of violet velvet\nstand in a ring about a cold brazier. A curving stair climbs on up\ntoward the throne room, and another winds down to the entrance.",
+   "extra_descs": {}
   },
   "205105": {
    "vnum": 205105,
@@ -190,8 +192,8 @@
      "description": "To the down lies The Main Chamber In The Third House."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. A way leads down.",
-   "placeholder": true
+   "description": "The throne room of the Third House sits near the very tip of the\nstalagmite, a round chamber whose walls taper to a point overhead. The\nthrone itself is carved from a single block of obsidian, its tall back\nworked into the shape of a spider's spread legs. Faerie fire burns in a\nring of silver bowls set into the floor, washing everything in cold\npurple light. Narrow windows look out over the dark city, and the only\nway out is the stair winding down.",
+   "extra_descs": {}
   },
   "5106": {
    "vnum": 5106,
@@ -307,8 +309,8 @@
      "description": "To the down lies The Entrance To The Second House."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Shadows\ngather where the light does not reach. Ways lead up and down.",
-   "placeholder": true
+   "description": "Three galleries open into this tall chamber, one from each of the joined\nspires, and slender bridges of stone cross the air between them. Beneath\nthem the floor is a single vast mosaic of a spider descending on a\nthread toward a kneeling figure. Long tables of black wood stand along\nthe walls, set with silver goblets and plates turned face down. A stair\nclimbs higher toward the throne, and another goes down to the entrance\nhall.",
+   "extra_descs": {}
   },
   "205109": {
    "vnum": 205109,
@@ -328,8 +330,8 @@
      "description": "To the down lies The Main Chamber In The Second House."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Shadows gather where\nthe light does not reach. A way leads down.",
-   "placeholder": true
+   "description": "The Second Throne stands on a dais of three steps, a seat of grey\nadamantite padded with black silk and crowned with a fan of iron spider\nlegs. Behind it a window of smoky crystal gives a view across the whole\ncavern, where the lights of the city glimmer like scattered embers. The\nair is cool and faintly scented with a bitter incense. A stair spirals\ndown to the main chamber of the house.",
+   "extra_descs": {}
   },
   "5101": {
    "vnum": 5101,
@@ -392,8 +394,8 @@
      "description": "To the down lies The Entrance To The First House."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. Ways lead up and down.",
-   "placeholder": true
+   "description": "This is the grandest hall in the city, a vast space hollowed from the\nheart of the largest stalagmite. Hundreds of tiny lights of faerie fire\nhang in the air beneath the vault like a field of violet stars. The\nwalls are carved in deep relief with the long history of the house,\nbattle after battle and sacrifice after sacrifice. A narrow stair climbs\nhigher toward the Matron Mother's chamber, and the grand stair descends\nto the entrance.",
+   "extra_descs": {}
   },
   "205112": {
    "vnum": 205112,
@@ -422,8 +424,10 @@
      "description": "To the down lies The Main Chamber Of The First House."
     }
    },
-   "description": "Stone walls close in, cool to the touch. The air is still and smells\nfaintly of old smoke. Ways lead north and down.",
-   "placeholder": true
+   "description": "A short landing of black marble ends before a tall door of dark wood\nbound in silver, set in the wall to the north. Its panels are carved\nwith a great spider whose legs reach out to the edges of the frame, and\nits eyes are two cut amethysts that seem to follow anyone who\napproaches. Twin braziers burn with a low purple flame on either side.\nThe stair winds back down to the main chamber.",
+   "extra_descs": {
+    "door spider amethysts eyes": "The carved spider covers the whole door, its legs curling round the\nsilver bands. Its two amethyst eyes catch the brazier light, and from\nany part of the landing they seem to be looking straight at you."
+   }
   },
   "205113": {
    "vnum": 205113,
@@ -452,8 +456,8 @@
      "description": "To the south lies Before The Chamber Of The First Matron Mother."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. The floor is worn\nsmooth by long use. Ways lead east and south.",
-   "placeholder": true
+   "description": "The throne room of the First Matron Mother is a long hall of black stone\nribbed with silver, rising to a pointed vault far overhead. The throne\nof obsidian and bone stands on a high dais, flanked by bowls of violet\nflame and draped in webs of pale silk. A narrow door in the east wall\nopens onto a walkway high above the city. The way back lies through the\ndoor to the south.",
+   "extra_descs": {}
   },
   "5114": {
    "vnum": 5114,
@@ -509,8 +513,8 @@
      "description": "To the west lies A Junction In The City Street."
     }
    },
-   "description": "The paving is uneven here, patched with newer stone. Worn flagstones run\nbetween weathered walls, swept by passing feet. Ways lead north and\nwest.",
-   "placeholder": true
+   "description": "A tall stalagmite rises from the cavern floor here, hollowed and carved\ninto the many-windowed fortress of the Third House. Its doorway opens to\nthe north, framed by two pillars shaped as rearing spiders with their\nlegs locked overhead. Thin lines of violet faerie fire trace the edges\nof every balcony and window, so the whole spire glows faintly against\nthe dark. The street turns back west to the junction.",
+   "extra_descs": {}
   },
   "5120": {
    "vnum": 5120,
@@ -651,8 +655,8 @@
      "description": "To the south lies The City Street."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. A way leads south.",
-   "placeholder": true
+   "description": "The Assassins' Academy is a long, dim hall with no windows, its walls\nhung with black drapes that swallow every sound. Practice dummies of\nstitched leather stand in a row, slashed and pierced a hundred times\nover, and a narrow beam runs the length of the floor at knee height for\ntraining balance. The lamps of fungus are shuttered almost closed. The\nonly door opens south onto the city street before the temple.",
+   "extra_descs": {}
   },
   "5121": {
    "vnum": 5121,
@@ -823,8 +827,8 @@
      "description": "To the down lies The Entrance To The Fourth House."
     }
    },
-   "description": "The floor is worn smooth by long use. Shadows gather where the light\ndoes not reach. Ways lead up and down.",
-   "placeholder": true
+   "description": "The main chamber of the Fourth House is plainer than those of its\nrivals, a round hall lined with weapon racks and hung with battle\nstandards torn in old wars. A long table of black stone bears a carved\nmap of the cavern, its houses marked with chips of coloured crystal. The\nstair climbs on up to the throne and winds down again to the entrance.\nEverything smells faintly of oil and steel.",
+   "extra_descs": {}
   },
   "205125": {
    "vnum": 205125,
@@ -844,8 +848,8 @@
      "description": "To the down lies The Main Chamber In The Fourth house."
     }
    },
-   "description": "Shadows gather where the light does not reach. Dust lies thick in the\ncorners, undisturbed for some time. A way leads down.",
-   "placeholder": true
+   "description": "The Fourth Throne is a hard seat of grey stone, set on a plain dais and\nflanked by two tall shields bearing the house's spider and dagger. The\nchamber is small, its walls bare but for a long crack in the rock that\nhas been carefully filled with silver. A narrow window gives on the dark\ncity, the great temple's spires just visible far off. The stair spirals\nback down to the main chamber.",
+   "extra_descs": {}
   },
   "5126": {
    "vnum": 5126,
@@ -1307,8 +1311,8 @@
      }
     }
    },
-   "description": "The floor is worn smooth by long use. Stone walls close in, cool to the\ntouch. Ways lead north, east and south.",
-   "placeholder": true
+   "description": "The Grand Temple of Lloth opens out in a vast hall of black stone, its\nceiling hidden in shadow and hung with thick curtains of web. Pillars\ncarved as the legs of a colossal spider rise in two rows toward the\ndark, their tips glinting with silver. The golden doors to the south\nlead out onto the grand stairway, and a plain iron door to the east\ngives on the slave cells. The hall stretches on north toward the altar.",
+   "extra_descs": {}
   },
   "5142": {
    "vnum": 5142,
@@ -1333,8 +1337,8 @@
      "description": "A passage leads to The Main Chamber"
     }
    },
-   "description": "The floor is worn smooth by long use. Dust lies thick in the corners,\nundisturbed for some time. Ways lead north and south.",
-   "placeholder": true
+   "description": "Deeper in the temple the webs grow thicker, draped from pillar to pillar\nin great pale sheets that stir though no breath of air can be felt. The\nfloor is cold black stone, stained dark in long trails that lead north\ntoward the altar. A heavy, coppery smell hangs everywhere, and the\nsilence is so deep that every footstep seems an intrusion. Back to the\nsouth the hall opens toward the golden doors.",
+   "extra_descs": {}
   },
   "5145": {
    "vnum": 5145,
@@ -1453,8 +1457,10 @@
      }
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Shadows\ngather where the light does not reach. Ways lead south and west.",
-   "placeholder": true
+   "description": "The dais rises behind the altar on a broad platform of black stone, its\nsurface splashed and crusted with old blood. Cold silver chains hang\nfrom rings set into the floor, and a carved spider of jet crouches at\nits back, legs spread wide over the whole platform. A narrow door in the\nwest wall leads into the treasury. Back to the south lies the\nbloodstained altar itself.",
+   "extra_descs": {
+    "jet spider carving": "The spider is carved from a single great block of polished jet, its body\nas large as an ox. Old blood has run into the grooves of its legs and\ndried there black."
+   }
   },
   "5149": {
    "vnum": 5149,
@@ -1518,8 +1524,8 @@
      }
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet.\nShuttered windows and old doorways crowd in on either hand. Ways lead\nnorth, east and west.",
-   "placeholder": true
+   "description": "The city street bends sharply here around the foot of a great stalagmite\nwhose base has been left uncarved. To the west a low door of woven iron\nopens onto the Fungus Forest, and its damp, earthy smell drifts out to\nmingle with the stale air. The street runs north deeper into the city\nand east toward the adamantium gates. Faint violet light glows from\ncarvings set along the kerb.",
+   "extra_descs": {}
   },
   "5151": {
    "vnum": 5151,
@@ -1548,8 +1554,9 @@
      "description": "To the south lies The Rocky Shore."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Shadows gather where\nthe light does not reach. Ways lead north and south.",
-   "placeholder": true
+   "description": "This damp alcove sits just inside the cliff face, its walls running with\nwater and its floor slick with green weed. Salt air blows in from the\nsouth, where a gap in the rock opens onto a rocky shore and the grey sea\nbeyond. A plank door to the north leads into a dark tunnel. The roar of\nthe surf echoes strangely in the narrow space.",
+   "look": "cave",
+   "extra_descs": {}
   },
   "5152": {
    "vnum": 5152,
@@ -1573,8 +1580,9 @@
      "description": "To the south lies A Damp Alcove."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Stone walls close in,\ncool to the touch. Ways lead east and south.",
-   "placeholder": true
+   "description": "The dark tunnel ends against a wall of wet rock, where a crude door of\ndriftwood planks lashed together with rope is set in the stone to the\nsouth. Beyond it comes the faint, distant sound of waves and a smell of\nsalt. The tunnel runs back east. Moss grows thick along the foot of the\nwalls.",
+   "look": "cave",
+   "extra_descs": {}
   },
   "5153": {
    "vnum": 5153,
@@ -1598,8 +1606,9 @@
      "description": "To the west lies A Dark Tunnel."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. Ways lead north and west.",
-   "placeholder": true
+   "description": "The tunnel turns here, and a trickle of water runs across the floor from\na crack in the wall, pooling in a shallow hollow. The rock is softer\nhere and has been worn into odd, smooth shapes. The way leads north and\nwest, the air growing damper toward the west. Small pale crystals glint\nwhere the water has dried.",
+   "look": "cave",
+   "extra_descs": {}
   },
   "5154": {
    "vnum": 5154,
@@ -1623,8 +1632,9 @@
      "description": "To the south lies A Dark Tunnel."
     }
    },
-   "description": "The floor is worn smooth by long use. Shadows gather where the light\ndoes not reach. Ways lead north and south.",
-   "placeholder": true
+   "description": "The tunnel runs straight and narrow here through black rock that seems\nto drink what little light there is. The ceiling is low enough to brush\nthe head of a tall traveller. Faint scratches on the walls might be the\nmarks of claws or of tools. The passage leads north and south.",
+   "look": "cave",
+   "extra_descs": {}
   },
   "5155": {
    "vnum": 5155,
@@ -1657,8 +1667,9 @@
      "description": "To the south lies A Dark Tunnel."
     }
    },
-   "description": "Shadows gather where the light does not reach. Stone walls close in,\ncool to the touch. Ways lead north, east and south.",
-   "placeholder": true
+   "description": "The dark tunnel meets a crossing here, and a foul stench drifts from a\ncave to the north. To the east a door of rough timber closes off a\nsharply sloping passage, and the tunnel runs on south into the dark. The\nwalls are black with soot from ancient fires. No light reaches here at\nall.",
+   "look": "cave",
+   "extra_descs": {}
   },
   "5156": {
    "vnum": 5156,
@@ -1678,8 +1689,9 @@
      "description": "To the south lies A Dark Tunnel."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Dust lies thick in the\ncorners, undisturbed for some time. A way leads south.",
-   "placeholder": true
+   "description": "The stench in this low cave is overwhelming, a thick reek of rot, dung\nand stale smoke. The floor is covered in filthy straw and gnawed scraps,\nand the rock is smeared with crude marks in mud and ash. It is the sort\nof place where something lives and does not care how. The only way out\nis south, back into the dark tunnel.",
+   "look": "cave",
+   "extra_descs": {}
   },
   "5157": {
    "vnum": 5157,
@@ -1703,8 +1715,9 @@
      "description": "To the down lies A Narrow Ledge."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Stone walls close in,\ncool to the touch. Ways lead west and down.",
-   "placeholder": true
+   "description": "This tunnel slopes so sharply that the floor is almost a stair, and the\nrock is polished slick where countless hands and feet have scrabbled for\npurchase. At the bottom the passage drops down onto a narrow ledge. At\nthe top a door of rough timber bound with iron is set into the west\nwall. The walls press close on every side.",
+   "look": "cave",
+   "extra_descs": {}
   },
   "5158": {
    "vnum": 5158,
@@ -1728,8 +1741,9 @@
      "description": "To the up lies A Sharply Sloping Tunnel."
     }
    },
-   "description": "Shadows gather where the light does not reach. Stone walls close in,\ncool to the touch. Ways lead east and up.",
-   "placeholder": true
+   "description": "The ledge ends here against a jutting buttress of rock, and a steep\ncrack climbs up into a sloping tunnel overhead. Handholds have been worn\ninto the stone by many climbers before you. The ledge runs back east\nalong the cliff face. A faint breath of cooler air drifts down through\nthe crack.",
+   "look": "cave",
+   "extra_descs": {}
   },
   "5159": {
    "vnum": 5159,
@@ -1753,8 +1767,9 @@
      "description": "To the down lies A Wider Tunnel."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Stone walls\nclose in, cool to the touch. Ways lead west and down.",
-   "placeholder": true
+   "description": "A narrow ledge runs along the face of a sheer cliff here, so slim that\none must press against the rock to pass. A crumbling slope leads down to\nthe wider tunnel. The ledge creeps on west along the wall, and the drop\nbeside it falls away into black emptiness. Loose stones shift underfoot\nwith every step.",
+   "look": "cave",
+   "extra_descs": {}
   },
   "5160": {
    "vnum": 5160,
@@ -1778,8 +1793,9 @@
      "description": "To the up lies A Narrow Ledge."
     }
    },
-   "description": "Shadows gather where the light does not reach. Dust lies thick in the\ncorners, undisturbed for some time. Ways lead north and up.",
-   "placeholder": true
+   "description": "The tunnel widens into a broad gallery of rough rock, its floor uneven\nand its ceiling scarred by old falls. At one side a crumbling slope of\nstone leads up toward a narrow ledge high on the wall. The way north\nleads back into the wide tunnel. A distant rumble sometimes shakes fine\ndust from overhead.",
+   "look": "cave",
+   "extra_descs": {}
   },
   "5161": {
    "vnum": 5161,
@@ -1803,8 +1819,9 @@
      "description": "To the south lies A Wider Tunnel."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. The floor is worn\nsmooth by long use. Ways lead east and south.",
-   "placeholder": true
+   "description": "Here the wide tunnel is crossed by a narrow seam of pale crystal that\nglints in the faintest light. Someone once tried to cut it out of the\nrock, and the scars of their chisels are still plain in the wall. The\ntunnel runs east and turns south, where it grows broader still. The air\nis cool and very still.",
+   "look": "cave",
+   "extra_descs": {}
   },
   "5162": {
    "vnum": 5162,
@@ -1828,8 +1845,9 @@
      "description": "To the west lies A Wide Tunnel."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Dust lies thick in the\ncorners, undisturbed for some time. Ways lead north and west.",
-   "placeholder": true
+   "description": "The tunnel turns here around a great boulder that has fallen from the\nceiling and been left where it lay. The rock overhead is cracked and\nsagging. The passage runs north, and to the west it squeezes round the\nboulder and goes on. Water trickles down one wall in a thin, glittering\nsheet.",
+   "look": "cave",
+   "extra_descs": {}
   },
   "5163": {
    "vnum": 5163,
@@ -1853,8 +1871,9 @@
      "description": "To the down lies A Wide Tunnel."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. Ways lead south and down.",
-   "placeholder": true
+   "description": "The wide tunnel levels out at the top of a steep rise, and the rough\nsteps lead back down into the darkness. Old torch brackets, long rusted,\nare set into the walls at intervals, though no light has burned in them\nfor an age. The tunnel runs on south, its floor scattered with gravel. A\nfaint smell of smoke hangs in the air, old and stale.",
+   "look": "cave",
+   "extra_descs": {}
   },
   "5164": {
    "vnum": 5164,
@@ -1878,8 +1897,9 @@
      "description": "To the up lies A Wide Tunnel."
     }
    },
-   "description": "The floor is worn smooth by long use. The air is still and smells\nfaintly of old smoke. Ways lead east and up.",
-   "placeholder": true
+   "description": "A wide tunnel runs through the rock here, broad enough for a cart, its\nfloor worn smooth by the passage of many feet over long ages. At this\nend the floor rises steeply, and a slope of rough steps leads up into\nthe dark. The tunnel runs back east to a bend. The walls are cold and\nslick with damp.",
+   "look": "cave",
+   "extra_descs": {}
   },
   "5165": {
    "vnum": 5165,
@@ -1912,8 +1932,9 @@
      "description": "To the west lies A Wide Tunnel."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Shadows gather where\nthe light does not reach. Ways lead north, south and west.",
-   "placeholder": true
+   "description": "The tunnel bends here where three ways meet in the rough rock. To the\nnorth the passage opens into a large cave, a wide tunnel runs off west\ninto the dark, and to the south a slab that looks like the wall itself\nhides a door. The floor is gritty with fallen stone, and a cold draught\ncomes and goes.",
+   "look": "cave",
+   "extra_descs": {}
   },
   "5166": {
    "vnum": 5166,
@@ -1933,8 +1954,9 @@
      "description": "To the south lies A Bend In The Tunnel."
     }
    },
-   "description": "Shadows gather where the light does not reach. Stone walls close in,\ncool to the touch. A way leads south.",
-   "placeholder": true
+   "description": "The tunnel opens into a large cave, its roof lost in darkness and hung\nwith long stalactites that drip slowly onto the stone. Broken\nstalagmites stand about the floor like the stumps of a felled forest. A\nshallow pool lies in one hollow, black and perfectly still. The only way\nout lies back south to the bend in the tunnel.",
+   "look": "cave",
+   "extra_descs": {}
   },
   "5167": {
    "vnum": 5167,
@@ -1958,8 +1980,9 @@
      "description": "To the east lies A Secret Tunnel."
     }
    },
-   "description": "The floor is worn smooth by long use. Dust lies thick in the corners,\nundisturbed for some time. Ways lead north and east.",
-   "placeholder": true
+   "description": "The secret tunnel turns here, and a heavy slab of stone hangs in a\ngroove at its northern end, a hidden door that can be slid aside. Dust\nlies thick on the floor, marked only by a narrow worn path. The passage\nruns back east toward the glowing chamber. Water drips somewhere in the\ndark, slow and steady.",
+   "look": "cave",
+   "extra_descs": {}
   },
   "5168": {
    "vnum": 5168,
@@ -1988,8 +2011,9 @@
      "description": "To the west lies The Secret Tunnel."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The air is\nstill and smells faintly of old smoke. Ways lead east and west.",
-   "placeholder": true
+   "description": "This tunnel is low and narrow, hidden behind a door of stone made to\nlook like the rock around it. Its walls are rough and unworked, bearing\nonly the marks of crude tools. The air is still and stale, and the only\nlight is a faint green glow leaking from the chamber to the east. The\npassage leads on west into the darkness.",
+   "look": "cave",
+   "extra_descs": {}
   },
   "5169": {
    "vnum": 5169,
@@ -2018,8 +2042,8 @@
      "description": "To the west lies A Secret Tunnel."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Stone walls close in,\ncool to the touch. Ways lead north and west.",
-   "placeholder": true
+   "description": "This small chamber is hollowed out of the chasm wall and lit by a thick\ncarpet of glowing fungus that covers its floor and walls in soft green\nlight. The air is warm and damp and smells of mould. A door to the north\nleads out onto the thin bridge, and a low gap in the west wall opens\ninto a hidden tunnel. Carvings of open eyes have been cut above both\nopenings.",
+   "extra_descs": {}
   },
   "5170": {
    "vnum": 5170,
@@ -2043,8 +2067,8 @@
      "description": "To the south lies A Small Glowing Chamber."
     }
    },
-   "description": "The floor is worn smooth by long use. The air is still and smells\nfaintly of old smoke. Ways lead north and south.",
-   "placeholder": true
+   "description": "The bridge narrows here until it is barely a hand's width wider than a\nboot, and the rock beneath it is cracked. Ahead to the south a soft\ngreen glow spills from an opening in the chasm wall where the bridge\nends. Back north the span climbs gently toward the slab where the\nbridges meet. The drop on both sides is utterly black.",
+   "extra_descs": {}
   },
   "5171": {
    "vnum": 5171,
@@ -2064,8 +2088,8 @@
      "description": "To the east lies A Thin Underground Bridge."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. The floor is worn\nsmooth by long use. A way leads east.",
-   "placeholder": true
+   "description": "This thin bridge runs only a short way from the slab before it ends\nagainst the sheer chasm wall. A doorway was carved there once, framed\nwith spiders, but it has been sealed with a slab of stone fused smooth\nas glass. The way back lies east to where the bridges meet. A soft, cold\nwind blows up from the depths, carrying a faint smell of water.",
+   "extra_descs": {}
   },
   "5172": {
    "vnum": 5172,
@@ -2093,8 +2117,10 @@
      "description": "To the west lies A Thin Underground Bridge."
     }
    },
-   "description": "The floor is worn smooth by long use. Shadows gather where the light\ndoes not reach. Ways lead east, south and west.",
-   "placeholder": true
+   "description": "Another meeting of bridges lies here, where three spans join on a broad\nslab of rock wedged across the chasm. The slab tilts slightly, enough to\nmake every step uncertain. Spans lead east, west and south, each\nvanishing into the dark after a few paces. Someone has scratched a small\nmark into the stone, an arrow pointing south.",
+   "extra_descs": {
+    "mark arrow scratch": "The arrow is scratched shallow and quick, by a blade point rather than a\ntool. It points along the south span, and beside it someone has added a\ntiny drawn eye."
+   }
   },
   "5173": {
    "vnum": 5173,
@@ -2118,8 +2144,8 @@
      "description": "To the west lies A Thin Underground Bridge."
     }
    },
-   "description": "The floor is worn smooth by long use. Dust lies thick in the corners,\nundisturbed for some time. Ways lead north and west.",
-   "placeholder": true
+   "description": "The bridge bends here around a column of rock, its surface slick with\nmoisture that drips from somewhere far overhead. Small patches of\nglowing fungus cling to the column, giving just enough light to see the\nedge. The span runs north to the meeting of the bridges and west along\nthe chasm wall. Far below, a faint gleam of water may be a river or only\na trick of the eyes.",
+   "extra_descs": {}
   },
   "5174": {
    "vnum": 5174,
@@ -2147,8 +2173,8 @@
      "description": "To the west lies A Thin Underground Bridge."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. Ways lead north, south and west.",
-   "placeholder": true
+   "description": "Three thin bridges meet here on a narrow pillar of rock that rises from\nthe depths of the chasm. One runs north to a dead end in the dark, one\nsouth deeper into the maze of spans, and one back west toward the\narches. The pillar's top is flat and barely three paces across. Strands\nof old web stretch between the bridges, glistening faintly.",
+   "extra_descs": {}
   },
   "5175": {
    "vnum": 5175,
@@ -2168,8 +2194,8 @@
      "description": "To the south lies A Thin Underground Bridge."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Shadows\ngather where the light does not reach. A way leads south.",
-   "placeholder": true
+   "description": "The bridge simply stops here, its end broken off jaggedly above the\nvoid. Whatever it once reached has long since fallen into the chasm, and\nonly a stump of carved stone juts from the far wall, out of reach across\nthe dark. Pebbles kicked from the edge fall without a sound. The only\nway is back south along the span.",
+   "extra_descs": {}
   },
   "5176": {
    "vnum": 5176,
@@ -2198,8 +2224,8 @@
      }
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The floor is\nworn smooth by long use. Ways lead east and west.",
-   "placeholder": true
+   "description": "A thin bridge of stone springs out over a bottomless chasm, barely wide\nenough for one to walk upon. There is no rail, only a low lip of carved\nstone on either side, and the darkness beneath swallows every sound.\nBehind, to the west, a door leads back into the tunnel of arches. The\nbridge reaches on east into the gloom.",
+   "extra_descs": {}
   },
   "5177": {
    "vnum": 5177,
@@ -2223,8 +2249,8 @@
      "description": "To the east lies A Thin Underground Bridge."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Dust lies thick in the\ncorners, undisturbed for some time. Ways lead north and east.",
-   "placeholder": true
+   "description": "The last of the ornate arches stands here, larger than the rest and\ncarved with a great spider whose spread legs frame the passage. Beyond\nit the worked stone gives way to the raw rock of a chasm, and a thin\nbridge reaches out across the dark to the east. The tunnel runs back\nnorth under its row of lit arches. A cold wind rises from the depths and\nmoans softly through the carvings.",
+   "extra_descs": {}
   },
   "5178": {
    "vnum": 5178,
@@ -2248,8 +2274,8 @@
      "description": "To the west lies At The Adamantium Gates."
     }
    },
-   "description": "Shadows gather where the light does not reach. The floor is worn smooth\nby long use. Ways lead south and west.",
-   "placeholder": true
+   "description": "A long tunnel leads away from the gates beneath a series of graceful\narches, each carved from the living rock and worked with spiders, webs\nand twining vines. Faint faerie fire glows along the keystones, making a\npath of violet lights. The floor is smooth and swept clean of every\npebble. The tunnel turns south here, and back to the west lie the\nadamantium gates.",
+   "extra_descs": {}
   },
   "5179": {
    "vnum": 5179,
@@ -2273,8 +2299,8 @@
      "description": "To the up lies The Main Chamber Of The First House."
     }
    },
-   "description": "Shadows gather where the light does not reach. Stone walls close in,\ncool to the touch. Ways lead east and up.",
-   "placeholder": true
+   "description": "The entrance hall of the First House is cold and lofty, lined with\ncolumns carved to look like pillars wrapped in web. Banners of black\nsilk embroidered with the house's spider sigil hang motionless from the\nhigh ceiling. A grand stair of polished obsidian climbs up toward the\nmain chamber. Through the open doors to the east the violet glow of the\nstreet seeps in across the floor.",
+   "extra_descs": {}
   },
   "5180": {
    "vnum": 5180,
@@ -2298,8 +2324,8 @@
      "description": "To the up lies The Main Chamber In The Fourth house."
     }
    },
-   "description": "Stone walls close in, cool to the touch. The air is still and smells\nfaintly of old smoke. Ways lead south and up.",
-   "placeholder": true
+   "description": "Bare walls of grey stone and a low ceiling give the entrance of the\nFourth House a cramped, guarded feel. Arrow slits are cut into the walls\non either side, looking out over the doorway to the south. A tight\nspiral stair rises up into the main chamber of the house. A single lamp\nof glowing fungus hangs from a chain, casting a cold blue light over the\nbare floor.",
+   "extra_descs": {}
   },
   "5181": {
    "vnum": 5181,
@@ -2323,8 +2349,8 @@
      "description": "To the up lies The Main Chamber In The Third House."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The floor is\nworn smooth by long use. Ways lead south and up.",
-   "placeholder": true
+   "description": "The entrance hall of the Third House is narrow and high, cut straight\ninto the living stalagmite so that its walls curve inward as they climb.\nA spiral of shallow steps winds up along the wall toward the main\nchamber above. The floor is polished black stone set with the crest of a\nspider clutching a crescent moon. Through the doorway to the south the\nstreet lies in its violet gloom.",
+   "extra_descs": {}
   },
   "5182": {
    "vnum": 5182,
@@ -2348,8 +2374,8 @@
      "description": "To the up lies The Main Chamber In The Second House."
     }
    },
-   "description": "Stone walls close in, cool to the touch. Shadows gather where the light\ndoes not reach. Ways lead south and up.",
-   "placeholder": true
+   "description": "Cool air moves softly through this entrance hall, drawn in from the\nstreet to the south and up through the spires above. The walls are\ncarved with a frieze of armed figures standing shoulder to shoulder,\ntheir stone faces cruelly fine, their eyes set with chips of red garnet.\nA broad stair of black stone climbs up into the main chamber of the\nhouse. Small niches along the walls hold glowing fungus in silver cups.",
+   "extra_descs": {}
   },
   "5110": {
    "vnum": 5110,
@@ -2408,8 +2434,10 @@
      "description": "To the west lies The City Street."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. The floor is worn\nsmooth by long use. Ways lead north, east, south and west.",
-   "placeholder": true
+   "description": "The four great streets of the city meet here in a wide round plaza paved\nwith black flagstones, each one inlaid with a thin thread of silver. At\nits middle rises a slender pillar of carved stone, its whole length\nworked into climbing spiders and coiling script, and a faint violet fire\ncrawls over its tip without ever burning down. Streets leave the plaza\nnorth, east, south and west between towering stalagmite houses. Far\noverhead the cavern roof is lost in darkness, and the silence presses\nlike the weight of the rock itself.",
+   "extra_descs": {
+    "pillar carved stone spiders script": "The pillar is no thicker than a drow's waist yet rises higher than a\nhouse. Spiders of every size climb its length among lines of angular\nscript praising the Spider Queen, and the violet flame at its tip\nflickers as if to mark the passing hours."
+   }
   },
   "5184": {
    "vnum": 5184,
@@ -2427,8 +2455,8 @@
      "description": "To the east lies A Bend In The City Street."
     }
    },
-   "description": "Old trees crowd close, their roots knotted across the path. Shafts of\npale light slant between the trunks. A way leads east.",
-   "placeholder": true
+   "description": "Giant mushrooms rise here like trees, their pale stalks thick as pillars\nand their wide caps glowing in soft shades of blue and violet. Spores\ndrift slowly in the still air, catching the light like motes of dust.\nThe ground is soft and spongy underfoot, carpeted with smaller fungi\nthat crunch with every step. A low iron door to the east leads back to a\nbend in the city street.",
+   "extra_descs": {}
   },
   "5185": {
    "vnum": 5185,
@@ -2448,8 +2476,8 @@
      "description": "To the east lies The City Street."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Stone walls close in,\ncool to the touch. A way leads east.",
-   "placeholder": true
+   "description": "This dwelling is hollowed from a stalagmite of reddish stone, unusual\namong the black spires of the city. Its single room is bare but for a\nstone bench and a few hooks on the wall, where a cloak or a lantern\nmight hang. A small window, no more than a slit, lets in a sliver of\nviolet light. The doorway east leads back to the city street.",
+   "extra_descs": {}
   },
   "5186": {
    "vnum": 5186,
@@ -2469,8 +2497,8 @@
      "description": "To the west lies The City Street."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The air is\nstill and smells faintly of old smoke. A way leads west.",
-   "placeholder": true
+   "description": "The hollowed stalagmite makes a snug, low-ceilinged home, its walls\npainted with faded scenes of the cavern's bridges and spires. A cold\nhearth stands in a niche, its stone blackened by years of small fires. A\ncurtain of grey cloth hangs across a sleeping alcove, and a rack of\ndrying fungus fills one corner with an earthy smell. The doorway west\nleads out to the city street.",
+   "extra_descs": {}
   },
   "5187": {
    "vnum": 5187,
@@ -2490,8 +2518,8 @@
      "description": "To the east lies The City Street."
     }
    },
-   "description": "The floor is worn smooth by long use. Stone walls close in, cool to the\ntouch. A way leads east.",
-   "placeholder": true
+   "description": "This home is carved into the tip of a great stalactite that hangs from\nthe cavern roof until its point nearly touches the street. The room is\nshaped like an upturned cone, wide overhead and narrow at the floor, and\nits walls weep slowly with water that is caught in a stone basin. A\nhammock of woven silk is slung across the space. The doorway opens east\nonto the city street.",
+   "extra_descs": {}
   },
   "5188": {
    "vnum": 5188,
@@ -2511,8 +2539,8 @@
      "description": "To the north lies The City Street."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Dust lies thick in the\ncorners, undisturbed for some time. A way leads north.",
-   "placeholder": true
+   "description": "This small home is hollowed from the base of a stalagmite, its single\nround room no more than a few paces across. A sleeping mat of woven\nfungus fibre lies against the curving wall, beside a low stone table and\na shelf of plain clay bowls. The ceiling narrows to a point where the\nstone has been left rough. The doorway to the north opens onto the city\nstreet.",
+   "extra_descs": {}
   },
   "5189": {
    "vnum": 5189,
@@ -2532,8 +2560,8 @@
      "description": "To the east lies A Bend In The City Street."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Dust lies thick in the\ncorners, undisturbed for some time. A way leads east.",
-   "placeholder": true
+   "description": "The inside of this stalagmite has been carved into a neat little home,\nits walls polished smooth and set with tiny niches for candles. A low\nbed of carved stone stands against the far wall, covered with a coarse\ngrey blanket. Bundles of dried fungus hang from the ceiling, giving off\na musty smell. The doorway to the east opens onto a bend in the city\nstreet.",
+   "extra_descs": {}
   },
   "5190": {
    "vnum": 5190,
@@ -2553,8 +2581,8 @@
      "description": "To the east lies The City Street."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The floor is\nworn smooth by long use. A way leads east.",
-   "placeholder": true
+   "description": "This forge is older and rougher than its neighbour across the street,\nits hearth hollowed from the raw rock and blackened by centuries of\nsmoke. A wide stone trough of oily quenching water stands beside the\nanvil, steaming faintly. Tongs and hammers hang from hooks along the\nwalls, each shaped with a care that makes even tools look like\njewellery. The street lies through the doorway to the east.",
+   "extra_descs": {}
   },
   "5191": {
    "vnum": 5191,
@@ -2574,8 +2602,8 @@
      "description": "To the west lies The City Street."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. The floor is worn\nsmooth by long use. A way leads west.",
-   "placeholder": true
+   "description": "Heat rolls from a great forge set into the back of this low workshop,\nits coals glowing a deep violet rather than red. Iron racks along the\nwalls stand ready for slim curved blades, hooked spears and coats of\nfine mail. An anvil of black iron sits before the hearth, its face\npolished bright by long use. The doorway west opens back onto the city\nstreet.",
+   "extra_descs": {}
   },
   "5192": {
    "vnum": 5192,
@@ -2597,8 +2625,8 @@
      "description": "To the west lies The First Throne."
     }
    },
-   "description": "Voices and the clatter of carts carry from somewhere nearby. Worn\nflagstones run between weathered walls, swept by passing feet. Ways lead\neast and west.",
-   "placeholder": true
+   "description": "This slender walkway of carved stone arches out from the First House\nacross empty air, no wider than two people walking abreast. Its\nbalustrade is a lace of interwoven webs cut so finely that the violet\nlight below shines through it. Far beneath, the streets of the city wind\nbetween the stalagmite houses like threads of glowing fungus. The\nwalkway runs on east, and a door to the west leads back into the First\nThrone.",
+   "extra_descs": {}
   },
   "5193": {
    "vnum": 5193,
@@ -2625,8 +2653,8 @@
      "description": "To the west lies An Ornate Walkway High Above The City."
     }
    },
-   "description": "Voices and the clatter of carts carry from somewhere nearby. Lantern\nhooks and faded signboards hang over the street. Ways lead east and\nwest.",
-   "placeholder": true
+   "description": "The ornate walkway bends here as it nears the great temple, and the\nstone underfoot is worn into a shallow groove by generations of passing\nfeet. Ahead to the east a towering door of gold and adamantite opens\nonto the temple entrance. The drop on either side is dizzying, and a\nfaint cold draught rises from the city far below. The walkway stretches\nback west toward the First House.",
+   "extra_descs": {}
   },
   "5194": {
    "vnum": 5194,
@@ -2656,8 +2684,8 @@
      "description": "To the west lies The Forge."
     }
    },
-   "description": "Shuttered windows and old doorways crowd in on either hand. Lantern\nhooks and faded signboards hang over the street. Ways lead north, east,\nsouth and west.",
-   "placeholder": true
+   "description": "Forges stand on either side of this stretch of street, and the clang of\nhammers rings from the doorways east and west. The black flagstones here\nare scored and pitted where heavy loads of iron have been dragged along.\nWarm air spills from both smithies, smelling of hot metal and coal\nsmoke, a strange thing in the cold stillness of the cavern. The street\nruns north to a junction and south to the centre of the city.",
+   "extra_descs": {}
   },
   "5195": {
    "vnum": 5195,
@@ -2683,8 +2711,8 @@
      "description": "To the west lies The City Street Outside The Second House."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet. The\npaving is uneven here, patched with newer stone. Ways lead east, south\nand west.",
-   "placeholder": true
+   "description": "Here the street splits beneath a carved archway of pale stone, its arc\nlined with the sigils of the noble houses. One way leads east past the\ngates of the Third House, the other west toward the Second. Behind, to\nthe south, the road returns to the forges and the heart of the city.\nGlowing fungus has been coaxed into narrow beds along the kerbs, and its\ncold blue light pools on the paving like spilled water.",
+   "extra_descs": {}
   },
   "5196": {
    "vnum": 5196,
@@ -2710,8 +2738,8 @@
      "description": "To the west lies The City Street Outside The First House."
     }
    },
-   "description": "Voices and the clatter of carts carry from somewhere nearby. The paving\nis uneven here, patched with newer stone. Ways lead north, east and\nwest.",
-   "placeholder": true
+   "description": "The Second House rises to the north, a cluster of three stalagmites\njoined by slender bridges of carved stone, each spire pierced by dozens\nof tiny lit windows. Its doorway is a tall slit framed in adamantite,\ncold and grey. The paving of the street is laid in a pattern of\ninterlocking webs, worn smooth by countless feet. Westward lies the\ngrander seat of the First House, and the junction is back to the east.",
+   "extra_descs": {}
   },
   "5197": {
    "vnum": 5197,
@@ -2733,8 +2761,8 @@
      "description": "To the west lies The Entrance To The First House."
     }
    },
-   "description": "Voices and the clatter of carts carry from somewhere nearby. Lantern\nhooks and faded signboards hang over the street. Ways lead east and\nwest.",
-   "placeholder": true
+   "description": "The street widens here into a broad forecourt before the greatest house\nin the city. The First House rises as a forest of carved stalagmites, so\nthickly worked with balconies, spires and lace-fine stone that it seems\ngrown rather than built. Its great doorway lies to the west, guarded by\na pair of tall adamantite doors left standing open. To the east the\nstreet runs back past the Second House.",
+   "extra_descs": {}
   },
   "5198": {
    "vnum": 5198,
@@ -2756,8 +2784,8 @@
      "description": "To the west lies The Center Of The Drow City."
     }
    },
-   "description": "Voices and the clatter of carts carry from somewhere nearby. Shuttered\nwindows and old doorways crowd in on either hand. Ways lead east and\nwest.",
-   "placeholder": true
+   "description": "The city street runs straight here between rows of slender stalagmite\nhomes, their doorways sealed with screens of carved stone. Faint violet\nfaerie fire outlines the rooftops, and here and there a lamp of glowing\nfungus hangs from an iron bracket. The paving is smooth and spotless,\nswept clean by unseen hands. Westward the street opens into the great\nplaza at the city's centre, and eastward it leads on toward the Fourth\nHouse.",
+   "extra_descs": {}
   },
   "5199": {
    "vnum": 5199,
@@ -2793,8 +2821,8 @@
      "description": "To the west lies The City Street."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet.\nLantern hooks and faded signboards hang over the street. Ways lead\nnorth, east and west.",
-   "placeholder": true
+   "description": "Two buildings face each other across this stretch of street. To the\nnorth stands the Fourth House, a squat, heavy stalagmite whose door is\nbarred with bands of black iron, and to the east a tall, narrow tower\ncarved with arcane runes houses the Mages' Academy behind a door of dark\ncrystal. The runes pulse slowly with a soft violet light. The street\nruns back west toward the centre of the city.",
+   "extra_descs": {}
   },
   "5115": {
    "vnum": 5115,

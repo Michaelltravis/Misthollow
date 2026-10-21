@@ -96,6 +96,14 @@ JOBS = {
     'z519': ([519], 1, 1, True),
     'z520': ([520], 1, 1, True),
     'z522': ([522], 1, 1, True),
+    # the placeholders left in zones that were ours before the re-lay (2026-10): rooms only, the
+    # creatures are there already
+    'city_a': ([30], 1, 2, False), 'city_b': ([30], 2, 2, False),
+    'outcast_a': ([442], 1, 2, False), 'outcast_b': ([442], 2, 2, False),
+    'apocalypse_a': ([220], 1, 2, False), 'apocalypse_b': ([220], 2, 2, False),
+    'drow': ([51], 1, 1, False),
+    'stable_elves': ([32, 110], 1, 1, False),
+    'odds_and_ends': ([457, 72, 250, 65, 53, 12, 63, 150], 1, 1, False),
 }
 FIXUPS = [3516, 4002, 6602, 6610, 6612, 12003, 12005, 12006, 12007, 12010, 12015, 12018, 12019, 12022, 12023,
           12024, 12029, 12031, 12035, 12036, 12039, 12043, 12044, 12049, 12050, 12051, 12062, 12063, 15061,

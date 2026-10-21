@@ -39,8 +39,10 @@
      "description": "To the east lies At The End Of The Trail Through The Deep, Dark Forest."
     }
    },
-   "description": "Old trees crowd close, their roots knotted across the path. Fallen\nneedles and leaves muffle every step. Ways lead north and east.",
-   "placeholder": true
+   "description": "The grey trees of the deep forest give way here to taller, living green,\nand the air changes at once, softer and full of birdsong. A gracefully\narched gate of woven living branches closes the path that leads north\ninto the elven forest. Beside it a slender wooden post bears a carved\nleaf, the sign of the wood elves. To the east the dusty trail runs back\ninto the deep, dark forest.",
+   "extra_descs": {
+    "carved leaf post": "The leaf is cut with great care, every vein picked out in the pale wood.\nBeneath it runs a line of flowing elven script that asks travellers to\nwalk softly, for the trees remember."
+   }
   },
   "14302": {
    "vnum": 14302,
@@ -70,8 +72,8 @@
      "description": "To the up lies On the platform.."
     }
    },
-   "description": "Old trees crowd close, their roots knotted across the path. Shafts of\npale light slant between the trunks. Ways lead north, east, south and\nup.",
-   "placeholder": true
+   "description": "Beyond the gate of branches the path is soft with moss and edged with\nferns, winding between enormous oaks. A rope ladder hangs from a\nplatform built up into the boughs overhead, where watchers can see far\ndown the trail. To the east a doorway in the trunk of a great oak opens\ninto the guards' room. The path carries on north into the village, and\nthe gate lies back to the south.",
+   "extra_descs": {}
   },
   "14303": {
    "vnum": 14303,
@@ -99,8 +101,10 @@
      "description": "To the down lies Cellar.."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. Ways lead east, west and down.",
-   "placeholder": true
+   "description": "The guards' room is cut into the hollow of a great oak, its walls hung\nwith longbow pegs and cloaks of mottled green. A round table bears a\ncarved map of the elven paths, worn smooth by the fingers of many\nwatches. A trapdoor in the floor opens on steps leading down to a\ncellar, and a door to the east leads to the quarters of the guard chief.\nThe doorway west opens back onto the guarded path.",
+   "extra_descs": {
+    "carved map table": "The map is carved into the tabletop itself, showing the paths, the shops\nand the great trees of the village. Near its edge a patch of the wood\nhas been stained black and scored through with angry marks, where the\ntainted forest lies."
+   }
   },
   "11001": {
    "vnum": 11001,
@@ -135,8 +139,8 @@
      }
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The floor is\nworn smooth by long use. A way leads west.",
-   "placeholder": true
+   "description": "The guard chief sleeps in this plain, orderly chamber. A narrow bed of\nwoven rope is made up tight beneath a grey wool blanket, and a chest at\nits foot is carved with the sign of the leaf and arrow. An empty helm\nstand waits beside a small washstand. The door to the west leads back\ninto the guards' room.",
+   "extra_descs": {}
   },
   "14305": {
    "vnum": 14305,
@@ -156,8 +160,8 @@
      "description": "To the up lies Guards room.."
     }
    },
-   "description": "The floor is worn smooth by long use. Shadows gather where the light\ndoes not reach. A way leads up.",
-   "placeholder": true
+   "description": "The cellar is dug in among the roots of the oak, cool and dim, its\nearthen sides braced with curved ribs of living wood. Casks of wine and\nstrings of dried apples crowd the shelves, and sacks of grain are\nstacked against the far side. Roots poke through the ceiling, beaded\nwith damp. Wooden steps lead up through a trapdoor to the guards' room.",
+   "extra_descs": {}
   },
   "14306": {
    "vnum": 14306,
@@ -175,8 +179,8 @@
      "description": "To the down lies Guarded Path Through The Forest.."
     }
    },
-   "description": "Snow lingers in the shadowed hollows of the rock. Bare rock climbs\nsteeply on one side and falls away on the other. A way leads down.",
-   "placeholder": true
+   "description": "High among the branches, this wide platform of planks is lashed to the\nlimbs of a great oak and open to the sky. From here the forest spreads\naway in a rolling green sea, the gate and the trail beyond it visible\nfar below between the leaves. A railing of woven boughs runs around the\nedge, and a rope ladder drops down to the guarded path. The wind sways\nthe whole platform gently, and the leaves whisper all around.",
+   "extra_descs": {}
   },
   "14307": {
    "vnum": 14307,
@@ -198,8 +202,8 @@
      "description": "To the south lies Guarded Path Through The Forest.."
     }
    },
-   "description": "Ferns and moss soften the ground beneath a dim green canopy. Birdsong\ndrifts down through the branches overhead. Ways lead north and south.",
-   "placeholder": true
+   "description": "Lanterns of pale green glass hang from low branches along this stretch\nof path, unlit in the green daylight. The trees press close, their\ntrunks wound about with flowering vine, and the ground is carpeted with\nlast year's leaves. Here and there a narrow slit has been cut in a\nliving trunk, a sign of how carefully the elves watch their road. The\npath runs north to a crossing and south toward the gate.",
+   "extra_descs": {}
   },
   "14308": {
    "vnum": 14308,
@@ -221,8 +225,10 @@
      "description": "To the south lies Guarded path through the forest.."
     }
    },
-   "description": "Shafts of pale light slant between the trunks. Birdsong drifts down\nthrough the branches overhead. Ways lead north and south.",
-   "placeholder": true
+   "description": "Two paths once crossed in this little clearing, but the side ways have\nbeen let go, closed off by a hedge of thorn and holly woven tight\nbetween the trunks. A ring of pale stones marks the old crossing, and a\nweathered wooden signpost still stands at its centre, its arms carved in\nelven script. The open path leads north toward the village and south\ntoward the gate. Sunlight falls through the canopy in shifting coins.",
+   "extra_descs": {
+    "signpost sign arms": "The signpost has four carved arms, but two of them, pointing at the\nhedged-off ways, have been sawn short and capped with wax. The remaining\narms name the gate and the village in graceful elven letters."
+   }
   },
   "11014": {
    "vnum": 11014,
@@ -262,8 +268,8 @@
      "description": "To the west lies The Elven Weaponry.."
     }
    },
-   "description": "Ferns and moss soften the ground beneath a dim green canopy. Birdsong\ndrifts down through the branches overhead. Ways lead north, east, south\nand west.",
-   "placeholder": true
+   "description": "The path becomes a fine one here, laid with flat stones fitted between\nthe roots and swept clean. On the east side a shop grown from a living\noak shows a carved breastplate above its door, the elven armory, and\nopposite, to the west, crossed blades of wood mark the weaponry. The\npath runs north between more of the guarded trees, and south toward the\ncrossing. Bright leaf-light dapples everything.",
+   "extra_descs": {}
   },
   "11002": {
    "vnum": 11002,
@@ -289,8 +295,8 @@
      "description": "To the west lies A fine path through the elven forest.."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Shadows gather where\nthe light does not reach. A way leads west.",
-   "placeholder": true
+   "description": "Elven armour of rare grace fills this shop: mail as fine as fish scales,\nbreastplates of lacquered leaf-green leather, and helms crested with\ncarved wings. Each piece hangs on a stand of living wood that grows up\nfrom the floor. A workbench at the back is laid out with awls and rivets\nbeside a small, clean forge of stone. The doorway west returns to the\nfine path.",
+   "extra_descs": {}
   },
   "11003": {
    "vnum": 11003,
@@ -320,8 +326,8 @@
      "description": "To the east lies A fine path through the elven forest.."
     }
    },
-   "description": "Stone walls close in, cool to the touch. The air is still and smells\nfaintly of old smoke. A way leads east.",
-   "placeholder": true
+   "description": "Blades of every elven kind line the walls of this weaponry, from slender\nleaf-shaped swords to long knives and spears tipped with bright steel. A\ngrindstone stands in one corner, and the smell of oil and whetstone\nhangs in the air. The weapons rest in racks carved like curling vines.\nThe doorway east leads back onto the fine path between the shops.",
+   "extra_descs": {}
   },
   "14312": {
    "vnum": 14312,
@@ -351,8 +357,8 @@
      "description": "To the west lies Quintor's Fine Shop."
     }
    },
-   "description": "Fallen needles and leaves muffle every step. Birdsong drifts down\nthrough the branches overhead. Ways lead north, east, south and west.",
-   "placeholder": true
+   "description": "Two more shops face each other across the fine path here. To the east a\ndoorway hung with silver leaves and faintly glowing glass marks the\nmagic shop, while to the west the smell of fresh-cut yew and glue drifts\nfrom Quintor's Fine Shop, where bows are made. Lanterns of carved horn\nline the way, and the stones are swept spotless. The path runs on north\nand back south between the guarded trees.",
+   "extra_descs": {}
   },
   "11006": {
    "vnum": 11006,
@@ -408,8 +414,8 @@
      "description": "To the west lies A fine path through the elven forest.."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Dust lies thick in the\ncorners, undisturbed for some time. A way leads west.",
-   "placeholder": true
+   "description": "Shelves of glass vials, dried herbs and polished stones fill the magic\nshop, and the air hums faintly with something that is not quite sound.\nSilver leaves hang from threads across the ceiling, turning slowly\nthough there is no breeze. A counter of pale wood holds a crystal ball\nresting on a stand of twisted roots. The doorway to the west opens back\nonto the fine path.",
+   "extra_descs": {}
   },
   "11010": {
    "vnum": 11010,
@@ -446,8 +452,8 @@
      "description": "To the south lies Guarded path through the forest.."
     }
    },
-   "description": "Fallen needles and leaves muffle every step. Birdsong drifts down\nthrough the branches overhead. Ways lead north, east and south.",
-   "placeholder": true
+   "description": "The fine path ends in a wide, mossy glade around a tree older than\nanything else in the village, its bark furrowed like a face. To the east\na welcoming doorway in a hollow trunk is hung with a painted sign of a\nrising sun, the Tavern of Hope. Beyond the glade to the north the\nguarded path goes on as a plain earth track, and to the south it climbs\nback toward the lookout. Warm lantern light spills from the tavern door.",
+   "extra_descs": {}
   },
   "14316": {
    "vnum": 14316,
@@ -471,8 +477,8 @@
      "description": "To the up lies The Reception in the Tavern of the hope.."
     }
    },
-   "description": "The floor is worn smooth by long use. Stone walls close in, cool to the\ntouch. Ways lead west and up.",
-   "placeholder": true
+   "description": "The Tavern of Hope is built inside a great hollow tree, its common room\nringed by benches carved from the living wood. A long bar of polished\nwalnut curves around one side, and barrels of elven wine and honey mead\nare racked behind it. Lanterns hang from the roots that thread the\nceiling, and a stair winds up to the reception. The doorway west leads\nout into the glade at the end of the fine path.",
+   "extra_descs": {}
   },
   "14317": {
    "vnum": 14317,
@@ -504,8 +510,8 @@
      "description": "To the up lies The grand stairs.."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The air is\nstill and smells faintly of old smoke. Ways lead east, south, west and\nup.",
-   "placeholder": true
+   "description": "This fine house is grown rather than built, its walls the living curve\nof a vast hollow tree, polished to a honey gleam. A carpet of woven\nrushes covers the floor, and lanterns of amber glass hang in the\nvaulting. To the east an archway opens into the trophy room of the Elven\nKing, while a door to the west leads to the guard room, from which a\nsmell of rot creeps in. A grand stair winds up through the trunk, and\nthe doorway south opens on the darkening path.",
+   "extra_descs": {}
   },
   "11012": {
    "vnum": 11012,
@@ -551,8 +557,10 @@
      "description": "To the west lies Inside the fine house.."
     }
    },
-   "description": "Shadows gather where the light does not reach. Dust lies thick in the\ncorners, undisturbed for some time. A way leads west.",
-   "placeholder": true
+   "description": "The trophies of the Elven King fill this round chamber: antlers of great\nstags, the skull of a horned beast, a black spear taken from some\nforgotten foe, and tattered banners won from the servants of shadow.\nEach trophy rests on a bracket of living wood with a small carved plaque\nbeneath. A tall window of thin, leaf-green glass softens the light. The\narchway to the west leads back into the house.",
+   "extra_descs": {
+    "plaque plaques": "Each plaque names the trophy, the year it was taken and the hand that\ntook it, in tiny elven script. The plaque beneath the black spear is\nblank, as though no one wished to remember."
+   }
   },
   "14320": {
    "vnum": 14320,
@@ -576,8 +584,8 @@
      "description": "To the down lies Inside the fine house.."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Shadows gather where\nthe light does not reach. Ways lead up and down.",
-   "placeholder": true
+   "description": "The grand stairs spiral up through the heart of the tree, each step a\nshelf of living wood grown from the inner wall. A handrail of twisted\nvine guides the hand, and small round windows let in spots of green\ndaylight. Carved figures of elven heroes stand in niches along the\nclimb. The stair rises to the upper floor and descends to the hall of\nthe fine house below.",
+   "extra_descs": {}
   },
   "14321": {
    "vnum": 14321,
@@ -609,8 +617,8 @@
      "description": "To the down lies The grand stairs.."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The floor is\nworn smooth by long use. Ways lead north, east, south and down.",
-   "placeholder": true
+   "description": "The upper floor of the house opens into a round landing beneath a domed\nceiling of interlaced branches. To the north stands a doorway framed by\nshelves of books, the library, and to the south a curtain of wooden\nbeads leads into the livingroom. A corridor runs off east, and the grand\nstairs wind down through the floor. Everything here smells of beeswax\nand old wood.",
+   "extra_descs": {}
   },
   "14322": {
    "vnum": 14322,
@@ -638,8 +646,8 @@
      "description": "To the west lies The upper floor of the house.."
     }
    },
-   "description": "The floor is worn smooth by long use. The air is still and smells\nfaintly of old smoke. Ways lead north, south and west.",
-   "placeholder": true
+   "description": "This curving corridor follows the outer wall of the tree, lit by small\nround lamps of pale glass. A door to the north leads to the guards' bed\nroom, but a chill breath and a faint smell of decay seep from beneath\nit. To the south, the clack of wood on wood seems to echo from the\ntraining room even when it is empty. The landing lies back to the west.",
+   "extra_descs": {}
   },
   "14323": {
    "vnum": 14323,
@@ -659,8 +667,8 @@
      "description": "To the south lies The upper floor of the house.."
     }
    },
-   "description": "Stone walls close in, cool to the touch. The floor is worn smooth by\nlong use. A way leads south.",
-   "placeholder": true
+   "description": "Shelves grow straight out of the curved walls of the library, crowded\nwith scrolls, leather books and bundles of bark bound in green cord. A\nreading desk stands beneath a round window, its surface ink-stained and\nworn. Soft cushions lie heaped in a nook where the wood bulges inward.\nThe doorway to the south leads back onto the landing.",
+   "extra_descs": {}
   },
   "14324": {
    "vnum": 14324,
@@ -680,8 +688,8 @@
      "description": "To the north lies The upper floor of the house.."
     }
    },
-   "description": "Stone walls close in, cool to the touch. Shadows gather where the light\ndoes not reach. A way leads north.",
-   "placeholder": true
+   "description": "The livingroom is a soft, quiet place, furnished with low couches of\ncarved wood heaped with cushions of moss-green velvet. A hearth of\nsmooth river stones stands against one wall, its chimney a hollow branch\nrising through the ceiling. Painted screens of birds and leaves divide\nthe room into cosy nooks. The way north leads back to the landing at the\ntop of the stairs.",
+   "extra_descs": {}
   },
   "11013": {
    "vnum": 11013,
@@ -727,8 +735,8 @@
      "description": "To the north lies The corridor.."
     }
    },
-   "description": "Stone walls close in, cool to the touch. Shadows gather where the light\ndoes not reach. A way leads north.",
-   "placeholder": true
+   "description": "This broad room is given over to the practice of arms. Its floor is laid\nwith springy rush mats, and straw-stuffed targets stand against the far\nwall, pocked with arrow holes. Racks of wooden practice swords and\nstaves line the walls, and a carved chart of sword forms is set beside\nthe door. The corridor lies through the doorway to the north.",
+   "extra_descs": {}
   },
   "11004": {
    "vnum": 11004,
@@ -772,8 +780,8 @@
      "description": "To the south lies A fine path through the elven forest.."
     }
    },
-   "description": "Old trees crowd close, their roots knotted across the path. Ferns and\nmoss soften the ground beneath a dim green canopy. Ways lead north and\nsouth.",
-   "placeholder": true
+   "description": "Elven homes begin to show among the branches here: round doorways high\nin the trunks, joined by swaying walkways of rope and plank. Below them\nthe guarded path winds on, its stones edged with moss. A carved bench\ncurves around the foot of a great beech where villagers rest. The way\nleads north deeper into the village and south back to the fine path by\nthe shops.",
+   "extra_descs": {}
   },
   "11005": {
    "vnum": 11005,
@@ -805,8 +813,8 @@
      "description": "To the south lies Guarded path through the forest.."
     }
    },
-   "description": "Shafts of pale light slant between the trunks. Ferns and moss soften the\nground beneath a dim green canopy. Ways lead north and south.",
-   "placeholder": true
+   "description": "Music seems to linger in this part of the path, perhaps from the wind\nchimes of polished wood and shell hanging among the leaves. A walkway\npasses overhead, its rails twined with vines that drop small white\nflowers on the stones below. The guarded path continues north toward\nmore shops and south through the village. A spring trickles from a stone\nbasin set into the roots of a tree.",
+   "extra_descs": {}
   },
   "11008": {
    "vnum": 11008,
@@ -838,8 +846,8 @@
      "description": "To the south lies A fine path through the elven forest.."
     }
    },
-   "description": "Fallen needles and leaves muffle every step. Old trees crowd close,\ntheir roots knotted across the path. Ways lead north and south.",
-   "placeholder": true
+   "description": "The path begins to climb here, rising on a ramp of living roots toward a\nlookout built out from a great tree to the north. Children have left\nchalk drawings of birds and stars on the flat of a stone. Leaves hang\nthick overhead, and the light comes green and gold through them. To the\nsouth the path drops back to the shops of the fine path.",
+   "extra_descs": {}
   },
   "11009": {
    "vnum": 11009,
@@ -897,8 +905,8 @@
      "description": "To the south lies Guarded path through the forest.."
     }
    },
-   "description": "Old trees crowd close, their roots knotted across the path. Ferns and\nmoss soften the ground beneath a dim green canopy. Ways lead north and\nsouth.",
-   "placeholder": true
+   "description": "Past the lookout the guarded path descends again among ancient trees\nwhose roots rise in arches higher than a man. The stones underfoot are\nolder here, mossed over and sunk deep. A guard's niche has been carved\ninto one great trunk, empty and swept clean. The path goes on north to\nthe end of the fine path, and south back up to the lookout platform.",
+   "extra_descs": {}
   },
   "14333": {
    "vnum": 14333,
@@ -920,8 +928,8 @@
      "description": "To the south lies The end of the fine path.."
     }
    },
-   "description": "Birdsong drifts down through the branches overhead. Old trees crowd\nclose, their roots knotted across the path. Ways lead north and south.",
-   "placeholder": true
+   "description": "Here the path is only trodden earth, and the trees grow closer and\nwilder. The guards have hung little bells of carved wood on cords across\nthe branches, so that anything passing above will set them clacking.\nFerns crowd the verge, and the birdsong is quieter than in the village.\nThe way runs north into thicker forest and south back to the glade at\nthe end of the fine path.",
+   "extra_descs": {}
   },
   "14334": {
    "vnum": 14334,
@@ -943,8 +951,8 @@
      "description": "To the south lies Guarded path through the forest.."
     }
    },
-   "description": "Birdsong drifts down through the branches overhead. Old trees crowd\nclose, their roots knotted across the path. Ways lead north and south.",
-   "placeholder": true
+   "description": "A creeping wrongness enters the forest here. Some of the leaves along\nthe path are spotted with black, and a young birch beside the way has\ntwisted in on itself as if in pain. The elves have tied ribbons of\nsilver around the healthy trunks, and the path is watched more closely.\nNorth, the shadow deepens toward the boundary of the village, while\nsouth lies the safer path.",
+   "extra_descs": {}
   },
   "11011": {
    "vnum": 11011,
@@ -996,8 +1004,8 @@
      "description": "To the down lies The Tavern of Hope."
     }
    },
-   "description": "Shadows gather where the light does not reach. Dust lies thick in the\ncorners, undisturbed for some time. A way leads down.",
-   "placeholder": true
+   "description": "A small reception desk of carved oak stands in this round room above the\ntavern, with a row of brass hooks for room keys on the wall behind it.\nDoors to the guest rooms are set around the curve of the wall, each\npainted with a different flower. A window looks out into the leaves, and\nthe murmur of the common room drifts up through the floor. The stair\nleads back down to the Tavern of Hope.",
+   "extra_descs": {}
   }
  },
  "mobs": {
