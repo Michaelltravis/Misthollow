@@ -140,6 +140,54 @@ async def main():
     for h in (seeker, warded):
         h.room.characters.remove(h)
 
+    # ---- the Foundry's steam and levers
+    from commands import CommandHandler as C
+    stoker = hero('Stoker')
+    await enter(stoker, 24803)                        # Steam Tunnel Alpha: on
+    check('Steam roars' in said(stoker), 'a live steam tunnel warns as you enter')
+    await ticks(stoker, 0)
+    stoker._steam_at = 0
+    await zh.tick(world)
+    check(stoker.max_hp - stoker.hp == 35, f'and scalds: 35 a tick ({stoker.max_hp - stoker.hp})')
+    await enter(stoker, 24810)                        # Beta: off until alpha is pulled
+    stoker.hp = stoker.max_hp; stoker._steam_at = 0
+    await zh.tick(world)
+    check(stoker.hp == stoker.max_hp and 'cold' in said(stoker), 'Steam Tunnel Beta is cold at first')
+    await enter(stoker, 24806)
+    check('pull lever' in said(stoker), 'a lever room says what to do')
+    await C.cmd_pull(stoker, ['lever'])
+    check(not zh.steam_on(world.rooms[24803]) and zh.steam_on(world.rooms[24810]),
+          'pulling the alpha lever sends the steam from Tunnel Alpha into Tunnel Beta')
+    await C.cmd_pull(stoker, ['lever'])
+    check(zh.steam_on(world.rooms[24803]) and not zh.steam_on(world.rooms[24810]), 'pulling it again sends it back')
+    await enter(stoker, 24819)
+    await C.cmd_pull(stoker, ['valve'])
+    check(not zh.steam_on(world.rooms[24818]), 'the gamma valves shut Tunnel Gamma down, clearing the way to the Furnace Core')
+    zh._pulled[world.rooms[24819]] -= zh.STEAM_BACK
+    await zh.tick(world)
+    check(zh.steam_on(world.rooms[24818]) and not zh.lever_pulled(world.rooms[24819]),
+          f'after {zh.STEAM_BACK // 60} minutes the pressure builds back and the lever springs up')
+    stoker.room.characters.remove(stoker)
+
+    # ---- the citadel's secret ways
+    seeker2 = hero('Mirrorer')
+    seeker2.equipment = {'neck1': obj(24503)}         # (corruption aside)
+    mirror = world.rooms[24505]
+    check(mirror.exits['down'].get('hidden') and 'down' not in mirror.get_visible_exits(seeker2),
+          'the Mirror Chamber hides its way down')
+    await enter(seeker2, 24505)
+    check('Touch the mirror' in said(seeker2), 'and gives its hint')
+    await C.cmd_touch(seeker2, ['wall'])
+    check('Nothing happens' in said(seeker2, 1), 'touching something else does nothing')
+    await C.cmd_touch(seeker2, ['mirror'])
+    check('down' in mirror.get_visible_exits(seeker2) and (24505, 'down') in seeker2.discovered_exits,
+          'touching the mirror opens the way down, for this hero')
+    check('down' not in mirror.get_visible_exits(diver), 'and only for them')
+    await enter(seeker2, 24512)
+    await C.cmd_read(seeker2, ['tome'])
+    check('up' in world.rooms[24512].get_visible_exits(seeker2), 'reading the shadow tome reveals the way up')
+    seeker2.room.characters.remove(seeker2)
+
     # ---- song power
     bard = hero('Singer', 'bard')
     ally = hero('Listener')
