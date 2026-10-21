@@ -118,6 +118,68 @@ class CombatHandler:
         return int(dmg * (100 + pct) / 100) if pct else dmg
 
     @classmethod
+    def crit_chance(cls, attacker) -> int:
+        """Percent chance a blow lands critical: 5, +1 per 2 DEX above 10, +1 per 2 levels, +10 for
+        a thief and +5 for a warrior or ranger, at most 50; spell riders (Icy Veins etc.) push past
+        that, to 85. A creature's burst is telegraphed (wind-ups), not rolled: MOB_CRIT_CHANCE."""
+        if not cls.is_player(attacker):
+            return cls.config.MOB_CRIT_CHANCE
+        chance = 5 + (getattr(attacker, 'dex', 10) - 10) // 2 + (getattr(attacker, 'level', 0) or 0) // 2
+        chance += {'thief': 10, 'warrior': 5, 'ranger': 5}.get(str(getattr(attacker, 'char_class', '')).lower(), 0)
+        rider = getattr(attacker, 'crit_chance', 0)
+        return min(85, min(chance, 50) + max(0, rider))
+
+    @classmethod
+    def crit_mult(cls, attacker) -> float:
+        """What a critical multiplies a blow by: double, a thief's 225%."""
+        return 2.25 if str(getattr(attacker, 'char_class', '')).lower() == 'thief' else 2.0
+
+    @classmethod
+    def avoid_chances(cls, defender) -> dict:
+        """Percent chances a defender turns a blow aside, tried in this order: dodge (a quarter of
+        the skill, shield magic, what DB adds over armour, Kill or Be Killed, Slippery), parry (a
+        quarter of the skill and what PB adds; wielding), shield block (three tenths of the skill;
+        a shield worn) and evasion (a fifth of the skill and shield magic, at least 5)."""
+        out = {'dodge': 0, 'parry': 0, 'block': 0, 'evasion': 0}
+        skills = getattr(defender, 'skills', None)
+        if not isinstance(skills, dict):
+            return out
+        equipment = getattr(defender, 'equipment', None) or {}
+        shield_bonus = defender.get_shield_evasion_bonus() if hasattr(defender, 'get_shield_evasion_bonus') else 0
+        dodge = int(skills.get('dodge', 0) * 0.25) + shield_bonus
+        # DB weighting: shield magic + armor weight + stance should influence dodge chance
+        try:
+            base_db = 100 - defender.get_armor_class() if hasattr(defender, 'get_armor_class') else 0
+            eff_db = defender.get_db_value() if hasattr(defender, 'get_db_value') else base_db
+            dodge += max(-10, min(10, (eff_db - base_db) // 2))
+        except Exception:
+            pass
+        try:
+            from talents import TalentManager
+            if TalentManager.has_talent(defender, 'kill_or_be_killed'):     # +1% per Intel point
+                dodge += getattr(defender, 'intel_points', 0)
+            dodge += TalentManager.get_talent_rank(defender, 'slippery')   # thief
+        except Exception:
+            pass
+        out['dodge'] = dodge
+        if equipment.get('wield'):
+            parry = int(skills.get('parry', 0) * 0.25)
+            try:
+                # PB weighting: stance + parry/shield synergy should influence parry reliability
+                base_pb = int(getattr(defender, 'damage_reduction', 0))
+                eff_pb = defender.get_pb_value() if hasattr(defender, 'get_pb_value') else base_pb
+                parry += max(-8, min(8, (eff_pb - base_pb)))
+            except Exception:
+                pass
+            out['parry'] = parry
+        if equipment.get('shield'):
+            out['block'] = int(skills.get('shield_block', 0) * 0.3)
+        evasion = skills.get('evasion', 0)
+        if evasion:
+            out['evasion'] = max(5, int(evasion * 0.2) + shield_bonus)
+        return out
+
+    @classmethod
     def cap_boss_swing(cls, attacker, defender, damage: int) -> int:
         """Boss fights always last several exchanges: one weapon swing never
         removes more than BOSS_SWING_CAP_PCT of a boss's max HP."""
@@ -765,27 +827,11 @@ class CombatHandler:
 
         # Avoidance checks
         if hasattr(defender, 'skills'):
-            shield_bonus = defender.get_shield_evasion_bonus() if hasattr(defender, 'get_shield_evasion_bonus') else 0
             # passives work a fraction of their proficiency (dodge 50% -> 12%, mastered 85% -> 21%)
-            # and grow a little each time they work (mastery.py)
+            # and grow a little each time they work (mastery.py); avoid_chances has the sums
             import mastery
-            dodge = int(defender.skills.get('dodge', 0) * 0.25) + shield_bonus
-            # DB weighting: shield magic + armor weight + stance should influence dodge chance
-            try:
-                base_db = 100 - defender.get_armor_class() if hasattr(defender, 'get_armor_class') else 0
-                eff_db = defender.get_db_value() if hasattr(defender, 'get_db_value') else base_db
-                dodge += max(-10, min(10, (eff_db - base_db) // 2))
-            except Exception:
-                pass
-            # Kill or Be Killed: +1% dodge per Intel point
-            try:
-                from talents import TalentManager
-                if TalentManager.has_talent(defender, 'kill_or_be_killed'):
-                    dodge += getattr(defender, 'intel_points', 0)
-                # Thief slippery talent
-                dodge += TalentManager.get_talent_rank(defender, 'slippery')
-            except Exception:
-                pass
+            avoid = cls.avoid_chances(defender)
+            dodge = avoid['dodge']
             if dodge and random.randint(1, 100) <= dodge:
                 await mastery.improve(defender, 'dodge', rate=0.25)
                 if hasattr(defender, 'send'):
@@ -826,15 +872,8 @@ class CombatHandler:
                         await attacker.take_damage(counter_dmg, defender)
                 attacker._swing_res = 'dodge'
                 return
-            parry = int(defender.skills.get('parry', 0) * 0.25)
-            try:
-                # PB weighting: stance + parry/shield synergy should influence parry reliability
-                base_pb = int(getattr(defender, 'damage_reduction', 0))
-                eff_pb = defender.get_pb_value() if hasattr(defender, 'get_pb_value') else base_pb
-                parry += max(-8, min(8, (eff_pb - base_pb)))
-            except Exception:
-                pass
-            if parry and defender.equipment.get('wield') and random.randint(1, 100) <= parry:
+            parry = avoid['parry']
+            if parry and random.randint(1, 100) <= parry:
                 await mastery.improve(defender, 'parry', rate=0.25)
                 if hasattr(defender, 'send'):
                     await defender.send(f"{c['cyan']}You parry {attacker.name}'s attack!{c['reset']}")
@@ -848,8 +887,8 @@ class CombatHandler:
                             await defender.send(f"{c['bright_yellow']}[Luck: {defender.luck_points}/10]{c['reset']}")
                 attacker._swing_res = 'parry'
                 return
-            sblock = int(defender.skills.get('shield_block', 0) * 0.3)
-            if sblock and defender.equipment.get('shield') and random.randint(1, 100) <= sblock:
+            sblock = avoid['block']
+            if sblock and random.randint(1, 100) <= sblock:
                 await mastery.improve(defender, 'shield_block', rate=0.25)
                 if hasattr(defender, 'send'):
                     await defender.send(f"{c['cyan']}You block the attack with your shield!{c['reset']}")
@@ -858,8 +897,7 @@ class CombatHandler:
                 attacker._swing_res = 'block'
                 return
             # Evasion (chance to avoid entirely)
-            evasion = defender.skills.get('evasion', 0)
-            if evasion and random.randint(1, 100) <= max(5, int(evasion * 0.2) + shield_bonus):
+            if avoid['evasion'] and random.randint(1, 100) <= avoid['evasion']:
                 await mastery.improve(defender, 'evasion', rate=0.25)
                 if hasattr(defender, 'send'):
                     await defender.send(f"{c['cyan']}You evade the attack!{c['reset']}")
@@ -1027,37 +1065,10 @@ class CombatHandler:
 
             # Critical hit check - percentage based
             # Base 5% + 1% per 2 DEX above 10 + 0.5% per level
-            crit_chance = 5
-            dex_bonus = (getattr(attacker, 'dex', 10) - 10) // 2
-            crit_chance += dex_bonus
-            crit_chance += attacker.level // 2 if hasattr(attacker, 'level') else 0
-
-            # Class bonuses
-            char_class = str(getattr(attacker, 'char_class', '')).lower()
-            if char_class == 'thief':
-                crit_chance += 10  # Thieves are crit machines
-            elif char_class == 'warrior':
-                crit_chance += 5
-            elif char_class == 'ranger':
-                crit_chance += 5
-
-            # Warrior stance crit bonus removed — warriors now use Combo Chain system
-
-            # spell riders (Icy Veins etc.) can push past the normal cap
-            rider = getattr(attacker, 'crit_chance', 0)
-            crit_chance = min(crit_chance, 50) + max(0, rider)
-            crit_chance = min(crit_chance, 85)
-            # NPC burst is telegraphed (wind-ups), not rolled: rare random crits
-            if not cls.is_player(attacker):
-                crit_chance = cls.config.MOB_CRIT_CHANCE
-
-            is_crit = force_crit or (random.randint(1, 100) <= crit_chance)
+            # Critical hit check - percentage based (crit_chance has the sums)
+            is_crit = force_crit or (random.randint(1, 100) <= cls.crit_chance(attacker))
             if is_crit:
-                crit_mult = 2.0  # 200% damage
-                # Thief gets better crits
-                if char_class == 'thief':
-                    crit_mult = 2.25  # 225% damage
-                damage = int(damage * crit_mult)
+                damage = int(damage * cls.crit_mult(attacker))
                 if hasattr(attacker, 'send'):
                     await attacker.send(f"{c['bright_yellow']}*** CRITICAL HIT! ***{c['reset']}")
 

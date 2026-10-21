@@ -621,6 +621,38 @@ html.fallen #vignette { background: radial-gradient(ellipse at 50% 46%, rgba(30,
 .ch-combat { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 8px; }
 .ch-combat div { padding: 6px 9px; border-radius: 7px; background: rgba(0,0,0,.32); display: flex; justify-content: space-between; font: 500 13px var(--body); box-shadow: inset 0 0 0 1px rgba(255,255,255,.04); }
 .ch-combat span { color: var(--ink-dim); }
+/* the Combat tab: your blows and guard, your wards, a fight worked out (character.js, combatcalc.js) */
+.cc .ch-combat { margin-top: 0; }
+.cc .ch-combat div { gap: 6px; white-space: nowrap; }
+.cc-note, .cc-src { margin-top: 5px; color: var(--ink-dim); font: italic 12.5px var(--lore); }
+.cc-wards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px 14px; }
+.cc-wards div { display: grid; grid-template-columns: 64px 1fr 30px; align-items: center; gap: 6px; font: 500 12.5px var(--body); }
+.cc-wards div.dim { opacity: .4; }
+.cc-wards i { height: 5px; border-radius: 3px; background: rgba(0,0,0,.5); overflow: hidden; }
+.cc-wards b { display: block; height: 100%; background: linear-gradient(90deg, #3f7f4a, #8fd18a); }
+.cc-wards em { font-style: normal; text-align: right; color: var(--ink-dim); font-size: 11.5px; }
+.cc-head { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
+.cc-pre { margin-left: auto; display: flex; gap: 4px; }
+.cc-pre button { font: 700 11px var(--label); letter-spacing: .04em; padding: 3px 9px; border-radius: 5px; cursor: pointer; color: var(--ink-dim);
+  background: rgba(0,0,0,.35); border: 1px solid var(--edge-dim); }
+.cc-pre button:hover:not(:disabled) { color: var(--gold-hi); border-color: var(--edge); }
+.cc-pre button:disabled { opacity: .4; cursor: default; }
+.cc-form { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.cc-form label { display: flex; flex-direction: column; gap: 2px; font: 600 10.5px var(--label); color: var(--ink-dim); letter-spacing: .04em; }
+.cc-form input[type=number], .cc-form select { width: 100%; min-width: 0; box-sizing: border-box; padding: 4px 6px; border-radius: 5px; font: 600 13px var(--body);
+  color: var(--ink); background: rgba(0,0,0,.45); border: 1px solid var(--edge-dim); }
+.cc-form input:focus, .cc-form select:focus { outline: none; border-color: var(--edge); }
+.cc-form .cc-boss { flex-direction: row; align-items: center; gap: 6px; padding-top: 14px; font-size: 12px; }
+.cc-out { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.cc-side { padding: 7px 10px; border-radius: 8px; background: rgba(0,0,0,.32); box-shadow: inset 0 0 0 1px rgba(255,255,255,.04); }
+.cc-side h4 { margin: 0 0 4px; font: 700 11px var(--label); letter-spacing: .1em; text-transform: uppercase; color: var(--gold-hi); }
+.cc-side div { display: grid; grid-template-columns: 74px auto 1fr; align-items: baseline; gap: 6px; font: 500 13px var(--body); padding: 1px 0; }
+.cc-side span { color: var(--ink-dim); }
+.cc-side small { color: var(--ink-faint); font-size: 11px; text-align: right; }
+.cc-side b small { text-align: left; }
+.cc-verdict { grid-column: 1 / -1; padding: 7px 10px; border-radius: 7px; font: italic 600 13.5px var(--lore); }
+.cc-verdict.win { color: #9fe39a; background: rgba(80,160,90,.12); box-shadow: inset 0 0 0 1px rgba(143,209,138,.3); }
+.cc-verdict.lose { color: #ffb3a6; background: rgba(200,60,40,.12); box-shadow: inset 0 0 0 1px rgba(255,120,100,.3); }
 .ch-affects { display: flex; flex-wrap: wrap; gap: 5px; }
 .ch-affects i { font-style: normal; font: 500 12px var(--body); padding: 2px 9px; border-radius: 9px; background: rgba(120,200,140,.14); border: 1px solid rgba(140,220,160,.3); }
 .ch-affects small { color: var(--ink-dim); }
