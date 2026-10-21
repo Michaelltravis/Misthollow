@@ -16,5 +16,59 @@
     "immortal": true,
     "why": "the owner's immortal (asked for by name, 2026-10-12); a whole endgame mage kit to see the mage dressed (asked for 2026-10-14)",
     "gearup": true
+  },
+  "qawarrior": {
+    "gearup": true,
+    "explore_all": true,
+    "waypoints_all": true,
+    "why": "the owner's warrior for testing the mob brains (docs/MOB_AI.md), asked for 2026-10-21: made as a warrior on the owner's admin account (so immortal through it; no immortal grant by name, which anyone taking the name first would get)"
+  },
+  "qamage": {
+    "gearup": true,
+    "explore_all": true,
+    "waypoints_all": true,
+    "why": "the owner's mage for testing the mob brains (docs/MOB_AI.md), asked for 2026-10-21: made as a mage on the owner's admin account (so immortal through it; no immortal grant by name, which anyone taking the name first would get)"
+  },
+  "qacleric": {
+    "gearup": true,
+    "explore_all": true,
+    "waypoints_all": true,
+    "why": "the owner's cleric for testing the mob brains (docs/MOB_AI.md), asked for 2026-10-21: made as a cleric on the owner's admin account (so immortal through it; no immortal grant by name, which anyone taking the name first would get)"
+  },
+  "qathief": {
+    "gearup": true,
+    "explore_all": true,
+    "waypoints_all": true,
+    "why": "the owner's thief for testing the mob brains (docs/MOB_AI.md), asked for 2026-10-21: made as a thief on the owner's admin account (so immortal through it; no immortal grant by name, which anyone taking the name first would get)"
+  },
+  "qaranger": {
+    "gearup": true,
+    "explore_all": true,
+    "waypoints_all": true,
+    "why": "the owner's ranger for testing the mob brains (docs/MOB_AI.md), asked for 2026-10-21: made as a ranger on the owner's admin account (so immortal through it; no immortal grant by name, which anyone taking the name first would get)"
+  },
+  "qapaladin": {
+    "gearup": true,
+    "explore_all": true,
+    "waypoints_all": true,
+    "why": "the owner's paladin for testing the mob brains (docs/MOB_AI.md), asked for 2026-10-21: made as a paladin on the owner's admin account (so immortal through it; no immortal grant by name, which anyone taking the name first would get)"
+  },
+  "qanecro": {
+    "gearup": true,
+    "explore_all": true,
+    "waypoints_all": true,
+    "why": "the owner's necromancer for testing the mob brains (docs/MOB_AI.md), asked for 2026-10-21: made as a necromancer on the owner's admin account (so immortal through it; no immortal grant by name, which anyone taking the name first would get)"
+  },
+  "qabard": {
+    "gearup": true,
+    "explore_all": true,
+    "waypoints_all": true,
+    "why": "the owner's bard for testing the mob brains (docs/MOB_AI.md), asked for 2026-10-21: made as a bard on the owner's admin account (so immortal through it; no immortal grant by name, which anyone taking the name first would get)"
+  },
+  "qaassassin": {
+    "gearup": true,
+    "explore_all": true,
+    "waypoints_all": true,
+    "why": "the owner's assassin for testing the mob brains (docs/MOB_AI.md), asked for 2026-10-21: made as a assassin on the owner's admin account (so immortal through it; no immortal grant by name, which anyone taking the name first would get)"
   }
 }
