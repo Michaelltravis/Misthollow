@@ -187,5 +187,11 @@ if node:
 else:
     print('skip the frames check: no node')
 
+# `backup` reads scripts/backup.py's output, which prints ✓: in UTF-8 both ways, or Windows' code
+# page turns it into "âœ“"
+import inspect  # noqa: E402
+src = inspect.getsource(CommandHandler.cmd_backup)
+check(src.count("encoding='utf-8'") >= 3 and 'PYTHONIOENCODING' in src, "backup reads its script's output as UTF-8 (✓, not âœ“)")
+
 print(f"\n{'ALL OK' if not failures else f'{len(failures)} FAILED'}")
 sys.exit(1 if failures else 0)
