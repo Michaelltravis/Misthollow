@@ -53,7 +53,9 @@ test('every ambient sound the server names is in the sound table, on the ambienc
 test('wired: net.js relays the event, main.js plays it, the minimap pings, settings has captions', () => {
   assert.match(read('src/web_isometric/shared/net.js'), /payload\.type === 'ambient'\) MH\.bus\.emit\('ambient\.murmur', payload\)/);
   const main = read('src/web_isometric/world3d/main.js');
-  assert.match(main, /MH\.bus\.on\('ambient\.murmur', m => ambient\.on\(m\)\)/);
+  assert.match(main, /MH\.bus\.on\('ambient\.murmur', m => \{ ambient\.on\(m\);/);
+  // a creature heard next door flares its way out on the room card's compass (roomcard.js)
+  assert.match(main, /const c = cueOf\(m\); if \(c && c\.dir\) roomCard\.ping\(c\.dir\)/);
   assert.match(main, /ambient\.update\(\)/);
   assert.match(read('src/web_isometric/world3d/hud/minimap.js'), /ping\(vnum, kind = 'danger'\)/);
   assert.match(read('src/web_isometric/world3d/play.html'), /data-set="ambcap"/);

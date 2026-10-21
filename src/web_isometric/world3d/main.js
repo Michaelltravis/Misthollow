@@ -42,7 +42,8 @@ import { mountRider, makeRaft, setSteedFx } from './steed.js';
 import { groundItems } from './lootlogic.js';
 import { ReactionPrompt, threatens, REACTIONS } from './reactions.js';
 import { createWorldMap } from './hud/worldmap.js';
-import { createAmbient } from './hud/ambient.js';
+import { createAmbient, cueOf } from './hud/ambient.js';
+import { createRoomCard, createEnvLayer } from './hud/roomcard.js';
 import { createSkyDial } from './hud/sky.js';
 import { createBody } from './hud/body.js';
 import { uiIcon } from './hud/icons.js';
@@ -504,6 +505,9 @@ async function runGame() {
   // the sun or moon on its arc, the season, the weather over the zone (hud/sky.js)
   // hunger, thirst, stamina and a posture to get up from, under the player frame (hud/body.js)
   const body = createBody($('#body-meters'), { icon: name => uiIcon(name, { size: 40 }), send: cmd => MH.sendCommand(cmd) });
+  // the room's ways out and what holds there, under the minimap; the place's bite on screen (hud/roomcard.js)
+  const roomCard = createRoomCard($('#minimap .mm-card'), { icon: (name, o) => uiIcon(name, o) });
+  const envLayer = createEnvLayer({ breath: $('#breath'), corruption: $('#corruption') });
   const skyDial = createSkyDial($('#minimap .mm-sky'), name => uiIcon(name, { size: 44, color: '#e6eef6', glow: 'rgba(190,215,240,.55)' }));
   // the big map (M): the same drawing, larger — the whole zone at a glance, click to walk there
   const bigEl = $('#bigmap');
@@ -584,7 +588,8 @@ async function runGame() {
     minimaps: [mmSmall, mmBig], root: $('#amb-cue'), caption: $('#amb-caption'),
     captions: () => { try { return localStorage.getItem('mh3d_ambcap') === 'on'; } catch (_) { return false; } },
   });
-  MH.bus.on('ambient.murmur', m => ambient.on(m));
+  // a creature heard next door: its way out flares on the room's compass too
+  MH.bus.on('ambient.murmur', m => { ambient.on(m); const c = cueOf(m); if (c && c.dir) roomCard.ping(c.dir); });
   const castbar = createCastbar($('#castbar'));
   const ctxMenu = createContextMenu($('#ctx-menu'));
   let zone = null, hero = null, ctl = null, sync = null, heroRoom = null;
@@ -603,7 +608,12 @@ async function runGame() {
     lastPayload = payload;
     if (zone) applySky();
     skyDial.set(payload.time, payload.weather);
-    if (payload.current_room) skyDial.setIndoors((payload.current_room.flags || []).includes('indoors'));
+    if (payload.current_room) {
+      skyDial.setIndoors((payload.current_room.flags || []).includes('indoors'));
+      roomCard.update(payload.current_room);
+      envLayer.update(payload.current_room, payload.weather);
+    }
+    if (payload.player) envLayer.body(payload.player);
     if (payload.player) { hud.setPlayer(payload.player); body.update(payload.player); ents.heroLevel = payload.player.level || 1; }
     // what the hero wears (gear_look.py): re-dressed when it changes
     if (hero && payload.player && payload.player.look) dress(hero, payload.player.look, payload.player.char_class);
@@ -635,6 +645,7 @@ async function runGame() {
     skyDial.set(e.time, e.weather);
     mm.setTime(e.time);
     if (zone) applySky();
+    if (lastPayload && lastPayload.current_room) envLayer.update(lastPayload.current_room, lastPayload.weather);
   });
   // the body between map payloads (web_hud.py): regeneration out of a fight, a posture taken
   MH.bus.on('vitals', () => {
@@ -642,6 +653,7 @@ async function runGame() {
     if (!p) return;
     hud.setPlayer(p);
     body.update(p);
+    envLayer.body(p);
     if (ctl) ctl.setPosture(p.position);
   });
   MH.bus.on('move.result', res => { if (sync) sync.onResult(res); });
@@ -1345,6 +1357,15 @@ async function runGame() {
     return false;
   }
   MH.bus.on('door.update', ev => {
+    // the room card's compass: a door of the room you stand in opened, shut, locked
+    const cur = lastPayload && lastPayload.current_room;
+    if (cur) {
+      for (const d of ev.doors || []) {
+        const e = d.vnum === cur.vnum && cur.exits && cur.exits[d.dir];
+        if (e && e.door) Object.assign(e.door, { state: d.state, locked: d.locked, broken: d.broken });
+      }
+      roomCard.update(cur);
+    }
     if (!zone) return;
     let heard = false;
     for (const d of ev.doors || []) {
