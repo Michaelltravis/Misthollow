@@ -44,6 +44,7 @@ import { ReactionPrompt, threatens, REACTIONS } from './reactions.js';
 import { createWorldMap } from './hud/worldmap.js';
 import { createAmbient } from './hud/ambient.js';
 import { createSkyDial } from './hud/sky.js';
+import { createBody } from './hud/body.js';
 import { uiIcon } from './hud/icons.js';
 import { AimCircle, clampAim, aimCommand } from './aim.js';
 import { FAR, farKind } from './far.js';
@@ -501,6 +502,8 @@ async function runGame() {
   };
   const mmSmall = createMinimap($('#minimap'), room => travelTo(room), () => engine.snapNorth());
   // the sun or moon on its arc, the season, the weather over the zone (hud/sky.js)
+  // hunger, thirst, stamina and a posture to get up from, under the player frame (hud/body.js)
+  const body = createBody($('#body-meters'), { icon: name => uiIcon(name, { size: 40 }), send: cmd => MH.sendCommand(cmd) });
   const skyDial = createSkyDial($('#minimap .mm-sky'), name => uiIcon(name, { size: 44, color: '#e6eef6', glow: 'rgba(190,215,240,.55)' }));
   // the big map (M): the same drawing, larger — the whole zone at a glance, click to walk there
   const bigEl = $('#bigmap');
@@ -601,7 +604,7 @@ async function runGame() {
     if (zone) applySky();
     skyDial.set(payload.time, payload.weather);
     if (payload.current_room) skyDial.setIndoors((payload.current_room.flags || []).includes('indoors'));
-    if (payload.player) { hud.setPlayer(payload.player); ents.heroLevel = payload.player.level || 1; }
+    if (payload.player) { hud.setPlayer(payload.player); body.update(payload.player); ents.heroLevel = payload.player.level || 1; }
     // what the hero wears (gear_look.py): re-dressed when it changes
     if (hero && payload.player && payload.player.look) dress(hero, payload.player.look, payload.player.char_class);
     if (hero && payload.player) ride(payload.player);
@@ -620,7 +623,7 @@ async function runGame() {
   });
   MH.bus.on('combat.update', p => {
     if (p && 'group' in p) hud.party.update(p.group);
-    if (MH.state.player) hud.setPlayer(MH.state.player);
+    if (MH.state.player) { hud.setPlayer(MH.state.player); body.update(MH.state.player); }
     ents.combat(p);
     const t = ents.targeted;
     if (t) hud.setTarget({ kind: t.kind, ...t.data });
@@ -638,6 +641,7 @@ async function runGame() {
     const p = MH.state.player;
     if (!p) return;
     hud.setPlayer(p);
+    body.update(p);
     if (ctl) ctl.setPosture(p.position);
   });
   MH.bus.on('move.result', res => { if (sync) sync.onResult(res); });

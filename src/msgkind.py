@@ -10,7 +10,7 @@ its start (web_client.py turns it into an empty <i data-k="kind"> the page reads
           over time ticking, an effect wearing off, a charge gained, a creature's health bar)
   reward  what a kill pays: experience, the streak and rested bonuses, reputation, the gold
   ui      what the page draws itself (web_hud.py): the sun rising, the sky, hunger, a posture,
-          a breath held, mail waiting, a world event; the sender asks for it (send(kind=UI)) and
+          a breath held, mail waiting, a world event; the sender asks for it (send_ui) and
           the log keeps the line, dimmed
 
 Everything else is unmarked: the room, speech, quests, loot, and the refusals a player has to
@@ -84,3 +84,15 @@ def mark(message, kind=None):
             k = kind_of(line, act)
         out.append(MARK.format(k) + line if k else line)
     return '\n'.join(out)
+
+
+async def send_ui(ch, message, newline=True):
+    """Send a line the page also draws (web_hud.py): marked ui for a web connection, plain for
+    telnet (and for anything else that only hears lines)."""
+    conn = getattr(ch, 'connection', None)
+    if conn is not None and getattr(conn, 'is_web', False):
+        await conn.send(message, newline, kind=UI)
+    elif newline:
+        await ch.send(message)
+    else:
+        await ch.send(message, newline)

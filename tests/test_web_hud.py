@@ -145,6 +145,16 @@ async def main():
     await web_hud.tick(world)
     sent = [e for n, e in wm.events if e['type'] == 'vitals']
     check(len(sent) == 1 and sent[0]['player']['position'] == 'sitting', 'sitting down tells the page')
+    # a posture asked for answers at once (the posture button), its line marked ui
+    from commands import CommandHandler
+    wm.events.clear()
+    h.position = 'standing'
+    await CommandHandler.cmd_rest(h, [])
+    sent = [e for n, e in wm.events if e['type'] == 'vitals']
+    check(sent and sent[-1]['player']['position'] == 'resting', 'resting tells the page at once')
+    await CommandHandler.cmd_stand(h, [])
+    sent = [e for n, e in wm.events if e['type'] == 'vitals']
+    check(sent[-1]['player']['position'] == 'standing', 'standing up (the posture button) tells the page at once')
     wm.events.clear()
     await web_hud.push_sky(world)
     ticks = [e for n, e in wm.events if e['type'] == 'world_tick']

@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     from player import Player
 
 from config import Config
+import msgkind
 import os
 import json
 
@@ -9930,8 +9931,10 @@ class CommandHandler:
             await player.send("You're already sitting.")
             return
         player.position = 'sitting'
-        await player.send("You sit down.")
+        await msgkind.send_ui(player, "You sit down.")
         await player.room.send_to_room(f"{player.name} sits down.", exclude=[player])
+        import web_hud
+        await web_hud.push_vitals(player, force=True)
         
     @classmethod
     async def cmd_rest(cls, player: 'Player', args: List[str]):
@@ -9943,8 +9946,10 @@ class CommandHandler:
             await player.send("You're already resting.")
             return
         player.position = 'resting'
-        await player.send("You rest and begin to recuperate.")
+        await msgkind.send_ui(player, "You rest and begin to recuperate.")
         await player.room.send_to_room(f"{player.name} rests.", exclude=[player])
+        import web_hud
+        await web_hud.push_vitals(player, force=True)
         # Revive knocked-out combat companion
         if hasattr(player, 'combat_companion') and player.combat_companion and player.combat_companion.knocked_out:
             if player.combat_companion.rest_revive():
@@ -9961,8 +9966,10 @@ class CommandHandler:
             await player.send("You're already asleep.")
             return
         player.position = 'sleeping'
-        await player.send("You go to sleep.")
+        await msgkind.send_ui(player, "You go to sleep.")
         await player.room.send_to_room(f"{player.name} goes to sleep.", exclude=[player])
+        import web_hud
+        await web_hud.push_vitals(player, force=True)
         # Revive knocked-out combat companion
         if hasattr(player, 'combat_companion') and player.combat_companion and player.combat_companion.knocked_out:
             if player.combat_companion.rest_revive():
@@ -9976,8 +9983,10 @@ class CommandHandler:
             await player.send("You're not sleeping!")
             return
         player.position = 'standing'
-        await player.send("You wake and stand up.")
+        await msgkind.send_ui(player, "You wake and stand up.")
         await player.room.send_to_room(f"{player.name} wakes up.", exclude=[player])
+        import web_hud
+        await web_hud.push_vitals(player, force=True)
         
     @classmethod
     async def cmd_stand(cls, player: 'Player', args: List[str]):
@@ -9986,11 +9995,13 @@ class CommandHandler:
             await player.send("You're already standing.")
             return
         if player.position == 'sleeping':
-            await player.send("You wake and stand up.")
+            await msgkind.send_ui(player, "You wake and stand up.")
         else:
-            await player.send("You stand up.")
+            await msgkind.send_ui(player, "You stand up.")
         player.position = 'standing'
         await player.room.send_to_room(f"{player.name} stands up.", exclude=[player])
+        import web_hud
+        await web_hud.push_vitals(player, force=True)
     
     # ==================== CONSUMABLES ====================
     

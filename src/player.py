@@ -3643,7 +3643,7 @@ class Player(Character):
         if not hasattr(self, 'world') or not self.world or not hasattr(self.world, 'game_time'):
             return
 
-        from msgkind import UI
+        from msgkind import send_ui
         current_hour = self.world.game_time.total_hours()
         # only the hours lived through drain: a new character, one back from away, or a clock
         # set back starts counting from now
@@ -3661,17 +3661,17 @@ class Player(Character):
 
                 # Warnings and penalties based on hunger level
                 if self.hunger == 0:
-                    await self.send(f"{c['red']}You are starving! Your strength wanes.{c['reset']}", kind=UI)
+                    await send_ui(self, f"{c['red']}You are starving! Your strength wanes.{c['reset']}")
                     # Starving: apply debuff (reduced regen, -2 STR) instead of damage
                     # Debuff is checked in regen/combat — no HP loss from hunger
 
                 elif self.hunger <= 24:  # Less than 1 day of food
                     if self.hunger == 24:
-                        await self.send(f"{c['yellow']}You are extremely hungry!{c['reset']}", kind=UI)
+                        await send_ui(self, f"{c['yellow']}You are extremely hungry!{c['reset']}")
 
                 elif self.hunger <= 48:  # Less than 2 days of food
                     if self.hunger == 48:
-                        await self.send(f"{c['yellow']}You are hungry.{c['reset']}", kind=UI)
+                        await send_ui(self, f"{c['yellow']}You are hungry.{c['reset']}")
 
         # Decrease thirst by 1 per game hour (critical after 2.5 days = 60 hours)
         if current_hour != self.last_thirst_hour:
@@ -3682,17 +3682,17 @@ class Player(Character):
 
                 # Warnings and penalties based on thirst level
                 if self.thirst == 0:
-                    await self.send(f"{c['bright_red']}You are parched! Your focus falters.{c['reset']}", kind=UI)
+                    await send_ui(self, f"{c['bright_red']}You are parched! Your focus falters.{c['reset']}")
                     # Dehydrated: apply debuff (reduced regen, -2 DEX) instead of damage
                     # Debuff is checked in regen/combat — no HP loss from thirst
 
                 elif self.thirst <= 12:  # Less than half day of water
                     if self.thirst == 12:
-                        await self.send(f"{c['yellow']}You are extremely thirsty!{c['reset']}", kind=UI)
+                        await send_ui(self, f"{c['yellow']}You are extremely thirsty!{c['reset']}")
 
                 elif self.thirst <= 24:  # Less than 1 day of water
                     if self.thirst == 24:
-                        await self.send(f"{c['yellow']}You are thirsty.{c['reset']}", kind=UI)
+                        await send_ui(self, f"{c['yellow']}You are thirsty.{c['reset']}")
 
     def get_hunger_condition(self) -> str:
         """Get description of hunger condition (max 168 hours = 1 week)."""

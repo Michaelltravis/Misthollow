@@ -1422,7 +1422,7 @@ class World:
                 # Announce to all players
                 c = self.config.COLORS
                 for player in self.players.values():
-                    await player.send(f"\r\n{c['yellow']}{announcement}{c['reset']}\r\n", kind=msgkind.UI)
+                    await msgkind.send_ui(player, f"\r\n{c['yellow']}{announcement}{c['reset']}\r\n")
                 logger.info(f"Time: {self.game_time.get_time_string()}")
             await web_hud.push_sky(self)
 
@@ -1463,7 +1463,7 @@ class World:
 
                     for player in self.players.values():
                         if player.room and player.room.zone == zone:
-                            await player.send(f"\r\n{c['cyan']}{weather_desc}{c['reset']}\r\n", kind=msgkind.UI)
+                            await msgkind.send_ui(player, f"\r\n{c['cyan']}{weather_desc}{c['reset']}\r\n")
                     await web_hud.push_sky(self, zone)
 
     async def pet_tick(self):
@@ -1578,7 +1578,7 @@ class World:
         exclude = exclude or []
         for player in self.players.values():
             if player not in exclude:
-                if kind:
-                    await player.send(f"\r\n{message}\r\n", kind=kind)
+                if kind == msgkind.UI:
+                    await msgkind.send_ui(player, f"\r\n{message}\r\n")
                 else:
                     await player.send(f"\r\n{message}\r\n")
