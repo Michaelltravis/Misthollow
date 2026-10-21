@@ -55,7 +55,7 @@ test('the main bar and three extra bars: 40 slots, keys 1-8, Shift, Alt, Alt+Shi
   assert.equal(SLOTS, 40);
   assert.equal(MAIN, 16);
   assert.deepEqual(EXTRA, [[16, 24], [24, 32], [32, 40]]);
-  assert.deepEqual([0, 7, 8, 15, 16, 23, 24, 31, 32, 39].map(i => keyOf(i)), ['1', '8', '⇧1', '⇧8', 'A1', 'A8', 'A⇧1', 'A⇧8', '', '']);
+  assert.deepEqual([0, 7, 8, 15, 16, 23, 24, 31, 32, 39].map(i => keyOf(i)), ['1', '8', 'S1', 'S8', 'A1', 'A8', 'AS1', 'AS8', '', '']);
   assert.equal(keyOf(17, true), 'Alt+2');
   assert.equal(slotForKey(1), 0);
   assert.equal(slotForKey(3, { shift: true }), 10);

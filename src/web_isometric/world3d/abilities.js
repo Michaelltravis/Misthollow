@@ -12,11 +12,13 @@ export const EXTRA = [[16, 24], [24, 32], [32, 40]];
 export const SLOTS = 40;
 
 // the key a slot answers to, as the slot shows it ('' for the click-only bar); `long` for tips
+// (letters for the modifiers: the bar's font has no ⇧, and the one borrowed for it, small and bold,
+// read as a second key over the first)
 export function keyOf(i, long = false) {
   if (i < 8) return String(i + 1);
-  if (i < 16) return long ? `Shift+${i - 7}` : `⇧${i - 7}`;
+  if (i < 16) return long ? `Shift+${i - 7}` : `S${i - 7}`;
   if (i < 24) return long ? `Alt+${i - 15}` : `A${i - 15}`;
-  if (i < 32) return long ? `Alt+Shift+${i - 23}` : `A⇧${i - 23}`;
+  if (i < 32) return long ? `Alt+Shift+${i - 23}` : `AS${i - 23}`;
   return '';
 }
 // the slot a key press means: digit 1-8 with Shift/Alt held, or -1
