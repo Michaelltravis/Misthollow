@@ -1,0 +1,33 @@
+{
+  "name": "mace",
+  "why": "The one-handed mace (gearlook.js PROC 'mace', every cleric's own and a paladin's), made by Tripo in place of the one procgear.js builds in code on the knight's sword mount.",
+  "concepts": 2,
+  "image": {
+    "model": "banana",
+    "size": "768x1344",
+    "prompt": "Stylized low-poly fantasy one-handed flanged mace, a single game prop shown whole, standing perfectly upright and vertical with the head at the top, centered, seen from the side. Short sturdy wooden haft with a wrapped leather grip near the bottom and a round steel pommel. A big chunky steel head with six thick flanges and a rounded cap, a thin gold band where the head meets the haft. Chunky readable shapes, big head, hand-painted flat colours with soft light-to-dark gradients, no texture noise, no harsh shadows. Game-ready prop in the style of KayKit adventurers. Plain light grey background, nothing else in the picture. --no hands, character, text, multiple objects, spikes, chains"
+  },
+  "model": {
+    "model": "P2-20260801",
+    "face_limit": 500,
+    "texture": true,
+    "pbr": false,
+    "texture_version": "v3.5-20260815",
+    "delight": true
+  },
+  "kit": {
+    "piece": "Tripo_Mace",
+    "bone": "handslot.r",
+    "model": "Knight",
+    "like": "1H_Sword",
+    "span": [-0.36, 0.91],
+    "budget": 500,
+    "colours": {
+      "wood": "wood",
+      "grip": "leather_dark",
+      "steel": "steel",
+      "iron": "iron",
+      "gold": "gold"
+    }
+  }
+}

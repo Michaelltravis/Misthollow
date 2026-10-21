@@ -76,9 +76,11 @@ const INSTRUMENT_SHAPES = new Set(['lute', 'lyre', 'harp', 'flute', 'drum', 'hor
 export const STAFF_HEADS = new Set(['crystal', 'skull', 'gnarled', 'plain']);
 const STAFF_OF = { mage: 'crystal', necromancer: 'skull' };
 export const staffShape = (p, cls) => `staff_${STAFF_HEADS.has(p.v) ? p.v : STAFF_OF[String(cls || '').toLowerCase()] || 'plain'}`;
-// staves the kit holds as pieces (made by Tripo, tools/art3d/tripo/, repainted onto the kit's
-// palette by blender/models/tripo_prop.py): held in place of the shape built in code
-export const STAFF_PIECE = { staff_crystal: 'Tripo_Staff_Crystal' };
+// staves and weapons the kit holds as pieces (made by Tripo, tools/art3d/tripo/, repainted onto
+// the kit's palette by blender/models/tripo_prop.py): held in the right hand in place of the
+// shape built in code
+export const STAFF_PIECE = { staff_crystal: 'Tripo_Staff_Crystal', staff_skull: 'Tripo_Staff_Skull' };
+export const PROC_PIECE = { mace: 'Tripo_Mace' };
 // a hat by its shape (gear_look.py HATS), else the class's: casters the pack's wizard hat, the
 // rest a brimmed hat with a feather; brim, cap and mitre are built in code (procgear.js)
 const HAT_SHAPES = new Set(['wizard', 'brim', 'cap', 'mitre']);
@@ -274,7 +276,9 @@ export function planLook(look, cls, kit) {
   }
   else if (m) {
     const shape = procShape(m);
-    if (shape) procs.push({ shape, piece: m.k === 'bow' ? 'knight-1H_Sword_Offhand' : 'knight-1H_Sword', look: m, roles: weaponRoles(m, cls) });
+    if (shape && PROC_PIECE[shape] && add(PROC_PIECE[shape], weaponRoles(m, cls))) {
+      // (the kit's own piece)
+    } else if (shape) procs.push({ shape, piece: m.k === 'bow' ? 'knight-1H_Sword_Offhand' : 'knight-1H_Sword', look: m, roles: weaponRoles(m, cls) });
     else if (MAIN[m.k]) {
       const name = add(m.h === 2 && m.k === 'sword' && (m.t || 0) >= 3 ? 'kit-sword_2handed_color' : MAIN[m.k](m.h), weaponRoles(m, cls));
       if (name && (m.t || 0) >= 2 && !['crossbow', 'thrown', 'staff'].includes(m.k)) addons.push({ kind: 'gem', on: name, spot: 'pommel', roles: { gem: gemOr(m, 'gem_red') } });

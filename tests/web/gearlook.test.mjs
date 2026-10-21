@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { planLook, swingClips, starterLook, kitIndex, CLASS_BASE, PROC, rangedBlow, SEX_BUILD, STAFF_PIECE } from '../../src/web_isometric/world3d/gearlook.js';
+import { planLook, swingClips, starterLook, kitIndex, CLASS_BASE, PROC, rangedBlow, SEX_BUILD, STAFF_PIECE, PROC_PIECE } from '../../src/web_isometric/world3d/gearlook.js';
 import { buildProc, buildAddon, SHAPES, ADDONS, MOTIFS, HANGING } from '../../src/web_isometric/world3d/procgear.js';
 
 const ART = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../src/web_isometric/art3d');
@@ -307,6 +307,17 @@ test("a staff by its head, else the class's: a mage's crystal, a necromancer's s
     const ys = [...a.position].filter((_, i) => i % 3 === 1);
     assert.ok(Math.max(...ys) - Math.min(...ys) > 1.5, `${head}: as long as a staff`);
   }
+});
+
+test("a weapon the kit holds as a piece is held in place of the shape built in code, in the item's colours", () => {
+  for (const [shape, made] of Object.entries(PROC_PIECE)) {
+    if (!kit.pieces[made]) continue;
+    const plan = planLook({ v: 1, sig: `made:${shape}`, main: { k: shape, h: 1, m: 'gold', t: 3 } }, 'cleric', kit);
+    assert.ok(names(plan).includes(made) && !plan.procs.some(p => p.shape === shape), `${shape}: the kit's own piece`);
+    const remap = plan.props.find(p => p.name === made).remap;
+    assert.ok(Object.values(remap).includes(kit.col('gold')), `${shape}: a gold one is gold`);
+  }
+  assert.ok(names(planLook(starterLook('cleric'), 'cleric', kit)).includes(PROC_PIECE.mace) || !kit.pieces[PROC_PIECE.mace], "a cleric's own mace");
 });
 
 test('every class as gearup dresses it (gallery ENDGAME, kept true by tests/test_class_gear.py) is drawn as its class', async () => {

@@ -1,0 +1,46 @@
+{
+ "name": "mace",
+ "concepts": [
+  {
+   "n": 1,
+   "task_id": "ae0ece76-ad61-4653-b1e6-832d05140aa7",
+   "credits": 5,
+   "file": "concept_1.png",
+   "spec": {
+    "model": "banana",
+    "size": "768x1344",
+    "prompt": "Stylized low-poly fantasy one-handed flanged mace, a single game prop shown whole, standing perfectly upright and vertical with the head at the top, centered, seen from the side. Short sturdy wooden haft with a wrapped leather grip near the bottom and a round steel pommel. A big chunky steel head with six thick flanges and a rounded cap, a thin gold band where the head meets the haft. Chunky readable shapes, big head, hand-painted flat colours with soft light-to-dark gradients, no texture noise, no harsh shadows. Game-ready prop in the style of KayKit adventurers. Plain light grey background, nothing else in the picture. --no hands, character, text, multiple objects, spikes, chains"
+   },
+   "at": "2026-10-21T15:06:00.193485Z"
+  },
+  {
+   "n": 2,
+   "task_id": "cdb3cfd4-9063-44bb-a604-e1414602a6a0",
+   "credits": 5,
+   "file": "concept_2.png",
+   "spec": {
+    "model": "banana",
+    "size": "768x1344",
+    "prompt": "Stylized low-poly fantasy one-handed flanged mace, a single game prop shown whole, standing perfectly upright and vertical with the head at the top, centered, seen from the side. Short sturdy wooden haft with a wrapped leather grip near the bottom and a round steel pommel. A big chunky steel head with six thick flanges and a rounded cap, a thin gold band where the head meets the haft. Chunky readable shapes, big head, hand-painted flat colours with soft light-to-dark gradients, no texture noise, no harsh shadows. Game-ready prop in the style of KayKit adventurers. Plain light grey background, nothing else in the picture. --no hands, character, text, multiple objects, spikes, chains"
+   },
+   "at": "2026-10-21T15:06:09.431246Z"
+  }
+ ],
+ "models": [
+  {
+   "concept": 1,
+   "task_id": "205d8033-8f6a-49ad-9ebe-f506bc17b549",
+   "credits": 110,
+   "file": "model.glb",
+   "spec": {
+    "model": "P2-20260801",
+    "face_limit": 500,
+    "texture": true,
+    "pbr": false,
+    "texture_version": "v3.5-20260815",
+    "delight": true
+   },
+   "at": "2026-10-21T15:07:42.861185Z"
+  }
+ ]
+}
