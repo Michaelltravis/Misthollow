@@ -58,20 +58,13 @@ HELP_TOPICS = {'auction': {'category': 'command',
  'account': {'category': 'command',
              'description': 'View and manage your account: every character is on one, and its password is the '
                             'only way in. Log in with the account (or any of its characters) to make, play or '
-                            'delete characters.
-
-'
-                            '  account                      - this account and its characters
-'
-                            '  account chars                - its characters, with levels and classes
-'
+                            'delete characters.\n\n'
+                            '  account                      - this account and its characters\n'
+                            '  account chars                - its characters, with levels and classes\n'
                             '  account claim <name> <pass>  - bring in a character from another account of yours '
-                            '(the password of the account it is on now)
-'
-                            '  account password <old> <new> - change the account password
-'
-                            '  account email <address>      - an address for password resets
-'
+                            '(the password of the account it is on now)\n'
+                            '  account password <old> <new> - change the account password\n'
+                            '  account email <address>      - an address for password resets\n'
                             '  account forgot / recover <token> <new> - reset a forgotten password',
              'syntax': 'account [chars|info|claim|password|email|forgot|recover]',
              'title': 'Account'},
