@@ -129,6 +129,54 @@ def forgot_allowed(account_name: str) -> bool:
     return True
 
 
+# ---------------------------------------------------------------- email codes
+# A new account (or a new email on one) proves its email with a 6-digit code mailed to it. The
+# code is kept on the connection that asked for it, as a hash, for 15 minutes and 5 tries. So
+# the game can't be used to flood an inbox, an address gets at most 3 codes an hour and one
+# network address (the player's own: web_client passes it on) 6.
+
+CODE_TTL = 900
+CODE_TRIES = 5
+CODES_PER_EMAIL = 3
+CODES_PER_ADDRESS = 6
+CODE_WINDOW = 3600
+_code_sends = {}                     # 'email:x' / 'ip:x' -> [send times]
+
+
+def code_send_allowed(email: str, address: str) -> str:
+    """Why no code may be mailed now ('' if one may; it is then counted)."""
+    now = time.time()
+    keys = [(f"email:{(email or '').strip().lower()}", CODES_PER_EMAIL), (f"ip:{address or '?'}", CODES_PER_ADDRESS)]
+    for key, most in keys:
+        recent = [t for t in _code_sends.get(key, []) if now - t < CODE_WINDOW]
+        _code_sends[key] = recent
+        if len(recent) >= most:
+            return "Too many codes have been sent just now. Try again in an hour."
+    for key, _most in keys:
+        _code_sends[key].append(now)
+    return ''
+
+
+def new_code() -> tuple:
+    """A fresh code: (the code to mail, what to keep of it)."""
+    code = f"{secrets.randbelow(1_000_000):06d}"
+    return code, {'hash': hashlib.sha256(code.encode()).hexdigest(), 'until': time.time() + CODE_TTL, 'tries': 0}
+
+
+def check_code(kept: dict, typed: str) -> str:
+    """'ok', 'wrong' (a try used), 'expired' or 'spent' (out of tries) for a typed code."""
+    if not kept:
+        return 'expired'
+    if time.time() > kept['until']:
+        return 'expired'
+    if kept['tries'] >= CODE_TRIES:
+        return 'spent'
+    if hmac.compare_digest(kept['hash'], hashlib.sha256((typed or '').strip().encode()).hexdigest()):
+        return 'ok'
+    kept['tries'] += 1
+    return 'spent' if kept['tries'] >= CODE_TRIES else 'wrong'
+
+
 # ---------------------------------------------------------------- sign-in tokens
 
 TOKEN_DEVICES = 5

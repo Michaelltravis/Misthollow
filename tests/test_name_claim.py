@@ -167,6 +167,26 @@ async def offline():
     await q.disconnect()
     await s.disconnect()
 
+    # with email codes on: a sign-up waiting on its code keeps the name; stopping lets it go
+    real = accounts.mail_settings, accounts.send_code
+    codes = []
+    accounts.mail_settings = lambda: {'host': 'smtp.example.com', 'port': 587, 'user': '', 'password': '', 'from': 'g@x.com', 'tls': True}
+    accounts.send_code = lambda to, code: codes.append(code) or True
+    try:
+        t, wt = connection()
+        for line in ('newaccount Kell kell@example.com', 'kellpass12', 'kellpass12'):
+            await t.handle_input(line)
+        u, wu = connection()
+        await u.handle_input('Kell')
+        check(t.state == t.STATE_VERIFY_CODE and u.state == u.STATE_GET_NAME and 'already taken' in wu.text(),
+              'a sign-up waiting on its email code keeps its name')
+        await t.handle_input('')
+        await u.handle_input('Kell')
+        check(u.state == u.STATE_CONFIRM_NAME and not accounts.Account.exists('kell'), '…and stopping it lets the name go')
+        await u.disconnect()
+    finally:
+        accounts.mail_settings, accounts.send_code = real
+
     # a new character's file is made exclusively, even past the name check
     from player import Player
     p = Player.load('Aria')

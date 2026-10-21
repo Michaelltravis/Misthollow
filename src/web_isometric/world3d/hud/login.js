@@ -61,7 +61,8 @@ export function setupLogin() {
   const say = (msg, err) => { status.textContent = msg || ''; status.className = err ? 'error' : ''; };
   // this browser signed in before: one click continues (the stored token, not a password)
   const resumeBox = $('#login-resume'), form = $('#login-form'), signup = $('#signup-form'), chars = $('#login-chars');
-  const only = el => [resumeBox, form, signup, chars].forEach(x => x.classList.toggle('hidden', x !== el));
+  const codeForm = $('#code-form'), codeIn = $('#code-input');
+  const only = el => [resumeBox, form, signup, codeForm, chars].forEach(x => x.classList.toggle('hidden', x !== el));
   const showForm = () => only(form);
   // no account yet: the account first (email, name, password), then its heroes; what was typed
   // at the sign-in carries over
@@ -78,6 +79,26 @@ export function setupLogin() {
   $('#to-create').addEventListener('click', () => showSignup());
   $('#to-login').addEventListener('click', () => { showForm(); say(''); (name.value ? pass : name).focus(); });
   MH.bus.on('login.noaccount', who => showSignup(`There's no account for ${who} yet. Create one to start playing.`, true));
+  // the email's code: nothing is made until it comes back (server.py handle_verify_code)
+  MH.bus.on('signup.code', ({ email, error }) => {
+    only(codeForm);
+    $('#code-why').textContent = `We sent a 6-digit code to ${email}. It works for 15 minutes.`;
+    codeIn.value = '';
+    say(error || '', !!error);
+    codeIn.focus();
+  });
+  MH.bus.on('signup.stopped', why => showSignup(why));
+  const sendCode = () => {
+    const v = codeIn.value.replace(/\s/g, '');
+    if (!/^\d{6}$/.test(v)) return say('The code is 6 digits.', true);
+    say('Checking the code…');
+    send(v);
+  };
+  $('#code-btn').addEventListener('click', sendCode);
+  codeIn.addEventListener('keydown', e => { if (e.key === 'Enter') sendCode(); e.stopPropagation(); });
+  $('#code-resend').addEventListener('click', () => { say('Sending a new code…'); send('resend'); });
+  // (nothing sent: the server drops the sign-up, and its reply brings the form back)
+  $('#code-back').addEventListener('click', () => send(''));
   const rec = MH.auth.get();
   if (rec) {
     resumeBox.querySelector('b').textContent = rec.name;
@@ -151,8 +172,18 @@ export function setupLogin() {
   const tint = cls => '#' + (THEMES[cls] || THEMES.creature).core.toString(16).padStart(6, '0');
   function heroes(menu) {
     only(chars);
-    // an account with no email yet (made before emails): offered here
-    chars.querySelector('.lc-email').classList.toggle('hidden', !!menu.email);
+    // an account with no email yet (made before emails): offered here, and its code asked for
+    pendingEmail = menu.pending || '';
+    const box = chars.querySelector('.lc-email'), field = $('#acct-email');
+    box.classList.toggle('hidden', !!menu.email && !pendingEmail);
+    box.querySelector('.login-note').textContent = pendingEmail
+      ? `Enter the 6-digit code we sent to ${pendingEmail}.`
+      : 'Add an email to sign in with it (and to get a reset if you forget your password).';
+    field.value = '';
+    field.type = pendingEmail ? 'text' : 'email';
+    field.placeholder = pendingEmail ? '6-digit code' : 'Email';
+    field.autocomplete = pendingEmail ? 'one-time-code' : 'email';
+    $('#acct-email-btn').textContent = pendingEmail ? 'Confirm' : 'Save';
     chars.querySelector('.lc-head b').textContent = menu.account;
     const list = chars.querySelector('.lc-list');
     list.innerHTML = menu.chars.length ? menu.chars.map(c => {
@@ -182,10 +213,16 @@ export function setupLogin() {
     // an account just made: straight on to its first hero
     if (madeNow && !menu.chars.length) { madeNow = false; $('#forge-btn').click(); }
   });
+  // an email for the account; when the server mails codes, the code then (the menu's verify)
+  let pendingEmail = '';
   const saveEmail = () => {
     const e = $('#acct-email').value.trim();
-    if (!EMAIL.test(e)) return say("That isn't an email address.", true);
     heroNote = '';
+    if (pendingEmail) {
+      if (!/^\d{6}$/.test(e)) return say('The code is 6 digits.', true);
+      return send(`verify ${e}`);
+    }
+    if (!EMAIL.test(e)) return say("That isn't an email address.", true);
     send(`email ${e}`);
   };
   $('#acct-email-btn').addEventListener('click', saveEmail);

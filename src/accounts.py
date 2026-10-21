@@ -192,6 +192,70 @@ def _write_save(path: str, data: dict):
     os.replace(tmp, path)
 
 
+# ---------------------------------------------------------------- mail
+
+MAIL_FILE = os.path.join(os.path.dirname(__file__), '..', 'lib', 'mail.json')
+
+
+def mail_settings() -> dict:
+    """How the server sends mail: {host, port, user, password, from, tls}, or {} when it can't.
+    From MISTHOLLOW_SMTP_* in the environment, else lib/mail.json (the server machine's own file,
+    never committed), else config.py's SMTP_*. With none, sign-ups need no email code."""
+    from config import Config
+    env = {k: os.environ.get(f'MISTHOLLOW_SMTP_{k.upper()}') for k in ('host', 'port', 'user', 'password', 'from', 'tls')}
+    if env['host']:
+        s = env
+    else:
+        try:
+            with open(MAIL_FILE, encoding='utf-8') as f:
+                s = json.load(f)
+        except (OSError, ValueError):
+            s = {'host': Config.SMTP_HOST, 'port': Config.SMTP_PORT, 'user': Config.SMTP_USER,
+                 'password': Config.SMTP_PASS, 'from': Config.SMTP_FROM, 'tls': Config.SMTP_TLS}
+    if not s.get('host') or not s.get('from'):
+        return {}
+    tls = s.get('tls', True)
+    return {'host': s['host'], 'port': int(s.get('port') or 587), 'user': s.get('user') or '',
+            'password': s.get('password') or '', 'from': s['from'],
+            'tls': tls if isinstance(tls, bool) else str(tls).lower() not in ('0', 'false', 'no')}
+
+
+def verification_on() -> bool:
+    """New accounts and new emails prove their email with a code (the server can send mail)."""
+    return bool(mail_settings())
+
+
+def send_mail(to: str, subject: str, body: str) -> bool:
+    """One plain email (blocking: callers in the game loop run it in a thread). True if sent."""
+    s = mail_settings()
+    if not s or not to:
+        return False
+    msg = EmailMessage()
+    msg['Subject'] = subject
+    msg['From'] = s['from']
+    msg['To'] = to
+    msg.set_content(body)
+    try:
+        with smtplib.SMTP(s['host'], s['port'], timeout=20) as server:
+            if s['tls']:
+                server.starttls()
+            if s['user'] and s['password']:
+                server.login(s['user'], s['password'])
+            server.send_message(msg)
+        return True
+    except Exception as e:
+        logger.warning(f"accounts: mail to {to} not sent: {e}")
+        return False
+
+
+def send_code(to: str, code: str) -> bool:
+    """The email carrying a sign-up (or new email's) code."""
+    return send_mail(to, f'Your Misthollow code: {code}',
+                     f"Your Misthollow code is {code}\n\n"
+                     f"Type it where the game asks for it. It works for 15 minutes.\n\n"
+                     f"If you didn't ask for it, someone typed your address by mistake: you can ignore this email.")
+
+
 EMAIL_RE = re.compile(r'^[^@\s]+@[^@\s]+\.[^@\s.]+$')
 
 
@@ -272,10 +336,11 @@ class AccountManager:
 
     @staticmethod
     async def sign_up(account_name: str, password: str, race: str, char_class: str, stats: Dict[str, int],
-                      world=None, sex: str = 'neutral', look_style: str = '') -> Tuple[Optional[Account], Optional['Player'], str]:
-        """A new account and its first character, named after it, made together (a sign-up
-        left half-way leaves nothing behind): (account, player, '') or (None, None, why not)."""
-        account, why = await AccountManager.create_account(account_name, password)
+                      world=None, sex: str = 'neutral', look_style: str = '', email: str = '') -> Tuple[Optional[Account], Optional['Player'], str]:
+        """A new account (signing in by `email` too, if given) and its first character, named
+        after it, made together (a sign-up left half-way leaves nothing behind): (account,
+        player, '') or (None, None, why not)."""
+        account, why = await AccountManager.create_account(account_name, password, email)
         if account is None:
             return None, None, why
         player, why = await AccountManager.create_character(account, account_name, race, char_class, stats,
@@ -438,37 +503,15 @@ class AccountManager:
     def send_reset_email(account: Account, token: str) -> bool:
         """Send reset email via SMTP. Returns True if sent."""
         from config import Config
-        cfg = Config()
-
-        if not cfg.SMTP_HOST or not cfg.SMTP_FROM:
-            return False
         if not account.settings.get('email'):
             return False
-
-        msg = EmailMessage()
-        msg['Subject'] = 'Misthollow Password Reset'
-        msg['From'] = cfg.SMTP_FROM
-        msg['To'] = account.settings['email']
-        msg.set_content(
-            f"Hello {account.account_name},\n\n"
-            f"Use this token to reset your password (valid {cfg.PASSWORD_RESET_TTL_HOURS} hours):\n\n"
-            f"{token}\n\n"
-            f"You can reset from the login screen by typing:\n"
-            f"reset {token} <newpassword>\n\n"
-            f"If you did not request this, you can ignore this email."
-        )
-
-        try:
-            server = smtplib.SMTP(cfg.SMTP_HOST, cfg.SMTP_PORT)
-            if cfg.SMTP_TLS:
-                server.starttls()
-            if cfg.SMTP_USER and cfg.SMTP_PASS:
-                server.login(cfg.SMTP_USER, cfg.SMTP_PASS)
-            server.send_message(msg)
-            server.quit()
-            return True
-        except Exception:
-            return False
+        return send_mail(account.settings['email'], 'Misthollow Password Reset',
+                         f"Hello {account.account_name},\n\n"
+                         f"Use this token to reset your password (valid {Config.PASSWORD_RESET_TTL_HOURS} hours):\n\n"
+                         f"{token}\n\n"
+                         f"You can reset from the login screen by typing:\n"
+                         f"reset {token} <newpassword>\n\n"
+                         f"If you did not request this, you can ignore this email.")
 
     @staticmethod
     async def reset_with_token(account_name: str, token: str, new_password: str) -> bool:
