@@ -2,7 +2,7 @@
 // answer a marked blow.   node --test tests/web/*.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { shopRows, keywordFor } from '../../src/web_isometric/world3d/hud/shop.js';
+import { shopRows, keywordFor, shopTip } from '../../src/web_isometric/world3d/hud/shop.js';
 import { readTalk, talkQuests } from '../../src/web_isometric/world3d/hud/talk.js';
 import { onlineRows, hereRows } from '../../src/web_isometric/world3d/hud/who.js';
 import { rankTopics, CONTROLS } from '../../src/web_isometric/world3d/hud/help.js';
@@ -22,6 +22,29 @@ test('the shop buys by the number in its list and sells by the word the MUD know
   assert.deepEqual(shopRows({ found: false }, 'buy'), []);
   const two = [{ name: 'long sword' }, { name: 'long bow' }];
   assert.equal(keywordFor(two[1], two), '2.long');
+});
+
+test("hovering a shop row shows the item's stats, and this shop's price, not its worth", async () => {
+  globalThis.window = globalThis.window || globalThis;
+  if (typeof globalThis.addEventListener !== 'function') globalThis.addEventListener = () => {};
+  globalThis.localStorage = globalThis.localStorage || { getItem: () => null, setItem: () => {} };
+  globalThis.document = globalThis.document || { querySelector: () => null, addEventListener: () => {}, createElement: () => ({ getContext: () => null }) };
+  const sword = { name: 'long sword', short: 'a long sword', type: 'weapon', slot: 'wield', damage_dice: '2d6',
+    weapon_type: 'slash', affects: [{ type: 'hitroll', value: 2 }], weight: 6, cost: 120, level: 12 };
+  const data = { found: true, keeper: 'the weaponsmith', gold: 50, buy: [{ ...sword, price: 180 }],
+    sell: [{ ...sword, price: 60, will_buy: true }, { name: 'bread', short: 'a loaf of bread', type: 'food', price: 0, will_buy: false }] };
+  const { tooltip } = await import('../../src/web_isometric/world3d/hud/inventory.js');
+  const buy = shopTip(shopRows(data, 'buy')[0], 'buy', null, tooltip);
+  assert.match(buy, /a long sword/);
+  assert.match(buy, /Damage 2d6 \(slash\)/);
+  assert.match(buy, /\+2 hitroll/);
+  assert.match(buy, /Costs 180 gold · Not enough gold/);
+  assert.doesNotMatch(buy, /120 gold/);
+  const [sold, bread] = shopRows(data, 'sell');
+  assert.match(shopTip(sold, 'sell', null, tooltip), /They pay 60 gold/);
+  assert.match(shopTip(bread, 'sell', null, tooltip), /doesn't deal in that/);
+  const player = { char_class: 'warrior', equipment: { wield: { name: 'dagger', short: 'a dagger', type: 'weapon', slot: 'wield', damage_dice: '1d4' } } };
+  assert.match(shopTip(shopRows(data, 'buy')[0], 'buy', player, tooltip), /Against a dagger/);
 });
 
 test('a reply to talk: their words, the responses as buttons, the offers; the telnet hints go', () => {

@@ -6,7 +6,7 @@
 import { splitByKind } from './logkinds.js';
 import { framed as inBox, renderBox, renderLine, renderCols, classify, meters, inList, unprompt, isTitle } from './frames.js';
 import { SCHOOL_CSS } from '../sctlogic.js';
-import { createInventory } from './inventory.js';
+import { createInventory, tooltip as itemTooltip } from './inventory.js';
 import { createCharacter } from './character.js';
 import { createSpellbook } from './spellbook.js';
 import { createTrainer } from './trainer.js';
@@ -96,6 +96,7 @@ export function createHud() {
   const shop = createShop($('#shop'), {
     fetchShop: kw => getJSON(`/shop?player=${encodeURIComponent(me())}&keeper=${encodeURIComponent(kw || '')}`),
     send: c => MH.sendCommand(c), icon: itemCanvas, sound,
+    tooltip: itemTooltip, player: () => MH.state && MH.state.player,     // a row's hover card, against what you wear
   });
   // a corpse's loot window (lootwin.js): main.js opens it when the hero reaches a corpse
   const lootwin = createLootWindow($('#lootwin'), { send: c => { MH.sendCommand(c); setTimeout(() => MH.refreshState && MH.refreshState(), 400); }, icon: itemCanvas, sound, toast: t => toast(t) });
