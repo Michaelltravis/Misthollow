@@ -18245,7 +18245,10 @@ class CommandHandler:
         import sys
         import re
         from pathlib import Path
-        
+        import os
+        # (the script prints ✓: it writes UTF-8 and is read as UTF-8, not in Windows' code page)
+        _UTF8_ENV = {**os.environ, 'PYTHONIOENCODING': 'utf-8'}
+
         script_path = Path(__file__).parent.parent / "scripts" / "backup.py"
         
         if not args:
@@ -18257,7 +18260,7 @@ class CommandHandler:
             await player.send(f"{c['bright_cyan']}=== Available Backups ==={c['reset']}")
             result = subprocess.run(
                 [sys.executable, str(script_path), '--list'],
-                capture_output=True, text=True
+                capture_output=True, text=True, encoding='utf-8', errors='replace', env=_UTF8_ENV
             )
             for line in result.stdout.strip().split('\n'):
                 await player.send(f"{c['white']}{line}{c['reset']}")
@@ -18279,7 +18282,7 @@ class CommandHandler:
             await player.send(f"{c['yellow']}Restoring from {filename}...{c['reset']}")
             result = subprocess.run(
                 [sys.executable, str(script_path), '--restore', filename],
-                capture_output=True, text=True
+                capture_output=True, text=True, encoding='utf-8', errors='replace', env=_UTF8_ENV
             )
             for line in result.stdout.strip().split('\n'):
                 await player.send(f"{c['white']}{line}{c['reset']}")
@@ -18304,7 +18307,7 @@ class CommandHandler:
         
         await player.send(f"{c['yellow']}Creating {backup_type} backup...{c['reset']}")
         
-        result = subprocess.run(cmd_args, capture_output=True, text=True)
+        result = subprocess.run(cmd_args, capture_output=True, text=True, encoding='utf-8', errors='replace', env=_UTF8_ENV)
         
         if result.returncode == 0:
             # Parse output for summary
