@@ -105,6 +105,8 @@ async def main():
     await enter(reliquary, 28501)
     await ticks(reliquary, zh.AIR_TICKS + 1)
     check(reliquary.max_hp - reliquary.hp == 30, f'the Drowned Reliquary drowns at its own 30 ({reliquary.max_hp - reliquary.hp})')
+    pockets = [v for v, r in world.rooms.items() if r.zone and r.zone.number == 285 and (r.zone_mechanic or {}).get('type') == 'air_pocket']
+    check(len(pockets) >= 4, f'the Reliquary has air pockets along the way ({sorted(pockets)})')
     for h in (diver, pearl, reliquary):
         h.room.characters.remove(h)
 
@@ -124,11 +126,10 @@ async def main():
     check(shadow is not None and isinstance(shadow, Mobile) and shadow.room is seeker.room and "Seeker's shadow" in shadow.short_desc,
           f"at 75% the hero's shadow peels away ({getattr(shadow, 'short_desc', None)})")
     check(seeker._corruption == 37 and 'peels away' in said(seeker), f'and takes half the corruption with it ({seeker._corruption})')
-    if shadow:
-        shadow.room.characters.remove(shadow)
-        world.npcs.remove(shadow)
     await enter(seeker, 6711)
     check(seeker._corruption == 0, 'leaving the Citadel sheds it')
+    check(shadow is not None and shadow not in world.npcs and shadow not in shadow.room.characters,
+          "and the hero's shadow fades with it")
 
     warded = hero('Warded')
     warded.equipment = {'neck1': obj(24503)}          # the Amulet of Light

@@ -11,8 +11,8 @@ gear that answers them.
   `corruption_per_room` for every room entered there (a room of its own adds its own, the
   Corruption Chamber 25); an inner `light_source` room takes its `corruption_reduction` off.
   At `clone_spawn_threshold` the hero's shadow peels away and attacks (a Shadow Stalker), and
-  half the corruption goes with it. Leaving the zone sheds it. Corruption immunity (the Amulet
-  of Light) answers it.
+  half the corruption goes with it. Leaving the zone sheds it, and the shadow fades with it.
+  Corruption immunity (the Amulet of Light) answers it.
 
 Called on each room entered (commands.py, after the move) and once a combat round
 (world.py, beside environment.tick); per-hero state is transient (not saved).
@@ -101,6 +101,7 @@ async def on_enter(player, room):
         if getattr(player, '_corruption', 0):
             player._corruption = 0
             await player.send(f"{c['white']}The darkness in you thins and lifts in the open air.{c['reset']}")
+        await _shadow_fades(player)
         return
     if corruption_immune(player):
         return
@@ -140,6 +141,8 @@ async def _shadow_clone(player, room, rule):
     from bosses import create_mob_from_prototype
     mob = create_mob_from_prototype(dict(proto), world)
     mob.short_desc = f"{player.name}'s shadow"
+    mob._shadow_of = player
+    player._shadow = mob
     mob.room = mob.home_room = room
     mob.home_zone = room.zone.number if getattr(room, 'zone', None) else None
     room.characters.append(mob)
@@ -149,6 +152,31 @@ async def _shadow_clone(player, room, rule):
         await CombatHandler.start_combat(mob, player)
     except Exception:
         mob.fighting, mob.position = player, 'fighting'
+
+
+async def _shadow_fades(player):
+    """A hero's shadow does not outlive the citadel's hold on them: it goes when they leave."""
+    shadow = getattr(player, '_shadow', None)
+    player._shadow = None
+    if shadow is None or getattr(shadow, 'hp', 0) <= 0:
+        return
+    room = getattr(shadow, 'room', None)
+    world = getattr(player, 'world', None)
+    if room is not None and shadow in room.characters:
+        room.characters.remove(shadow)
+    if world is not None and shadow in getattr(world, 'npcs', []):
+        world.npcs.remove(shadow)
+    for ch in list(getattr(room, 'characters', None) or []):
+        if getattr(ch, 'fighting', None) is shadow:
+            ch.fighting = None
+            if getattr(ch, 'position', None) == 'fighting':
+                ch.position = 'standing'
+    shadow.fighting = None
+    if room is not None:
+        try:
+            await room.send_to_room(f"{shadow.short_desc} thins to nothing and is gone.")
+        except Exception:
+            pass
 
 
 async def tick(world):
