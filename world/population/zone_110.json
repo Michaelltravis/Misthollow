@@ -1,6 +1,7 @@
 {
  "zone": 110,
  "_about": "The Elven Village (a living village, no boss): its original creatures restored from the area files (circle-contrib-areas/elven) where ours lacked them: the elven soldiers and guardian, the mage, Quintor, the bartender, the Chief of the elven guard (a sub-boss) and the Champion. Villagers call the guard, and the guard and the rangers come; a ranger walks the forest path.",
+ "no_boss": "a living village",
  "creatures": {
   "11050": {
    "name": "Elf Guardian Elven",

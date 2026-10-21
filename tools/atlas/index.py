@@ -12,8 +12,8 @@ import statistics
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from common import (ATLAS_DIR, OUT_DIR, ROOT, WATER_SECTORS, is_boss, level_of, load_atlas,  # noqa: E402
-                    load_content, load_overrides, load_world, write_json, zone_boss_vnums)
+from common import (ATLAS_DIR, OUT_DIR, ROOT, WATER_SECTORS, carried, is_boss, level_of, load_atlas,  # noqa: E402
+                    load_content, load_overrides, load_population, load_world, write_json, zone_boss_vnums)
 
 DOC = os.path.join(ROOT, 'docs', 'world', 'ATLAS_INDEX.md') if OUT_DIR == ATLAS_DIR else os.path.join(OUT_DIR, 'ATLAS_INDEX.md')
 SERVICE = {'shopkeeper', 'guildmaster', 'trainer', 'auctioneer', 'stable_master', 'arena_master',
@@ -39,7 +39,10 @@ def main():
     A, AREAS = atlas['rooms'], atlas['areas']
     zones, W = load_world()                    # the world as built
     placed, MOBS, OBJS = load_content(zones)
-    bosses_by_table = zone_boss_vnums()
+    # and who world/population adds when the game loads (creatures, bosses): the zone files alone
+    # called Garathorm's wall and cathedral empty
+    pop_bosses, NO_BOSS = load_population(placed, MOBS, OBJS)     # (and the zones that want none, and why)
+    bosses_by_table = zone_boss_vnums() | pop_bosses
     ov = load_overrides()
     zj = json.load(open(os.path.join(ATLAS_DIR, 'zones.json'), encoding='utf-8'))
     rj = json.load(open(os.path.join(ATLAS_DIR, 'rooms.json'), encoding='utf-8'))
@@ -93,7 +96,8 @@ def main():
     def zone_entry(z, status, connector, sealed, atlas_area=None):
         vs = sorted(v for v, r in W.items() if r['_zone'] == z)
         mobs = [m for v in vs for m in placed.get(v, {}).get('mobs', [])]
-        objs = [o for v in vs for o in placed.get(v, {}).get('objs', [])]
+        # items lying in its rooms, and those its creatures carry, wear or drop
+        objs = [o for v in vs for o in placed.get(v, {}).get('objs', [])] +             [o for m in mobs for o in carried(MOBS.get(m) or {}) if o in OBJS]
         need = [v for v in vs if W[v].get('placeholder')]
         bosses = sorted({f"{(MOBS.get(m) or {}).get('short_desc') or m} ({m})" for m in mobs
                          if is_boss(m, MOBS.get(m) or {}, bosses_by_table)})
@@ -128,7 +132,7 @@ def main():
             needs.append('creatures')
         if not objs:
             needs.append('items')
-        if not bosses and len(vs) >= 30 and not connector:
+        if not bosses and len(vs) >= 30 and not connector and z not in NO_BOSS:
             needs.append('a boss')
         return {
             'name': zones[z]['name'], 'zone': z, 'atlas_area': atlas_area, 'status': status,

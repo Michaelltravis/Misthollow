@@ -30,8 +30,8 @@
      "description": "To the down lies Hall Along The Inner Wall."
     }
    },
-   "description": "Stone walls close in, cool to the touch. Dust lies thick in the corners,\nundisturbed for some time. Ways lead east, south and down.",
-   "placeholder": true
+   "description": "This is the corner where the outer walls meet at a great bastion, its\ntop a broad platform of cracked stone. A hole torn in the middle of the\nplatform opens onto a dark stair that leads down into the hall along the\ninner wall. Iron rings for siege engines are sunk in the flagstones,\nrusted fast. The walkway runs east along one wall and south along the\nother.",
+   "extra_descs": {}
   },
   "14165": {
    "vnum": 14165,
@@ -55,8 +55,8 @@
      "description": "To the west lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Stone walls close in,\ncool to the touch. Ways lead east and west.",
-   "placeholder": true
+   "description": "The wall top is strewn with rubble here, chunks of masonry and broken\ncoping stones fallen from a tower that has since collapsed. You pick a\ncareful path between them, the wind tugging at you each time you step\nclose to the edge. East the walk narrows between strangely smooth walls,\nand west it opens toward a broad corner bastion.",
+   "extra_descs": {}
   },
   "22150": {
    "vnum": 22150,
@@ -82,8 +82,8 @@
      "description": "To the west lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "The floor is worn smooth by long use. Shadows gather where the light\ndoes not reach. Ways lead east and west.",
-   "placeholder": true
+   "description": "A smooth-walled passage runs here where the open walkway should be, and\nits stone is warm, as if polished by long friction. The instant you are\nbetween the walls they begin to grind together, slow and certain. Dust\npours from the seams overhead, and dark stains streak the stone at about\nthe height of a man's chest. The roar of moving rock swallows every\nother sound.",
+   "extra_descs": {}
   },
   "14167": {
    "vnum": 14167,
@@ -107,8 +107,8 @@
      "description": "To the west lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "Stone walls close in, cool to the touch. The floor is worn smooth by\nlong use. Ways lead east and west.",
-   "placeholder": true
+   "description": "A flagstaff leans from the parapet at a drunken angle, the iron collar\nthat held it cracked in two and its pole charred from top to bottom.\nAshes of a banner cling in the joints of the stones, and a scorched\ncrest is still just visible carved on the wall beneath. Past the\nparapet, rust-red cliffs and dead plains fall away into haze. The walk\ngoes east and west, though westward it closes between smooth walls.",
+   "extra_descs": {}
   },
   "14168": {
    "vnum": 14168,
@@ -132,8 +132,8 @@
      "description": "To the west lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Shadows gather where\nthe light does not reach. Ways lead east and west.",
-   "placeholder": true
+   "description": "The walkway is cracked into slabs here, each tilting a different way, so\nthat you step from one to the next like stones in a stream. Between them\nthe gaps show the hollow wall beneath, a dark shaft full of wind. Iron\nfittings bolted to the parapet weep long streaks of rust down the stone.\nThe walk runs west, and east it narrows into a colder, stiller passage.",
+   "extra_descs": {}
   },
   "22023": {
    "vnum": 22023,
@@ -182,8 +182,8 @@
      "description": "To the west lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "Stone walls close in, cool to the touch. The air is still and smells\nfaintly of old smoke. Ways lead east and west.",
-   "placeholder": true
+   "description": "A trough of stone runs along the inner side of the walkway here, meant\nonce to carry boiling oil to the murder holes; it is cracked and stained\nblack. The murder holes themselves gape in the parapet, square and\nempty, looking down on the castle gate far beneath. Wind pours through\nthem with a low, hollow note. The wall top leads east and west, westward\ninto a chill and narrowing passage.",
+   "extra_descs": {}
   },
   "14171": {
    "vnum": 14171,
@@ -207,8 +207,8 @@
      "description": "To the west lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "Shadows gather where the light does not reach. The floor is worn smooth\nby long use. Ways lead east and west.",
-   "placeholder": true
+   "description": "An entire section of battlements has been sheared away here, and for\nseveral paces the walkway runs with no parapet at all, open on the outer\nside to the long drop. The wind comes straight across the gap and\nthreatens to shove you off. West the walk runs back toward the oil\ntroughs, and east it enters a passage between smooth stone walls that\nlook newer than everything around them.",
+   "extra_descs": {}
   },
   "22151": {
    "vnum": 22151,
@@ -258,8 +258,10 @@
      "description": "To the west lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Shadows gather where\nthe light does not reach. Ways lead east and west.",
-   "placeholder": true
+   "description": "This stretch is littered with the shards of a shattered statue, a stone\nwarrior whose plinth still stands on the parapet with only a pair of\nbooted feet left upon it. The wind has scoured the broken pieces smooth\nand pale. East the walkway leads to a turret at the corner of the wall,\nwhile west it disappears between close, smooth walls of dressed stone.",
+   "extra_descs": {
+    "plinth statue feet": "Only the statue's booted feet remain on the plinth, broken off at the\nankle. Letters were once cut into the plinth's face, but they have been\nchiselled out deliberately, leaving a rough scar."
+   }
   },
   "14174": {
    "vnum": 14174,
@@ -287,8 +289,8 @@
      "description": "To the down lies Hall Along The Inner Wall."
     }
    },
-   "description": "Shadows gather where the light does not reach. Stone walls close in,\ncool to the touch. Ways lead south, west and down.",
-   "placeholder": true
+   "description": "The walkway turns a corner here, where two lengths of the outer wall\nmeet in a squat, roofless turret. A square hole in the turret floor\ndrops down a ladder of iron rungs toward the hall along the inner wall.\nThe wind comes over the battlements in hard, cold gusts, snatching at\ncloaks and breath alike. The broken walk runs on south along the wall\ntop and west along the other face.",
+   "extra_descs": {}
   },
   "14175": {
    "vnum": 14175,
@@ -312,8 +314,8 @@
      "description": "To the south lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "Shadows gather where the light does not reach. Dust lies thick in the\ncorners, undisturbed for some time. Ways lead north and south.",
-   "placeholder": true
+   "description": "Here a whole merlon has toppled inward and lies split across the\nwalkway, so that you must clamber over its broken halves. Where it\nstood, nothing but a gap of empty air guards the drop to the scorched\nplain far below. Grit and flakes of mortar skitter along the stones with\nevery gust. The walk goes on north toward the corner turret and south\nalong the wall.",
+   "extra_descs": {}
   },
   "14176": {
    "vnum": 14176,
@@ -337,8 +339,8 @@
      "description": "To the south lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "The floor is worn smooth by long use. The air is still and smells\nfaintly of old smoke. Ways lead north and south.",
-   "placeholder": true
+   "description": "A rusted iron brazier stands bolted to the parapet, its bowl full of old\nrainwater and a crust of black ash. The flagstones around it are\nscorched in a wide ring, as though the fire once spilled over. Beyond\nthe battlements the dead land rolls away, grey and cracked, without a\nsingle tree. The walkway stretches north and south, its edges crumbling.",
+   "extra_descs": {}
   },
   "14177": {
    "vnum": 14177,
@@ -362,8 +364,8 @@
      "description": "To the south lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Shadows\ngather where the light does not reach. Ways lead north and south.",
-   "placeholder": true
+   "description": "A dark stain spreads across the flagstones here and runs down between\nthe cracks, old enough to have dried brown, fresh enough to still smell\nof iron. Scrape marks lead to a gap in the parapet, as if something\nheavy was dragged to the edge and tipped over. The wind moans through\nthat gap like a voice. The walkway continues north and south.",
+   "extra_descs": {}
   },
   "14178": {
    "vnum": 14178,
@@ -387,8 +389,10 @@
      "description": "To the south lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. Ways lead north and south.",
-   "placeholder": true
+   "description": "The walkway grows narrower, hemmed in by iron stakes driven into the\nstone along both edges, their points flaking rust. A stone gargoyle\ncrouches on the parapet, its face worn half away by wind and rain, its\nopen mouth staring out over the wasteland. Ahead to the south the stakes\ncrowd thicker, closing into a passage of spikes. The way back runs north\nalong the open wall.",
+   "extra_descs": {
+    "gargoyle stone": "The gargoyle has the body of a hunched hound and the wings of a bat, but\nwind and rain have worn its face to a blunt, eyeless knob. Its jaws\nstill gape wide, and rust from the iron pin that holds it has stained\nits chest red."
+   }
   },
   "22102": {
    "vnum": 22102,
@@ -437,8 +441,8 @@
      "description": "To the south lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The air is\nstill and smells faintly of old smoke. Ways lead north and south.",
-   "placeholder": true
+   "description": "Past the passage of spikes the walk opens a little, though the parapet\nhere is little more than a stump of broken stone, knee-high and leaning\noutward. A banner pole juts from a socket in the wall, burned to a\ncharred stick, a few blackened rags still knotted at its top. The wind\ntears at them without mercy. The walkway leads north back toward the\nspikes and south into deepening shadow.",
+   "extra_descs": {}
   },
   "22024": {
    "vnum": 22024,
@@ -463,8 +467,8 @@
      "description": "To the south lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. Ways lead north and south.",
-   "placeholder": true
+   "description": "Darkness lies thick on this stretch of the wall, as if the stones\nthemselves drink the light. You feel your way along the parapet with one\nhand, the stone cold and gritty, and more than once your fingers find\nnothing where a merlon should be. The wind howls unseen, and somewhere\nfar below loose stones rattle as they fall. The walk gropes on north and\nsouth.",
+   "extra_descs": {}
   },
   "14182": {
    "vnum": 14182,
@@ -492,8 +496,8 @@
      "description": "To the down lies Hall Along The Inner Wall."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. Ways lead north, west and down.",
-   "placeholder": true
+   "description": "The walkway meets a bend in the wall here, and a stair of worn steps\nspirals down through a broken hatch into the castle below. Iron hinges\nhang from the hatch frame, rusted through, the door itself long gone.\nThe walk runs north along the wall, and west a narrow stretch disappears\nbetween high, close-set walls of dressed stone that look oddly smooth\nand new. Wind whistles down the stairwell like a breath drawn in.",
+   "extra_descs": {}
   },
   "22156": {
    "vnum": 22156,
@@ -519,8 +523,8 @@
      "description": "To the west lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "Shadows gather where the light does not reach. Stone walls close in,\ncool to the touch. Ways lead east and west.",
-   "placeholder": true
+   "description": "Close walls of dressed stone rise on either hand, and the moment you\nstep between them a deep grinding begins somewhere inside the masonry.\nThe walls are moving, sliding together on hidden runners with a sound\nlike a millstone. Dust sifts from above as the gap shrinks to an arm's\nwidth, then less. There is no ledge to climb, no door, and no time left.",
+   "extra_descs": {}
   },
   "22180": {
    "vnum": 22180,
@@ -546,8 +550,8 @@
      "description": "To the west lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "Stone walls close in, cool to the touch. The floor is worn smooth by\nlong use. Ways lead east and west.",
-   "placeholder": true
+   "description": "Here the passage is barely wider than your shoulders, the stones on both\nsides scored with long scratches where someone tried to hold them apart.\nA low rumble shakes the floor, and the walls lurch inward a hand's\nbreadth at a time. Old bones lie crushed flat in the cracks between the\nflagstones. Whatever way you turn, the stone is closing.",
+   "extra_descs": {}
   },
   "22162": {
    "vnum": 22162,
@@ -573,8 +577,8 @@
      "description": "To the west lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Shadows\ngather where the light does not reach. Ways lead east and west.",
-   "placeholder": true
+   "description": "Bloody handprints streak the smooth walls of this passage, smeared\ndownward as if someone slid to the floor between them. With a shudder\nand a groan of chains deep in the castle, the two walls begin to grind\ntoward each other. Splinters of old shields are pressed into the mortar\nwhere they failed to hold the stone back. The darkness fills with the\nroar of moving rock.",
+   "extra_descs": {}
   },
   "22030": {
    "vnum": 22030,
@@ -599,8 +603,8 @@
      "description": "To the west lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. The floor is worn\nsmooth by long use. Ways lead east and west.",
-   "placeholder": true
+   "description": "A cold draught comes up through cracks in the walkway here, and in the\ndark you can hear the wind boring through the hollow wall beneath your\nfeet. The parapet on one side has fallen entirely, leaving a lip of\nbroken stone over a sheer drop. Somewhere ahead the grinding of great\nstones murmurs through the masonry. The walk leads east and west into\nblackness.",
+   "extra_descs": {}
   },
   "22031": {
    "vnum": 22031,
@@ -625,8 +629,8 @@
      "description": "To the west lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The air is\nstill and smells faintly of old smoke. Ways lead east and west.",
-   "placeholder": true
+   "description": "Your boots crunch on a carpet of fallen slates, shed from some tower\nroof that once stood over this stretch and is now only a jagged stump.\nIn the gloom the stump looms like a broken tooth against the faint glow\nof the wasteland's horizon. Rusted iron cramps that once bound the\nstones together jut from the wreckage at odd angles. The walkway runs on\neast and west.",
+   "extra_descs": {}
   },
   "22034": {
    "vnum": 22034,
@@ -651,8 +655,8 @@
      "description": "To the west lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Shadows\ngather where the light does not reach. Ways lead east and west.",
-   "placeholder": true
+   "description": "The walk sags here, the stones beneath it bowed by some old collapse\ninside the wall, so that every step tilts you toward the edge. A chain\nhangs from a bracket on the parapet and swings in the dark, its links\nclinking against the stone. Faintly, through the soles of your feet, you\nfeel a rhythm of grinding from the way to the west. East the sagging\nwalk climbs back toward firmer stone.",
+   "extra_descs": {}
   },
   "22163": {
    "vnum": 22163,
@@ -678,8 +682,8 @@
      "description": "To the west lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "Stone walls close in, cool to the touch. The air is still and smells\nfaintly of old smoke. Ways lead east and west.",
-   "placeholder": true
+   "description": "The walkway funnels into a sealed passage of smooth stone, and a heavy\nslab drops behind you with a boom that shakes your teeth. At once the\nside walls shudder and begin to close, pushed by some engine buried deep\nin the castle. The air fills with stone dust and the shriek of grinding\nrock. There is nowhere left to stand.",
+   "extra_descs": {}
   },
   "14190": {
    "vnum": 14190,
@@ -703,8 +707,8 @@
      "description": "To the west lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "Stone walls close in, cool to the touch. Shadows gather where the light\ndoes not reach. Ways lead east and west.",
-   "placeholder": true
+   "description": "Pale grey daylight returns to the wall here, falling on a stretch of\nbattlement scarred by fire. Every merlon is blackened, and an iron fire-\nbasket hangs crooked from a hook, rusted into a shapeless lump. Both\nways the walk vanishes between smooth, close walls: east into a passage\nthat rumbles faintly, west into a hall where something heavy swings and\nwhistles. Out past the parapet, the dead land stretches to a ruddy,\nsmoking horizon.",
+   "extra_descs": {}
   },
   "22157": {
    "vnum": 22157,
@@ -758,8 +762,8 @@
      "description": "To the down lies Hall Along The Inner Wall."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Stone walls\nclose in, cool to the touch. Ways lead north, east and down.",
-   "placeholder": true
+   "description": "A corner of the outer wall, where a squat tower once rose and now stands\nonly shoulder-high. Inside its broken ring a stair winds down into the\ncastle, the steps choked with rubble. North the walkway runs on along\nthe wall top, and east a narrow passage echoes with a slow, heavy swish\nof iron. The wind spins ash and grit around the ruined tower in tight\ncircles.",
+   "extra_descs": {}
   },
   "22103": {
    "vnum": 22103,
@@ -784,8 +788,8 @@
      "description": "To the south lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "The floor is worn smooth by long use. Stone walls close in, cool to the\ntouch. Ways lead north and south.",
-   "placeholder": true
+   "description": "Shadow pools over this length of the walk, cast by a tall fragment of\nwall that leans out above it like a hand about to close. Beneath it the\nlight is so poor that the edge of the walkway is only a guess. Water\ndrips from the overhang and gathers in hollows worn into the flagstones.\nThe walk goes north and south beneath the leaning stone.",
+   "extra_descs": {}
   },
   "14194": {
    "vnum": 14194,
@@ -809,8 +813,8 @@
      "description": "To the south lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Stone walls\nclose in, cool to the touch. Ways lead north and south.",
-   "placeholder": true
+   "description": "The parapet here is crowned with iron spikes set in lead, most of them\nsnapped or bent outward by some long-ago assault. The broken hooks of a\nsiege ladder are still caught on the stones, the wood long rotted away.\nTo the north the walk narrows between smooth, close walls, and to the\nsouth it falls into deep shadow. The wind is so strong here that you\nlean into it just to stand.",
+   "extra_descs": {}
   },
   "22152": {
    "vnum": 22152,
@@ -836,8 +840,8 @@
      "description": "To the south lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "Shadows gather where the light does not reach. Dust lies thick in the\ncorners, undisturbed for some time. Ways lead north and south.",
-   "placeholder": true
+   "description": "You step between two walls of polished stone that should not be here at\nall, and the floor drops a finger's breadth beneath your weight with a\nclick. Deep in the castle something answers, and both walls begin to\nslide inward with a terrible grinding patience. Crushed armour and old\nbones are pressed flat into the joints. The passage shrinks around you.",
+   "extra_descs": {}
   },
   "14196": {
    "vnum": 14196,
@@ -861,8 +865,8 @@
      "description": "To the south lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Shadows\ngather where the light does not reach. Ways lead north and south.",
-   "placeholder": true
+   "description": "A wide breach yawns in the outer face of the wall, where a whole section\nof parapet has slumped away into the ditch far beneath. Only a ledge of\ncracked flagstones, scarcely two paces wide, carries the walk past it.\nLooking down makes your head swim: the drop goes on and on to a ruin of\nrubble at the wall's foot. The walkway carries on north, while south it\nslips between close, smooth walls.",
+   "extra_descs": {}
   },
   "14197": {
    "vnum": 14197,
@@ -886,8 +890,10 @@
      "description": "To the south lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "The floor is worn smooth by long use. Shadows gather where the light\ndoes not reach. Ways lead north and south.",
-   "placeholder": true
+   "description": "An old guard post stands here, a stone booth with no roof, its doorway\nfacing into the wind. Inside, a bench is carved from the wall itself and\na rusted lamp hook hangs empty. Names and tally marks are scratched\nacross the inner stone, years of bored sentries keeping count of\nsomething. The walkway runs north and south past the booth.",
+   "extra_descs": {
+    "names tally marks scratches": "Dozens of names are scratched into the stone, most of them worn faint,\neach followed by rows of tally marks in groups of five. The newest marks\nstop halfway through a group."
+   }
   },
   "14198": {
    "vnum": 14198,
@@ -911,8 +917,8 @@
      "description": "To the south lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Shadows\ngather where the light does not reach. Ways lead north and south.",
-   "placeholder": true
+   "description": "Two gargoyles flank the walk here, perched on the parapet back to back,\none gazing out over the wasteland and one into the castle's inner\ncourts. Rainwater has worn grooves down their stone flanks, and one has\nlost its head entirely. Between them the walkway is cracked straight\nacross, a hand-wide fissure that whistles when the wind blows. North and\nsouth the wall top goes on.",
+   "extra_descs": {}
   },
   "14199": {
    "vnum": 14199,
@@ -936,8 +942,8 @@
      "description": "To the south lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "Stone walls close in, cool to the touch. Dust lies thick in the corners,\nundisturbed for some time. Ways lead north and south.",
-   "placeholder": true
+   "description": "The walk climbs here over a hump in the wall where the masonry has\nheaved up, and the flagstones tilt like the deck of a ship in a swell.\nFrom the crest you can see the whole broken length of the outer wall\ncurving away, its towers gutted and its battlements gap-toothed. Wind\nscreams over the crest and drives grit into your eyes. The walkway goes\nnorth toward a corner and south down the slope.",
+   "extra_descs": {}
   }
  },
  "mobs": {},

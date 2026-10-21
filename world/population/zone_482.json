@@ -37,7 +37,13 @@
     "rooms": 2,
     "count": 2,
     "shout": "A door slams somewhere in the house, and the dead come to see!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 48290,
+     "chance": 30
+    }
+   ]
   },
   "48202": {
    "name": "ghoulish cook",
@@ -56,7 +62,13 @@
     "rooms": 2,
     "count": 2,
     "shout": "A door slams somewhere in the house, and the dead come to see!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 48291,
+     "chance": 30
+    }
+   ]
   },
   "48203": {
    "name": "haunted armour suit",
@@ -76,7 +88,13 @@
     "rooms": 2,
     "count": 2,
     "shout": "A door slams somewhere in the house, and the dead come to see!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 48292,
+     "chance": 30
+    }
+   ]
   },
   "48204": {
    "name": "weeping maid ghost",
@@ -179,7 +197,17 @@
       "min_phase": 1
      }
     ]
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 48295,
+     "chance": 35
+    },
+    {
+     "vnum": 48290,
+     "chance": 20
+    }
+   ]
   },
   "48220": {
    "name": "dead performer carnival",
@@ -198,7 +226,13 @@
     "rooms": 2,
     "count": 2,
     "shout": "A calliope wheezes into life, and the carnival's dead come running!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 48293,
+     "chance": 15
+    }
+   ]
   },
   "48221": {
    "name": "tiger two-headed",
@@ -244,7 +278,13 @@
     "rooms": 2,
     "count": 2,
     "shout": "A calliope wheezes into life, and the carnival's dead come running!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 48294,
+     "chance": 30
+    }
+   ]
   }
  },
  "spawns": [
@@ -383,5 +423,62 @@
    "why": "a dead performer"
   }
  ],
- "_fill": "tools/audit/densify.py: 7 more of the zone's own ordinary creatures in its empty rooms, 0.45 hostile per walkable room as the aim"
+ "_fill": "tools/audit/densify.py: 7 more of the zone's own ordinary creatures in its empty rooms, 0.45 hostile per walkable room as the aim",
+ "items": {
+  "48290": {
+   "keywords": "candelabrum silver butler",
+   "short_desc": "the butler's silver candelabrum",
+   "room_desc": "A tarnished silver candelabrum lies here.",
+   "description": "A three-branched silver candelabrum black with tarnish. Its candles light themselves when you lift it, and never burn down.",
+   "kind": "light",
+   "level": 14
+  },
+  "48291": {
+   "keywords": "cleaver cook rusty",
+   "short_desc": "a cook's rusty cleaver",
+   "room_desc": "A cook's rusty cleaver lies here.",
+   "description": "A heavy square cleaver crusted with rust and things worse than rust. The ghoulish cook never stopped preparing dinner.",
+   "kind": "weapon",
+   "level": 15,
+   "weapon_type": "slash"
+  },
+  "48292": {
+   "keywords": "gauntlet haunted steel",
+   "short_desc": "a haunted steel gauntlet",
+   "room_desc": "A steel gauntlet lies here, its fingers twitching.",
+   "description": "A jointed steel gauntlet from the suit of armour in the foyer. Now and then its fingers close on their own.",
+   "kind": "armor",
+   "level": 16,
+   "wear_slot": "hands"
+  },
+  "48293": {
+   "keywords": "toffee apple stale",
+   "short_desc": "a stale toffee apple",
+   "room_desc": "A stale toffee apple on a stick lies here.",
+   "description": "A carnival toffee apple gone hard as glass, its stick still sticky. It is somehow still sweet.",
+   "kind": "food",
+   "level": 14
+  },
+  "48294": {
+   "keywords": "club juggling clown",
+   "short_desc": "a clown's juggling club",
+   "room_desc": "A painted juggling club lies here.",
+   "description": "A heavy club painted in red and white stripes, weighted with lead in the head. Nis never juggled with it.",
+   "kind": "weapon",
+   "level": 19,
+   "weapon_type": "pound"
+  },
+  "48295": {
+   "keywords": "ring signet lord house",
+   "short_desc": "the Lord of the House's signet ring",
+   "room_desc": "A heavy signet ring lies here.",
+   "description": "A gold signet ring cut with the family's crest, cold as a grave. The house's long-dead master never took it off.",
+   "kind": "armor",
+   "level": 20,
+   "wear_slot": "finger",
+   "bonus": {
+    "wis": 1
+   }
+  }
+ }
 }

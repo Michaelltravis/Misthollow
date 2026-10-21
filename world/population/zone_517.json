@@ -1,6 +1,7 @@
 {
  "zone": 517,
  "_about": "Garathorm School House (levels 1-6): a gentle place. The schoolmaster and teachers, pupils, the janitor, a fencing master who spars with any who ask (an elite, never the first to strike), a schoolyard bully, and rats in the outhouse.",
+ "no_boss": "a gentle school for levels 1-6",
  "creatures": {
   "51700": {
    "name": "schoolmaster",
@@ -12,7 +13,13 @@
     "sentinel"
    ],
    "race": "human",
-   "alignment": 600
+   "alignment": 600,
+   "loot_table": [
+    {
+     "vnum": 51790,
+     "chance": 25
+    }
+   ]
   },
   "51701": {
    "name": "pupil",
@@ -37,7 +44,13 @@
     "sentinel"
    ],
    "race": "human",
-   "alignment": 300
+   "alignment": 300,
+   "loot_table": [
+    {
+     "vnum": 51791,
+     "chance": 25
+    }
+   ]
   },
   "51703": {
    "name": "fencing master",
@@ -50,7 +63,13 @@
    ],
    "race": "human",
    "rank": "elite",
-   "alignment": 500
+   "alignment": 500,
+   "loot_table": [
+    {
+     "vnum": 51794,
+     "chance": 25
+    }
+   ]
   },
   "51704": {
    "name": "rat outhouse",
@@ -86,7 +105,13 @@
     "aggressive"
    ],
    "race": "human",
-   "alignment": -200
+   "alignment": -200,
+   "loot_table": [
+    {
+     "vnum": 51793,
+     "chance": 30
+    }
+   ]
   },
   "51707": {
    "name": "teacher",
@@ -98,7 +123,13 @@
     "sentinel"
    ],
    "race": "human",
-   "alignment": 500
+   "alignment": 500,
+   "loot_table": [
+    {
+     "vnum": 51792,
+     "chance": 15
+    }
+   ]
   }
  },
  "spawns": [
@@ -157,5 +188,53 @@
     2830
    ]
   }
- ]
+ ],
+ "items": {
+  "51790": {
+   "keywords": "ferule schoolmaster",
+   "short_desc": "the schoolmaster's ferule",
+   "room_desc": "A flat wooden ferule lies here.",
+   "description": "A flat ruler of hard black wood, a foot and a half long and polished by years of rapping knuckles.",
+   "kind": "weapon",
+   "level": 6,
+   "weapon_type": "pound"
+  },
+  "51791": {
+   "keywords": "lantern janitor tin",
+   "short_desc": "the janitor's tin lantern",
+   "room_desc": "A dented tin lantern lies here.",
+   "description": "A dented tin lantern with a horn window, its handle wrapped in rag. The janitor uses it to chase rats out of the outhouse.",
+   "kind": "light",
+   "level": 4
+  },
+  "51792": {
+   "keywords": "shawl woollen teacher",
+   "short_desc": "a teacher's woollen shawl",
+   "room_desc": "A woollen shawl lies here, dusted with chalk.",
+   "description": "A warm grey shawl, darned at the corners and dusted white with chalk.",
+   "kind": "armor",
+   "level": 5,
+   "wear_slot": "about"
+  },
+  "51793": {
+   "keywords": "lunch stolen bread cheese",
+   "short_desc": "a stolen lunch of bread and cheese",
+   "room_desc": "A squashed lunch wrapped in cloth lies here.",
+   "description": "Bread, cheese and a crushed plum wrapped in a napkin with someone else's initials on it.",
+   "kind": "food",
+   "level": 3
+  },
+  "51794": {
+   "keywords": "foil practice fencing",
+   "short_desc": "a practice foil",
+   "room_desc": "A slender practice foil lies here.",
+   "description": "A light, whippy fencing foil with a bell guard and a leather button on the point. In the right hands it still bites.",
+   "kind": "weapon",
+   "level": 8,
+   "weapon_type": "pierce",
+   "bonus": {
+    "dex": 1
+   }
+  }
+ }
 }

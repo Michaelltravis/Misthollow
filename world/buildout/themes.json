@@ -577,6 +577,118 @@
    "mood": "Frozen, vast and echoing: blue ice, breath that freezes.",
    "creatures": "Design 5 to 7 kinds that fit the theme: regulars (count about one per five rooms), two elite kinds (count 1-2, near the top level), one named sub-boss (count 1) and one named boss (count 1, at the zone's top level: the Frost Giant King in the massive hallway). Give the named ones a room by name (\"rooms\": [...]) where they belong.",
    "items": "Three to five items that fit, dropped by the creatures (the boss and sub-boss drop the best)."
+  },
+  "30": {
+   "name": "Garathorm Inner City",
+   "levels": [1, 50],
+   "theme": "The walled heart of the realm. The great Temple of Garathorm (marble halls, a library, the clerics' sanctum) stands just inside the Gate of the Inner City, by the Temple Fountain and the Market Square; the Concourse, the Bazaar, Merchant Avenue, Alchemy Street, Inn Street and the Academy Path wind through the city to the Quay on the river. (Go by each room's exits for what lies where.) Shops of every trade (some empty and up for sale: 'An Unpurchased Shop'), inns, guildhalls, the bank and the post office line the streets; dark alleys run behind them. Guards keep the peace; beggars, merchants and adventurers crowd the cobbles. Inside rooms are lamp-lit, worn and lived in.",
+   "mood": "Busy, safe and old: cobbles worn smooth, bells and street cries, smoke from a hundred chimneys, the Temple dome over everything.",
+   "creatures": "",
+   "items": ""
+  },
+  "442": {
+   "name": "Outcast Fortress",
+   "levels": [15, 30],
+   "theme": "A fortress of outcasts and exiles built against a mountain wall deep in the forest, far from any road. The way in winds through the Light Forest and then the Deep, Dark Forest (ancient grey trees, a fast river), along the foot of the mountain wall where it bends, to a timber barricade with a northern and a southern end. Behind it: a big courtyard, a stone keep and a tower with a catwalk around it, stone corridors, and man-made tunnels and dark, damp tunnels driven into the mountain. The outcasts are gone or hiding; the place is half-abandoned, patched and makeshift.",
+   "mood": "Hidden, hostile and makeshift: rough timber, cold stone, dripping tunnels, the forest pressing in.",
+   "creatures": "",
+   "items": ""
+  },
+  "220": {
+   "name": "Castle Of The Apocalypse II",
+   "levels": [45, 68],
+   "theme": "The inner reaches of the Castle of the Apocalypse, an endgame fortress of the four horsemen built of black stone, iron and bone. A pathway runs around the castle walls; halls run along the inner wall to the entrance chambers, guard rooms and guardian chambers, the inner corridor and its end, the junction of the inner halls and the Inner Hall. Paths lead out to Ocam's Reach, a high, wind-scoured promontory, and toward the Lost Castle. Everything is ruin and menace: rubble, shattered bone, iron spikes, ash, mold, rust, war trophies, burned banners.",
+   "mood": "Doom and dread: the end of the world made into stone, cold wind, ash and silence.",
+   "creatures": "",
+   "items": ""
+  },
+  "51": {
+   "name": "Drow City",
+   "levels": [1, 25],
+   "theme": "A dark elf city in a vast cavern far below the surface, reached by dark and wide tunnels, narrow ledges and thin underground bridges over chasms. Dwellings are carved into stalagmites; ornate walkways run high above the city streets; a tunnel of ornate arches leads to the Grand Temple of Lloth, the spider goddess, all webs and black stone. The adamantium gates guard the city, and there is a forge. Lit by faint violet faerie fire and glowing fungus; elegant, cruel and very old.",
+   "mood": "Beautiful and deadly: dark stone carved fine as lace, violet light, silence, spiders' webs, the weight of the rock above.",
+   "creatures": "",
+   "items": ""
+  },
+  "32": {
+   "name": "Stable & Temple",
+   "levels": [10, 25],
+   "theme": "Garathorm's Royal Stables on the edge of the city: stalls large and small, the royal stable, a hay loft, tack rooms and small rooms for the grooms. Behind and beneath it an old temple's forgotten hallways (corners and intersections) lead down into dusty tunnels, a tunnel that seems endless, and a monster's lair.",
+   "mood": "Warm hay and horses above; below, dust, stale air and something that should not be there.",
+   "creatures": "",
+   "items": ""
+  },
+  "457": {
+   "name": "Castle Of The Apocalypse I",
+   "levels": [45, 60],
+   "theme": "The ragged walkway along the top of the Castle of the Apocalypse's outer walls: broken battlements, gaps where the stone has fallen away, iron fittings flaking rust, stairs and holes leading down into the castle, the wind tearing at you, the dead land spread out far below. Every stretch is named the same; each must still look different (a fallen merlon, a rusted brazier, a bloodstain, a gap, a gargoyle, a burned banner pole). One stretch is a deathtrap of crushing walls; leave it as it is.",
+   "mood": "Exposed and dizzying: a howling wind, crumbling stone, and a long fall.",
+   "creatures": "",
+   "items": ""
+  },
+  "110": {
+   "name": "Elven Village",
+   "levels": [2, 50],
+   "theme": "A village of wood elves high in an old forest: guarded paths through the trees, path crossings, the entrance to the elven forest, platforms and walkways in the branches, a guards' room and the guard chief's bedroom, a cellar, and the elven shops (the armory, the weaponry, the magic shop, a bowyer's). Graceful living wood, lanterns, leaf and vine. Part of the forest has been tainted by dark magic: twisted, blackened trees.",
+   "mood": "Green, quiet and watchful: birdsong and leaf-light, with a creeping shadow at the edges.",
+   "creatures": "",
+   "items": ""
+  },
+  "72": {
+   "name": "Sewer",
+   "levels": [1, 32],
+   "theme": "The sewers beneath Garathorm, and the hideout that a band of thieves and cutthroats has built inside them: barracks with rooms full of beds, a training room, a shower room, a burned room, an L-shaped room, a big hallway, dimly lit corridors and crossroads, and the lair at the end. Brick and stone, damp, foul water, rats, makeshift furnishings.",
+   "mood": "Damp, foul and furtive: dripping brick, bad air, candle stubs, and a gang's hiding place.",
+   "creatures": "",
+   "items": ""
+  },
+  "250": {
+   "name": "Bedlam Arena",
+   "levels": [30, 50],
+   "theme": "The Bedlam Arena, a fighting ground of trial rooms around a sand pit: the arena tar pit, a dirt ditch, a catwalk, a crawlspace, a mud basin, a hideaway, the arc, the sunblaze, a wall of spikes, the gauntlet, a fire circle, a dead end. Each is a different hazard built for combat, watched from galleries; banners of past champions.",
+   "mood": "Loud and brutal: the roar of a crowd, hot sand, blood, and a test of nerve.",
+   "creatures": "",
+   "items": ""
+  },
+  "65": {
+   "name": "Dwarven Kingdom",
+   "levels": [3, 33],
+   "theme": "The dwarves' kingdom under the mountains, with its village, tunnels, throne room (Rock-Haven) and halls. Solid stone, fine masonry, forges and torchlight.",
+   "mood": "Sturdy, warm and proud: carved stone, firelight and the ring of hammers.",
+   "creatures": "",
+   "items": ""
+  },
+  "53": {
+   "name": "Great Pyramid",
+   "levels": [5, 44],
+   "theme": "A great pyramid in the eastern desert. These rooms climb its steep plastered face: sun, sand-wind, the desert far below.",
+   "mood": "Hot, blinding and vast.",
+   "creatures": "",
+   "items": ""
+  },
+  "12": {
+   "name": "God Rooms",
+   "levels": [1, 50],
+   "theme": "The immortals' private rooms above the world: a board room, a meeting room and the living room of two of the gods, Traveller and Alley, comfortable and a little whimsical.",
+   "mood": "Calm, timeless and homely.",
+   "creatures": "",
+   "items": ""
+  },
+  "63": {
+   "name": "Arachnos",
+   "levels": [2, 26],
+   "theme": "A forest of huge trees where giant spiders spin: webbed paths and passages through the branches, and ways up into the trees.",
+   "mood": "Sticky, shadowed and crawling.",
+   "creatures": "",
+   "items": ""
+  },
+  "150": {
+   "name": "Welmar's Castle",
+   "levels": [1, 33],
+   "theme": "King Welmar's castle on the King's Road: drawbridge and moat, the great hall, kitchens, the chapel with its holy altar, towers and dungeons. A fair, well-kept royal court.",
+   "mood": "Stately and bright: banners, polished stone, the hush of a chapel.",
+   "creatures": "",
+   "items": ""
   }
  }
 }

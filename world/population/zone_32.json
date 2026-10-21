@@ -1,0 +1,238 @@
+{
+ "zone": 32,
+ "_about": "Stable & Temple (levels 13-27): Brynn keeps the Royal Stables above, and nothing hostile comes up into them; under them giant tunnel rats and giant cave centipedes in the dusty and endless tunnels, skeletal guards still at their posts and temple ghouls in the old temple's hallways, cells and holes, and in the Monster's Lair Grubbak the stable troll, who has been dragging the horses down.",
+ "items": {
+  "3294": {
+   "keywords": "glaive bronze temple guard",
+   "short_desc": "a temple guard's bronze glaive",
+   "room_desc": "A bronze glaive lies here.",
+   "description": "A long-hafted bronze blade gone green with age, the temple's sunburst cast into the socket.",
+   "kind": "weapon",
+   "level": 19,
+   "weapon_type": "slash"
+  },
+  "3295": {
+   "keywords": "symbol holy tarnished sunburst",
+   "short_desc": "a tarnished holy symbol",
+   "room_desc": "A tarnished holy symbol lies here.",
+   "description": "A sunburst of silver on a broken chain, the old temple's sign. Whoever prayed to it is long forgotten.",
+   "kind": "treasure",
+   "level": 18
+  },
+  "3296": {
+   "keywords": "sack oats nibbled",
+   "short_desc": "a nibbled sack of oats",
+   "room_desc": "A nibbled sack of oats lies here.",
+   "description": "A small sack of the royal stables' oats, gnawed open at one corner. It is still good to eat, boiled.",
+   "kind": "food",
+   "level": 13
+  },
+  "3297": {
+   "keywords": "club horse bone troll",
+   "short_desc": "a troll's horse-bone club",
+   "room_desc": "A huge club of bone lies here.",
+   "description": "The thighbone of a great warhorse, cracked and bound with rusted harness iron. It is as heavy as a man.",
+   "kind": "weapon",
+   "level": 27,
+   "weapon_type": "pound",
+   "bonus": {
+    "damroll": 2
+   }
+  },
+  "3298": {
+   "keywords": "cloak horse blanket matted",
+   "short_desc": "a matted horse-blanket cloak",
+   "room_desc": "A matted cloak of horse blankets lies here.",
+   "description": "Royal stable blankets in faded blue and gold, stitched crudely together with gut into something a troll could wear. It stinks, but it is thick.",
+   "kind": "armor",
+   "level": 25,
+   "wear_slot": "about",
+   "bonus": {
+    "con": 1
+   }
+  }
+ },
+ "creatures": {
+  "3280": {
+   "name": "rat giant tunnel",
+   "short_desc": "a giant tunnel rat",
+   "long_desc": "A giant tunnel rat scrabbles through the dust, its whiskers twitching.",
+   "description": "A rat the size of a dog, grown fat on oats stolen from the stables above and on whatever the thing in the lair leaves behind.",
+   "level": 13,
+   "flags": [
+    "aggressive",
+    "stay_zone"
+   ],
+   "race": "rodent",
+   "alignment": 0,
+   "loot_table": [
+    {
+     "vnum": 3296,
+     "chance": 20
+    }
+   ]
+  },
+  "3281": {
+   "name": "skeleton temple guard skeletal",
+   "short_desc": "a skeletal temple guard",
+   "long_desc": "A skeletal temple guard stands its watch in the forgotten hallway.",
+   "description": "Bones in a corroded bronze hauberk, a glaive still gripped in its fingers. It kept its post when the temple was abandoned, and it keeps it still.",
+   "level": 19,
+   "flags": [
+    "aggressive",
+    "undead",
+    "stay_zone"
+   ],
+   "race": "undead",
+   "alignment": -500,
+   "loot_table": [
+    {
+     "vnum": 3294,
+     "chance": 20
+    },
+    {
+     "vnum": 3295,
+     "chance": 15
+    }
+   ]
+  },
+  "3290": {
+   "name": "grubbak troll stable",
+   "short_desc": "Grubbak the stable troll",
+   "long_desc": "Grubbak the stable troll crouches in its den of stolen blankets, gnawing a horse bone.",
+   "description": "A hulking, warty troll with grey-green hide and a rank smell of the midden. For years it has dug up under the Royal Stables to drag horses down into the dark, and the grooms blame the wolves.",
+   "level": 27,
+   "rank": "boss",
+   "flags": [
+    "aggressive",
+    "sentinel",
+    "stay_zone"
+   ],
+   "race": "troll",
+   "alignment": -600,
+   "boss_config": {
+    "enrage_time": 180,
+    "enrage_multiplier": 1.5,
+    "ability_interval": 5.0,
+    "phases": [
+     {
+      "threshold": 50,
+      "message": "Grubbak bellows and tears at the walls of its den, and earth rains down!"
+     }
+    ],
+    "abilities": [
+     {
+      "name": "Bone Club Smash",
+      "telegraph": "Grubbak heaves its horse-bone club high overhead!",
+      "cast_time": 1.5,
+      "cooldown": 8,
+      "damage_dice": "3d10+6",
+      "dodge": true
+     },
+     {
+      "name": "Den Collapse",
+      "telegraph": "Grubbak slams its shoulder into the den roof!",
+      "cast_time": 2,
+      "cooldown": 14,
+      "damage_dice": "3d8+6",
+      "aoe": true,
+      "radius": 4.0,
+      "min_phase": 1
+     }
+    ]
+   },
+   "loot_table": [
+    {
+     "vnum": 3297,
+     "chance": 40
+    },
+    {
+     "vnum": 3298,
+     "chance": 35
+    }
+   ]
+  },
+  "3282": {
+   "name": "ghoul temple",
+   "short_desc": "a temple ghoul",
+   "long_desc": "A temple ghoul hunches here, sniffing the air.",
+   "description": "A grey, hairless thing that was once a priest, its vestments rotted to rags and its teeth filed by gnawing. It feeds on what the troll leaves and on what it can catch in the forgotten temple.",
+   "level": 21,
+   "flags": [
+    "aggressive",
+    "undead",
+    "stay_zone"
+   ],
+   "race": "undead",
+   "alignment": -700,
+   "loot_table": [
+    {
+     "vnum": 3295,
+     "chance": 12
+    }
+   ]
+  },
+  "3283": {
+   "name": "centipede giant cave",
+   "short_desc": "a giant cave centipede",
+   "long_desc": "A giant cave centipede ripples across the dirt, its many legs clicking.",
+   "description": "A centipede as long as a man, its armoured segments the colour of old rust and its fangs dripping. It hunts the rats in the tunnels under the stables.",
+   "level": 16,
+   "flags": [
+    "aggressive",
+    "stay_zone"
+   ],
+   "race": "insect",
+   "alignment": 0
+  }
+ },
+ "spawns": [
+  {
+   "vnum": 3280,
+   "rooms": [
+    203613,
+    203614,
+    203615,
+    203621,
+    203622
+   ]
+  },
+  {
+   "vnum": 3281,
+   "rooms": [
+    203627,
+    203631,
+    203636,
+    203644,
+    203649,
+    203652
+   ]
+  },
+  {
+   "vnum": 3282,
+   "rooms": [
+    3213,
+    203617,
+    203638,
+    203641,
+    203645
+   ]
+  },
+  {
+   "vnum": 3283,
+   "rooms": [
+    203612,
+    203618,
+    203623,
+    203635
+   ]
+  }
+ ],
+ "bosses": [
+  {
+   "vnum": 3290,
+   "room": 203620,
+   "why": "Grubbak the stable troll in the inner Monster's Lair, the den it dug up under the Royal Stables"
+  }
+ ]
+}

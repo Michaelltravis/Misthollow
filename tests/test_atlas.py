@@ -116,7 +116,8 @@ def main():
     doc = open(os.path.join(ROOT, 'docs', 'world', 'ATLAS_INDEX.md')).read()
     missing = [e['name'] for e in idx['zones'].values() if f"### {e['name']} (zone" not in doc]
     check(not missing, f'the readable index has a section for every zone ({missing[:3]})')
-    check(idx['queue'] and not idx['zones'][str(idx['queue'][0])]['state'].startswith('sealed'), 'the build queue starts with an open zone')
+    check(not idx['queue'] or not idx['zones'][str(idx['queue'][0])]['state'].startswith('sealed'),
+          f"the build queue is empty or starts with an open zone ({len(idx['queue'])} queued)")
     conn = [e for e in idx['zones'].values() if e['state'] == 'open (connector)']
     check(len(conn) == len(json.load(open(os.path.join(ROOT, 'world', 'atlas', 'overrides.json')))['connectors']),
           f'every connector the owner named is open ({len(conn)})')

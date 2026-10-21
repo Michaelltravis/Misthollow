@@ -1,0 +1,3 @@
+# The server's one dependency: the web map, the /play bridge and the admin dashboard run on it.
+# pip install -r requirements.txt   (into the Python that runs src/main.py; see README "Requirements")
+aiohttp>=3.8

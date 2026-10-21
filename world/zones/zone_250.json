@@ -71,8 +71,8 @@
      "description": "To the west lies The Arena Gauntlet."
     }
    },
-   "description": "Stone walls close in, cool to the touch. Shadows gather where the light\ndoes not reach. Ways lead east, south and west.",
-   "placeholder": true
+   "description": "A broad pit of black tar fills most of this chamber, bubbling sluggishly\nand giving off a choking, oily reek. A narrow rim of stone runs around\nit, slick with spatters, and fighters who lose their footing sink to the\nknees in the hot pitch. From the galleries overhead comes the stamping\nof the crowd. The ramp lies east, the arena centre south, and the\ngauntlet west.",
+   "extra_descs": {}
   },
   "25001": {
    "vnum": 25001,
@@ -177,8 +177,8 @@
      "description": "To the south lies The Arena Crawlspace."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. Ways lead east and south.",
-   "placeholder": true
+   "description": "A deep trench has been dug across this chamber and left as raw dirt, its\nsides crumbling, its floor a churned mess of mud and gravel. Fighters\nmust leap or scramble across, and the footing gives way without warning.\nThe crowd's shouts echo down from the galleries. The arena centre lies\neast, and a low hole to the south opens into a crawlspace.",
+   "extra_descs": {}
   },
   "25005": {
    "vnum": 25005,
@@ -227,8 +227,8 @@
      "description": "To the south lies The Arena Slide."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The air is\nstill and smells faintly of old smoke. Ways lead east and south.",
-   "placeholder": true
+   "description": "A narrow catwalk of planks and iron runs high across this chamber, hung\non chains from the vault and swaying with every step. Far beneath, the\nfloor is a bed of broken stone. Spectators in the gallery hurl jeers at\nfighters as they inch along. East the catwalk reaches the scaffold over\nthe lava, and south it drops toward the slide.",
+   "extra_descs": {}
   },
   "25003": {
    "vnum": 25003,
@@ -279,8 +279,8 @@
      "description": "To the down lies The Arena Mudbasin."
     }
    },
-   "description": "The floor is worn smooth by long use. Stone walls close in, cool to the\ntouch. Ways lead north and down.",
-   "placeholder": true
+   "description": "The ceiling drops so low here that you must crawl on hands and knees\nthrough packed earth between old timber props. The roar of the crowd\ncomes muffled through the stone, like surf heard from far away. Damp\nseeps from the walls, and a sloping hole in the floor drops down toward\nthe mud basin. The dirt ditch is back to the north.",
+   "extra_descs": {}
   },
   "413": {
    "vnum": 413,
@@ -302,8 +302,8 @@
      "description": "To the up lies The Arena Crawlspace."
     }
    },
-   "description": "Reeds rustle along the water's edge. Shallow water laps around stones\nand reeds. Ways lead east and up.",
-   "placeholder": true
+   "description": "You are swimming in a basin of thick brown water, warm and sluggish,\nthat clings to your limbs like porridge. Bubbles rise from the mud\nbeneath and burst with a stink of rot. A sloped hole in the ceiling\nleads up into the crawlspace, and a low ledge to the east climbs out\ninto a hidden alcove. No gallery overlooks this place; the crowd is only\na distant rumble.",
+   "extra_descs": {}
   },
   "414": {
    "vnum": 414,
@@ -323,8 +323,8 @@
      "description": "To the west lies The Arena Mudbasin."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. A way leads west.",
-   "placeholder": true
+   "description": "A small dry alcove lies hidden off the mud basin, well out of sight of\nthe galleries. Someone has scratched tallies and names into the rock,\nand a ledge forms a rough bench where a wounded fighter could rest. The\nnoise of the arena is faint here, almost peaceful. The only way out is\nback west into the mud.",
+   "extra_descs": {}
   },
   "415": {
    "vnum": 415,
@@ -348,8 +348,8 @@
      "description": "To the down lies The Arena Stepladder."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Dust lies thick in the\ncorners, undisturbed for some time. Ways lead west and down.",
-   "placeholder": true
+   "description": "A high stone arch spans this chamber like a bridge, and the fight takes\nplace on its curved crown, with nothing to either side but a fall to the\nflooded floor below. A rope ladder dangles from the arch down into the\nstepladder pit. The crowd leans over the gallery rail, howling for\nsomeone to slip. West the arch runs into a blaze of light.",
+   "extra_descs": {}
   },
   "416": {
    "vnum": 416,
@@ -373,8 +373,10 @@
      "description": "To the down lies The Arena Spikewall."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Stone walls close in,\ncool to the touch. Ways lead east and down.",
-   "placeholder": true
+   "description": "Great polished bronze mirrors line the walls of this chamber, catching\nthe light of a hundred lamps and hurling it into the centre in a single\nblinding glare. The sand underfoot is hot as a summer beach, and\nfighters squint and stumble half-blind. A trapdoor in the floor opens\nonto a ladder down to the spikewall. The arc lies east.",
+   "extra_descs": {
+    "mirrors bronze": "Each mirror is taller than a man, its bronze polished to a fierce shine\nand tilted on a pivot so that the arena keepers can turn the glare\nwherever they please. Their frames are dented where fighters have tried\nto smash them."
+   }
   },
   "417": {
    "vnum": 417,
@@ -398,8 +400,8 @@
      "description": "To the up lies The Arena Sunblaze."
     }
    },
-   "description": "The floor is worn smooth by long use. Stone walls close in, cool to the\ntouch. Ways lead north and up.",
-   "placeholder": true
+   "description": "One whole wall of this chamber bristles with iron spikes, some longer\nthan a sword, their points dark and crusted. The floor slopes gently\ntoward them, so that every shove and stumble drives a fighter closer. A\nladder climbs through the ceiling to the sunblaze, and an archway north\nleads back to the arena centre. The crowd above roars each time someone\nis pinned.",
+   "extra_descs": {}
   },
   "418": {
    "vnum": 418,
@@ -423,8 +425,8 @@
      "description": "To the west lies The Arena Fire Circle."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. The floor is worn\nsmooth by long use. Ways lead east and west.",
-   "placeholder": true
+   "description": "A long, narrow run of the arena is lined on both sides by alcoves from\nwhich blades on iron arms swing out at anyone passing. The floor is\nscored with old grooves, and the walls are spattered brown. From slots\nhigh above, the crowd watches and wagers. East lies the tar pit, and\nwest the flicker of the fire circle.",
+   "extra_descs": {}
   },
   "419": {
    "vnum": 419,
@@ -448,8 +450,10 @@
      "description": "To the east lies The Arena Gauntlet."
     }
    },
-   "description": "The floor is worn smooth by long use. Dust lies thick in the corners,\nundisturbed for some time. Ways lead north and east.",
-   "placeholder": true
+   "description": "A ring of iron troughs filled with burning oil encircles the sand of\nthis round chamber, and the flames leap waist-high, hemming fighters in.\nThe heat is staggering and the smoke stings your eyes. Banners of past\nchampions hang above, scorched along their edges. A gap in the ring\nopens east toward the gauntlet, and north a short passage leads into a\ncramped dead end.",
+   "extra_descs": {
+    "banners champions": "The banners bear the names and colours of champions who won the Bedlam\nArena, stitched in gold thread. The oldest have faded nearly white, and\nthe flames have eaten the hems of all of them."
+   }
   },
   "420": {
    "vnum": 420,
@@ -469,8 +473,8 @@
      "description": "To the south lies The Arena Center."
     }
    },
-   "description": "Stone walls close in, cool to the touch. The air is still and smells\nfaintly of old smoke. A way leads south.",
-   "placeholder": true
+   "description": "This chamber was built to trap: whoever is driven in here must fight or\nfall, with nowhere to run. The walls are high and sheer, polished so\nsmooth that no hand can grip them. Sand lies thick and churned, dark in\nplaces with old blood. South a single archway leads back to the arena\ncentre.",
+   "extra_descs": {}
   }
  },
  "mobs": {

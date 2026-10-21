@@ -10,7 +10,7 @@ on:
     inputs:
       branch:
         description: branch to deploy
-        default: claude/nice-johnson-slpinu
+        default: main
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -26,6 +26,9 @@ jobs:
           mkdir -p ~/.ssh && chmod 700 ~/.ssh
           printf '%s\n' "$KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts 2>/dev/null
-          # the `deploy` branch is a pointer to whatever we want live; the script pulls it by name
+          # the `deploy` branch is a pointer to whatever we want live; the script pulls it by name.
+          # deploy/frostpine.sh does the pull itself: it keeps the live game data tracked in git
+          # (saved players, the auction house: data/, lib/, logs/) across its reset and refuses to
+          # deploy over code edited on the box. A reset here, before it runs, would wipe that data.
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=accept-new "$USER@$HOST" \
-            "cd \"\${MUD_DIR:-\$HOME/MUDNEW}\" && git fetch origin $BRANCH && git checkout -q $BRANCH && git reset -q --hard origin/$BRANCH && bash deploy/frostpine.sh $BRANCH"
+            "cd \"\${MUD_DIR:-\$HOME/MUDNEW}\" && bash deploy/frostpine.sh $BRANCH"

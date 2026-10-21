@@ -15,14 +15,18 @@
      10
     ]
    ],
-   "creatures": 0,
-   "items": 2,
-   "bosses": [],
-   "services": [],
-   "level_band": null,
-   "needs": [
-    "creatures"
+   "creatures": 5,
+   "items": 7,
+   "bosses": [
+    "King Minos the Minotaur (907)"
    ],
+   "services": [],
+   "level_band": {
+    "min": 24,
+    "median": 24,
+    "max": 26
+   },
+   "needs": [],
    "need_description": [],
    "links": {
     "60": [
@@ -146,12 +150,7 @@
      "to": 934,
      "why": "map neighbour"
     }
-   ],
-   "suggested_band": {
-    "min": 1,
-    "median": 3,
-    "max": 8
-   }
+   ]
   },
   "12": {
    "name": "God Rooms",
@@ -176,12 +175,8 @@
     "median": 30,
     "max": 30
    },
-   "needs": [
-    "descriptions for 1 rooms"
-   ],
-   "need_description": [
-    1201
-   ],
+   "needs": [],
+   "need_description": [],
    "links": {
     "30": [
      "The Board Room of the Immortals (1200) down to The Temple Of Garathorm (3001)"
@@ -236,19 +231,18 @@
      1
     ]
    ],
-   "creatures": 28,
-   "items": 0,
-   "bosses": [],
+   "creatures": 29,
+   "items": 71,
+   "bosses": [
+    "the Great Ifrit (1590)"
+   ],
    "services": [],
    "level_band": {
     "min": 13,
     "median": 25,
-    "max": 30
+    "max": 32
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "54": [
@@ -279,20 +273,20 @@
      12
     ]
    ],
-   "creatures": 75,
-   "items": 12,
-   "bosses": [],
+   "creatures": 92,
+   "items": 169,
+   "bosses": [
+    "the Master Summoner (2537)"
+   ],
    "services": [
     "shopkeeper"
    ],
    "level_band": {
     "min": 1,
-    "median": 9,
+    "median": 10,
     "max": 25
    },
-   "needs": [
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "408": [
@@ -346,8 +340,8 @@
      1
     ]
    ],
-   "creatures": 92,
-   "items": 23,
+   "creatures": 106,
+   "items": 256,
    "bosses": [
     "the Ancient Guardian (3016)",
     "the Sewer King (3014)"
@@ -361,125 +355,11 @@
    ],
    "level_band": {
     "min": 1,
-    "median": 15,
+    "median": 11,
     "max": 50
    },
-   "needs": [
-    "descriptions for 111 rooms"
-   ],
-   "need_description": [
-    3000,
-    3026,
-    3034,
-    3035,
-    3036,
-    3037,
-    3038,
-    3039,
-    3049,
-    3056,
-    3057,
-    3067,
-    3070,
-    3079,
-    3084,
-    3142,
-    3143,
-    3144,
-    3145,
-    3146,
-    3147,
-    3148,
-    3149,
-    3156,
-    3157,
-    3158,
-    3159,
-    3160,
-    6714,
-    6715,
-    6716,
-    6717,
-    6718,
-    6719,
-    6720,
-    6721,
-    6722,
-    6723,
-    6724,
-    6725,
-    6726,
-    6727,
-    6728,
-    6729,
-    6730,
-    6731,
-    6732,
-    6733,
-    6734,
-    6735,
-    6736,
-    6737,
-    6738,
-    6739,
-    9784,
-    9785,
-    9786,
-    9787,
-    203006,
-    203007,
-    203026,
-    203045,
-    203048,
-    203050,
-    203059,
-    203065,
-    203066,
-    203069,
-    203074,
-    203075,
-    203076,
-    203077,
-    203078,
-    203081,
-    203082,
-    203083,
-    203112,
-    203150,
-    203151,
-    203152,
-    203153,
-    203154,
-    203155,
-    206400,
-    206401,
-    206402,
-    206403,
-    206404,
-    206405,
-    206406,
-    206407,
-    206408,
-    206409,
-    206410,
-    206411,
-    206412,
-    206413,
-    206700,
-    206701,
-    206702,
-    206703,
-    206704,
-    206705,
-    206706,
-    206707,
-    206708,
-    206709,
-    206710,
-    206711,
-    206712,
-    206713
-   ],
+   "needs": [],
+   "need_description": [],
    "links": {
     "12": [
      "The Temple Of Garathorm (3001) up to The Board Room of the Immortals (1200)"
@@ -572,71 +452,21 @@
      4
     ]
    ],
-   "creatures": 1,
-   "items": 0,
-   "bosses": [],
+   "creatures": 22,
+   "items": 24,
+   "bosses": [
+    "Grubbak the stable troll (3290)"
+   ],
    "services": [
     "stable_master"
    ],
    "level_band": {
-    "min": 25,
-    "median": 25,
-    "max": 25
+    "min": 13,
+    "median": 19,
+    "max": 27
    },
-   "needs": [
-    "descriptions for 47 rooms",
-    "items",
-    "a boss"
-   ],
-   "need_description": [
-    3213,
-    203602,
-    203603,
-    203604,
-    203605,
-    203606,
-    203607,
-    203608,
-    203609,
-    203610,
-    203611,
-    203612,
-    203613,
-    203614,
-    203615,
-    203616,
-    203617,
-    203618,
-    203619,
-    203620,
-    203621,
-    203622,
-    203623,
-    203625,
-    203626,
-    203627,
-    203628,
-    203629,
-    203631,
-    203632,
-    203633,
-    203635,
-    203636,
-    203637,
-    203638,
-    203640,
-    203641,
-    203642,
-    203643,
-    203644,
-    203645,
-    203646,
-    203647,
-    203648,
-    203649,
-    203650,
-    203652
-   ],
+   "needs": [],
+   "need_description": [],
    "links": {
     "408": [
      "The Stable Entrance (3210) north to On The King's Road Outside The Castle (15003)"
@@ -691,9 +521,11 @@
      13
     ]
    ],
-   "creatures": 41,
-   "items": 12,
-   "bosses": [],
+   "creatures": 43,
+   "items": 188,
+   "bosses": [
+    "Aglandiir (3305)"
+   ],
    "services": [
     "shopkeeper"
    ],
@@ -702,9 +534,7 @@
     "median": 16,
     "max": 30
    },
-   "needs": [
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "40": [
@@ -735,18 +565,19 @@
      2
     ]
    ],
-   "creatures": 32,
-   "items": 2,
-   "bosses": [],
+   "creatures": 34,
+   "items": 89,
+   "bosses": [
+    "the Black King (3610)",
+    "the White King (3611)"
+   ],
    "services": [],
    "level_band": {
     "min": 4,
-    "median": 5,
+    "median": 6,
     "max": 10
    },
-   "needs": [
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "408": [
@@ -781,13 +612,15 @@
      20
     ]
    ],
-   "creatures": 61,
-   "items": 11,
-   "bosses": [],
+   "creatures": 108,
+   "items": 171,
+   "bosses": [
+    "Grondar, the Hill Giant Chieftain (40050)"
+   ],
    "services": [],
    "level_band": {
     "min": 3,
-    "median": 7,
+    "median": 12,
     "max": 25
    },
    "needs": [],
@@ -850,9 +683,11 @@
      25
     ]
    ],
-   "creatures": 22,
-   "items": 3,
-   "bosses": [],
+   "creatures": 47,
+   "items": 91,
+   "bosses": [
+    "the dracolich (5010)"
+   ],
    "services": [
     "stable_master"
    ],
@@ -1009,87 +844,19 @@
      1
     ]
    ],
-   "creatures": 38,
-   "items": 1,
-   "bosses": [],
+   "creatures": 53,
+   "items": 152,
+   "bosses": [
+    "the High Priestess of Lloth (51200)"
+   ],
    "services": [],
    "level_band": {
     "min": 1,
-    "median": 12,
-    "max": 25
+    "median": 14,
+    "max": 28
    },
-   "needs": [
-    "descriptions for 66 rooms",
-    "a boss"
-   ],
-   "need_description": [
-    5110,
-    5141,
-    5142,
-    5148,
-    5151,
-    5152,
-    5153,
-    5154,
-    5155,
-    5156,
-    5157,
-    5158,
-    5159,
-    5160,
-    5161,
-    5162,
-    5163,
-    5164,
-    5165,
-    5166,
-    5167,
-    5168,
-    5169,
-    5170,
-    5171,
-    5172,
-    5173,
-    5174,
-    5175,
-    5176,
-    5177,
-    5178,
-    5179,
-    5180,
-    5181,
-    5182,
-    5184,
-    5185,
-    5186,
-    5187,
-    5188,
-    5189,
-    5190,
-    5191,
-    5192,
-    5193,
-    5194,
-    5195,
-    5196,
-    5197,
-    5198,
-    5199,
-    205100,
-    205101,
-    205104,
-    205105,
-    205108,
-    205109,
-    205111,
-    205112,
-    205113,
-    205115,
-    205120,
-    205124,
-    205125,
-    205150
-   ],
+   "needs": [],
+   "need_description": [],
    "links": {
     "50": [
      "A Bend In The City Street (5101) up to A Giant Cave (5011)"
@@ -1125,8 +892,8 @@
      49
     ]
    ],
-   "creatures": 37,
-   "items": 25,
+   "creatures": 40,
+   "items": 153,
    "bosses": [
     "the mighty beholder (5200)"
    ],
@@ -1177,11 +944,12 @@
      2
     ]
    ],
-   "creatures": 49,
-   "items": 7,
+   "creatures": 53,
+   "items": 208,
    "bosses": [
     "Aurexus the Bronze Dragon (5360)",
-    "Kharzul the Necromancer (5318)"
+    "Kharzul the Necromancer (5318)",
+    "Ramses the Damned (5317)"
    ],
    "services": [],
    "level_band": {
@@ -1189,13 +957,8 @@
     "median": 12,
     "max": 44
    },
-   "needs": [
-    "descriptions for 2 rooms"
-   ],
-   "need_description": [
-    80304,
-    80305
-   ],
+   "needs": [],
+   "need_description": [],
    "links": {
     "120": [
      "The Great Eastern Desert (5300) south to The Great Eastern Desert (5046)"
@@ -1243,8 +1006,8 @@
      51
     ]
    ],
-   "creatures": 183,
-   "items": 2,
+   "creatures": 185,
+   "items": 450,
    "bosses": [],
    "services": [
     "shopkeeper"
@@ -1254,9 +1017,7 @@
     "median": 10,
     "max": 35
    },
-   "needs": [
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "15": [
@@ -1391,10 +1152,11 @@
      15
     ]
    ],
-   "creatures": 118,
-   "items": 38,
+   "creatures": 120,
+   "items": 331,
    "bosses": [
-    "Grukthar the Goblin King (3503)"
+    "Grukthar the Goblin King (3503)",
+    "King Minos the Minotaur (907)"
    ],
    "services": [],
    "level_band": {
@@ -1550,18 +1312,18 @@
      1
     ]
    ],
-   "creatures": 6,
-   "items": 0,
-   "bosses": [],
+   "creatures": 7,
+   "items": 18,
+   "bosses": [
+    "the Queen spider (6114)"
+   ],
    "services": [],
    "level_band": {
     "min": 8,
-    "median": 11,
+    "median": 15,
     "max": 20
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "60": [
@@ -1597,19 +1359,18 @@
      12
     ]
    ],
-   "creatures": 36,
-   "items": 0,
-   "bosses": [],
+   "creatures": 52,
+   "items": 136,
+   "bosses": [
+    "Elstar (6210)"
+   ],
    "services": [],
    "level_band": {
     "min": 1,
-    "median": 6,
+    "median": 7,
     "max": 15
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "60": [
@@ -1644,8 +1405,8 @@
      1
     ]
    ],
-   "creatures": 27,
-   "items": 0,
+   "creatures": 29,
+   "items": 86,
    "bosses": [
     "Zyraxxis the Spider Queen (6314)"
    ],
@@ -1655,13 +1416,8 @@
     "median": 11,
     "max": 26
    },
-   "needs": [
-    "descriptions for 1 rooms",
-    "items"
-   ],
-   "need_description": [
-    6398
-   ],
+   "needs": [],
+   "need_description": [],
    "links": {
     "61": [
      "The Quiet Tree Top (6346) down to Up In The Tree (6132)"
@@ -1728,18 +1484,18 @@
      38
     ]
    ],
-   "creatures": 11,
-   "items": 11,
-   "bosses": [],
+   "creatures": 22,
+   "items": 76,
+   "bosses": [
+    "Rand the Dreamer (6450)"
+   ],
    "services": [],
    "level_band": {
     "min": 8,
-    "median": 14,
-    "max": 19
+    "median": 16,
+    "max": 22
    },
-   "needs": [
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "40": [
@@ -1776,27 +1532,21 @@
      2
     ]
    ],
-   "creatures": 41,
-   "items": 8,
-   "bosses": [],
+   "creatures": 43,
+   "items": 241,
+   "bosses": [
+    "the mazekeeper (6516)"
+   ],
    "services": [
     "shopkeeper"
    ],
    "level_band": {
     "min": 3,
-    "median": 20,
+    "median": 21,
     "max": 33
    },
-   "needs": [
-    "descriptions for 4 rooms",
-    "a boss"
-   ],
-   "need_description": [
-    6501,
-    6531,
-    206527,
-    206533
-   ],
+   "needs": [],
+   "need_description": [],
    "links": {
     "100": [
      "Path To The Dwarven Village (6500) east to Entrance to the Dwarven Mines (10000)"
@@ -1872,18 +1622,18 @@
      7
     ]
    ],
-   "creatures": 27,
-   "items": 0,
-   "bosses": [],
+   "creatures": 49,
+   "items": 29,
+   "bosses": [
+    "Hrimgar the Frost Jarl (66050)"
+   ],
    "services": [],
    "level_band": {
     "min": 3,
-    "median": 10,
-    "max": 20
+    "median": 14,
+    "max": 24
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "67": [
@@ -1945,18 +1695,18 @@
      1
     ]
    ],
-   "creatures": 13,
-   "items": 0,
-   "bosses": [],
+   "creatures": 15,
+   "items": 15,
+   "bosses": [
+    "the raider chieftain (6704)"
+   ],
    "services": [],
    "level_band": {
     "min": 15,
     "median": 25,
     "max": 35
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "66": [
@@ -2001,18 +1751,18 @@
      2
     ]
    ],
-   "creatures": 14,
-   "items": 0,
-   "bosses": [],
+   "creatures": 16,
+   "items": 16,
+   "bosses": [
+    "Captain Blackhand (6805)"
+   ],
    "services": [],
    "level_band": {
     "min": 10,
     "median": 32,
     "max": 45
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "67": [
@@ -2056,18 +1806,18 @@
      1
     ]
    ],
-   "creatures": 13,
-   "items": 0,
-   "bosses": [],
+   "creatures": 14,
+   "items": 13,
+   "bosses": [
+    "the Cinder Tyrant (6950)"
+   ],
    "services": [],
    "level_band": {
     "min": 20,
     "median": 45,
     "max": 55
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "68": [
@@ -2108,47 +1858,19 @@
      34
     ]
    ],
-   "creatures": 296,
-   "items": 9,
-   "bosses": [],
+   "creatures": 337,
+   "items": 1009,
+   "bosses": [
+    "the Rat King (72000)"
+   ],
    "services": [],
    "level_band": {
     "min": 1,
     "median": 6,
     "max": 32
    },
-   "needs": [
-    "descriptions for 26 rooms",
-    "a boss"
-   ],
-   "need_description": [
-    7320,
-    7327,
-    7329,
-    216000,
-    216001,
-    216002,
-    216003,
-    216004,
-    216005,
-    216006,
-    216007,
-    216008,
-    216009,
-    216010,
-    216011,
-    216012,
-    216013,
-    216014,
-    216015,
-    216016,
-    216017,
-    216018,
-    216019,
-    216020,
-    216021,
-    216023
-   ],
+   "needs": [],
+   "need_description": [],
    "links": {
     "30": [
      "The Quadruple Junction Under The Dump (7030) up to The Dump (3030)"
@@ -2211,8 +1933,8 @@
      3
     ]
    ],
-   "creatures": 6,
-   "items": 0,
+   "creatures": 8,
+   "items": 9,
    "bosses": [
     "the Master Mindflayer (7304)"
    ],
@@ -2222,9 +1944,7 @@
     "median": 22,
     "max": 30
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "72": [
@@ -2255,14 +1975,16 @@
      5
     ]
    ],
-   "creatures": 4,
-   "items": 4,
-   "bosses": [],
+   "creatures": 12,
+   "items": 20,
+   "bosses": [
+    "Redferne the Wizard (79000)"
+   ],
    "services": [],
    "level_band": {
     "min": 12,
     "median": 16,
-    "max": 26
+    "max": 28
    },
    "needs": [],
    "need_description": [],
@@ -2305,8 +2027,8 @@
      1
     ]
    ],
-   "creatures": 5,
-   "items": 0,
+   "creatures": 7,
+   "items": 48,
    "bosses": [
     "Scorathax the Red Dragon (8003)"
    ],
@@ -2316,9 +2038,7 @@
     "median": 35,
     "max": 50
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "50": [
@@ -2356,18 +2076,18 @@
      1
     ]
    ],
-   "creatures": 36,
-   "items": 0,
-   "bosses": [],
+   "creatures": 38,
+   "items": 41,
+   "bosses": [
+    "the Bog Witch (90500)"
+   ],
    "services": [],
    "level_band": {
     "min": 7,
-    "median": 10,
-    "max": 18
+    "median": 11,
+    "max": 20
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "40": [
@@ -2396,20 +2116,20 @@
      25
     ]
    ],
-   "creatures": 38,
-   "items": 0,
-   "bosses": [],
+   "creatures": 46,
+   "items": 120,
+   "bosses": [
+    "Skarg the goblin warlord (10050)"
+   ],
    "services": [
     "shopkeeper"
    ],
    "level_band": {
     "min": 8,
-    "median": 13,
+    "median": 14,
     "max": 40
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "65": [
@@ -2444,8 +2164,8 @@
      1
     ]
    ],
-   "creatures": 30,
-   "items": 0,
+   "creatures": 44,
+   "items": 9,
    "bosses": [],
    "services": [
     "shopkeeper"
@@ -2455,43 +2175,8 @@
     "median": 16,
     "max": 50
    },
-   "needs": [
-    "descriptions for 30 rooms",
-    "items",
-    "a boss"
-   ],
-   "need_description": [
-    11000,
-    11001,
-    11002,
-    11003,
-    11004,
-    11005,
-    11007,
-    11008,
-    11010,
-    11014,
-    14302,
-    14303,
-    14305,
-    14306,
-    14307,
-    14308,
-    14312,
-    14316,
-    14317,
-    14319,
-    14320,
-    14321,
-    14322,
-    14323,
-    14324,
-    14327,
-    14332,
-    14333,
-    14334,
-    14390
-   ],
+   "needs": [],
+   "need_description": [],
    "links": {
     "60": [
      "Entrance To The Elven forest. (11000) east to At The End Of The Trail Through The Deep, Dark Forest (6137)"
@@ -2528,9 +2213,11 @@
      53
     ]
    ],
-   "creatures": 158,
-   "items": 12,
-   "bosses": [],
+   "creatures": 162,
+   "items": 399,
+   "bosses": [
+    "the High Priest of Terror (120501)"
+   ],
    "services": [
     "shopkeeper"
    ],
@@ -2803,18 +2490,18 @@
      1
     ]
    ],
-   "creatures": 30,
-   "items": 0,
-   "bosses": [],
+   "creatures": 50,
+   "items": 39,
+   "bosses": [
+    "Nerathis, the Drowned King (13130)"
+   ],
    "services": [],
    "level_band": {
     "min": 14,
     "median": 20,
-    "max": 25
+    "max": 26
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "50": [
@@ -2844,9 +2531,10 @@
      31
     ]
    ],
-   "creatures": 85,
-   "items": 0,
+   "creatures": 89,
+   "items": 90,
    "bosses": [
+    "Morthul the Lich Lord (14050)",
     "Verdraxx the Green Dragon (14030)"
    ],
    "services": [],
@@ -2855,9 +2543,7 @@
     "median": 23,
     "max": 47
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "72": [
@@ -2889,9 +2575,11 @@
      1
     ]
    ],
-   "creatures": 35,
-   "items": 7,
-   "bosses": [],
+   "creatures": 37,
+   "items": 137,
+   "bosses": [
+    "King Welmar (15001)"
+   ],
    "services": [
     "shopkeeper"
    ],
@@ -2900,13 +2588,8 @@
     "median": 13,
     "max": 33
    },
-   "needs": [
-    "descriptions for 1 rooms",
-    "a boss"
-   ],
-   "need_description": [
-    15301
-   ],
+   "needs": [],
+   "need_description": [],
    "links": {
     "408": [
      "On the Drawbridge (15004) south to On The King's Road Outside The Castle (15003)"
@@ -2949,8 +2632,8 @@
      1
     ]
    ],
-   "creatures": 81,
-   "items": 0,
+   "creatures": 83,
+   "items": 130,
    "bosses": [
     "Kaleidos the Prismatic Dragon (16025)"
    ],
@@ -2960,9 +2643,7 @@
     "median": 34,
     "max": 50
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "80": [
@@ -3008,9 +2689,11 @@
      1
     ]
    ],
-   "creatures": 27,
-   "items": 10,
-   "bosses": [],
+   "creatures": 29,
+   "items": 72,
+   "bosses": [
+    "the alpha wolf (18009)"
+   ],
    "services": [],
    "level_band": {
     "min": 3,
@@ -3055,8 +2738,8 @@
      1
     ]
    ],
-   "creatures": 24,
-   "items": 0,
+   "creatures": 25,
+   "items": 78,
    "bosses": [],
    "services": [],
    "level_band": {
@@ -3064,10 +2747,7 @@
     "median": 3,
     "max": 7
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "408": [
@@ -3098,8 +2778,8 @@
      12
     ]
    ],
-   "creatures": 28,
-   "items": 13,
+   "creatures": 31,
+   "items": 122,
    "bosses": [
     "Vyrkothas the Frost Wyrm (19010)",
     "the Frozen Dwarven King (19007)"
@@ -3141,8 +2821,8 @@
      2
     ]
    ],
-   "creatures": 11,
-   "items": 2,
+   "creatures": 16,
+   "items": 70,
    "bosses": [
     "the Alpha Wolf (20008)",
     "the Spider Queen (20007)"
@@ -3150,7 +2830,7 @@
    "services": [],
    "level_band": {
     "min": 5,
-    "median": 8,
+    "median": 9,
     "max": 14
    },
    "needs": [],
@@ -3184,19 +2864,18 @@
      1
     ]
    ],
-   "creatures": 105,
-   "items": 0,
-   "bosses": [],
+   "creatures": 150,
+   "items": 217,
+   "bosses": [
+    "the Stick Mother (21050)"
+   ],
    "services": [],
    "level_band": {
     "min": 18,
     "median": 18,
-    "max": 35
+    "max": 38
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "220": [
@@ -3237,8 +2916,8 @@
      59
     ]
    ],
-   "creatures": 15,
-   "items": 0,
+   "creatures": 65,
+   "items": 171,
    "bosses": [
     "Death (22073)",
     "Famine (22072)",
@@ -3251,111 +2930,11 @@
    "services": [],
    "level_band": {
     "min": 45,
-    "median": 58,
+    "median": 57,
     "max": 68
    },
-   "needs": [
-    "descriptions for 96 rooms",
-    "items"
-   ],
-   "need_description": [
-    14102,
-    14104,
-    14105,
-    14107,
-    14109,
-    14111,
-    14112,
-    14116,
-    14124,
-    14126,
-    14128,
-    14129,
-    14131,
-    14133,
-    14135,
-    14136,
-    14139,
-    14140,
-    14142,
-    14145,
-    14146,
-    14147,
-    14148,
-    14149,
-    14150,
-    14151,
-    14152,
-    14153,
-    14154,
-    14155,
-    14156,
-    14158,
-    14159,
-    14160,
-    14161,
-    14163,
-    14200,
-    14201,
-    14202,
-    14203,
-    14204,
-    14205,
-    14206,
-    14207,
-    14208,
-    14209,
-    14210,
-    14211,
-    14212,
-    14214,
-    14215,
-    14216,
-    14217,
-    14218,
-    14219,
-    14221,
-    14223,
-    14224,
-    14225,
-    14229,
-    22001,
-    22002,
-    22020,
-    22021,
-    22022,
-    22025,
-    22028,
-    22035,
-    22101,
-    22104,
-    22105,
-    22106,
-    22107,
-    22108,
-    22109,
-    22110,
-    22153,
-    22154,
-    22155,
-    22158,
-    22159,
-    22160,
-    22161,
-    22164,
-    22165,
-    22166,
-    22167,
-    22168,
-    22169,
-    22171,
-    22173,
-    22174,
-    22175,
-    22176,
-    22177,
-    22178
-   ],
+   "needs": [],
+   "need_description": [],
    "links": {
     "210": [
      "Pathway To The Lost Castle (22001) north to Pathway To The Lost Castle (21001)"
@@ -3392,8 +2971,8 @@
      20
     ]
    ],
-   "creatures": 15,
-   "items": 0,
+   "creatures": 17,
+   "items": 37,
    "bosses": [
     "Goblin King Grizznak (23513)"
    ],
@@ -3403,9 +2982,7 @@
     "median": 17,
     "max": 25
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "66": [
@@ -3438,20 +3015,18 @@
      3
     ]
    ],
-   "creatures": 14,
-   "items": 0,
+   "creatures": 20,
+   "items": 42,
    "bosses": [
     "the Abbot's Ghost (23812)"
    ],
    "services": [],
    "level_band": {
     "min": 25,
-    "median": 27,
+    "median": 26,
     "max": 35
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "67": [
@@ -3480,9 +3055,11 @@
      25
     ]
    ],
-   "creatures": 29,
-   "items": 4,
-   "bosses": [],
+   "creatures": 30,
+   "items": 84,
+   "bosses": [
+    "the Kraken (24006)"
+   ],
    "services": [],
    "level_band": {
     "min": 40,
@@ -3519,18 +3096,18 @@
      30
     ]
    ],
-   "creatures": 35,
-   "items": 3,
-   "bosses": [],
+   "creatures": 37,
+   "items": 95,
+   "bosses": [
+    "Shadow Lord Malachar (24505)"
+   ],
    "services": [],
    "level_band": {
     "min": 47,
     "median": 48,
     "max": 55
    },
-   "needs": [
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "67": [
@@ -3559,18 +3136,18 @@
      30
     ]
    ],
-   "creatures": 33,
-   "items": 3,
-   "bosses": [],
+   "creatures": 41,
+   "items": 130,
+   "bosses": [
+    "Archon Prime (24805)"
+   ],
    "services": [],
    "level_band": {
     "min": 50,
     "median": 52,
     "max": 60
    },
-   "needs": [
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "69": [
@@ -3610,35 +3187,19 @@
      1
     ]
    ],
-   "creatures": 1,
-   "items": 0,
+   "creatures": 9,
+   "items": 19,
    "bosses": [],
    "services": [
     "arena_master"
    ],
    "level_band": {
-    "min": 50,
-    "median": 50,
+    "min": 32,
+    "median": 32,
     "max": 50
    },
-   "needs": [
-    "descriptions for 12 rooms",
-    "items"
-   ],
-   "need_description": [
-    404,
-    408,
-    410,
-    413,
-    414,
-    415,
-    416,
-    417,
-    418,
-    419,
-    420,
-    25006
-   ],
+   "needs": [],
+   "need_description": [],
    "links": {
     "30": [
      "The Arena Center (25000) down to The Dark Alley (3044)"
@@ -3681,7 +3242,7 @@
     ]
    ],
    "creatures": 2,
-   "items": 0,
+   "items": 8,
    "bosses": [],
    "services": [
     "real_estate",
@@ -3692,9 +3253,7 @@
     "median": 27,
     "max": 30
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "30": [
@@ -3729,8 +3288,8 @@
      2
     ]
    ],
-   "creatures": 20,
-   "items": 2,
+   "creatures": 22,
+   "items": 55,
    "bosses": [
     "Grimclaw the Great Bear rises to challenge you! (27015)",
     "The Blightlord guards the corrupted altar. (27016)",
@@ -3777,8 +3336,8 @@
      12
     ]
    ],
-   "creatures": 34,
-   "items": 0,
+   "creatures": 35,
+   "items": 134,
    "bosses": [
     "the Ember Sovereign (28020)"
    ],
@@ -3788,9 +3347,7 @@
     "median": 59,
     "max": 62
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "69": [
@@ -3820,8 +3377,8 @@
      36
     ]
    ],
-   "creatures": 34,
-   "items": 0,
+   "creatures": 35,
+   "items": 129,
    "bosses": [
     "the Thalassine Lich (28520)"
    ],
@@ -3831,9 +3388,7 @@
     "median": 61,
     "max": 64
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "240": [
@@ -3867,8 +3422,8 @@
      6
     ]
    ],
-   "creatures": 36,
-   "items": 0,
+   "creatures": 37,
+   "items": 140,
    "bosses": [
     "the Eclipse Regent (29020)"
    ],
@@ -3878,9 +3433,7 @@
     "median": 63,
     "max": 66
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "280": [
@@ -3910,8 +3463,8 @@
      36
     ]
    ],
-   "creatures": 36,
-   "items": 0,
+   "creatures": 37,
+   "items": 116,
    "bosses": [
     "the Bone-Crowned Sovereign (29520)"
    ],
@@ -3921,9 +3474,7 @@
     "median": 65,
     "max": 68
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "285": [
@@ -3957,8 +3508,8 @@
      8
     ]
    ],
-   "creatures": 33,
-   "items": 0,
+   "creatures": 34,
+   "items": 142,
    "bosses": [
     "the Shattered Emperor (30020)"
    ],
@@ -3968,9 +3519,7 @@
     "median": 69,
     "max": 70
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "290": [
@@ -4008,16 +3557,16 @@
      50
     ]
    ],
-   "creatures": 0,
-   "items": 0,
+   "creatures": 12,
+   "items": 15,
    "bosses": [],
    "services": [],
-   "level_band": null,
-   "needs": [
-    "creatures",
-    "items",
-    "a boss"
-   ],
+   "level_band": {
+    "min": 5,
+    "median": 6,
+    "max": 15
+   },
+   "needs": [],
    "need_description": [],
    "links": {
     "30": [
@@ -4031,12 +3580,7 @@
    "no_exits": [],
    "locked_doors_left_unlocked": [],
    "water_rooms": [],
-   "connections_added": [],
-   "suggested_band": {
-    "min": 10,
-    "median": 15,
-    "max": 20
-   }
+   "connections_added": []
   },
   "408": {
    "name": "Trade Road",
@@ -4060,13 +3604,15 @@
      104
     ]
    ],
-   "creatures": 110,
-   "items": 5,
-   "bosses": [],
+   "creatures": 188,
+   "items": 201,
+   "bosses": [
+    "the Barrow King (40820)"
+   ],
    "services": [],
    "level_band": {
     "min": 3,
-    "median": 13,
+    "median": 14,
     "max": 33
    },
    "needs": [],
@@ -4280,19 +3826,18 @@
      6
     ]
    ],
-   "creatures": 12,
-   "items": 0,
-   "bosses": [],
+   "creatures": 14,
+   "items": 19,
+   "bosses": [
+    "Doctor Ilmeric Vane, the Mad Botanist (641406)"
+   ],
    "services": [],
    "level_band": {
     "min": 13,
     "median": 16,
     "max": 22
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "408": [
@@ -4383,18 +3928,16 @@
      22
     ]
    ],
-   "creatures": 5,
-   "items": 0,
+   "creatures": 13,
+   "items": 5,
    "bosses": [],
    "services": [],
    "level_band": {
     "min": 7,
-    "median": 7,
+    "median": 10,
     "max": 11
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "448": [
@@ -4593,19 +4136,18 @@
      2
     ]
    ],
-   "creatures": 16,
-   "items": 0,
-   "bosses": [],
+   "creatures": 25,
+   "items": 30,
+   "bosses": [
+    "Lord Khal, the necromancer (641606)"
+   ],
    "services": [],
    "level_band": {
     "min": 5,
-    "median": 8,
+    "median": 7,
     "max": 13
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "60": [
@@ -4639,15 +4181,16 @@
      3
     ]
    ],
-   "creatures": 0,
-   "items": 0,
+   "creatures": 4,
+   "items": 6,
    "bosses": [],
    "services": [],
-   "level_band": null,
-   "needs": [
-    "creatures",
-    "items"
-   ],
+   "level_band": {
+    "min": 8,
+    "median": 9,
+    "max": 14
+   },
+   "needs": [],
    "need_description": [],
    "links": {
     "408": [
@@ -4661,12 +4204,7 @@
     "209007 west"
    ],
    "water_rooms": [],
-   "connections_added": [],
-   "suggested_band": {
-    "min": 8,
-    "median": 13,
-    "max": 18
-   }
+   "connections_added": []
   },
   "419": {
    "name": "Mishrak",
@@ -4690,19 +4228,18 @@
      7
     ]
    ],
-   "creatures": 18,
-   "items": 0,
-   "bosses": [],
+   "creatures": 50,
+   "items": 27,
+   "bosses": [
+    "Maelgrim the Pale, high priest of the cult (641906)"
+   ],
    "services": [],
    "level_band": {
     "min": 12,
     "median": 15,
-    "max": 21
+    "max": 22
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "408": [
@@ -4761,16 +4298,18 @@
      44
     ]
    ],
-   "creatures": 0,
-   "items": 0,
-   "bosses": [],
-   "services": [],
-   "level_band": null,
-   "needs": [
-    "creatures",
-    "items",
-    "a boss"
+   "creatures": 24,
+   "items": 25,
+   "bosses": [
+    "the First Hero (42030)"
    ],
+   "services": [],
+   "level_band": {
+    "min": 22,
+    "median": 24,
+    "max": 30
+   },
+   "needs": [],
    "need_description": [],
    "links": {
     "30": [
@@ -4784,12 +4323,7 @@
    "no_exits": [],
    "locked_doors_left_unlocked": [],
    "water_rooms": [],
-   "connections_added": [],
-   "suggested_band": {
-    "min": 12,
-    "median": 17,
-    "max": 22
-   }
+   "connections_added": []
   },
   "423": {
    "name": "Hommlet",
@@ -4805,15 +4339,18 @@
      12
     ]
    ],
-   "creatures": 0,
-   "items": 0,
-   "bosses": [],
-   "services": [],
-   "level_band": null,
-   "needs": [
-    "creatures",
-    "items"
+   "creatures": 9,
+   "items": 12,
+   "bosses": [
+    "the false Canon (42310)"
    ],
+   "services": [],
+   "level_band": {
+    "min": 8,
+    "median": 10,
+    "max": 16
+   },
+   "needs": [],
    "need_description": [],
    "links": {
     "408": [
@@ -4832,12 +4369,7 @@
    "no_exits": [],
    "locked_doors_left_unlocked": [],
    "water_rooms": [],
-   "connections_added": [],
-   "suggested_band": {
-    "min": 8,
-    "median": 13,
-    "max": 18
-   }
+   "connections_added": []
   },
   "424": {
    "name": "Castle Catacombs",
@@ -4853,19 +4385,18 @@
      47
     ]
    ],
-   "creatures": 15,
-   "items": 0,
-   "bosses": [],
+   "creatures": 24,
+   "items": 37,
+   "bosses": [
+    "Aldric Vane, the skeletal crypt lord (642406)"
+   ],
    "services": [],
    "level_band": {
     "min": 8,
-    "median": 12,
+    "median": 10,
     "max": 18
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "50": [
@@ -4948,19 +4479,18 @@
      44
     ]
    ],
-   "creatures": 14,
-   "items": 0,
-   "bosses": [],
+   "creatures": 21,
+   "items": 21,
+   "bosses": [
+    "Hrungar the hill giant (642606)"
+   ],
    "services": [],
    "level_band": {
     "min": 6,
     "median": 9,
     "max": 16
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "50": [
@@ -4998,19 +4528,18 @@
      10
     ]
    ],
-   "creatures": 15,
-   "items": 0,
-   "bosses": [],
+   "creatures": 17,
+   "items": 20,
+   "bosses": [
+    "the Ancient Champion (642906)"
+   ],
    "services": [],
    "level_band": {
     "min": 15,
     "median": 19,
     "max": 25
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "30": [
@@ -5046,16 +4575,18 @@
      16
     ]
    ],
-   "creatures": 0,
-   "items": 0,
-   "bosses": [],
-   "services": [],
-   "level_band": null,
-   "needs": [
-    "creatures",
-    "items",
-    "a boss"
+   "creatures": 40,
+   "items": 23,
+   "bosses": [
+    "the Hollow Bishop (43130)"
    ],
+   "services": [],
+   "level_band": {
+    "min": 15,
+    "median": 18,
+    "max": 25
+   },
+   "needs": [],
    "need_description": [],
    "links": {
     "30": [
@@ -5099,12 +4630,7 @@
      "to": 4400,
      "why": "map neighbour"
     }
-   ],
-   "suggested_band": {
-    "min": 10,
-    "median": 15,
-    "max": 20
-   }
+   ]
   },
   "435": {
    "name": "MiNar I",
@@ -5128,18 +4654,18 @@
      13
     ]
    ],
-   "creatures": 85,
-   "items": 0,
-   "bosses": [],
+   "creatures": 242,
+   "items": 197,
+   "bosses": [
+    "Farrot the great roc (43550)"
+   ],
    "services": [],
    "level_band": {
     "min": 6,
-    "median": 9,
-    "max": 15
+    "median": 10,
+    "max": 18
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "60": [
@@ -5186,19 +4712,18 @@
      10
     ]
    ],
-   "creatures": 25,
-   "items": 0,
-   "bosses": [],
+   "creatures": 54,
+   "items": 48,
+   "bosses": [
+    "Baron Kalveh, lord of the fief (643607)"
+   ],
    "services": [],
    "level_band": {
     "min": 14,
     "median": 18,
     "max": 24
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "435": [
@@ -5236,19 +4761,18 @@
      14
     ]
    ],
-   "creatures": 20,
-   "items": 0,
-   "bosses": [],
+   "creatures": 32,
+   "items": 38,
+   "bosses": [
+    "Hyperion, the Chained Titan (643907)"
+   ],
    "services": [],
    "level_band": {
     "min": 8,
     "median": 11,
     "max": 17
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "435": [
@@ -5500,18 +5024,18 @@
      1
     ]
    ],
-   "creatures": 5,
-   "items": 0,
-   "bosses": [],
+   "creatures": 10,
+   "items": 5,
+   "bosses": [
+    "a barrow wight (644103)"
+   ],
    "services": [],
    "level_band": {
     "min": 6,
-    "median": 7,
+    "median": 11,
     "max": 16
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "408": [
@@ -5550,120 +5074,19 @@
      11
     ]
    ],
-   "creatures": 1,
-   "items": 1,
-   "bosses": [],
+   "creatures": 45,
+   "items": 16,
+   "bosses": [
+    "Yarick the Outcast (44200)"
+   ],
    "services": [],
    "level_band": {
-    "min": 30,
-    "median": 30,
-    "max": 30
+    "min": 15,
+    "median": 23,
+    "max": 32
    },
-   "needs": [
-    "descriptions for 99 rooms",
-    "a boss"
-   ],
-   "need_description": [
-    16300,
-    16301,
-    16302,
-    16303,
-    16304,
-    16305,
-    16306,
-    16307,
-    16308,
-    16309,
-    16310,
-    16311,
-    16312,
-    16313,
-    16314,
-    16315,
-    16316,
-    16317,
-    16318,
-    16319,
-    16320,
-    16321,
-    16322,
-    16323,
-    16324,
-    16325,
-    16326,
-    16327,
-    16328,
-    16329,
-    16330,
-    16331,
-    16332,
-    16333,
-    16334,
-    16335,
-    16336,
-    16337,
-    16338,
-    16339,
-    16340,
-    16341,
-    16342,
-    16343,
-    16344,
-    16345,
-    16346,
-    16347,
-    16348,
-    16349,
-    16350,
-    16351,
-    16352,
-    16353,
-    16354,
-    16355,
-    16356,
-    16357,
-    16358,
-    16359,
-    16360,
-    16361,
-    16362,
-    16363,
-    16364,
-    16365,
-    16366,
-    16367,
-    16368,
-    16369,
-    16370,
-    16371,
-    16372,
-    16373,
-    16374,
-    16375,
-    16376,
-    16377,
-    16378,
-    16379,
-    16380,
-    16381,
-    16382,
-    16383,
-    16384,
-    16385,
-    16386,
-    16387,
-    16388,
-    16389,
-    16390,
-    16391,
-    16392,
-    16393,
-    16394,
-    16395,
-    16396,
-    16397,
-    16398
-   ],
+   "needs": [],
+   "need_description": [],
    "links": {
     "60": [
      "A Small Path In The Deep, Dark Forest (6119) north to A Small Path In The Deep, Dark Forest (6118)",
@@ -5712,19 +5135,18 @@
      15
     ]
    ],
-   "creatures": 18,
-   "items": 0,
-   "bosses": [],
+   "creatures": 42,
+   "items": 37,
+   "bosses": [
+    "Brogg Skullsplitter, the Ogre Chieftain (644506)"
+   ],
    "services": [],
    "level_band": {
     "min": 12,
-    "median": 16,
+    "median": 13,
     "max": 22
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "51": [
@@ -5808,19 +5230,18 @@
      3
     ]
    ],
-   "creatures": 24,
-   "items": 0,
-   "bosses": [],
+   "creatures": 55,
+   "items": 48,
+   "bosses": [
+    "the Lord of Mahn-Tor (644706)"
+   ],
    "services": [],
    "level_band": {
     "min": 15,
     "median": 18,
     "max": 25
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "445": [
@@ -5865,7 +5286,7 @@
     ]
    ],
    "creatures": 21,
-   "items": 0,
+   "items": 10,
    "bosses": [],
    "services": [],
    "level_band": {
@@ -5873,9 +5294,7 @@
     "median": 3,
     "max": 7
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "60": [
@@ -6053,19 +5472,18 @@
      80
     ]
    ],
-   "creatures": 20,
-   "items": 0,
-   "bosses": [],
+   "creatures": 44,
+   "items": 40,
+   "bosses": [
+    "the fire spirit of the crest (644906)"
+   ],
    "services": [],
    "level_band": {
     "min": 3,
     "median": 6,
     "max": 13
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "448": [
@@ -6101,18 +5519,18 @@
      4
     ]
    ],
-   "creatures": 28,
-   "items": 0,
-   "bosses": [],
+   "creatures": 29,
+   "items": 15,
+   "bosses": [
+    "the Ice Leviathan (45150)"
+   ],
    "services": [],
    "level_band": {
     "min": 6,
     "median": 7,
-    "max": 16
+    "max": 20
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "435": [
@@ -6288,19 +5706,18 @@
      6
     ]
    ],
-   "creatures": 16,
-   "items": 0,
-   "bosses": [],
+   "creatures": 28,
+   "items": 24,
+   "bosses": [
+    "the Scaled Beast of Zaebos (645207)"
+   ],
    "services": [],
    "level_band": {
     "min": 8,
     "median": 10,
     "max": 18
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "451": [
@@ -6356,19 +5773,18 @@
      1
     ]
    ],
-   "creatures": 13,
-   "items": 0,
-   "bosses": [],
+   "creatures": 21,
+   "items": 16,
+   "bosses": [
+    "Zikrak, the Kobold Shaman (645306)"
+   ],
    "services": [],
    "level_band": {
     "min": 8,
     "median": 10,
     "max": 18
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "451": [
@@ -6405,19 +5821,18 @@
      100
     ]
    ],
-   "creatures": 25,
-   "items": 0,
-   "bosses": [],
+   "creatures": 47,
+   "items": 50,
+   "bosses": [
+    "the Pale Man, a bone-white ogre lord (645407)"
+   ],
    "services": [],
    "level_band": {
     "min": 11,
     "median": 15,
     "max": 21
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "453": [
@@ -6452,18 +5867,18 @@
      1
     ]
    ],
-   "creatures": 9,
-   "items": 0,
-   "bosses": [],
+   "creatures": 11,
+   "items": 12,
+   "bosses": [
+    "Aldric, the Barrow-King (645506)"
+   ],
    "services": [],
    "level_band": {
     "min": 13,
     "median": 19,
     "max": 21
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "415": [
@@ -6509,51 +5924,19 @@
      36
     ]
    ],
-   "creatures": 0,
-   "items": 0,
-   "bosses": [],
+   "creatures": 18,
+   "items": 3,
+   "bosses": [
+    "the Gargoyle Lord (45700)"
+   ],
    "services": [],
-   "level_band": null,
-   "needs": [
-    "descriptions for 32 rooms",
-    "creatures",
-    "items",
-    "a boss"
-   ],
-   "need_description": [
-    14164,
-    14165,
-    14167,
-    14168,
-    14170,
-    14171,
-    14173,
-    14174,
-    14175,
-    14176,
-    14177,
-    14178,
-    14180,
-    14182,
-    14190,
-    14192,
-    14194,
-    14196,
-    14197,
-    14198,
-    14199,
-    22024,
-    22030,
-    22031,
-    22034,
-    22103,
-    22150,
-    22152,
-    22156,
-    22162,
-    22163,
-    22180
-   ],
+   "level_band": {
+    "min": 58,
+    "median": 58,
+    "max": 65
+   },
+   "needs": [],
+   "need_description": [],
    "links": {
     "220": [
      "Ragged Walkway Atop The Castle (14164) down to Hall Along The Inner Wall (14133)",
@@ -6566,12 +5949,7 @@
    "no_exits": [],
    "locked_doors_left_unlocked": [],
    "water_rooms": [],
-   "connections_added": [],
-   "suggested_band": {
-    "min": 53,
-    "median": 58,
-    "max": 63
-   }
+   "connections_added": []
   },
   "458": {
    "name": "Castle Varok",
@@ -6587,19 +5965,18 @@
      84
     ]
    ],
-   "creatures": 17,
-   "items": 0,
-   "bosses": [],
+   "creatures": 40,
+   "items": 32,
+   "bosses": [
+    "Lord Aldric Varok, a vampire (645806)"
+   ],
    "services": [],
    "level_band": {
     "min": 12,
-    "median": 16,
+    "median": 14,
     "max": 22
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "408": [
@@ -6626,19 +6003,18 @@
      36
     ]
    ],
-   "creatures": 14,
-   "items": 0,
-   "bosses": [],
+   "creatures": 16,
+   "items": 20,
+   "bosses": [
+    "Acrasia, the ghost queen of the tombs (646107)"
+   ],
    "services": [],
    "level_band": {
     "min": 14,
     "median": 17,
     "max": 23
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "408": [
@@ -6819,19 +6195,18 @@
      3
     ]
    ],
-   "creatures": 19,
-   "items": 0,
-   "bosses": [],
+   "creatures": 40,
+   "items": 43,
+   "bosses": [
+    "Overseer Harrok the Corrupted (646406)"
+   ],
    "services": [],
    "level_band": {
     "min": 14,
-    "median": 14,
+    "median": 16,
     "max": 24
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "30": [
@@ -6959,19 +6334,18 @@
      4
     ]
    ],
-   "creatures": 25,
-   "items": 0,
-   "bosses": [],
+   "creatures": 46,
+   "items": 31,
+   "bosses": [
+    "a towering balrog (646507)"
+   ],
    "services": [],
    "level_band": {
     "min": 12,
-    "median": 14,
+    "median": 13,
     "max": 21
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "40": [
@@ -7028,18 +6402,18 @@
      2
     ]
    ],
-   "creatures": 9,
-   "items": 0,
-   "bosses": [],
+   "creatures": 11,
+   "items": 8,
+   "bosses": [
+    "Asmolov the ogre warlord (646706)"
+   ],
    "services": [],
    "level_band": {
     "min": 17,
     "median": 20,
     "max": 27
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "464": [
@@ -7086,18 +6460,18 @@
      84
     ]
    ],
-   "creatures": 34,
-   "items": 11,
-   "bosses": [],
+   "creatures": 44,
+   "items": 136,
+   "bosses": [
+    "the Grand Mistress (2564)"
+   ],
    "services": [],
    "level_band": {
     "min": 8,
     "median": 20,
     "max": 50
    },
-   "needs": [
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "25": [
@@ -7143,19 +6517,18 @@
      1
     ]
    ],
-   "creatures": 21,
-   "items": 0,
-   "bosses": [],
+   "creatures": 51,
+   "items": 54,
+   "bosses": [
+    "Ostragoth, the sorcerer-lord (647006)"
+   ],
    "services": [],
    "level_band": {
     "min": 13,
-    "median": 16,
+    "median": 14,
     "max": 21
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "471": [
@@ -7226,18 +6599,18 @@
      17
     ]
    ],
-   "creatures": 25,
-   "items": 0,
-   "bosses": [],
+   "creatures": 59,
+   "items": 52,
+   "bosses": [
+    "the Black Priest (47150)"
+   ],
    "services": [],
    "level_band": {
     "min": 6,
     "median": 12,
-    "max": 16
+    "max": 18
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "408": [
@@ -7329,18 +6702,18 @@
      3
     ]
    ],
-   "creatures": 18,
-   "items": 0,
-   "bosses": [],
+   "creatures": 48,
+   "items": 67,
+   "bosses": [
+    "the Wyvern Matriarch (47250)"
+   ],
    "services": [],
    "level_band": {
     "min": 16,
     "median": 18,
-    "max": 24
+    "max": 26
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "65": [
@@ -7397,19 +6770,18 @@
      2
     ]
    ],
-   "creatures": 27,
-   "items": 0,
-   "bosses": [],
+   "creatures": 56,
+   "items": 64,
+   "bosses": [
+    "Ilvareth, the Cave Elf King (647408)"
+   ],
    "services": [],
    "level_band": {
     "min": 10,
-    "median": 14,
+    "median": 13,
     "max": 20
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "66": [
@@ -7463,16 +6835,18 @@
      22
     ]
    ],
-   "creatures": 0,
-   "items": 0,
-   "bosses": [],
-   "services": [],
-   "level_band": null,
-   "needs": [
-    "creatures",
-    "items",
-    "a boss"
+   "creatures": 41,
+   "items": 33,
+   "bosses": [
+    "the Lord of Chaos (47530)"
    ],
+   "services": [],
+   "level_band": {
+    "min": 22,
+    "median": 23,
+    "max": 30
+   },
+   "needs": [],
    "need_description": [],
    "links": {
     "472": [
@@ -7510,12 +6884,7 @@
     16280,
     16281
    ],
-   "connections_added": [],
-   "suggested_band": {
-    "min": 13,
-    "median": 18,
-    "max": 23
-   }
+   "connections_added": []
   },
   "476": {
    "name": "Stone Circle",
@@ -7539,19 +6908,18 @@
      7
     ]
    ],
-   "creatures": 24,
-   "items": 0,
-   "bosses": [],
+   "creatures": 25,
+   "items": 28,
+   "bosses": [
+    "Ulgrathar, the High Druid (647607)"
+   ],
    "services": [],
    "level_band": {
     "min": 18,
     "median": 21,
     "max": 27
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "472": [
@@ -7735,19 +7103,18 @@
      1
     ]
    ],
-   "creatures": 23,
-   "items": 0,
-   "bosses": [],
+   "creatures": 52,
+   "items": 28,
+   "bosses": [
+    "Machk-Gyi, the fire lord (647807)"
+   ],
    "services": [],
    "level_band": {
     "min": 17,
     "median": 20,
     "max": 27
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "472": [
@@ -7884,16 +7251,18 @@
      2
     ]
    ],
-   "creatures": 0,
-   "items": 0,
-   "bosses": [],
-   "services": [],
-   "level_band": null,
-   "needs": [
-    "creatures",
-    "items",
-    "a boss"
+   "creatures": 41,
+   "items": 19,
+   "bosses": [
+    "Morticia (47902)"
    ],
+   "services": [],
+   "level_band": {
+    "min": 7,
+    "median": 14,
+    "max": 25
+   },
+   "needs": [],
    "need_description": [],
    "links": {
     "408": [
@@ -7911,12 +7280,7 @@
     "205527 east"
    ],
    "water_rooms": [],
-   "connections_added": [],
-   "suggested_band": {
-    "min": 8,
-    "median": 13,
-    "max": 18
-   }
+   "connections_added": []
   },
   "480": {
    "name": "Salem's Lot",
@@ -7940,19 +7304,18 @@
      13
     ]
    ],
-   "creatures": 22,
-   "items": 0,
-   "bosses": [],
+   "creatures": 42,
+   "items": 34,
+   "bosses": [
+    "Lord Aldric Tudor, the Pale Master (648007)"
+   ],
    "services": [],
    "level_band": {
     "min": 12,
     "median": 15,
     "max": 22
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "408": [
@@ -8011,16 +7374,18 @@
      2
     ]
    ],
-   "creatures": 0,
-   "items": 0,
-   "bosses": [],
-   "services": [],
-   "level_band": null,
-   "needs": [
-    "creatures",
-    "items",
-    "a boss"
+   "creatures": 59,
+   "items": 12,
+   "bosses": [
+    "the Deep Dragon (9910)"
    ],
+   "services": [],
+   "level_band": {
+    "min": 30,
+    "median": 30,
+    "max": 33
+   },
+   "needs": [],
    "need_description": [],
    "links": {
     "30": [
@@ -8106,12 +7471,7 @@
     "9921 south"
    ],
    "water_rooms": [],
-   "connections_added": [],
-   "suggested_band": {
-    "min": 10,
-    "median": 15,
-    "max": 20
-   }
+   "connections_added": []
   },
   "482": {
    "name": "Haunted House",
@@ -8127,16 +7487,18 @@
      49
     ]
    ],
-   "creatures": 0,
-   "items": 0,
-   "bosses": [],
-   "services": [],
-   "level_band": null,
-   "needs": [
-    "creatures",
-    "items",
-    "a boss"
+   "creatures": 27,
+   "items": 14,
+   "bosses": [
+    "the Lord of the House (48210)"
    ],
+   "services": [],
+   "level_band": {
+    "min": 10,
+    "median": 14,
+    "max": 20
+   },
+   "needs": [],
    "need_description": [],
    "links": {
     "408": [
@@ -8168,12 +7530,7 @@
     "1924 south"
    ],
    "water_rooms": [],
-   "connections_added": [],
-   "suggested_band": {
-    "min": 8,
-    "median": 13,
-    "max": 18
-   }
+   "connections_added": []
   },
   "488": {
    "name": "Tunnels of Sin",
@@ -8189,19 +7546,18 @@
      85
     ]
    ],
-   "creatures": 19,
-   "items": 0,
-   "bosses": [],
+   "creatures": 40,
+   "items": 45,
+   "bosses": [
+    "Vhaz'ul, demon of the abyss (648806)"
+   ],
    "services": [],
    "level_band": {
     "min": 9,
     "median": 10,
     "max": 17
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "72": [
@@ -8373,19 +7729,18 @@
      9
     ]
    ],
-   "creatures": 22,
-   "items": 0,
-   "bosses": [],
+   "creatures": 46,
+   "items": 51,
+   "bosses": [
+    "Morvoct, the goblin warlord (649106)"
+   ],
    "services": [],
    "level_band": {
     "min": 15,
     "median": 18,
     "max": 25
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "120": [
@@ -8437,8 +7792,8 @@
      2
     ]
    ],
-   "creatures": 11,
-   "items": 0,
+   "creatures": 12,
+   "items": 14,
    "bosses": [],
    "services": [],
    "level_band": {
@@ -8446,9 +7801,7 @@
     "median": 16,
     "max": 25
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "120": [
@@ -8493,19 +7846,19 @@
      17
     ]
    ],
-   "creatures": 25,
-   "items": 0,
-   "bosses": [],
+   "creatures": 82,
+   "items": 72,
+   "bosses": [
+    "Hades, Lord of the Dead (649522)",
+    "the Judge of the Dead (649506)"
+   ],
    "services": [],
    "level_band": {
     "min": 15,
     "median": 19,
-    "max": 25
+    "max": 27
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "120": [
@@ -8557,18 +7910,18 @@
      3
     ]
    ],
-   "creatures": 8,
-   "items": 0,
-   "bosses": [],
+   "creatures": 10,
+   "items": 6,
+   "bosses": [
+    "the Lag Wyrm (649606)"
+   ],
    "services": [],
    "level_band": {
     "min": 15,
     "median": 20,
     "max": 25
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "120": [
@@ -8602,19 +7955,18 @@
      1
     ]
    ],
-   "creatures": 18,
-   "items": 0,
-   "bosses": [],
+   "creatures": 34,
+   "items": 37,
+   "bosses": [
+    "Phaeton, master of the Academy (649906)"
+   ],
    "services": [],
    "level_band": {
     "min": 12,
-    "median": 13,
+    "median": 14,
     "max": 22
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "408": [
@@ -8715,19 +8067,18 @@
      18
     ]
    ],
-   "creatures": 22,
-   "items": 0,
-   "bosses": [],
+   "creatures": 53,
+   "items": 51,
+   "bosses": [
+    "Karrak, the stone troll of the deep shaft (650106)"
+   ],
    "services": [],
    "level_band": {
     "min": 32,
-    "median": 35,
+    "median": 34,
     "max": 42
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "471": [
@@ -8765,19 +8116,18 @@
      22
     ]
    ],
-   "creatures": 17,
-   "items": 0,
-   "bosses": [],
+   "creatures": 27,
+   "items": 26,
+   "bosses": [
+    "Zhaarok, the draconian high priest (650206)"
+   ],
    "services": [],
    "level_band": {
     "min": 12,
-    "median": 14,
+    "median": 13,
     "max": 21
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "471": [
@@ -8957,19 +8307,18 @@
      28
     ]
    ],
-   "creatures": 27,
-   "items": 0,
-   "bosses": [],
+   "creatures": 60,
+   "items": 54,
+   "bosses": [
+    "Hrodgar Ironcrown, the usurper king (650306)"
+   ],
    "services": [],
    "level_band": {
     "min": 33,
-    "median": 34,
+    "median": 35,
     "max": 43
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "471": [
@@ -9013,19 +8362,16 @@
      23
     ]
    ],
-   "creatures": 18,
-   "items": 0,
+   "creatures": 19,
+   "items": 32,
    "bosses": [],
    "services": [],
    "level_band": {
     "min": 13,
-    "median": 15,
+    "median": 14,
     "max": 22
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "51": [
@@ -9064,19 +8410,18 @@
      107
     ]
    ],
-   "creatures": 25,
-   "items": 0,
-   "bosses": [],
+   "creatures": 50,
+   "items": 60,
+   "bosses": [
+    "Bone Gnasher (650507)"
+   ],
    "services": [],
    "level_band": {
     "min": 34,
     "median": 36,
     "max": 44
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "501": [
@@ -9414,19 +8759,18 @@
      1
     ]
    ],
-   "creatures": 23,
-   "items": 0,
-   "bosses": [],
+   "creatures": 39,
+   "items": 50,
+   "bosses": [
+    "the Vampire Lord (650706)"
+   ],
    "services": [],
    "level_band": {
     "min": 37,
     "median": 39,
     "max": 46
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "501": [
@@ -9512,19 +8856,18 @@
      4
     ]
    ],
-   "creatures": 13,
-   "items": 0,
-   "bosses": [],
+   "creatures": 15,
+   "items": 18,
+   "bosses": [
+    "Durgrim, the undead Dwarf King (650806)"
+   ],
    "services": [],
    "level_band": {
     "min": 38,
     "median": 40,
     "max": 46
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "503": [
@@ -9569,19 +8912,18 @@
      10
     ]
    ],
-   "creatures": 30,
-   "items": 0,
-   "bosses": [],
+   "creatures": 70,
+   "items": 72,
+   "bosses": [
+    "Gorrakh the Rock-Eater, a stone troll (650906)"
+   ],
    "services": [],
    "level_band": {
     "min": 41,
     "median": 43,
     "max": 49
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "503": [
@@ -9633,19 +8975,19 @@
      44
     ]
    ],
-   "creatures": 99,
-   "items": 0,
-   "bosses": [],
+   "creatures": 209,
+   "items": 264,
+   "bosses": [
+    "Gorbash the Bone King (651216)",
+    "Orschnag the orc king (651217)"
+   ],
    "services": [],
    "level_band": {
     "min": 42,
-    "median": 44,
-    "max": 52
+    "median": 45,
+    "max": 68
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "509": [
@@ -9755,19 +9097,18 @@
      3
     ]
    ],
-   "creatures": 13,
-   "items": 0,
-   "bosses": [],
+   "creatures": 19,
+   "items": 38,
+   "bosses": [
+    "Moloch, the Ancient Demon Lord (651407)"
+   ],
    "services": [],
    "level_band": {
-    "min": 46,
-    "median": 50,
-    "max": 55
+    "min": 62,
+    "median": 63,
+    "max": 68
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "512": [
@@ -9811,18 +9152,18 @@
      13
     ]
    ],
-   "creatures": 12,
-   "items": 0,
-   "bosses": [],
+   "creatures": 14,
+   "items": 25,
+   "bosses": [
+    "Malgrath, High Priest of Orcus (651505)"
+   ],
    "services": [],
    "level_band": {
     "min": 46,
     "median": 49,
     "max": 55
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "512": [
@@ -9860,16 +9201,16 @@
      12
     ]
    ],
-   "creatures": 0,
-   "items": 0,
+   "creatures": 15,
+   "items": 8,
    "bosses": [],
    "services": [],
-   "level_band": null,
-   "needs": [
-    "creatures",
-    "items",
-    "a boss"
-   ],
+   "level_band": {
+    "min": 1,
+    "median": 3,
+    "max": 8
+   },
+   "needs": [],
    "need_description": [],
    "links": {
     "30": [
@@ -9880,12 +9221,7 @@
    "no_exits": [],
    "locked_doors_left_unlocked": [],
    "water_rooms": [],
-   "connections_added": [],
-   "suggested_band": {
-    "min": 10,
-    "median": 15,
-    "max": 20
-   }
+   "connections_added": []
   },
   "518": {
    "name": "Necromancer Mines",
@@ -9901,19 +9237,18 @@
      52
     ]
    ],
-   "creatures": 13,
-   "items": 0,
-   "bosses": [],
+   "creatures": 26,
+   "items": 30,
+   "bosses": [
+    "Malvoran, the Master Necromancer (651806)"
+   ],
    "services": [],
    "level_band": {
     "min": 12,
     "median": 14,
     "max": 22
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "408": [
@@ -9949,19 +9284,18 @@
      1
     ]
    ],
-   "creatures": 26,
-   "items": 0,
-   "bosses": [],
+   "creatures": 47,
+   "items": 52,
+   "bosses": [
+    "Archmagus Vorlath the Gilded (651906)"
+   ],
    "services": [],
    "level_band": {
     "min": 22,
     "median": 24,
     "max": 31
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "436": [
@@ -10004,19 +9338,18 @@
      77
     ]
    ],
-   "creatures": 16,
-   "items": 0,
-   "bosses": [],
+   "creatures": 37,
+   "items": 42,
+   "bosses": [
+    "Hadrec Vael, the cursed Warden (652006)"
+   ],
    "services": [],
    "level_band": {
     "min": 24,
     "median": 27,
     "max": 34
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "519": [
@@ -10114,18 +9447,18 @@
      2
     ]
    ],
-   "creatures": 13,
-   "items": 0,
-   "bosses": [],
+   "creatures": 39,
+   "items": 35,
+   "bosses": [
+    "the Winter Witch (52150)"
+   ],
    "services": [],
    "level_band": {
     "min": 8,
-    "median": 10,
-    "max": 17
+    "median": 14,
+    "max": 20
    },
-   "needs": [
-    "items"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "66": [
@@ -10159,19 +9492,18 @@
      39
     ]
    ],
-   "creatures": 20,
-   "items": 0,
-   "bosses": [],
+   "creatures": 36,
+   "items": 41,
+   "bosses": [
+    "Hrimgar, the Frost Giant King (652207)"
+   ],
    "services": [],
    "level_band": {
     "min": 11,
     "median": 14,
     "max": 20
    },
-   "needs": [
-    "items",
-    "a boss"
-   ],
+   "needs": [],
    "need_description": [],
    "links": {
     "521": [
@@ -10250,117 +9582,5 @@
    "name": "a hollow log"
   }
  ],
- "queue": [
-  30,
-  403,
-  420,
-  429,
-  250,
-  72,
-  36,
-  130,
-  482,
-  499,
-  186,
-  260,
-  414,
-  517,
-  32,
-  150,
-  435,
-  140,
-  418,
-  518,
-  458,
-  431,
-  442,
-  424,
-  54,
-  51,
-  426,
-  423,
-  61,
-  73,
-  445,
-  488,
-  62,
-  110,
-  441,
-  448,
-  9,
-  33,
-  419,
-  15,
-  63,
-  53,
-  210,
-  416,
-  449,
-  25,
-  64,
-  80,
-  160,
-  461,
-  66,
-  90,
-  464,
-  439,
-  451,
-  472,
-  436,
-  465,
-  415,
-  474,
-  491,
-  480,
-  235,
-  447,
-  467,
-  452,
-  504,
-  67,
-  479,
-  521,
-  68,
-  496,
-  519,
-  475,
-  220,
-  495,
-  238,
-  453,
-  69,
-  245,
-  471,
-  478,
-  494,
-  455,
-  457,
-  248,
-  469,
-  280,
-  65,
-  285,
-  100,
-  501,
-  476,
-  470,
-  290,
-  295,
-  454,
-  505,
-  520,
-  507,
-  502,
-  481,
-  300,
-  522,
-  503,
-  509,
-  508,
-  512,
-  515,
-  514,
-  12
- ]
+ "queue": []
 }

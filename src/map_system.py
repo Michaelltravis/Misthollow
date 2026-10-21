@@ -1005,6 +1005,14 @@ def _gear_wards(player):
             out.append(f'spells {int(gear_spell)}%')
         if player.gear_hasted():
             out.append('hasted')
+        import zone_hazards
+        if zone_hazards._gear_flag(player, 'water_breathing'):
+            out.append('breathes water')
+        if zone_hazards._gear_flag(player, 'corruption_immunity'):
+            out.append('corruption immune')
+        song = player.get_equipment_bonus('song_power')
+        if song > 0:
+            out.append(f'songs +{song * 10}%')
         return out
     except Exception:
         return []

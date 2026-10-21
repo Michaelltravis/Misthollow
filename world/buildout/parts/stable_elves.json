@@ -1,0 +1,165 @@
+{
+ "job": "stable_elves",
+ "rooms": {
+  "203603": "The great doors to the north open on the cobbled road toward the city, letting a wedge of daylight into the barn. A swept aisle of packed earth runs on south between oak partitions, each post rubbed smooth by generations of shoulders and flanks. Through a wide gate to the west lies the largest stall in the building. Hay dust drifts in the light, and the warm smell of horse is everywhere.",
+  "203605": "Here the aisle widens between two matching stalls, one through a half-door to the east and one to the west, each with a brass nameplate polished to a shine. Lanterns hang from iron hooks on the rafters, unlit by day, and a water trough of hollowed stone stands against a post. The aisle carries on north toward the stable doors and south deeper into the building. Straw crunches underfoot, swept into neat ridges along the walls.",
+  "203606": "This roomy box stall smells of clean straw and saddle soap. Its walls are of thick planking, scarred low down where impatient hooves have kicked them, and a manger of woven willow hangs at chest height in one corner. A small barred window high up lets in a slant of grey light. The half-door to the west opens back onto the aisle of the Royal Stable.",
+  "203608": "The aisle ends here before a narrow door to the south, where the grooms keep a small room of their own. Stalls open to the east and west, their gates hung with leather halters on iron nails. A wheelbarrow stands upended against a post, its handles worn pale. The way north runs back up the aisle toward the brighter end of the stable.",
+  "203609": "Something is wrong with this stall. The straw has been raked aside to bare a square trapdoor of old, iron-strapped boards set into the floor, and a cool breath rises through its cracks smelling of dust rather than horse. The partitions here are older than the rest, darker and grooved with strange marks near the floor. The gate to the west leads back into the Royal Stable, and the trapdoor opens on a ladder going down.",
+  "203612": {
+   "description": "A rough ladder climbs up through a square of faint light to the stall above, and below it a cramped tunnel has been hacked from packed earth and soft rock. Dust lies thick on every surface, rising in slow clouds with each step and tasting of chalk. Old timber props hold up the low ceiling, bowed under their load. The tunnel slopes away south into blackness.",
+   "look": "cave"
+  },
+  "203613": {
+   "description": "The tunnel narrows until your shoulders brush raw rock on either side. Dust has drifted against the stone in soft grey banks, unmarked except by a few long, dragging furrows that lead on south. The air is stale and close, and no sound carries from the stables now. North, the passage climbs gently back toward the ladder.",
+   "look": "cave"
+  },
+  "203614": {
+   "description": "The passage runs straight and level into the dark, so long and so alike that it seems to have no end at all. Every few paces the same chipped rock, the same fallen pebbles and the same choking dust repeat themselves, and the eye begins to doubt it is moving. Somewhere ahead a faint draught stirs, the only promise that the tunnel goes anywhere. The way back north is just as featureless, and the way south no different.",
+   "look": "cave"
+  },
+  "203615": {
+   "description": "At last the endless passage gives way to a broader tunnel where the rock turns damp and dark. Water seeps from a crack in the ceiling and has worn a shallow channel in the floor, and the dust here has become a grey paste. A musky, animal stink drifts up from the south, where the tunnel opens out. North, the long straight passage waits.",
+   "look": "cave"
+  },
+  "203618": {
+   "description": "The tunnel ends here at a rough mouth where dug earth meets dressed stone, as though diggers from below broke through into some older building. Fallen blocks lie heaped to one side, and the gap in the masonry is just wide enough to pass. To the west a dim hallway runs away under a low vault, while the tunnel climbs north into the dust. Splinters of old bone are ground into the dirt of the rock floor.",
+   "look": "cave"
+  },
+  "203617": "This forgotten hallway of the old temple is lit only by a grey glow seeping from nowhere in particular. Carved panels along the walls have been clawed and defaced, the saints on them scratched to blank stone. To the east the hallway meets the broken tunnel mouth, and a small room opens to the west. A wide, filthy archway to the south breathes out a hot, rank stench.",
+  "203620": {
+   "description": "The rank smell is overwhelming in this low, round den scooped out of the earth. Bones crack underfoot, mixed with matted fur, rotten straw dragged down from the stables and the rusted rings of old harness. The rock overhead is blackened with soot and greasy where something large has rubbed against it. The only way on is a crawl south, deeper into the filth, for the archway behind is lost in shadow beyond a fall of earth.",
+   "look": "cave"
+  },
+  "203622": {
+   "description": "This cramped hollow beneath the roots is choked with refuse: rags, gnawed hide and black muck that clings to boots. Pale roots hang from the earthen roof like the fingers of some buried hand, and drips fall from them in a slow patter. A crawlway leads north to the lair, and to the east the hollow opens into a place that smells worse still.",
+   "look": "cave"
+  },
+  "203623": {
+   "description": "The stench here is enough to make the eyes water, for this is where the lair's owner leaves what it cannot eat. Heaps of rotting refuse rise against the damp earth, sour with mould, and the ground is a slick of filth. A narrow, sloping gap climbs north toward the tunnel mouth and the dressed stone of the temple. To the west the hollow shrinks to a small, dirty nook.",
+   "look": "cave"
+  },
+  "203616": "Once a priest's chamber, this small room keeps only the bones of its furniture: a cot frame with its ropes rotted away, a cracked washbasin on a stone shelf, a niche where a lamp once burned. Scratches and gouges mar the floor near the doorway to the south, where a reeking passage drops toward something's den. The door to the east leads back into the dim hallway. Plaster flakes from the ceiling in long pale curls.",
+  "203619": {
+   "description": "A second den opens here, larger than any badger's set and twice as foul. The earth has been dug out in a great bowl and lined with stolen straw, horse blankets and torn sacking, all of it matted and stinking. Long claw marks score the clay above the nest. A worn trail through the mess leads south, where the earth slopes downward into a path beneath the ground.",
+   "look": "cave"
+  },
+  "203621": {
+   "description": "A path worn smooth by heavy feet winds through the earth here, its clay sides shored up in places with stolen planks. To the north it climbs into the reek of a den, and to the east it squeezes into a small, filthy hollow. South, the path rises toward a faint glow of lamplight and the familiar scent of hay. Roots thread the low roof, and dry soil sifts down at every footfall.",
+   "look": "cave"
+  },
+  "203625": "Three tall arches of gilded stone rise from a tangle of ivy and young saplings, their gold leaf peeling but still bright where the sun strikes it. Words are carved across the keystone of the central arch, half hidden by moss. Beyond them, to the south, broad steps lead up into a magnificent entrance hall, while a grassy path runs back north toward the temple path and the stables. Birds nest in the cracks of the stone.",
+  "203626": "Even forgotten, this entrance hall is magnificent. Pillars of veined marble climb to a ribbed ceiling painted with faded stars, and a mosaic floor of suns and scales stretches between them, dulled by a grey skin of dust. Tall doors stand open to the north on the golden arches and the daylight. To the south a huge wooden gate, bound in bronze, stands ajar.",
+  "203628": "Behind the huge wooden gate lies a square court open to the sky, paved in pale flags heaved up by weeds. Rain has streaked the surrounding walls with green, and a dry fountain basin sits in the middle, its bronze spout crusted with age. Covered hallways lead away to the east, where paintings line the walls, and to the west, where the passage turns a corner. The gate itself looms to the north, its timbers bleached grey.",
+  "203629": "Portraits in heavy frames line this long gallery, priests and patrons of the old temple staring down through cracked varnish. Several canvases have been slashed, and one hangs by a single cord, tilted as if in mid-fall. The gallery opens west into the weed-grown court behind the gate, and turns south into a wider hallway. Your footsteps echo strangely, as if someone walks a pace behind.",
+  "203631": "The hallway broadens here to the width of a cart, its walls hung with moth-eaten tapestries of pilgrims on a winding road. Iron brackets that once held torches line both sides, empty now and furred with rust. The gallery lies north, the hall runs on east toward a bend, and a mean, narrow corridor branches off to the south. A cold draught pushes past from somewhere ahead.",
+  "203632": "The hallway turns sharply here, bending from the west and running away south. A cracked stone bench is set into the corner, carved with the worn figure of a kneeling monk. Dust has gathered thick against the base of the walls, but a narrow trail through it shows that something still passes this way. High above, a slot window lets in a thin, grey light.",
+  "203636": "Three hallways meet at this intersection beneath a small dome painted with a great, faded eye. Water has stained the plaster below it in long brown tears. The passage north returns toward the bend, and hallways run off east and west, each to a corner of its own. An empty plinth stands where the ways meet, its statue long gone.",
+  "203637": "At this corner the hall turns from the west to run on south, and the stonework changes, older and roughly dressed. A row of hooks along one wall still holds the rotted scraps of grey robes. Somewhere beyond the stone a slow drip keeps time. The air smells of tallow and damp.",
+  "203644": "This long hallway runs straight between walls of plain grey stone, unadorned save for a carved line of small suns at shoulder height. The floor dips in the middle, worn by countless processions. At its south end a heavy oak door with an iron ring closes the way, and to the north the hall reaches back to a corner. It is very quiet, the kind of quiet that makes a traveller listen harder.",
+  "203650": "Beyond the oak door the hallway bends at this corner, turning off to the west. A small shrine is cut into the angle of the walls, a niche holding a stub of candle wax and a chipped clay offering bowl, both grey with dust. The heavy door to the north leads back into the long hallway. Fingers of old soot reach up the wall above the niche.",
+  "203649": "Two passages once crossed here, but now there is only a straight way, east to a corner and west to the hallway's end, for the side passages have been bricked up with newer, rougher masonry. The mortar of the bricked arches is cracked, and a cold breath leaks through. Above, a painted frieze of robed figures marches toward the west, as if toward something worth seeing. The flagstones are cleaner here, swept or scuffed by passing feet.",
+  "203648": "The hallway ends here against a wall of carved stone showing a great altar wreathed in flame. A tall double door of dark wood stands to the north, its panels inlaid with tarnished silver. The passage leads back east to the intersection. Incense, faint and very old, still clings to the stone.",
+  "203646": "This small entrance hall was built to impress those approaching the grand altar. Its walls are faced with green marble, and a pair of stone braziers, cold and grey with old ash, flank the tall door to the north. A low, iron-bound door to the east is marked with a key carved into its lintel. The silver-inlaid doors to the south lead back to the end of the hallway.",
+  "3213": "The grand altar stands at the heart of the old temple, a single block of white stone carved with sheaves of wheat and running horses. A great round opening in the roof lets the sky in, and a pool of daylight falls across the altar and the worn steps before it. A deep, untroubled calm fills the chamber, as though nothing ill can follow you here. A narrow door to the north leads behind the altar, and the entrance hall lies to the south.",
+  "203633": "This corridor runs between bare walls from a corner in the north to a turn in the south. Halfway along, an iron grate has been levered out of the floor and lies askew, and below it worn steps descend into a darkness that smells of rust and old fear. Scratches cover the stone around the opening. The lamps of the corridor have long since burned out.",
+  "203627": "At this corner the hallway from the weed-choked court to the east turns sharply south. A stout door to the north bears a painted shield, its device peeled to a few flakes of red and gold, marking the room where the temple guards once stood their watch. The plaster here is pocked with gouges, as if blades once struck it in earnest. The corridor south runs on into shadow.",
+  "203652": "The temple guards kept their watch in this square, plain room. A long trestle table and two benches stand in the middle, and an empty weapon rack lines one wall, its pegs snapped. A small hearth in the corner holds only grey dust and a blackened log. The door to the south opens onto the hallway corner.",
+  "203642": "The corridor from the north turns east here, around a buttress of heavy stone. Someone has chalked marks on the buttress, arrows and tallies, as if counting days or counting the dead. A cracked water jar sits wedged into the angle of the wall. Faint light glimmers from the hallway to the east.",
+  "203643": "This corner of the temple's halls is cramped and low, the ceiling sagging where a beam has cracked. Rubble lies along one wall, swept aside rather than cleared away. The hall runs east toward the painted dome of the intersection and west to a turn by a stone buttress. A smell of mildew and old candle grease hangs in the still air.",
+  "203638": {
+   "description": "The steps from the corridor above end in an obscure dungeon of low vaults and sweating stone. Chains hang from rings in the walls, and a gutter along the floor runs with dark, foul water. The vaults repeat so alike that it is hard to be sure where you are, and a stair that seems to lead further down only brings you back here. A row of barred doors lines the way south toward a holding cell.",
+   "look": "dungeon"
+  },
+  "203645": {
+   "description": "This holding cell is barely long enough to lie down in. Iron bars front it to the north, their lock long broken, and the floor is a bed of mouldering straw. Tally marks crowd the stone in their hundreds, and one corner has been scraped bare by fingernails. The air is cold and smells of misery.",
+   "look": "dungeon"
+  },
+  "203647": "Behind its iron-bound door the small treasury of the temple is a stone vault no bigger than a pantry. Carved niches cover the walls, empty now, each once meant for a reliquary or an offering box. A heavy chest, bolted to the floor, gapes open with its lid hacked through. The door to the west leads back into the entrance hall.",
+  "203635": "This corridor is barely wider than a man and filthy with grime, as if servants once hurried along it out of sight of the priests. Grease and soot coat the walls to shoulder height, and shards of broken crockery crunch in the dust. North it widens into the main hallway, and to the south it squeezes on toward a turn.",
+  "203640": "The narrow corridor kinks here, turning from the north toward the east. The wall at the turn has been broken through, its stones pulled out and stacked untidily, and beyond the gap to the east the dark opens into raw earth. A cold, earthy smell drifts out of the hole. The servants' passage back north is as filthy as ever.",
+  "203641": {
+   "description": "This is a hole dug out behind the temple wall, a pit of raw clay and stones scarcely tall enough to stand in. The earth is scored with tool marks and with something else, longer and deeper, like claws. Roots dangle from the soil overhead, and a few fallen stones lie where they tumbled from the broken masonry. The gap back west leads into the narrow corridor.",
+   "look": "cave"
+  },
+  "203610": "The small room of the grooms is snug and plain: two narrow cots under coarse blankets, a bench, and a row of pegs hung with patched coats and leather aprons. A shelf by the door is stained with liniment and lamp oil. A ladder against the back wall climbs up through a hatch into a loft, and the door north opens on the stable aisle. The room smells of horse sweat and woodsmoke.",
+  "203611": "Under the steep roof of the stables, this small loft is packed with sweet hay stacked in loose bales to the rafters. Light needles through gaps in the shingles, and old swallows' nests cling to the beams. The floor creaks at every step, and a square hatch with a ladder leads down to the grooms' room below. It is warm and drowsy up here, and the smell of summer grass is everywhere.",
+  "203607": "This stall is one of the plainer ones, its planking rough and its manger a simple wooden trough. Fresh straw lies deep on the floor, and a water bucket hangs in an iron ring by the gate. Someone has chalked a horse's name on the post, half rubbed out, so that only three letters remain. The gate east opens back onto the aisle of the Royal Stable.",
+  "203604": "A tall, airy stall, this one has a window shuttered against the draught and a hayrack of iron bars fixed high on the wall. The partition boards are scored with tooth marks where a bored horse has cribbed at them. Horse brasses hang in a neat, gleaming row from a nail by the window. To the east the gate of the stall leads out into the main aisle.",
+  "203602": "This is the largest stall in the Royal Stables, fit for a king's warhorse, with room enough for a destrier to turn and lie down. The walls are panelled in dark oak carved with a frieze of galloping horses, and the manger is of hammered copper. A brass plaque on the gate bears the royal crest of Garathorm. The gate to the east opens onto the main aisle near the stable doors.",
+  "11000": "The grey trees of the deep forest give way here to taller, living green, and the air changes at once, softer and full of birdsong. A gracefully arched gate of woven living branches closes the path that leads north into the elven forest. Beside it a slender wooden post bears a carved leaf, the sign of the wood elves. To the east the dusty trail runs back into the deep, dark forest.",
+  "14302": "Beyond the gate of branches the path is soft with moss and edged with ferns, winding between enormous oaks. A rope ladder hangs from a platform built up into the boughs overhead, where watchers can see far down the trail. To the east a doorway in the trunk of a great oak opens into the guards' room. The path carries on north into the village, and the gate lies back to the south.",
+  "14307": "Lanterns of pale green glass hang from low branches along this stretch of path, unlit in the green daylight. The trees press close, their trunks wound about with flowering vine, and the ground is carpeted with last year's leaves. Here and there a narrow slit has been cut in a living trunk, a sign of how carefully the elves watch their road. The path runs north to a crossing and south toward the gate.",
+  "14308": "Two paths once crossed in this little clearing, but the side ways have been let go, closed off by a hedge of thorn and holly woven tight between the trunks. A ring of pale stones marks the old crossing, and a weathered wooden signpost still stands at its centre, its arms carved in elven script. The open path leads north toward the village and south toward the gate. Sunlight falls through the canopy in shifting coins.",
+  "11014": "The path becomes a fine one here, laid with flat stones fitted between the roots and swept clean. On the east side a shop grown from a living oak shows a carved breastplate above its door, the elven armory, and opposite, to the west, crossed blades of wood mark the weaponry. The path runs north between more of the guarded trees, and south toward the crossing. Bright leaf-light dapples everything.",
+  "11004": "Elven homes begin to show among the branches here: round doorways high in the trunks, joined by swaying walkways of rope and plank. Below them the guarded path winds on, its stones edged with moss. A carved bench curves around the foot of a great beech where villagers rest. The way leads north deeper into the village and south back to the fine path by the shops.",
+  "11005": "Music seems to linger in this part of the path, perhaps from the wind chimes of polished wood and shell hanging among the leaves. A walkway passes overhead, its rails twined with vines that drop small white flowers on the stones below. The guarded path continues north toward more shops and south through the village. A spring trickles from a stone basin set into the roots of a tree.",
+  "14312": "Two more shops face each other across the fine path here. To the east a doorway hung with silver leaves and faintly glowing glass marks the magic shop, while to the west the smell of fresh-cut yew and glue drifts from Quintor's Fine Shop, where bows are made. Lanterns of carved horn line the way, and the stones are swept spotless. The path runs on north and back south between the guarded trees.",
+  "11008": "The path begins to climb here, rising on a ramp of living roots toward a lookout built out from a great tree to the north. Children have left chalk drawings of birds and stars on the flat of a stone. Leaves hang thick overhead, and the light comes green and gold through them. To the south the path drops back to the shops of the fine path.",
+  "14332": "Past the lookout the guarded path descends again among ancient trees whose roots rise in arches higher than a man. The stones underfoot are older here, mossed over and sunk deep. A guard's niche has been carved into one great trunk, empty and swept clean. The path goes on north to the end of the fine path, and south back up to the lookout platform.",
+  "11010": "The fine path ends in a wide, mossy glade around a tree older than anything else in the village, its bark furrowed like a face. To the east a welcoming doorway in a hollow trunk is hung with a painted sign of a rising sun, the Tavern of Hope. Beyond the glade to the north the guarded path goes on as a plain earth track, and to the south it climbs back toward the lookout. Warm lantern light spills from the tavern door.",
+  "14333": "Here the path is only trodden earth, and the trees grow closer and wilder. The guards have hung little bells of carved wood on cords across the branches, so that anything passing above will set them clacking. Ferns crowd the verge, and the birdsong is quieter than in the village. The way runs north into thicker forest and south back to the glade at the end of the fine path.",
+  "14334": "A creeping wrongness enters the forest here. Some of the leaves along the path are spotted with black, and a young birch beside the way has twisted in on itself as if in pain. The elves have tied ribbons of silver around the healthy trunks, and the path is watched more closely. North, the shadow deepens toward the boundary of the village, while south lies the safer path.",
+  "14317": "This fine house is grown rather than built, its walls the living curve of a vast hollow tree, polished to a honey gleam. A carpet of woven rushes covers the floor, and lanterns of amber glass hang in the vaulting. To the east an archway opens into the trophy room of the Elven King, while a door to the west leads to the guard room, from which a smell of rot creeps in. A grand stair winds up through the trunk, and the doorway south opens on the darkening path.",
+  "14319": "The trophies of the Elven King fill this round chamber: antlers of great stags, the skull of a horned beast, a black spear taken from some forgotten foe, and tattered banners won from the servants of shadow. Each trophy rests on a bracket of living wood with a small carved plaque beneath. A tall window of thin, leaf-green glass softens the light. The archway to the west leads back into the house.",
+  "14320": "The grand stairs spiral up through the heart of the tree, each step a shelf of living wood grown from the inner wall. A handrail of twisted vine guides the hand, and small round windows let in spots of green daylight. Carved figures of elven heroes stand in niches along the climb. The stair rises to the upper floor and descends to the hall of the fine house below.",
+  "14321": "The upper floor of the house opens into a round landing beneath a domed ceiling of interlaced branches. To the north stands a doorway framed by shelves of books, the library, and to the south a curtain of wooden beads leads into the livingroom. A corridor runs off east, and the grand stairs wind down through the floor. Everything here smells of beeswax and old wood.",
+  "14323": "Shelves grow straight out of the curved walls of the library, crowded with scrolls, leather books and bundles of bark bound in green cord. A reading desk stands beneath a round window, its surface ink-stained and worn. Soft cushions lie heaped in a nook where the wood bulges inward. The doorway to the south leads back onto the landing.",
+  "14322": "This curving corridor follows the outer wall of the tree, lit by small round lamps of pale glass. A door to the north leads to the guards' bed room, but a chill breath and a faint smell of decay seep from beneath it. To the south, the clack of wood on wood seems to echo from the training room even when it is empty. The landing lies back to the west.",
+  "14327": "This broad room is given over to the practice of arms. Its floor is laid with springy rush mats, and straw-stuffed targets stand against the far wall, pocked with arrow holes. Racks of wooden practice swords and staves line the walls, and a carved chart of sword forms is set beside the door. The corridor lies through the doorway to the north.",
+  "14324": "The livingroom is a soft, quiet place, furnished with low couches of carved wood heaped with cushions of moss-green velvet. A hearth of smooth river stones stands against one wall, its chimney a hollow branch rising through the ceiling. Painted screens of birds and leaves divide the room into cosy nooks. The way north leads back to the landing at the top of the stairs.",
+  "14316": "The Tavern of Hope is built inside a great hollow tree, its common room ringed by benches carved from the living wood. A long bar of polished walnut curves around one side, and barrels of elven wine and honey mead are racked behind it. Lanterns hang from the roots that thread the ceiling, and a stair winds up to the reception. The doorway west leads out into the glade at the end of the fine path.",
+  "14390": "A small reception desk of carved oak stands in this round room above the tavern, with a row of brass hooks for room keys on the wall behind it. Doors to the guest rooms are set around the curve of the wall, each painted with a different flower. A window looks out into the leaves, and the murmur of the common room drifts up through the floor. The stair leads back down to the Tavern of Hope.",
+  "11007": "Shelves of glass vials, dried herbs and polished stones fill the magic shop, and the air hums faintly with something that is not quite sound. Silver leaves hang from threads across the ceiling, turning slowly though there is no breeze. A counter of pale wood holds a crystal ball resting on a stand of twisted roots. The doorway to the west opens back onto the fine path.",
+  "11002": "Elven armour of rare grace fills this shop: mail as fine as fish scales, breastplates of lacquered leaf-green leather, and helms crested with carved wings. Each piece hangs on a stand of living wood that grows up from the floor. A workbench at the back is laid out with awls and rivets beside a small, clean forge of stone. The doorway west returns to the fine path.",
+  "11003": "Blades of every elven kind line the walls of this weaponry, from slender leaf-shaped swords to long knives and spears tipped with bright steel. A grindstone stands in one corner, and the smell of oil and whetstone hangs in the air. The weapons rest in racks carved like curling vines. The doorway east leads back onto the fine path between the shops.",
+  "14303": "The guards' room is cut into the hollow of a great oak, its walls hung with longbow pegs and cloaks of mottled green. A round table bears a carved map of the elven paths, worn smooth by the fingers of many watches. A trapdoor in the floor opens on steps leading down to a cellar, and a door to the east leads to the quarters of the guard chief. The doorway west opens back onto the guarded path.",
+  "11001": "The guard chief sleeps in this plain, orderly chamber. A narrow bed of woven rope is made up tight beneath a grey wool blanket, and a chest at its foot is carved with the sign of the leaf and arrow. An empty helm stand waits beside a small washstand. The door to the west leads back into the guards' room.",
+  "14305": "The cellar is dug in among the roots of the oak, cool and dim, its earthen sides braced with curved ribs of living wood. Casks of wine and strings of dried apples crowd the shelves, and sacks of grain are stacked against the far side. Roots poke through the ceiling, beaded with damp. Wooden steps lead up through a trapdoor to the guards' room.",
+  "14306": "High among the branches, this wide platform of planks is lashed to the limbs of a great oak and open to the sky. From here the forest spreads away in a rolling green sea, the gate and the trail beyond it visible far below between the leaves. A railing of woven boughs runs around the edge, and a rope ladder drops down to the guarded path. The wind sways the whole platform gently, and the leaves whisper all around."
+ },
+ "extras": {
+  "203625": [
+   {
+    "keywords": "keystone words arch inscription",
+    "description": "The carving is in an old temple script, worn shallow by rain: Pass with a clean heart, for all who pass are weighed. Someone has scratched a crude horse's head beneath it."
+   }
+  ],
+  "203636": [
+   {
+    "keywords": "dome eye painting",
+    "description": "The painted eye is wide open and ringed in flaking gold, its pupil a disc of dark blue. From anywhere beneath the dome it seems to be looking straight at you."
+   }
+  ],
+  "203602": [
+   {
+    "keywords": "brass plaque crest",
+    "description": "The plaque shows a crowned tower above crossed lances, the arms of the royal house of Garathorm. Beneath it, in small engraved letters, runs the line: For the King's own mount, and no other."
+   }
+  ],
+  "11000": [
+   {
+    "keywords": "carved leaf post",
+    "description": "The leaf is cut with great care, every vein picked out in the pale wood. Beneath it runs a line of flowing elven script that asks travellers to walk softly, for the trees remember."
+   }
+  ],
+  "14308": [
+   {
+    "keywords": "signpost sign arms",
+    "description": "The signpost has four carved arms, but two of them, pointing at the hedged-off ways, have been sawn short and capped with wax. The remaining arms name the gate and the village in graceful elven letters."
+   }
+  ],
+  "14303": [
+   {
+    "keywords": "carved map table",
+    "description": "The map is carved into the tabletop itself, showing the paths, the shops and the great trees of the village. Near its edge a patch of the wood has been stained black and scored through with angry marks, where the tainted forest lies."
+   }
+  ],
+  "14319": [
+   {
+    "keywords": "plaque plaques",
+    "description": "Each plaque names the trophy, the year it was taken and the hand that took it, in tiny elven script. The plaque beneath the black spear is blank, as though no one wished to remember."
+   }
+  ]
+ }
+}

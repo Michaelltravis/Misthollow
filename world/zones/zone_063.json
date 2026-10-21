@@ -1318,8 +1318,8 @@
      "description": "To the down lies A Small Path Through The Deep, Dark Forest."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The air is\nstill and smells faintly of old smoke. Ways lead north and down.",
-   "placeholder": true
+   "description": "High in the branches of a vast, grey-barked tree, a platform of tangled\nlimbs forms a rough floor, thick with old webbing that sticks to your\nboots. Silk ropes as thick as your arm run off between the trunks, and a\nwebbed walkway leads north toward a dark entrance shrouded in spun\nthreads. Far below, a narrow forest path winds through the gloom,\nreachable by climbing down. The leaves hang still and the air smells of\nrot.",
+   "extra_descs": {}
   },
   "6399": {
    "vnum": 6399,

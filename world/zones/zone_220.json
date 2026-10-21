@@ -28,8 +28,9 @@
      "description": "To the south lies Pathway To Ocam's Reach."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Shuttered\nwindows and old doorways crowd in on either hand. Ways lead north and\nsouth.",
-   "placeholder": true
+   "description": "Inside the promontory the passage is cut through black rock and pierced\nwith slits that open onto the howling sky beyond. The wind tears through\nthem with such force that it can hurl a body against the far wall, where\nbarbed iron hooks wait in rows. The passage leads north deeper into the\nReach and south back toward the castle. Shrieking gusts make thought\nnearly impossible.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "22001": {
    "vnum": 22001,
@@ -44,11 +45,7 @@
     "dark",
     "indoors"
    ],
-   "extra_descs": {
-    "gate": "The gate is ancient and massive, forged of black iron and inscribed with runes of ending. It radiates cold malice.",
-    "wall": "The wall rises sheer and seamless, its surface pitted by age and siege. No handholds are visible.",
-    "runes": "The runes pulse with faint crimson light, spelling doom in a forgotten tongue."
-   },
+   "extra_descs": {},
    "mob_resets": [
     {
      "vnum": 22030,
@@ -82,8 +79,8 @@
      "description": "To the west lies Pathway Around The Castle."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet. The\npaving is uneven here, patched with newer stone. Ways lead north, east,\nsouth and west.",
-   "placeholder": true
+   "description": "A vaulted passage of black stone runs beneath the castle's outer works,\nits roof lost in a darkness no torch has warmed in an age. To the north\nthe floor drops away into a tangle of braced sticks, the old way toward\nthe Lost Castle. An iron-bound door in the south wall gives onto the\nentrance chambers, while the pathway around the castle leads off east\nand west through low arches crusted with ash. The air is still and\nsmells of cold iron.",
+   "look": "castle"
   },
   "14102": {
    "vnum": 14102,
@@ -113,8 +110,9 @@
      "description": "To the west lies Hall Along The Inner Wall."
     }
    },
-   "description": "Voices and the clatter of carts carry from somewhere nearby. The paving\nis uneven here, patched with newer stone. Ways lead north, east, south\nand west.",
-   "placeholder": true
+   "description": "The entrance chambers open into a broad room of black stone, its ceiling\nheld up by squat pillars bound in iron bands. Heavy doors stand to the\nnorth, where the dark passage leads out toward the pathway and the Lost\nCastle. Halls run off east and west along the inner wall, and to the\nsouth a wide arch opens on the Inner Hall. Burned banners hang in\ntatters from the pillars, and the floor is scored by countless iron-shod\nfeet.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "22003": {
    "vnum": 22003,
@@ -169,8 +167,8 @@
      "description": "To the west lies Hall Along The Inner Wall."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. The floor is worn\nsmooth by long use. Ways lead east and west.",
-   "placeholder": true
+   "description": "This hall runs straight along the inner face of the castle wall, low-\nroofed and narrow, its stones sweating a cold damp. Iron sconces line\nthe wall at regular intervals, every one of them empty and furred with\nrust. Mold spreads in pale grey blooms along the seams of the floor. The\nhall continues east and west into gloom.",
+   "extra_descs": {}
   },
   "14105": {
    "vnum": 14105,
@@ -194,8 +192,10 @@
      "description": "To the west lies Hall Along The Inner Wall."
     }
    },
-   "description": "Shadows gather where the light does not reach. The floor is worn smooth\nby long use. Ways lead east and west.",
-   "placeholder": true
+   "description": "The hall widens slightly around a stone bench set into the wall, its\nseat worn hollow by long-dead sentries. Above it someone has scratched a\ntally into the stone, hundreds of marks in rows until the last line\nbreaks off unfinished. The smell of old ash hangs heavy in the air.\nNarrow passages lead on east and west.",
+   "extra_descs": {
+    "tally marks scratches": "The marks are grouped in fives, row after row, scratched with a knife\npoint into the black stone. The last row ends in a single long gouge\nthat runs off the edge of the tally and down the wall."
+   }
   },
   "22004": {
    "vnum": 22004,
@@ -254,8 +254,8 @@
      "description": "To the up lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "Stone walls close in, cool to the touch. Shadows gather where the light\ndoes not reach. Ways lead south, west and up.",
-   "placeholder": true
+   "description": "A spiral stair climbs out of the corner of this hall, its steps cracked\nand slick, rising up toward the ragged walkway atop the castle. A thin\ndraught falls down the stairwell, carrying the moan of wind from the\nbattlements. The hall itself turns here, running west along the wall and\nsouth into deeper shadow. Rusted chains hang from the ceiling at the\nfoot of the stair, swaying a little in the draught.",
+   "extra_descs": {}
   },
   "22005": {
    "vnum": 22005,
@@ -314,8 +314,8 @@
      "description": "To the south lies Hall Along The Inner Wall."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. Ways lead north and south.",
-   "placeholder": true
+   "description": "The hall runs straight and narrow, the inner wall on one side and a row\nof arrow-loops on the other, every shutter nailed fast. Bones have been\nswept into a heap against the foot of the wall, as though someone meant\nto clear them and never came back. The stone floor slopes gently as the\nhall runs south, and climbs north toward the stair.",
+   "extra_descs": {}
   },
   "22006": {
    "vnum": 22006,
@@ -370,8 +370,8 @@
      "description": "To the south lies Hall Along The Inner Wall."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Dust lies thick in the\ncorners, undisturbed for some time. Ways lead north and south.",
-   "placeholder": true
+   "description": "Water seeps down the wall here in thin black streaks, pooling in a\nshallow channel cut along the floor. The channel is choked with rust-red\nsludge and smells of iron and rot. A broken halberd is bolted to the\nwall as a trophy, its blade notched in some forgotten battle. The hall\nruns north and south, its far ends lost in the dark.",
+   "extra_descs": {}
   },
   "14112": {
    "vnum": 14112,
@@ -395,8 +395,8 @@
      "description": "To the south lies Hall Along The Inner Wall."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Stone walls close in,\ncool to the touch. Ways lead north and south.",
-   "placeholder": true
+   "description": "A great iron grille is set into the ceiling of this stretch, and through\nit falls a faint grey light from somewhere far above. The light shows\nwalls blackened by fire and a floor strewn with the brittle remains of\nshields, their devices long since burned away. The hall continues north,\nand south it narrows toward a darker stretch where the air turns stale\nand close.",
+   "extra_descs": {}
   },
   "22007": {
    "vnum": 22007,
@@ -453,8 +453,8 @@
      "description": "To the south lies Hall Along The Inner Wall."
     }
    },
-   "description": "Shadows gather where the light does not reach. Dust lies thick in the\ncorners, undisturbed for some time. Ways lead north and south.",
-   "placeholder": true
+   "description": "The floor of this black hall is not stone at all but a skin of rotten\nplanks laid over a pit, and they groan beneath the slightest weight.\nFrom the depths below rises a stench of old death and the faint glint of\nupturned blades. Darkness swallows everything but the creak of failing\ntimber. The way north and the way south both lie across the same\ntreacherous boards.",
+   "extra_descs": {}
   },
   "22008": {
    "vnum": 22008,
@@ -513,8 +513,8 @@
      "description": "To the west lies Hall Along The Inner Wall."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Stone walls\nclose in, cool to the touch. Ways lead east and west.",
-   "placeholder": true
+   "description": "The hall turns along the wall here, and the stonework changes to great\nrough blocks stacked without mortar, each one larger than a cart. The\ngaps between them have been packed with bone, skulls and thighbones\nwedged tight to hold the courses level. The air is cold and utterly\nstill. The way runs east toward a heap of charred masonry and west into\ndeeper dark.",
+   "extra_descs": {}
   },
   "22025": {
    "vnum": 22025,
@@ -529,11 +529,7 @@
     "dark",
     "indoors"
    ],
-   "extra_descs": {
-    "battlements": "The battlements are shattered, their crenellations crumbled to rubble. Nothing watches from above.",
-    "beams": "Charred beams jut from collapsed arches like broken ribs.",
-    "courtyard": "The courtyard floor is cracked and littered with debris. Ash drifts in lazy spirals."
-   },
+   "extra_descs": {},
    "mob_resets": [
     {
      "vnum": 22070,
@@ -550,8 +546,7 @@
      "description": "To the west lies Hall Along The Inner Wall."
     }
    },
-   "description": "Stone walls close in, cool to the touch. The floor is worn smooth by\nlong use. Ways lead east and west.",
-   "placeholder": true
+   "description": "A sickly, sweetish reek fills this dark stretch of hall, thick enough to\ntaste. Mold grows in heavy furred carpets over floor and walls alike,\nand in places it has swallowed shapes that might once have been bodies.\nDead flies lie in drifts along the foot of the wall. The hall runs east\ntoward cleaner stone and west into a blackness that seems to wait."
   },
   "22178": {
    "vnum": 22178,
@@ -577,8 +572,8 @@
      "description": "To the west lies Hall Along The Inner Wall."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Shadows\ngather where the light does not reach. Ways lead east and west.",
-   "placeholder": true
+   "description": "The walls of this narrow hall are pierced with hundreds of small holes,\nand from each one the point of an iron spike glints in whatever faint\nlight you carry. The floor is studded with pressure plates disguised as\nworn flagstones. Somewhere within the stone, great counterweights shift\nwith a grinding groan. The hall's only ways lead east and west, and\nevery step between them is a gamble.",
+   "extra_descs": {}
   },
   "22159": {
    "vnum": 22159,
@@ -604,8 +599,8 @@
      "description": "To the west lies Hall Along The Inner Wall."
     }
    },
-   "description": "Stone walls close in, cool to the touch. Dust lies thick in the corners,\nundisturbed for some time. Ways lead east and west.",
-   "placeholder": true
+   "description": "Here the hall narrows until its walls almost brush your shoulders, and\nthose walls are not still. With a slow, grinding patience they creep\ninward on hidden tracks, and the dust of their passage sifts down from\nthe ceiling. The stones are stained dark at the height of a man's chest.\nThe way east and the way west seem very far off in the blackness.",
+   "extra_descs": {}
   },
   "22026": {
    "vnum": 22026,
@@ -656,8 +651,8 @@
      "description": "To the west lies Hall Along The Inner Wall."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. Ways lead east and west.",
-   "placeholder": true
+   "description": "The ceiling of this black hall is a single slab of iron hung on chains\nthat run up into the dark, and it hangs lower than it should. Scraps of\ncrushed armour are pressed flat into the floor beneath it like leaves in\na book. A chain groans somewhere overhead. The hall leads east to the\nscorched passage and west toward a stretch that no one seems to have\nwalked out of.",
+   "extra_descs": {}
   },
   "22179": {
    "vnum": 22179,
@@ -708,8 +703,8 @@
      "description": "To the west lies Hall Along The Inner Wall."
     }
    },
-   "description": "Shadows gather where the light does not reach. Stone walls close in,\ncool to the touch. Ways lead east and west.",
-   "placeholder": true
+   "description": "Beyond the iron maiden the hall grows quiet again, though the dark here\nis total and the air is cold enough to ache in the teeth. Old blood has\ndried in a long smear along the floor, running from the east as if\nsomething was dragged this way. The walls bear the soot of torches that\nburned out long ago. The hall carries on west toward a grey glimmer of\nlight.",
+   "extra_descs": {}
   },
   "14124": {
    "vnum": 14124,
@@ -733,8 +728,8 @@
      "description": "To the west lies Hall Along The Inner Wall."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Stone walls close in,\ncool to the touch. Ways lead east and west.",
-   "placeholder": true
+   "description": "Grey light leaks into this part of the hall through a high crack in the\nwall, enough to show the full ruin of the place. Fallen ceiling stones\nlie where they dropped, and among them the rusted rim of a war-wagon\nwheel leans against the wall. Ash drifts in through the crack and\nsettles over everything like fine grey flour. The hall runs east into\nthe dark and west toward a bend in the wall.",
+   "extra_descs": {}
   },
   "22014": {
    "vnum": 22014,
@@ -787,8 +782,10 @@
      "description": "To the south lies Hall Along The Inner Wall."
     }
    },
-   "description": "The floor is worn smooth by long use. Dust lies thick in the corners,\nundisturbed for some time. Ways lead north and south.",
-   "placeholder": true
+   "description": "The hall runs straight along the inner wall here, its floor paved with\nslabs carved long ago with the sigils of the four horsemen: a crown, a\nsword, a scale and a skull. Most have been worn almost smooth by passing\nfeet. A cold draught moves steadily from north to south as though the\ncastle itself were breathing. The way runs north into shadow and south\nto a bend in the wall.",
+   "extra_descs": {
+    "sigils slabs crown sword scale skull": "Four sigils are carved in turn into the floor slabs: a crown for plague,\na sword for war, a scale for hunger and a skull for the end of all\nthings. Where feet have not worn them away, the grooves are still\nstained dark."
+   }
   },
   "22013": {
    "vnum": 22013,
@@ -837,8 +834,8 @@
      "description": "To the south lies Hall Along The Inner Wall."
     }
    },
-   "description": "Shadows gather where the light does not reach. Stone walls close in,\ncool to the touch. Ways lead north and south.",
-   "placeholder": true
+   "description": "Shattered weapon racks line this length of the hall, their pegs empty,\ntheir timbers split and blackened. A heap of broken arrow shafts lies in\none corner, the fletching long since rotted to nothing. The air smells\nfaintly of old oil and older blood. The hall runs on north and south\nbetween the racks.",
+   "extra_descs": {}
   },
   "14129": {
    "vnum": 14129,
@@ -862,8 +859,8 @@
      "description": "To the south lies Hall Along The Inner Wall."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Stone walls\nclose in, cool to the touch. Ways lead north and south.",
-   "placeholder": true
+   "description": "A crack runs the full height of the inner wall here, and through it\nseeps a faint red glow and a warmth that feels wrong in so cold a place.\nThe stone around the crack is blistered and glassy. Ash lies in a fan\nacross the floor beneath it. The hall continues north along the wall and\nsouth past a row of broken weapon racks.",
+   "extra_descs": {}
   },
   "22012": {
    "vnum": 22012,
@@ -912,8 +909,8 @@
      "description": "To the south lies Hall Along The Inner Wall."
     }
    },
-   "description": "Shadows gather where the light does not reach. Stone walls close in,\ncool to the touch. Ways lead north and south.",
-   "placeholder": true
+   "description": "Chains are strung across this part of the hall at head height, hung with\nthe dented helms of fallen knights like grim bells. When the draught\nstirs, they knock together with a hollow, tuneless sound. The floor\nbeneath is gritty with flakes of rust. The hall leads north toward a\nbitter cold and south along the curve of the wall.",
+   "extra_descs": {}
   },
   "22011": {
    "vnum": 22011,
@@ -966,8 +963,8 @@
      "description": "To the up lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Shadows gather where\nthe light does not reach. Ways lead east, south and up.",
-   "placeholder": true
+   "description": "A narrow stair is cut into the thickness of the wall here, climbing up\ntoward the ragged walkway that runs along the castle's top. The hall\nturns at its foot, running east along the wall and south into a chill\nthat bites through any cloak. The steps are worn to a dip in the middle,\nand a thin whine of wind comes down them from above. Bones lie wedged in\nthe angle of the stair, as if someone fell there and was never moved.",
+   "extra_descs": {}
   },
   "22010": {
    "vnum": 22010,
@@ -1022,8 +1019,8 @@
      "description": "To the west lies Hall Along The Inner Wall."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. Ways lead east and west.",
-   "placeholder": true
+   "description": "This stretch of hall is lined with tall niches, each holding the rusted\nshell of a suit of armour bolted upright to the stone. The helms are\nempty, but every visor has been turned to face the passage. The hall\nruns east along the wall and west toward a face of stone gouged by\nenormous claws. Dust lies thick and undisturbed in the niches.",
+   "extra_descs": {}
   },
   "14136": {
    "vnum": 14136,
@@ -1047,8 +1044,8 @@
      "description": "To the west lies Hall Along The Inner Wall."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The air is\nstill and smells faintly of old smoke. Ways lead east and west.",
-   "placeholder": true
+   "description": "The hall here is hung with the war trophies of some ancient victory:\nshields nailed to the wall in rows, each one split clean through by a\nsingle blow. Beneath them a long stone table runs the length of the\npassage, bare but for a film of ash. The hall leads east toward the\nentrance chambers and west past a line of armoured niches. A faint cold\nwind sighs along the floor.",
+   "extra_descs": {}
   },
   "22002": {
    "vnum": 22002,
@@ -1063,10 +1060,7 @@
     "dark",
     "indoors"
    ],
-   "extra_descs": {
-    "guardians": "The guardians stand motionless, their armor fused to their flesh. Their eyes burn with hollow fire.",
-    "runes": "Apocalyptic runes cover the gate, each one a curse made visible."
-   },
+   "extra_descs": {},
    "exits": {
     "east": {
      "to_room": 14102,
@@ -1077,8 +1071,7 @@
      "description": "To the west lies Hall Along The Inner Wall."
     }
    },
-   "description": "Stone walls close in, cool to the touch. Dust lies thick in the corners,\nundisturbed for some time. Ways lead east and west.",
-   "placeholder": true
+   "description": "The hall is black as pitch here, and the walls lean so close that they\nseem to listen. A low arch to the east opens onto the entrance chambers,\nthe only break in the dark. Something has gouged long furrows into the\nfloor, running west into the blackness where the hall carries on along\nthe inner wall. The air is cold and tastes of rust."
   },
   "22009": {
    "vnum": 22009,
@@ -1135,8 +1128,8 @@
      "description": "To the west lies Along The Inner Corridor."
     }
    },
-   "description": "The floor is worn smooth by long use. Dust lies thick in the corners,\nundisturbed for some time. Ways lead north, east, south and west.",
-   "placeholder": true
+   "description": "Four ways meet in this high, square chamber beneath a ceiling ribbed\nwith blackened iron. A great brazier of bone and bronze stands cold in\nthe centre, its bowl full of grey ash. The Inner Hall opens both to the\nnorth and to the south, while the inner corridor runs off east and west.\nThe walls are hung with burned banners whose devices can no longer be\nread.",
+   "extra_descs": {}
   },
   "14140": {
    "vnum": 14140,
@@ -1160,8 +1153,8 @@
      "description": "To the west lies The Junction Of The Inner Halls."
     }
    },
-   "description": "Shadows gather where the light does not reach. The floor is worn smooth\nby long use. Ways lead east and west.",
-   "placeholder": true
+   "description": "The inner corridor is narrow and high, its walls rising into darkness\nwhere iron hooks dangle from the vault on lengths of chain. The floor is\nlaid with black flags, polished smooth along a single worn track down\nthe middle. To the west lies the junction of the inner halls, and to the\neast the corridor grows darker still. A low, steady draught carries the\nsmell of cold ash.",
+   "extra_descs": {}
   },
   "22020": {
    "vnum": 22020,
@@ -1186,8 +1179,8 @@
      "description": "To the west lies Along The Inner Corridor."
     }
    },
-   "description": "The floor is worn smooth by long use. The air is still and smells\nfaintly of old smoke. Ways lead east and west.",
-   "placeholder": true
+   "description": "No light reaches this stretch of the inner corridor, and the dark seems\nto soak up sound as well. Underfoot, brittle things crunch with every\nstep, too many and too small to be stones. The walls are cold and\nfaintly greasy to the touch. The corridor runs on east and west, its\nends invisible.",
+   "extra_descs": {}
   },
   "14142": {
    "vnum": 14142,
@@ -1215,8 +1208,8 @@
      "description": "To the west lies Along The Inner Corridor."
     }
    },
-   "description": "Stone walls close in, cool to the touch. Dust lies thick in the corners,\nundisturbed for some time. Ways lead north, east and west.",
-   "placeholder": true
+   "description": "The inner corridor widens here beside a heavy iron-banded doorway that\nopens north into a guard room. Spikes have been set into the door's\nframe point-outward, and old ash is trodden into the floor before it. To\nthe east the corridor runs a short way further to its end, and to the\nwest it stretches back into blackness. A rusted lantern hook juts from\nthe wall, long empty.",
+   "extra_descs": {}
   },
   "22021": {
    "vnum": 22021,
@@ -1237,8 +1230,8 @@
      "description": "To the west lies Along The Inner Corridor."
     }
    },
-   "description": "Shadows gather where the light does not reach. Stone walls close in,\ncool to the touch. A way leads west.",
-   "placeholder": true
+   "description": "The inner corridor ends here against a wall of fused black stone, smooth\nas glass and warm to the touch, as if it had once run like wax. Nothing\nis carved on it and nothing breaks its face. The darkness is complete,\nand the silence is so deep that your own heartbeat sounds loud. The only\nway out lies back to the west.",
+   "extra_descs": {}
   },
   "22100": {
    "vnum": 22100,
@@ -1283,8 +1276,8 @@
      "description": "To the west lies Along The Inner Corridor."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Stone walls\nclose in, cool to the touch. Ways lead east and west.",
-   "placeholder": true
+   "description": "The inner corridor runs straight and narrow between walls of fitted\nblack stone, its ceiling lost in shadow overhead. Eastward the passage\nopens onto the junction of the inner halls, where several ways meet. To\nthe west the corridor stretches on, lit by iron cressets set in the wall\nat long intervals. Flakes of burned banner cloth crunch underfoot like\ndead leaves.",
+   "extra_descs": {}
   },
   "14146": {
    "vnum": 14146,
@@ -1308,8 +1301,8 @@
      "description": "To the west lies Along The Inner Corridor."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Dust lies thick in the\ncorners, undisturbed for some time. Ways lead east and west.",
-   "placeholder": true
+   "description": "Here the corridor's walls are studded with iron spikes driven into the\nmortar at the height of a man's chest, so that the middle of the floor\nis the only safe place to walk. A thin wind moans along the passage from\nsomewhere far off, carrying the smell of ash. The corridor leads on east\nand west, its flagstones cracked and heaved. Old scorch marks blacken\nthe stone in long streaks.",
+   "extra_descs": {}
   },
   "14147": {
    "vnum": 14147,
@@ -1337,8 +1330,8 @@
      "description": "To the west lies End Of The Inner Corridor."
     }
    },
-   "description": "The floor is worn smooth by long use. Dust lies thick in the corners,\nundisturbed for some time. Ways lead north, east and west.",
-   "placeholder": true
+   "description": "The corridor widens a little at a heavy doorway set in its north wall,\nits lintel carved with a row of grinning skulls. Beyond the door lies a\nguard room, its threshold worn hollow by generations of boots. East the\ncorridor runs back toward the inner halls, and west it narrows toward\nits end. A rack bolted to the wall here holds nothing now but rust and\ndust.",
+   "extra_descs": {}
   },
   "14148": {
    "vnum": 14148,
@@ -1358,8 +1351,8 @@
      "description": "To the south lies Along The Inner Corridor."
     }
    },
-   "description": "The floor is worn smooth by long use. Shadows gather where the light\ndoes not reach. A way leads south.",
-   "placeholder": true
+   "description": "This low guard room is cramped and smoky, its single brazier long gone\ncold beneath a crust of ash. A battered table stands in the middle,\nringed by stools of bone and iron, and a game board has been scratched\ndeep into its top. Weapon racks along the walls stand empty, their pegs\nsnapped off. The only door leads back south into the inner corridor.",
+   "extra_descs": {}
   },
   "14149": {
    "vnum": 14149,
@@ -1379,8 +1372,8 @@
      "description": "To the east lies Along The Inner Corridor."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Stone walls\nclose in, cool to the touch. A way leads east.",
-   "placeholder": true
+   "description": "The inner corridor ends abruptly against a wall of rubble, where a\nceiling vault has come down in a heap of black stone and broken bone.\nIron spikes jut from the debris at crooked angles like the ribs of some\ngreat carcass. Cold air seeps between the stones, smelling faintly of\nearth and decay. The only way onward is back east along the corridor.",
+   "extra_descs": {}
   },
   "14150": {
    "vnum": 14150,
@@ -1409,8 +1402,10 @@
      }
     }
    },
-   "description": "The floor is worn smooth by long use. The air is still and smells\nfaintly of old smoke. Ways lead north and south.",
-   "placeholder": true
+   "description": "The Inner Hall is a long, lofty chamber whose roof is lost above a\nthicket of iron chains hung with the bones of men and beasts. Its floor\nis a mosaic of black and red stone, cracked and heaved but still showing\nthe shape of a vast rider on a pale horse. A massive door of bone-white\nwood bound in iron stands to the south, and to the north the hall opens\nonto the junction of the inner halls. The air is cold enough to steam\nthe breath.",
+   "extra_descs": {
+    "mosaic rider horse floor": "The rider in the mosaic is drawn in black stone on a horse of pale bone-\ncoloured tiles, a long blade held low at its side. Red tiles spread from\nthe horse's hooves like spilled blood, and many of them have been prised\nup and carried off."
+   }
   },
   "14151": {
    "vnum": 14151,
@@ -1447,8 +1442,8 @@
      "description": "To the west lies The Guardian Chambers."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Dust lies thick in the\ncorners, undisturbed for some time. Ways lead north, east, south and\nwest.",
-   "placeholder": true
+   "description": "The guardian chambers begin here in a broad stone room ringed with empty\npedestals, as though statues once stood watch and simply walked away. A\ndoor of black iron, graven with a skull, stands closed to the south.\nArchways lead east and west into further chambers, and the Inner Hall\nlies back to the north. Gouges in the floor around each pedestal show\nwhere great weight has shifted many times.",
+   "extra_descs": {}
   },
   "14152": {
    "vnum": 14152,
@@ -1477,8 +1472,8 @@
      }
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Shadows gather where\nthe light does not reach. Ways lead north and south.",
-   "placeholder": true
+   "description": "A narrow, steep-walled passage runs on from the skull-graven door toward\nthe lair of Death, and every stone in it is cold as a grave. The walls\nare set with niches holding skulls, row upon row, their empty sockets\nturned toward the passage. A heavy door of blackened iron waits to the\nsouth, hot to the touch despite the chill. The guardian chambers lie\nback to the north.",
+   "extra_descs": {}
   },
   "14153": {
    "vnum": 14153,
@@ -1498,8 +1493,10 @@
      "description": "To the north lies Entry-Way To The Lair Of Death."
     }
    },
-   "description": "The floor is worn smooth by long use. Dust lies thick in the corners,\nundisturbed for some time. A way leads north.",
-   "placeholder": true
+   "description": "Two immense gates of black iron fill the end of this chamber, twice the\nheight of any castle door and wrought with writhing figures that seem to\nmove at the corner of the eye. A dull red glow beats behind them like a\nslow heart, and heat rolls from their seams in waves. The gates are\nsealed fast by chains as thick as a man's leg. The only way back is\nnorth, through the iron door into the entry-way.",
+   "extra_descs": {
+    "gates figures iron": "The figures wrought into the gates are men and women caught in endless\nfalling, their mouths open and their hands reaching up. Look too long\nand they seem to slip a little further down the iron."
+   }
   },
   "14154": {
    "vnum": 14154,
@@ -1523,8 +1520,8 @@
      "description": "To the west lies The Guardian Chambers."
     }
    },
-   "description": "Stone walls close in, cool to the touch. The air is still and smells\nfaintly of old smoke. Ways lead east and west.",
-   "placeholder": true
+   "description": "This chamber is long and bare, its walls lined with deep alcoves that\nhold nothing but shadow and dust. The floor between them is scattered\nwith shattered bone and the splintered remains of shields. Torch\nbrackets of twisted iron jut from the walls, black with old soot. The\nchambers run on east, and west back toward the skull-graven door.",
+   "extra_descs": {}
   },
   "14155": {
    "vnum": 14155,
@@ -1548,8 +1545,8 @@
      "description": "To the west lies The Guardian Chambers."
     }
    },
-   "description": "Stone walls close in, cool to the touch. Dust lies thick in the corners,\nundisturbed for some time. Ways lead east and west.",
-   "placeholder": true
+   "description": "A pair of colossal iron gauntlets is set into the wall here, palms open\nand fingers curled, each large enough to close around a man. Chains run\nfrom their wrists into the stone. The floor before them is cracked in a\nwide ring, as if something heavy has dropped there again and again. The\nchambers continue east and west through low, square doorways.",
+   "extra_descs": {}
   },
   "14156": {
    "vnum": 14156,
@@ -1573,8 +1570,8 @@
      "description": "To the west lies The Guardian Chambers."
     }
    },
-   "description": "The floor is worn smooth by long use. Stone walls close in, cool to the\ntouch. Ways lead south and west.",
-   "placeholder": true
+   "description": "The guardian chambers turn here, the passage bending in from the west\nand running on south into a deeper dark. Burned banners hang in a row\nalong the wall, every one scorched into a ragged triangle. The stone\nfloor is gritty with ash and fragments of bone, and the cold seems to\ncome up through it. A single iron spike has been driven deep into the\nfloor at the turn, its head worn bright by passing hands.",
+   "extra_descs": {}
   },
   "22022": {
    "vnum": 22022,
@@ -1599,8 +1596,8 @@
      "description": "To the south lies The End Of The Guardian Chambers."
     }
    },
-   "description": "Stone walls close in, cool to the touch. The air is still and smells\nfaintly of old smoke. Ways lead north and south.",
-   "placeholder": true
+   "description": "This chamber lies in utter darkness, the walls rough and the ceiling so\nlow it seems to press down on the crown of your head. A smell of mold\nand old iron hangs in the stale air. Bones crowd the corners, heaped as\nhigh as a man's waist. The way leads north toward the bannered turn of\nthe chambers and south to the last of them.",
+   "extra_descs": {}
   },
   "14158": {
    "vnum": 14158,
@@ -1620,8 +1617,10 @@
      "description": "To the north lies The Guardian Chambers."
     }
    },
-   "description": "The floor is worn smooth by long use. Stone walls close in, cool to the\ntouch. A way leads north.",
-   "placeholder": true
+   "description": "The guardian chambers end in a high, round room whose walls are carved\nfloor to ceiling with armoured warriors kneeling in rows. Every kneeling\nfigure has had its face chiselled away. In the centre of the floor a\nbroad disc of iron is sunk flush with the stone, marked with a single\nhandprint burned into the metal. The only way out leads back north into\nthe dark.",
+   "extra_descs": {
+    "disc iron handprint": "The iron disc is as wide as a cartwheel and cold as the deep earth. The\nhandprint burned into its centre is too long in the fingers to be a\nman's, and the metal around it is blistered as if from a great heat."
+   }
   },
   "14159": {
    "vnum": 14159,
@@ -1645,8 +1644,8 @@
      "description": "To the west lies The Guardian Chambers."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Stone walls close in,\ncool to the touch. Ways lead east and west.",
-   "placeholder": true
+   "description": "This chamber is bare stone from floor to ceiling, except for a long row\nof iron hooks along one wall where shields once hung. Their shapes still\nshow as pale ovals on the soot-darkened stone. The air is colder here\nand very still. Archways lead east to the chamber of empty pedestals and\nwest to further guardian chambers.",
+   "extra_descs": {}
   },
   "14160": {
    "vnum": 14160,
@@ -1670,8 +1669,8 @@
      "description": "To the west lies The Guardian Chambers."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The air is\nstill and smells faintly of old smoke. Ways lead east and west.",
-   "placeholder": true
+   "description": "The ceiling of this guardian chamber has partly fallen, and a slope of\nbroken stone and bone fills one side of the room almost to the vault. A\npath has been cleared through the rubble, stamped hard by heavy feet.\nFrom somewhere above comes the faint, endless whisper of wind. The\nchambers continue east and west, the way west dim and choked with dust.",
+   "extra_descs": {}
   },
   "14161": {
    "vnum": 14161,
@@ -1695,8 +1694,8 @@
      "description": "To the south lies The Guardian Chambers."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. Ways lead east and south.",
-   "placeholder": true
+   "description": "Iron braziers on tall tripods burn with a low, greenish flame, throwing\nthe shadows of bone pillars across the floor. The chamber is square and\nhigh, its black stone walls hung with shields hacked nearly in two. A\nbroad arch opens east into more of the guardian chambers, while a\nnarrower passage slopes away south into deeper gloom. Ash drifts in the\ncorners like grey snow that never melts.",
+   "extra_descs": {}
   },
   "22101": {
    "vnum": 22101,
@@ -1721,8 +1720,8 @@
      "description": "To the south lies The Guardian Chambers."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Shadows\ngather where the light does not reach. Ways lead north and south.",
-   "placeholder": true
+   "description": "No flame burns in this chamber, and the dark seems to press against the\neyes like a cold hand. Footsteps ring on iron plates bolted over the\nfloor, each one stamped with a skull worn smooth by passing boots. The\nwalls sweat a black, oily damp that smells of rust and old blood. The\npassage carries on north toward the lit chambers and south into a last,\nclosed-in room.",
+   "extra_descs": {}
   },
   "14163": {
    "vnum": 14163,
@@ -1742,8 +1741,10 @@
      "description": "To the north lies The Guardian Chambers."
     }
    },
-   "description": "Shadows gather where the light does not reach. Stone walls close in,\ncool to the touch. A way leads north.",
-   "placeholder": true
+   "description": "The guardian chambers end here in a cramped room of black stone with\nonly one way out, back north. Rows of iron hooks line the walls, and\nfrom a few still hang the rotted straps of armour long since taken down.\nA stone bench runs along the far wall, its surface scored with tally\nmarks scratched by some long-dead watcher. The air is stale and still.",
+   "extra_descs": {
+    "tally marks bench": "Hundreds of short scratches are cut into the bench in groups of five,\nrow upon row. The last group is unfinished, its final stroke trailing\noff into a long, wavering gouge."
+   }
   },
   "14200": {
    "vnum": 14200,
@@ -1765,8 +1766,9 @@
      "description": "To the west lies Pathway Around The Castle."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Worn flagstones\nrun between weathered walls, swept by passing feet. Ways lead east and\nwest.",
-   "placeholder": true
+   "description": "A path of broken flagstones skirts the foot of the castle's black outer\nwall, which rises sheer and windowless overhead. Under a sky the colour\nof old ash, a cold wind drives grit along the stones. East a fainter\ntrack branches off through the rubble toward the Lost Castle, while the\npathway around the castle follows the wall west. Rusted iron spikes\ncrown the battlements far above.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "14201": {
    "vnum": 14201,
@@ -1788,8 +1790,9 @@
      "description": "To the west lies Pathway Around The Castle."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Voices and the\nclatter of carts carry from somewhere nearby. Ways lead east and west.",
-   "placeholder": true
+   "description": "The pathway runs on between the castle wall and a steep drop strewn with\nfallen masonry. Bones lie half-buried in the ash along the edge,\nbleached grey by wind and time. Thin clouds race low over the\nbattlements, and no bird calls anywhere. The way leads east and west\nalong the wall.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "14202": {
    "vnum": 14202,
@@ -1811,8 +1814,9 @@
      "description": "To the west lies Pathway Around The Castle."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Worn flagstones\nrun between weathered walls, swept by passing feet. Ways lead east and\nwest.",
-   "placeholder": true
+   "description": "A burned banner hangs from an iron pole jammed between two flagstones,\nits cloth reduced to black tatters that snap in the wind. The castle\nwall here is pocked with old scars where siege stones struck it and\nfailed. Ash lies ankle-deep in the hollows of the path, which runs on to\nthe east and west. The air tastes of smoke, though no fire burns.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "14203": {
    "vnum": 14203,
@@ -1834,8 +1838,9 @@
      "description": "To the west lies Pathway Around The Castle."
     }
    },
-   "description": "The paving is uneven here, patched with newer stone. Voices and the\nclatter of carts carry from somewhere nearby. Ways lead east and west.",
-   "placeholder": true
+   "description": "The path dips into a shallow trough where rainwater has pooled, black\nand still, reflecting a bruised sky. Rust stains streak down the castle\nwall above it from a row of iron rings set high in the stone. The\npathway climbs out again to the east and west, its edges crumbling. A\ndeep silence hangs over everything, broken only by the wind.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "14204": {
    "vnum": 14204,
@@ -1857,8 +1862,9 @@
      "description": "To the west lies Pathway Around The Castle."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Voices and the\nclatter of carts carry from somewhere nearby. Ways lead east and west.",
-   "placeholder": true
+   "description": "Here the wall bends, and the pathway follows it around the corner of a\nsquat tower whose arrow slits are dark and empty. Shattered weapons are\nheaped against the tower's foot, a war trophy left to rust where it was\nflung. East the path runs back along the wall, and west it continues\ntoward another turn. Ash swirls in small eddies at the tower's base.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "14205": {
    "vnum": 14205,
@@ -1880,8 +1886,9 @@
      "description": "To the west lies Pathway To The Lost Castle."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Worn flagstones\nrun between weathered walls, swept by passing feet. Ways lead east and\nwest.",
-   "placeholder": true
+   "description": "The pathway hugs the foot of the castle wall, a ledge of cracked\nflagstones scattered with bone splinters and windblown ash. Overhead the\nsky is a low lid of grey cloud that never seems to move. The vaulted\npassage toward the Lost Castle lies back to the west, and the path runs\non east beneath a line of iron spikes driven into the stone. Every gust\ncarries a faint taste of smoke.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "14206": {
    "vnum": 14206,
@@ -1903,8 +1910,9 @@
      "description": "To the west lies Pathway Around The Castle."
     }
    },
-   "description": "Shuttered windows and old doorways crowd in on either hand. Lantern\nhooks and faded signboards hang over the street. Ways lead east and\nwest.",
-   "placeholder": true
+   "description": "Here the wall bellies outward over the path, its black blocks scorched\nin long tongues as if great fires once licked up their face. A burned\nbanner hangs from a rusted bracket, nothing left of it but a blackened\nrag that snaps in the wind. The flagstones are split and heaved, and the\npath picks its way between them east and west. Somewhere above, a loose\nshutter bangs without rhythm.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "14207": {
    "vnum": 14207,
@@ -1926,8 +1934,11 @@
      "description": "To the west lies Pathway Around The Castle."
     }
    },
-   "description": "Shuttered windows and old doorways crowd in on either hand. The paving\nis uneven here, patched with newer stone. Ways lead east and west.",
-   "placeholder": true
+   "description": "A row of pikes stands along the outer edge of the path, each crowned\nwith a weathered skull turned to face the castle. Beyond them the ground\nfalls away into a grey haze where nothing grows. The wall here bears a\ndeep crack wide enough to take an arm, and cold air breathes out of it.\nThe path continues east and west along the stones.",
+   "extra_descs": {
+    "pikes skulls skull": "Each pike is a shaft of black iron sunk into the rock, and each skull is\nfixed to its point with a twist of rusted wire. Some are human, some far\nlarger, and all of them stare at the castle wall as though waiting for\nit to fall."
+   },
+   "look": "castle"
   },
   "14208": {
    "vnum": 14208,
@@ -1949,8 +1960,9 @@
      "description": "To the west lies Pathway Around The Castle."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet.\nVoices and the clatter of carts carry from somewhere nearby. Ways lead\neast and west.",
-   "placeholder": true
+   "description": "Ash lies ankle-deep on this stretch of the pathway, soft and grey and\nmarked by nothing at all. The wind lifts it in slow curls that drift\nalong the foot of the wall and settle again. Iron rings set into the\nstonework at shoulder height still hold the rusted ends of chains, their\nother ends long since gone. The way runs on east, and back west toward\nthe castle's dark passage.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "14209": {
    "vnum": 14209,
@@ -1972,8 +1984,9 @@
      "description": "To the west lies Pathway Around The Castle."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet. The\npaving is uneven here, patched with newer stone. Ways lead east and\nwest.",
-   "placeholder": true
+   "description": "A fallen buttress has spilled its blocks across half the path, leaving a\nnarrow gap between rubble and wall to squeeze through. Shattered bones\nare mixed into the debris, old enough to have taken on the colour of the\nstone. Far off, beyond the haze, a bell tolls once and falls silent. The\npathway runs east toward a turn in the wall and west along the castle's\nflank.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "14210": {
    "vnum": 14210,
@@ -1995,8 +2008,9 @@
      "description": "To the west lies Pathway Around The Castle."
     }
    },
-   "description": "Shuttered windows and old doorways crowd in on either hand. Worn\nflagstones run between weathered walls, swept by passing feet. Ways lead\nsouth and west.",
-   "placeholder": true
+   "description": "The pathway reaches a corner of the castle, where two great walls meet\nin a tower of black stone that rises out of sight into the cloud. Arrow\nslits stare down from its face, dark and empty. The path bends here,\nrunning south along the next face of the wall and west back the way it\ncame. The wind is fiercer at the corner, moaning through the slits like\na voice.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "14211": {
    "vnum": 14211,
@@ -2018,8 +2032,9 @@
      "description": "To the south lies Pathway Around The Castle."
     }
    },
-   "description": "Voices and the clatter of carts carry from somewhere nearby. Lantern\nhooks and faded signboards hang over the street. Ways lead north and\nsouth.",
-   "placeholder": true
+   "description": "Along this face of the castle the wall is studded with iron spikes, each\nas long as a man's arm and red with rust. Scraps of cloth and leather\ncling to some of them, faded to the grey of everything else. The pathway\nruns north to the corner tower and south along the foot of the wall.\nUnderfoot the stones are slick with a dark, oily grime that never dries.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "14212": {
    "vnum": 14212,
@@ -2037,8 +2052,9 @@
      "description": "To the north lies Pathway Around The Castle."
     }
    },
-   "description": "Voices and the clatter of carts carry from somewhere nearby. Worn\nflagstones run between weathered walls, swept by passing feet. A way\nleads north.",
-   "placeholder": true
+   "description": "The pathway ends abruptly where a great slab of the wall has fallen\noutward and buried the way beneath a mound of broken stone. Nothing lies\nbeyond the slab but grey haze and the endless wind. A charred standard\npole juts from the rubble, its banner burned away to a few blackened\nthreads. The only way on is north, back along the wall.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "14214": {
    "vnum": 14214,
@@ -2060,8 +2076,11 @@
      "description": "To the south lies Pathway Around The Castle."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Worn flagstones\nrun between weathered walls, swept by passing feet. Ways lead east and\nsouth.",
-   "placeholder": true
+   "description": "The pathway turns sharply here at the castle's corner, leaving the long\nwall to the east and running south along the next face of the fortress.\nA cairn of skulls, cemented together with black mortar, marks the bend\nlike a grim milestone. The wind is stronger at the corner, tugging at\ncloaks and hair. Grey cloud hangs so low it seems to scrape the\nbattlements.",
+   "extra_descs": {
+    "cairn skulls": "The skulls are stacked in a rough cone taller than a man, every one of\nthem facing outward. Some are cracked by blows, and a few still wear\nrusted fragments of helm."
+   },
+   "look": "castle"
   },
   "14215": {
    "vnum": 14215,
@@ -2083,8 +2102,9 @@
      "description": "To the south lies Pathway Around The Castle."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet.\nVoices and the clatter of carts carry from somewhere nearby. Ways lead\nnorth and south.",
-   "placeholder": true
+   "description": "The path runs straight along the foot of the wall, hemmed in on the\nother side by a ditch choked with rubble and charred timbers. Iron\nspikes have been driven into the ditch's lip, points outward, rusted to\nthe colour of dried blood. The way goes on north toward the corner and\nsouth beside the wall. Ash falls lightly from the sky in a slow grey\ndrift.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "14216": {
    "vnum": 14216,
@@ -2106,8 +2126,9 @@
      "description": "To the south lies Pathway Around The Castle."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet.\nLantern hooks and faded signboards hang over the street. Ways lead north\nand south.",
-   "placeholder": true
+   "description": "Flagstones give way here to packed black earth, cracked into plates by\ndrought and cold. A great iron chain hangs down the castle wall from\nsomewhere above, its lowest links buried in the ground. The pathway\nleads north and south, following the line of the wall. The air is bitter\nand dry, and it smells faintly of sulphur.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "14217": {
    "vnum": 14217,
@@ -2129,8 +2150,9 @@
      "description": "To the south lies Pathway Around The Castle."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Worn flagstones\nrun between weathered walls, swept by passing feet. Ways lead north and\nsouth.",
-   "placeholder": true
+   "description": "A crumbled buttress juts out from the wall, forcing the path to squeeze\nbetween it and the edge of the drop beyond. Loose stones skitter away\nunderfoot and vanish without a sound. North and south the pathway runs\non, a little wider on either side. Above, the wind whistles through gaps\nin the battlements like a mournful horn.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "14218": {
    "vnum": 14218,
@@ -2152,8 +2174,9 @@
      "description": "To the south lies Pathway Around The Castle."
     }
    },
-   "description": "Shuttered windows and old doorways crowd in on either hand. The paving\nis uneven here, patched with newer stone. Ways lead north and south.",
-   "placeholder": true
+   "description": "The ground is littered with shards of bone here, crushed so fine in\nplaces that it crunches like gravel. A portcullis is set into the castle\nwall, sealed shut long ago and fused by rust into the stone. The path\ncontinues north and south along the fortress. Pale light leaks through\nthe clouds without any warmth in it.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "14219": {
    "vnum": 14219,
@@ -2175,8 +2198,9 @@
      "description": "To the south lies Pathway Around The Castle."
     }
    },
-   "description": "Voices and the clatter of carts carry from somewhere nearby. Shuttered\nwindows and old doorways crowd in on either hand. Ways lead north and\nsouth.",
-   "placeholder": true
+   "description": "Ahead the pathway plunges into the black mouth of a covered passage cut\nthrough a jutting bastion, and the open sky ends at its lip. The stones\naround the opening are blackened as if by a great fire. North the path\nruns back along the open wall. A stale, cold draught breathes out of the\ndark to the south, carrying a smell of rust.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "22153": {
    "vnum": 22153,
@@ -2202,8 +2226,9 @@
      "description": "To the south lies Pathway Around The Castle."
     }
    },
-   "description": "Shuttered windows and old doorways crowd in on either hand. Voices and\nthe clatter of carts carry from somewhere nearby. Ways lead north and\nsouth.",
-   "placeholder": true
+   "description": "Inside the bastion the passage is pitch black and close, and the floor\nslopes treacherously under a slick of black ooze. Too late, a flagstone\nshifts and tilts, tipping everything on it into a pit bristling with\niron stakes. Faint grey light marks the way back north and an opening to\nthe south, both suddenly far out of reach. The stink of old death rises\nfrom below.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "14221": {
    "vnum": 14221,
@@ -2225,8 +2250,9 @@
      "description": "To the south lies Pathway Around The Castle."
     }
    },
-   "description": "Voices and the clatter of carts carry from somewhere nearby. Shuttered\nwindows and old doorways crowd in on either hand. Ways lead north and\nsouth.",
-   "placeholder": true
+   "description": "Between two bastions the pathway emerges briefly under the open sky, a\nnarrow ledge of cracked stone pinned against the castle wall. Ash-grey\ncloud boils overhead, and a cold rain spits from it in fitful gusts.\nCovered passages yawn at either end, one north and one south, both dark\nas a throat. Scraps of rotted rope dangle from rings in the wall above.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "22154": {
    "vnum": 22154,
@@ -2252,8 +2278,9 @@
      "description": "To the south lies Pathway Around The Castle."
     }
    },
-   "description": "The paving is uneven here, patched with newer stone. Worn flagstones run\nbetween weathered walls, swept by passing feet. Ways lead north and\nsouth.",
-   "placeholder": true
+   "description": "This covered passage is so low that its ceiling of iron-banded stone\nalmost brushes the head. A grinding of hidden chains sounds in the walls\nas the ceiling lurches and begins to descend. Rubble narrows the way\nsouth, and the way north seems impossibly distant behind. Dust sifts\ndown in choking streams from the cracks above.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "14223": {
    "vnum": 14223,
@@ -2275,8 +2302,11 @@
      "description": "To the south lies Pathway Around The Castle."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet.\nVoices and the clatter of carts carry from somewhere nearby. Ways lead\nnorth and south.",
-   "placeholder": true
+   "description": "The pathway leaves the dark passage for grey daylight once more, running\nbeside the wall over ground heaped with fallen slates. A shattered siege\nengine lies on its side against the wall, its timbers charred and its\nthrowing arm snapped. North the passage gapes black, and the path leads\nsouth toward a meeting of ways. The wind carries the dry rattle of loose\nslate.",
+   "extra_descs": {
+    "siege engine": "It was a great throwing engine once, its frame of black oak bound with\niron. Fire has eaten most of it, and the stone it last loaded still sits\nin the cup of its broken arm."
+   },
+   "look": "castle"
   },
   "14224": {
    "vnum": 14224,
@@ -2302,8 +2332,9 @@
      "description": "To the west lies Pathway To Ocam's Reach."
     }
    },
-   "description": "Voices and the clatter of carts carry from somewhere nearby. Shuttered\nwindows and old doorways crowd in on either hand. Ways lead north, east\nand west.",
-   "placeholder": true
+   "description": "Several paths meet here on a flat of ash-covered stone at the castle's\nfoot. The pathway around the castle runs east along the wall and north\nback toward the bastions, while a rougher track breaks away west toward\nthe high, wind-scoured promontory of Ocam's Reach. An iron post leans at\nthe junction, a skull nailed to its top as though to point the way. The\ngale coming off the promontory is bitterly cold.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "14225": {
    "vnum": 14225,
@@ -2325,8 +2356,9 @@
      "description": "To the west lies Pathway Around The Castle."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet.\nLantern hooks and faded signboards hang over the street. Ways lead east\nand west.",
-   "placeholder": true
+   "description": "The path narrows along a stretch of wall where great blocks have sheared\naway, leaving the rubble core beneath exposed like a wound. Thorny black\nweeds grow from the cracks, the only living thing in sight. West lies\nthe meeting of paths, and east the way disappears into another dark,\nroofed passage. The sky above is heavy and bruised.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "22176": {
    "vnum": 22176,
@@ -2352,8 +2384,9 @@
      "description": "To the west lies Pathway Around The Castle."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet.\nLantern hooks and faded signboards hang over the street. Ways lead east\nand west.",
-   "placeholder": true
+   "description": "The roofed passage is utterly dark, and the air inside is warm and wet\nwith a sickly, sweet stench. Thin wires stretched across the floor at\nankle height trigger great scything blades that swing out of slots in\nthe walls. The way runs on east and back west, though few who come this\nfar ever reach either. Old stains blacken the stones underfoot.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "22105": {
    "vnum": 22105,
@@ -2378,8 +2411,9 @@
      "description": "To the west lies Pathway Around The Castle."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Worn flagstones\nrun between weathered walls, swept by passing feet. Ways lead east and\nwest.",
-   "placeholder": true
+   "description": "The passage continues in darkness beneath a vaulted roof, its walls\nlined with iron brackets that once held lamps and now hold only soot.\nWater drips steadily from somewhere overhead, each drop loud in the\nsilence. The passage leads east and west, its floor slick and uneven.\nScratches gouged low in the stone look like the marks of desperate\nfingers.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "22035": {
    "vnum": 22035,
@@ -2400,8 +2434,9 @@
      "description": "To the west lies Pathway Around The Castle."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet.\nVoices and the clatter of carts carry from somewhere nearby. A way leads\nwest.",
-   "placeholder": true
+   "description": "The covered pathway ends here at a wall of black stone sealed with iron\nbands as thick as a man's arm. Nothing stirs in the darkness, and the\nsilence is so complete that the blood can be heard rushing in the ears.\nA heap of broken shields and snapped spears has been piled against the\ndead end like a trophy of some forgotten rout. The only way out lies\nback west.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "14229": {
    "vnum": 14229,
@@ -2423,8 +2458,9 @@
      "description": "To the west lies Pathway To Ocam's Reach."
     }
    },
-   "description": "Voices and the clatter of carts carry from somewhere nearby. Lantern\nhooks and faded signboards hang over the street. Ways lead east and\nwest.",
-   "placeholder": true
+   "description": "The track toward Ocam's Reach climbs away from the castle wall across a\nbare, wind-scoured slope of black rock. Nothing grows here, and the gale\nshrieks unchecked, flinging grit and ash into the face. East the track\ndrops back to the meeting of paths below the castle, and west it enters\na dark, roofed cutting in the rock. Far off, the promontory juts out\nagainst a leaden sky.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "22177": {
    "vnum": 22177,
@@ -2450,8 +2486,9 @@
      "description": "To the west lies Pathway To Ocam's Reach."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Worn flagstones\nrun between weathered walls, swept by passing feet. Ways lead east and\nwest.",
-   "placeholder": true
+   "description": "The roofed cutting is black as pitch, its rough walls sweating cold\nwater. Halfway along, the floor is hollow, and it gives way with a crack\nof rotten timber over a shaft that drops into the dark. The way back\neast and the way on west are only a few strides off, yet out of reach in\nthe gloom. The wind moans across the shaft's mouth like a voice.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "22158": {
    "vnum": 22158,
@@ -2477,8 +2514,9 @@
      "description": "To the west lies Pathway To Ocam's Reach."
     }
    },
-   "description": "The paving is uneven here, patched with newer stone. Lantern hooks and\nfaded signboards hang over the street. Ways lead east and west.",
-   "placeholder": true
+   "description": "Here the passage is narrow and lined with plates of rusted iron, riveted\nedge to edge from floor to ceiling. Each step presses a hidden plate,\nand somewhere in the walls a mechanism clanks as rows of spikes shoot\nout from the seams. The passage runs east and west, both ends lost in\ndarkness. The air reeks of old oil and rust.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "22106": {
    "vnum": 22106,
@@ -2503,8 +2541,11 @@
      "description": "To the west lies Pathway To Ocam's Reach."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Shuttered\nwindows and old doorways crowd in on either hand. Ways lead east and\nwest.",
-   "placeholder": true
+   "description": "This stretch of the pathway is quieter, a vaulted hall of black stone\nwhose floor is strewn with ash and shards of pottery. West the hall\nnarrows toward a heavy door of bone and iron, and east it runs back into\nthe iron-plated passage. Faded paintings on the walls show four riders\nbeneath a burning sky, their colours long since flaked away. The cold\nhere seeps into the bones.",
+   "extra_descs": {
+    "paintings riders": "Four riders gallop across the plaster, one on a white horse, one on red,\none on black and one on a pale, sickly grey. Beneath their hooves the\npainted world burns."
+   },
+   "look": "castle"
   },
   "22027": {
    "vnum": 22027,
@@ -2555,8 +2596,9 @@
      "description": "To the west lies Pathway To Ocam's Reach."
     }
    },
-   "description": "The paving is uneven here, patched with newer stone. Worn flagstones run\nbetween weathered walls, swept by passing feet. Ways lead north and\nwest.",
-   "placeholder": true
+   "description": "A short, crooked passage drops away from the door of bone and iron, its\nfloor polished slick by something that oozes from the walls. The slope\nsteepens without warning into a chute that ends in a nest of upturned\nblades. North lies the narrow hall with the door, and west the passage\nlevels toward another chamber. A sweet, rotten smell hangs in the dark.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "22028": {
    "vnum": 22028,
@@ -2571,10 +2613,7 @@
     "dark",
     "indoors"
    ],
-   "extra_descs": {
-    "frost": "The frost forms intricate patterns, like frozen screams. It does not melt.",
-    "void": "The darkness here is absolute, swallowing light and hope alike."
-   },
+   "extra_descs": {},
    "mob_resets": [
     {
      "vnum": 22073,
@@ -2591,8 +2630,8 @@
      "description": "To the south lies Pathway To Ocam's Reach."
     }
    },
-   "description": "The paving is uneven here, patched with newer stone. Lantern hooks and\nfaded signboards hang over the street. Ways lead east and south.",
-   "placeholder": true
+   "description": "This is a wide, low chamber where the dark is deeper than anywhere else,\nso that even a torch seems to burn small and dim. The stone floor is\ncold as a grave, and a fine grey dust lies over it untouched. South the\nair grows hot and dry, and a low throb like a drum rolls up from that\nway. East a crooked passage climbs back toward the door of bone and\niron.",
+   "look": "castle"
   },
   "22032": {
    "vnum": 22032,
@@ -2737,8 +2776,9 @@
      "description": "To the south lies Pathway To Ocam's Reach."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet.\nVoices and the clatter of carts carry from somewhere nearby. Ways lead\nnorth and south.",
-   "placeholder": true
+   "description": "The passage runs north and south through a hall of black stone, its\nwalls carved with rows of hollow-eyed faces. South the way leads among\ncold, blackened braziers, while north the pathway continues into deeper\ndarkness. Grit and ash have drifted against the walls in long ridges.\nThe air is close and smells of stale smoke.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "22108": {
    "vnum": 22108,
@@ -2763,8 +2803,9 @@
      "description": "To the south lies Pathway To Ocam's Reach."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet. The\npaving is uneven here, patched with newer stone. Ways lead north and\nsouth.",
-   "placeholder": true
+   "description": "Iron spikes jut from the ceiling here, hanging like rows of black\nicicles over the passage. The floor beneath them is clean, as if swept,\nwhich is somehow worse than rubble. The pathway runs on north into\nsilence and south toward the hall of carved faces. A faint, chill\ndraught stirs the dust.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "22164": {
    "vnum": 22164,
@@ -2790,8 +2831,9 @@
      "description": "To the south lies Pathway To Ocam's Reach."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet.\nVoices and the clatter of carts carry from somewhere nearby. Ways lead\nnorth and south.",
-   "placeholder": true
+   "description": "The floor of this passage is a lattice of iron grates laid over a pit,\nand the grates are rusted through. One by one they sag and snap under\nany weight, spilling all upon them onto the spikes below. The passage\nleads north and south, though the grates between are the only way\nacross. A hot, foul breath rises from the depths.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "22165": {
    "vnum": 22165,
@@ -2817,8 +2859,11 @@
      "description": "To the south lies Pathway To Ocam's Reach."
     }
    },
-   "description": "The paving is uneven here, patched with newer stone. Lantern hooks and\nfaded signboards hang over the street. Ways lead east and south.",
-   "placeholder": true
+   "description": "The passage turns a sharp corner here, and in the angle stands a statue\nof an armoured rider on a gaunt horse, its stone arm raised. The sword\nin its fist is no carving but real iron, and it swings down on a hidden\nhinge at anyone who passes beneath. The way bends from south to east\naround the statue's base. Dark stains spatter the plinth.",
+   "extra_descs": {
+    "statue rider plinth": "The rider wears plate carved in fine detail, and its face is hidden\nbehind a closed helm. The iron sword is notched and dark with old\nstains, and its hinge is greased."
+   },
+   "look": "castle"
   },
   "22109": {
    "vnum": 22109,
@@ -2843,8 +2888,9 @@
      "description": "To the west lies Pathway To Ocam's Reach."
     }
    },
-   "description": "Voices and the clatter of carts carry from somewhere nearby. Shuttered\nwindows and old doorways crowd in on either hand. Ways lead north and\nwest.",
-   "placeholder": true
+   "description": "This chamber is a brief pause in the pathway's menace, a bare square\nroom with a domed roof lost in shadow. War trophies cover the walls:\nbroken helms, shields split down the middle, and the rusted heads of\npikes, all nailed fast to the stone. West a passage leads back toward\nthe statue of the rider, and north another opens into darkness. Ash has\nsettled thickly on every ledge.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "22166": {
    "vnum": 22166,
@@ -2870,8 +2916,9 @@
      "description": "To the south lies Pathway To Ocam's Reach."
     }
    },
-   "description": "The paving is uneven here, patched with newer stone. Voices and the\nclatter of carts carry from somewhere nearby. Ways lead east and south.",
-   "placeholder": true
+   "description": "The ceiling of this passage is a single slab of black stone held up by\nwooden props, rotten and leaning. A careless step jars them loose, and\nthe whole slab comes down with a roar that shakes the castle to its\nroots. The passage runs from south to east beneath the slab. Splinters\nand grey dust cover the floor.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "22167": {
    "vnum": 22167,
@@ -2897,8 +2944,9 @@
      "description": "To the west lies Pathway To Ocam's Reach."
     }
    },
-   "description": "The paving is uneven here, patched with newer stone. Lantern hooks and\nfaded signboards hang over the street. Ways lead east and west.",
-   "placeholder": true
+   "description": "Thick, greenish fumes pool along the floor of this long passage, rising\nfrom cracks in the stone. The air burns the throat at the first breath\nand seals it shut at the second. East and west the passage stretches on,\nits far ends blurred by the poisoned haze. Mold furs the walls in pale,\nsickly patches.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "22110": {
    "vnum": 22110,
@@ -2923,8 +2971,9 @@
      "description": "To the west lies Pathway To Ocam's Reach."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet. The\npaving is uneven here, patched with newer stone. Ways lead north and\nwest.",
-   "placeholder": true
+   "description": "Here the pathway reaches the foot of Ocam's Reach, where the castle's\nstonework gives way to raw black rock cut through by hand. The wind can\nbe heard howling somewhere above, though no breath of it reaches this\nplace. North a passage rises into the promontory itself, and west the\nway leads back toward the fumes. Rust-red streaks run down the rock like\nold blood.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "22169": {
    "vnum": 22169,
@@ -2958,8 +3007,9 @@
      "description": "To the west lies Ocam's Armor's."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Worn flagstones\nrun between weathered walls, swept by passing feet. Ways lead north,\neast, south and west.",
-   "placeholder": true
+   "description": "Four ways meet in this cramped hall at the heart of Ocam's Reach, and\nevery one of them is a snare. East a doorway marked with a carved sword\nopens onto Ocam's Weapon's, and west another, marked with a carved\nbreastplate, leads to Ocam's Armor's. North the corridor tightens among\nspines of iron, and south it runs back the way it came. The floor in the\nmiddle is a trapdoor, and it swings open with a hollow bang.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "22111": {
    "vnum": 22111,
@@ -3147,8 +3197,9 @@
      "description": "To the west lies Ocam's Reach."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Voices and the\nclatter of carts carry from somewhere nearby. A way leads west.",
-   "placeholder": true
+   "description": "What was once a storeroom for food is now a cellar of rot, its shelves\ncollapsed under the weight of mold and black slime. The floor gives\nunder any foot like soft earth, and beneath the crust lies a vat of\nsomething thick that swallows whatever falls in. A low doorway leads\nback west into the Reach. The stench is overpowering.",
+   "extra_descs": {},
+   "look": "castle"
   },
   "22175": {
    "vnum": 22175,
@@ -3170,8 +3221,11 @@
      "description": "To the east lies Ocam's Reach."
     }
    },
-   "description": "Voices and the clatter of carts carry from somewhere nearby. Shuttered\nwindows and old doorways crowd in on either hand. A way leads east.",
-   "placeholder": true
+   "description": "Shelves of shattered glass line this small chamber, and strange sigils\nare painted in faded silver across its floor. The moment anything\ncrosses the sigils they flare white, and a searing blast of old sorcery\nfills the room. A doorway opens back east into the Reach, scorched black\naround its frame. The air crackles and smells of lightning.",
+   "extra_descs": {
+    "sigils": "The sigils form a ring of linked hooks and eyes, painted in silver gone\ndull. A few lines are scorched as if the paint itself once burned."
+   },
+   "look": "castle"
   },
   "22173": {
    "vnum": 22173,
@@ -3193,8 +3247,8 @@
      "description": "To the east lies Ocam's Reach."
     }
    },
-   "description": "Shadows gather where the light does not reach. Dust lies thick in the\ncorners, undisturbed for some time. A way leads east.",
-   "placeholder": true
+   "description": "A long bar of black wood runs the length of this low room, its top\nstained and split, and behind it stand casks with their staves burst.\nThe floorboards before the bar are rotten through, and they give way\nover a cellar flooded with black, stagnant water. The only door leads\nback east to the Reach. The sour smell of spilt wine and decay hangs\nheavy.",
+   "extra_descs": {}
   },
   "22171": {
    "vnum": 22171,
@@ -3216,8 +3270,9 @@
      "description": "To the east lies Ocam's Reach."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Shuttered\nwindows and old doorways crowd in on either hand. A way leads east.",
-   "placeholder": true
+   "description": "Empty armour stands in ranks around the walls of this narrow room, suits\nof black plate propped on iron frames as if waiting for wearers. The\nframes are linked by hidden chains, and at a touch the whole line\ntopples inward with a crash of steel. The doorway back east to the hall\nof the Reach is the only way out. Rust lies thick upon every plate.",
+   "extra_descs": {},
+   "look": "castle"
   }
  },
  "mobs": {

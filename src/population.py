@@ -6,7 +6,10 @@ after the zone files and before the first reset, so a rebuild of world/zones kee
                                                     # spawn here, and only here; fight mechanics
      "doors":  [{"room": 14150, "dir": "south", "key": 22051, "name": "inner gate"}]}   # locked to a key
 
-Also "creatures" (prototypes by vnum: rank regular/elite/sub-boss, helpers {group, rooms, count}),
+Also "items" (prototypes by vnum, as the build-out writes them: keywords, short_desc, room_desc,
+description, kind, level and weapon_type/wear_slot/bonus; item_numbers() gives the rest), which
+the zone's creatures carry ("inventory") or drop ("loot_table": [{vnum, chance}]);
+"creatures" (prototypes by vnum: rank regular/elite/sub-boss, helpers {group, rooms, count}),
 "spawns" [{vnum, rooms, max}], "patrols" [{vnum, route}] (mobs.patrol_ai; allies.py) and "fill"
 [{vnum, rooms, total}] (more of a creature in a thin zone, tools/audit/densify.py).
 
@@ -42,6 +45,40 @@ def numbers(level, rank=None):
             'damage_dice': f'{n}d{size}+{bonus}', 'hitroll': L // 2, 'damroll': bonus,
             'ac': -(10 + L), 'armor_class': 5, 'gold': 4 * L, 'exp': 30 * L,
             'xp': 30 * L * RANK_XP.get(rank, 2), 'detect_bonus': 10}
+
+
+# An item's numbers from its level and kind (the build-out's: tools/atlas/buildout.py uses these).
+SLOTS = {'body': 'body', 'head': 'head', 'legs': 'legs', 'feet': 'feet', 'hands': 'hands', 'arms': 'arms',
+         'shield': 'shield', 'about': 'about', 'waist': 'waist', 'wrist': 'wrist1', 'neck': 'neck1',
+         'finger': 'finger1', 'hold': 'hold'}
+SLOT_ARMOR = {'body': (3, 8, 10), 'shield': (3, 12, 6), 'head': (2, 12, 3), 'legs': (2, 12, 3), 'feet': (2, 12, 3),
+              'hands': (2, 12, 2), 'arms': (2, 12, 2), 'about': (1, 12, 3), 'waist': (1, 15, 1), 'wrist': (1, 15, 1),
+              'neck': (1, 15, 1), 'finger': (1, 15, 1), 'hold': (0, 99, 1)}
+
+
+def item_numbers(i):
+    L, kind = max(1, int(i['level'])), i['kind']
+    out = {'item_type': kind, 'type': kind, 'min_level': L}
+    if kind == 'weapon':
+        avg = 4 + 0.15 * L
+        n = 1 if L < 10 else 2
+        s = max(4, min(12, round(2 * avg - 1))) if n == 1 else max(3, round(avg - 1))
+        out.update(damage_dice=f'{n}d{s}', weapon_type=i['weapon_type'], weight=6, value=25 * L + 40)
+    elif kind == 'armor':
+        base, per, weight = SLOT_ARMOR[i['wear_slot']]
+        out.update(wear_slot=SLOTS[i['wear_slot']], armor=base + L // per, weight=weight, value=20 * L + 30)
+    elif kind == 'treasure':
+        out.update(weight=1, value=30 * L + 25)
+    elif kind == 'food':
+        out.update(food_value=12 + L // 3, nutrition=12 + L // 3, weight=1, value=5 + L)
+    elif kind == 'potion':
+        out.update(spell_effects=['cure_light' if L < 12 else 'cure_serious' if L < 25 else 'cure_critical'],
+                   weight=1, value=40 + 10 * L)
+    elif kind == 'light':
+        out.update(light_hours=48, weight=2, value=15 + 2 * L)
+    if i.get('bonus'):
+        out['affects'] = [{'type': k, 'value': int(v)} for k, v in i['bonus'].items()]
+    return out
 
 
 def _avg(dice, default=0):
@@ -85,6 +122,20 @@ def apply(world, data=None) -> list:
     """Place the bosses and lock the doors; returns what could not be done."""
     problems = []
     for z, d in (data if data is not None else load()).items():
+        # the zone's own items (prototypes, as the build-out makes them: words, level and kind;
+        # the numbers from item_numbers). Its creatures carry or drop them by vnum.
+        for v, it in (d.get('items') or {}).items():
+            v = int(v)
+            # (applied twice, as a test may: its own item again is no clash)
+            if v in world.obj_prototypes and world.obj_prototypes[v].get('_population') != int(z):
+                problems.append(f"zone {z}: item {v} is taken already")
+                continue
+            try:
+                world.obj_prototypes[v] = {'vnum': v, '_population': int(z), 'name': ' '.join(str(it['keywords']).split()),
+                                           'short_desc': it['short_desc'], 'room_desc': it['room_desc'],
+                                           'description': it['description'], **item_numbers(it)}
+            except (KeyError, ValueError, TypeError) as e:
+                problems.append(f"zone {z}: item {v}: {e!r}")
         # the zone's own creatures (prototypes: a rebuild of world/zones keeps them)
         for v, proto in (d.get('creatures') or {}).items():
             v = int(v)

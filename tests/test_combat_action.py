@@ -14,12 +14,14 @@ combat:'action', then:
 import asyncio
 import json
 import os
+import re
 import socket
 import sys
 import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import test_webmove as tw  # noqa: E402  (Telnet, check(), failures)
+import gauntlet_accounts  # noqa: E402  (the test characters, made if missing)
 
 check, failures = tw.check, tw.failures
 ROOM, MOB, KW = 3054, 3062, 'fido'
@@ -35,12 +37,20 @@ def server_up():
 
 async def main():
     import aiohttp
+    await gauntlet_accounts.ensure()
     tw.ACCOUNT, tw.PASSWORD, tw.CHAR = 'gauntlet', 'gauntlet1', 'Gauntlet'
     tn = tw.Telnet()
     await tn.open()
     for line in ('wake', 'stand', 'restore', f'goto {ROOM}', 'purge'):
         await tn.cmd(line, 0.5)
     level = 60
+    # the hero outlasts the fight whatever its own level: a level-1 Gauntlet (20 health) falls
+    # to this creature in two blows, and a dead hero has no swings to time (put back below)
+    hp = re.findall(r'(\d+)/(\d+)hp', await tn.cmd('score', 0.6))
+    maxhp = int(hp[-1][1]) if hp else 0
+    me = tw.CHAR.lower()
+    for line in (f'set {me} maxhp 60000', f'set {me} hp 60000'):
+        await tn.cmd(line, 0.4)
     async with aiohttp.ClientSession() as http:
         async with http.ws_connect(f'ws://{tw.HOST}:{tw.MAP}/') as ws:
             def sub(action=True):
@@ -85,11 +95,16 @@ async def main():
             gaps = [b - a for a, b in zip(ticks, ticks[1:])]
             check(len(ticks) >= 4 and all(2.7 <= g <= 3.4 for g in gaps), f'then a swing every 3 s by itself ({[round(g, 2) for g in gaps]})')
 
-            # the global cooldown
-            t2 = time.time()
-            await tn.cmd('kick', 0.15)
-            out = await tn.cmd('bash', 0.6)
-            abil = [e.get('ability') for _t, e in mine('ability', t2)]
+            # the global cooldown. Only a kick that was used counts: one refused (the roar's stun)
+            # gives its second back, so that try is made again
+            for _ in range(3):
+                t2 = time.time()
+                await tn.cmd('kick', 0.15)
+                out = await tn.cmd('bash', 0.6)
+                abil = [e.get('ability') for _t, e in mine('ability', t2)]
+                if 'kick' in abil:
+                    break
+                await asyncio.sleep(1.5)
             check('Not ready yet' in out and 'bash' not in abil, f'a second skill within a second: "Not ready yet." (abilities {abil})')
 
             # a creature's wind-up: 2 s long, landing about 2 s later
@@ -120,11 +135,12 @@ async def main():
             gaps = [b - a for a, b in zip(blows, blows[1:])]
             check(bool(blows) and all(g >= 1.9 for g in gaps), f'action mode off mid-fight: rounds, no two swings close ({[round(g, 2) for g in gaps]})')
 
-            # tidy up
+            # tidy up (purge only where the creature is: never the room a hero woke in)
             for line in (f'set {KW} hp 1', 'restore'):
                 await tn.cmd(line, 0.5)
             await asyncio.sleep(3.5)
-            await tn.cmd('purge', 0.5)
+            for line in (f'goto {ROOM}', 'purge') + ((f'set {me} maxhp {maxhp}',) if maxhp else ()) + ('restore',):
+                await tn.cmd(line, 0.5)
             pumper.cancel()
     await tn.cmd('quit', 0.5)
     tn.w.close()

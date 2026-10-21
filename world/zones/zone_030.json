@@ -19,10 +19,7 @@
     "no_mob",
     "peaceful"
    ],
-   "extra_descs": {
-    "bookshelf shelves": "One shelf sits a finger's width proud of the wall, and the dust behind it has been disturbed in a long vertical line. Something moves back there when the candles gutter.",
-    "desks benches": "Generations of students have carved initials, curses and at least one marriage proposal into the soft wood."
-   },
+   "extra_descs": {},
    "obj_resets": [
     {
      "vnum": 3099,
@@ -56,8 +53,7 @@
      "description": "To the west lies The Gate Of Fameland."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The air is\nstill and smells faintly of old smoke. Ways lead north, east, south and\nwest.",
-   "placeholder": true
+   "description": "The Temple Library is a long marble hall lined from floor to vaulted\nceiling with oaken bookcases, their shelves crowded with tomes, scrolls\nand bound records of the realm. Reading desks stand in rows beneath\nhanging lamps, and a deep hush lies over everything. Archways lead north\nto the Map Room and south to the Hall of Champions, the temple hall\nopens east, and a door on the west gives onto The Gate Of Fameland. The\nsmell of old vellum and lamp oil fills the air."
   },
   "3001": {
    "vnum": 3001,
@@ -321,8 +317,8 @@
      "description": "To the west lies Alchemy Street."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet. The\npaving is uneven here, patched with newer stone. Ways lead north, east,\nsouth and west.",
-   "placeholder": true
+   "description": "Stalls of striped canvas crowd the top of the market square, their\nawnings snapping in the breeze and their keepers crying prices over one\nanother. North, the square narrows toward the Temple Fountain, where the\ndome of the Temple rises white above the rooftops. The cobbles slope\ngently south into the middle of the square, while Inn Street opens east\nunder a row of hanging signs. West, Alchemy Street slips away between\ntall houses that smell faintly of sulphur.",
+   "extra_descs": {}
   },
   "203007": {
    "vnum": 203007,
@@ -346,8 +342,10 @@
      "description": "To the south lies Inn Street."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Stone walls\nclose in, cool to the touch. Ways lead east and south.",
-   "placeholder": true
+   "description": "Low beams blackened by pipe smoke hang over the bar of the Gryphon's\nRest Inn, and a long oak counter, ringed by years of tankards, runs the\nlength of the room. A painted gryphon spreads its wings across the wall\nbehind the casks, its gilt flaking in places. Tables and settles crowd\nclose around a fire that is never quite allowed to die. A door east\nleads through to the reception, and the way south returns to Inn Street.",
+   "extra_descs": {
+    "gryphon painting wall": "The gryphon is painted rampant in gold and russet, its beak open in a\nsilent cry. Someone long ago added a tankard to one of its claws in a\nclumsier hand, and no landlord since has had the heart to paint it out."
+   }
   },
   "3008": {
    "vnum": 3008,
@@ -1035,8 +1033,8 @@
      "description": "To the west lies The Statue Base Cache."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet. The\npaving is uneven here, patched with newer stone. Ways lead north, east,\nsouth and west.",
-   "placeholder": true
+   "description": "Harbour Square smells of tar, river water and fish, and gulls wheel and\ncry over the slate roofs. A weathered bronze statue of a sea captain\nstands on a broad plinth at the west side of the square, a small dark\nopening half hidden at its base. North, the cobbles climb toward the\nSouthern End Of Market Square, and east a whitewashed wall encloses the\nJapanese Garden. South, the square runs down to the stone edge of the\nQuay.",
+   "extra_descs": {}
   },
   "3027": {
    "vnum": 3027,
@@ -1290,8 +1288,8 @@
      "description": "To the west lies Entrance to the Mages' Guild."
     }
    },
-   "description": "Voices and the clatter of carts carry from somewhere nearby. Lantern\nhooks and faded signboards hang over the street. Ways lead north, east,\nsouth and west.",
-   "placeholder": true
+   "description": "Strange smells hang over this end of Alchemy Street, sulphur and burnt\nsugar and something sharp that stings the nose. North, a bow window\ncrowded with glass bottles and coloured flames marks the magic shop, and\nwest a doorway carved with runes opens into the entrance to the Mages'\nGuild. The street runs on east between leaning houses, and south it\nturns into Main Street. The gutters here run faintly blue and green with\nspilled reagents.",
+   "extra_descs": {}
   },
   "3035": {
    "vnum": 3035,
@@ -1321,8 +1319,8 @@
      "description": "To the west lies Alchemy Street."
     }
    },
-   "description": "Voices and the clatter of carts carry from somewhere nearby. Lantern\nhooks and faded signboards hang over the street. Ways lead north, east,\nsouth and west.",
-   "placeholder": true
+   "description": "Alchemy Street widens here between two of the most solid buildings in\nGarathorm. North stands the Garathorm Auction Hall, its doors hung with\nnotices of lots to be sold, and south the Bank squats behind iron-barred\nwindows and a door of studded oak. East, the street spills out into the\nbustle of the market square. West, it narrows among the alchemists'\nshops, where little coloured puffs of smoke rise from crooked chimneys.",
+   "extra_descs": {}
   },
   "3036": {
    "vnum": 3036,
@@ -1354,8 +1352,8 @@
      "description": "To the west lies Northern End Of Market Square."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Stone walls close in,\ncool to the touch. Ways lead north, east, south and west.",
-   "placeholder": true
+   "description": "Inn Street runs here beneath a long timber roof, a covered way built so\nthat travellers could reach their beds dry in the worst of the rain.\nLanterns hang from the rafters on chains, throwing warm light over\nflagstones scuffed by boots and barrel-rims. A carved gryphon over a\ndoorway to the north marks the bar of the Gryphon's Rest Inn, and the\npost office stands south behind a counter window stacked with parcels.\nThe covered way continues east, and west it opens onto the market\nsquare.",
+   "extra_descs": {}
   },
   "3037": {
    "vnum": 3037,
@@ -1387,8 +1385,8 @@
      "description": "To the west lies Inn Street."
     }
    },
-   "description": "Shadows gather where the light does not reach. Stone walls close in,\ncool to the touch. Ways lead north, east, south and west.",
-   "placeholder": true
+   "description": "The covered length of Inn Street ends here at a broad crossing of\npassages under a roof of smoke-stained planks. A small arched doorway\nnorth climbs a few steps to the reception, where a bell can be heard\nringing now and then. East, a heavy iron-banded door bears the city's\ncrest and opens into the cityguards' barracks. South, the passage opens\nout toward The Main Street, and west the lantern-lit way runs back along\nthe inns.",
+   "extra_descs": {}
   },
   "3038": {
    "vnum": 3038,
@@ -1416,8 +1414,8 @@
      "description": "To the east lies Ye Olde Water Shoppe."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Stone walls\nclose in, cool to the touch. Ways lead north, east and west.",
-   "placeholder": true
+   "description": "Rows of narrow cots, each with a footlocker at its end, line the\nwhitewashed walls of the cityguards' barracks. Halberds and round\nshields hang in racks by the door, polished and ready, and a duty roster\nis chalked on a board beside them. A doorway north lets in the clatter\nof the combat practice yard, and through a side door east drifts the\ndamp, clean smell of Ye Olde Water Shoppe. The iron-banded door west\nleads back out to Inn Street.",
+   "extra_descs": {}
   },
   "3039": {
    "vnum": 3039,
@@ -1439,8 +1437,8 @@
      "description": "To the west lies The Dump."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet.\nShuttered windows and old doorways crowd in on either hand. Ways lead\neast and west.",
-   "placeholder": true
+   "description": "A narrow path of trodden earth and broken cobbles runs along the river's\nedge here, between the water and the backs of tumbledown sheds. Reeds\ngrow thick on the bank, and the slow brown river slides past carrying\nleaves and the odd bit of driftwood. East, the path firms into the stone\nof the Quay, while west a sour reek drifts up from the Dump. Overhead\nthe sky is wide and open, smudged with chimney smoke.",
+   "extra_descs": {}
   },
   "3040": {
    "vnum": 3040,
@@ -1674,8 +1672,8 @@
      "description": "To the west lies The Path Along The River."
     }
    },
-   "description": "Shuttered windows and old doorways crowd in on either hand. Worn\nflagstones run between weathered walls, swept by passing feet. Ways lead\nnorth, east, south and west.",
-   "placeholder": true
+   "description": "Great blocks of grey stone form the edge of the Quay, iron rings set\ninto them for mooring and their faces green with weed where the river\nlaps. Bollards, coiled hawsers and tarred posts clutter the wharf.\nHarbour Square lies north up a short slope, and the Quay runs on east\nalong the water. South, the stone arch of a bridge leaps the river, and\nwest a muddy path follows the bank away from the city.",
+   "extra_descs": {}
   },
   "3046": {
    "vnum": 3046,
@@ -1754,8 +1752,10 @@
      "description": "To the east lies The Dark Alley."
     }
    },
-   "description": "Stone walls close in, cool to the touch. The air is still and smells\nfaintly of old smoke. A way leads east.",
-   "placeholder": true
+   "description": "The Silver Goblet Tavern is a low-beamed taproom, dim and close, with a\nsagging ceiling stained brown by pipe smoke and a fire smouldering in a\nwide hearth. Battered tables and benches crowd the sawdust floor, and a\ndented silver goblet, the tavern's namesake, hangs on a chain above the\nbar. Quiet corners with high-backed settles suit those who would rather\nnot be seen. The door leads east out into The Dark Alley.",
+   "extra_descs": {
+    "silver goblet chain": "The goblet is tarnished nearly black and dented on one side, as if it\nonce stopped a blow. Its chain is fixed fast to a beam above the bar."
+   }
   },
   "3049": {
    "vnum": 3049,
@@ -1769,10 +1769,7 @@
    "flags": [
     "no_magic"
    ],
-   "extra_descs": {
-    "river": "The river slides west, slow and green, carrying leaves, lost hats, and the occasional message in a bottle nobody answers.",
-    "bank levee": "The levee's stones are stained in bands, one for every flood the old-timers still argue about."
-   },
+   "extra_descs": {},
    "mob_resets": [
     {
      "vnum": 3006,
@@ -1797,8 +1794,7 @@
      "description": "To the east lies The Forgotten Passage."
     }
    },
-   "description": "The paving is uneven here, patched with newer stone. Lantern hooks and\nfaded signboards hang over the street. Ways lead north, east, south and\nwest.",
-   "placeholder": true
+   "description": "The far end of the Quay is quieter, its stones cracked and its bollards\nleaning. Wooden steps lead down from the edge of the wharf to the water\nsouth, where small boats can put out onto the river. A tall timber\nwarehouse stands north, its loading doors and hoist beam looming over\nthe stones. East, half hidden by a heap of rotting nets, a low dark\nopening in the old wall leads into a forgotten passage, and west the\nQuay runs back toward the bridge."
   },
   "203050": {
    "vnum": 203050,
@@ -1818,8 +1814,8 @@
      "description": "To the south lies The Quay."
     }
    },
-   "description": "Stone walls close in, cool to the touch. The floor is worn smooth by\nlong use. A way leads south.",
-   "placeholder": true
+   "description": "Stacks of crates, bales and casks rise almost to the rafters of this\ngreat draughty warehouse, each marked in chalk with a merchant's sign.\nNarrow aisles run between them, and the air smells of tar, hemp and\nriver damp. A hoist rope hangs from a beam above the wide doors to the\nsouth, which open onto the Quay. Pale light seeps in through gaps in the\nplank walls.",
+   "extra_descs": {}
   },
   "3051": {
    "vnum": 3051,
@@ -1894,8 +1890,8 @@
      "description": "To the south lies Eastern End Of Dark Alley."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Stone walls close in,\ncool to the touch. A way leads south.",
-   "placeholder": true
+   "description": "Mismatched tables and chairs fill Uncle Juan's Eatery, a cramped little\nroom whose walls are hung with strings of dried peppers and garlic. A\ngreat iron pot simmers on the hearth at the back, filling the air with\nthe smell of beans, onions and spice. A slate by the counter lists the\nday's dishes in chalk, most of them cheap and all of them filling. The\ndoor south opens onto the Eastern End Of Dark Alley.",
+   "extra_descs": {}
   },
   "3057": {
    "vnum": 3057,
@@ -1921,8 +1917,10 @@
      "description": "To the south lies The Eastern End Of Poor Alley."
     }
    },
-   "description": "Voices and the clatter of carts carry from somewhere nearby. The paving\nis uneven here, patched with newer stone. Ways lead north, south and\nwest.",
-   "placeholder": true
+   "description": "Raked gravel flows in careful ripples around mossy stones in this quiet\nwalled garden, a gift, the gardeners say, from travellers who came from\nbeyond the far sea. A little red bridge arches over a pond where lily\npads drift, and a stone lantern stands by the water's edge. Through the\nmoon gate north lies Council Avenue, and a plain wooden gate south lets\nout into the Eastern End Of Poor Alley. Harbour Square opens to the west\npast a stand of maples.",
+   "extra_descs": {
+    "stone lantern": "The lantern is a squat pagoda of grey granite, its little roof furred\nwith moss. A candle is lit inside it each evening, and its light\ntrembles on the pond."
+   }
   },
   "3050": {
    "vnum": 3050,
@@ -1978,8 +1976,8 @@
      "description": "To the west lies The Training Grounds."
     }
    },
-   "description": "The paving is uneven here, patched with newer stone. Shuttered windows\nand old doorways crowd in on either hand. Ways lead north, south, west\nand up.",
-   "placeholder": true
+   "description": "The Gate Of The Inner City stands open in a deep arch of pale stone, its\niron-shod leaves folded back against walls blackened by centuries of\ntorch smoke. North through the arch, the Trade Road runs off between\nmerchants' houses toward the wider realm. South, broad marble steps\nclimb to the Temple of Garathorm, whose great dome fills the sky above\nthe gate. A packed-earth yard opens west onto the training grounds, and\na narrow stair in the gate tower climbs up to the wall-walk.",
+   "extra_descs": {}
   },
   "3062": {
    "vnum": 3062,
@@ -2054,8 +2052,8 @@
      "description": "To the south lies Alchemy Street."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The air is\nstill and smells faintly of old smoke. A way leads south.",
-   "placeholder": true
+   "description": "Rows of wooden benches face a raised platform in this echoing hall,\nwhere an auctioneer's lectern stands beside a heavy gavel block worn\nhollow in the middle. Chalk boards along the walls list lots, reserves\nand closing bids in a crabbed hand, many crossed out and written over.\nHigh windows let dusty shafts of daylight fall across the floorboards.\nThe doors south lead back out onto Alchemy Street.",
+   "extra_descs": {}
   },
   "203066": {
    "vnum": 203066,
@@ -2081,8 +2079,8 @@
      "description": "To the north lies The Entrance Hall Of The Grunting Boar Inn."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet.\nShuttered windows and old doorways crowd in on either hand. Ways lead\nnorth, east and south.",
-   "placeholder": true
+   "description": "This walled yard of beaten earth is scored with the circles and lines of\na hundred drills, and the ground is churned soft where boots have\npivoted and lunged. Wooden pells stand along one side, hacked pale by\nblade after blade, and a water trough sits by the wall for the thirsty.\nNorth, a back door opens into the entrance hall of the Grunting Boar\nInn, while a low shed east houses the dummy room. The barracks lie\nsouth, through a plain doorway under the open sky.",
+   "extra_descs": {}
   },
   "3067": {
    "vnum": 3067,
@@ -2112,8 +2110,10 @@
      "description": "To the west lies Council Avenue."
     }
    },
-   "description": "Shuttered windows and old doorways crowd in on either hand. Lantern\nhooks and faded signboards hang over the street. Ways lead north, east,\nsouth and west.",
-   "placeholder": true
+   "description": "An old gallows of weathered black timber stands on a stone platform in\nthe middle of this square, unused for years but never taken down.\nPigeons line its crossbeam, and the cobbles beneath it are stained\ndarker than the rest. The Main Street lies north, and the ring of hammer\non steel carries from the weapon shop east. South, a stout door opens\ninto the entrance to the Warriors' Guild, while Council Avenue leads\nwest.",
+   "extra_descs": {
+    "gallows platform": "The gallows has not been used in living memory. Its rope is long gone,\nand the iron hook on the crossbeam has rusted to a dull brown stump."
+   }
   },
   "3026": {
    "vnum": 3026,
@@ -2124,9 +2124,7 @@
     "z": 0
    },
    "sector_type": "city",
-   "extra_descs": {
-    "": "guild"
-   },
+   "extra_descs": {},
    "mob_resets": [
     {
      "vnum": 3063,
@@ -2160,8 +2158,7 @@
      "description": "You see the common square."
     }
    },
-   "description": "Voices and the clatter of carts carry from somewhere nearby. Shuttered\nwindows and old doorways crowd in on either hand. Ways lead north, east,\nsouth and west.",
-   "placeholder": true
+   "description": "Council Avenue is the grandest street in this part of Garathorm, its\ncobbles laid in neat fans and its gutters swept clean each dawn. Banners\nof the city hang from tall poles along the way, stirring in the wind off\nthe rooftops. North rise the columned steps of the Council Chamber, and\nsouth a moon gate in a whitewashed wall opens onto the Japanese Garden.\nEast lies Gallows Square, and west the avenue runs down to the busy\nSouthern End Of Market Square."
   },
   "203069": {
    "vnum": 203069,
@@ -2185,8 +2182,8 @@
      "description": "To the up lies The Marble Tower Of Garathorm."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. The floor is worn\nsmooth by long use. Ways lead south and up.",
-   "placeholder": true
+   "description": "Tiers of carved benches rise in a half-ring around a long table of dark\nwalnut in the Council Chamber, where Garathorm's councillors meet to\nquarrel over the city's affairs. Tall windows of leaded glass let in a\npale, even light, and the city's arms are worked in coloured stone upon\nthe floor. A spiral stair behind the dais climbs up into the Marble\nTower. The great doors south open onto Council Avenue.",
+   "extra_descs": {}
   },
   "203074": {
    "vnum": 203074,
@@ -2208,8 +2205,8 @@
      "description": "To the south lies The Promenade."
     }
    },
-   "description": "Voices and the clatter of carts carry from somewhere nearby. Worn\nflagstones run between weathered walls, swept by passing feet. Ways lead\nnorth and south.",
-   "placeholder": true
+   "description": "The stone bridge arches high over the river here, its parapet worn\nsmooth by the hands of countless leaning idlers. Below, the brown water\nswirls around the piers and carries the city's reflections away\ndownstream. North, the bridge comes down onto the Quay among the\nwarehouses, and south it descends to the Promenade on the far bank. Wind\noff the water tugs at cloaks and carries the cries of gulls.",
+   "extra_descs": {}
   },
   "203075": {
    "vnum": 203075,
@@ -2235,8 +2232,10 @@
      "description": "To the up lies On The City Wall."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Voices and the\nclatter of carts carry from somewhere nearby. Ways lead north, south and\nup.",
-   "placeholder": true
+   "description": "The Gate Of The Inner City opens here through the thickness of the wall,\na deep arch of grey stone with a portcullis hanging raised above, its\niron teeth rusted brown. Two round towers flank the passage and banners\nof Garathorm stir high on their parapets. A narrow stair climbs up\ninside the tower to the walk along the city wall. The Concourse lies\nnorth within the walls, and the Trade Road runs out south into open\ncountry.",
+   "extra_descs": {
+    "portcullis iron teeth": "The portcullis is a lattice of oak beams shod in iron, its lower edge\nending in a row of rusted spikes. Its chains run up into slots in the\narch, and it has not been lowered in living memory."
+   }
   },
   "203076": {
    "vnum": 203076,
@@ -2256,8 +2255,8 @@
      "description": "To the west lies Wall Road."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Dust lies thick in the\ncorners, undisturbed for some time. A way leads west.",
-   "placeholder": true
+   "description": "The Undertaker's Workshop is a long, cool room smelling of sawdust,\npitch and dried herbs. Coffins in every stage of making lean against the\nwalls, from bare planks to finished caskets lined with black cloth, and\na heavy workbench stands under a window of thick, greenish glass. A lamp\nburns low before a small shrine set in an alcove of the far wall. The\ndoor opens west onto Wall Road, in the shadow of the city wall.",
+   "extra_descs": {}
   },
   "203077": {
    "vnum": 203077,
@@ -2277,8 +2276,10 @@
      "description": "To the north lies Alchemy Street."
     }
    },
-   "description": "Shadows gather where the light does not reach. The floor is worn smooth\nby long use. A way leads north.",
-   "placeholder": true
+   "description": "Behind a long counter of polished marble, brass grilles divide the\nclerks' windows of the Bank from the public floor. The room is hushed,\nits stone walls thick and cool, and every footstep rings on the tiled\nfloor. A great iron vault door, set with three locks and a wheel, fills\nthe back wall behind the counter. The only way out is north, through the\nstudded doors to Alchemy Street.",
+   "extra_descs": {
+    "vault door iron": "The vault door is as tall as two men and blackened with age. Its three\nlocks each take a different key, and the great wheel at its centre is\npolished bright by the clerks' hands."
+   }
   },
   "203078": {
    "vnum": 203078,
@@ -2298,8 +2299,8 @@
      "description": "To the down lies The Council Chamber."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The floor is\nworn smooth by long use. A way leads down.",
-   "placeholder": true
+   "description": "Polished white marble rises on every side in this high round room at the\ntop of the Marble Tower Of Garathorm. Narrow windows set at intervals in\nthe curving wall frame the rooftops, the city wall and the white dome of\nthe Temple far below. A brass telescope on a stand points out through\none of them, and a ring of cushioned benches follows the line of the\nroom. The spiral stair winds back down to the Council Chamber.",
+   "extra_descs": {}
   },
   "3079": {
    "vnum": 3079,
@@ -2319,8 +2320,8 @@
      "description": "To the south lies The Map Room."
     }
    },
-   "description": "The floor is worn smooth by long use. The air is still and smells\nfaintly of old smoke. A way leads south.",
-   "placeholder": true
+   "description": "The Cartographer's Study is a cramped, cluttered room where a slanting\ndrafting desk stands beneath a lamp with a polished reflector. Rolled\ncharts are stacked in pigeonholes along the walls, and the desk's\nsurface is scarred with compass pricks and splashed with ink. An\nunfinished map of some far coast is pinned to the desk, its edges still\nblank. The only door leads south to the Map Room.",
+   "extra_descs": {}
   },
   "3070": {
    "vnum": 3070,
@@ -2335,7 +2336,7 @@
     "indoors"
    ],
    "extra_descs": {
-    "desks parchment candle": "The last entry in the open ledger stops mid-word, the pen still lying in the gutter of the page."
+    "relief table map clay": "The clay relief shows the whole of the known realm, from the walls of\nGarathorm to the Sea of Storms. Some regions at its edges are left\nunpainted and blank."
    },
    "obj_resets": [
     {
@@ -2357,8 +2358,7 @@
      "description": "To the west lies The Keymaster's Workshop."
     }
    },
-   "description": "The floor is worn smooth by long use. The air is still and smells\nfaintly of old smoke. Ways lead north, south and west.",
-   "placeholder": true
+   "description": "Maps cover every wall of this square chamber, painted and pinned and\npasted one over another until the plaster vanishes beneath coastlines,\nrivers and roads. A great table in the centre bears a relief of\nMisthollow modelled in painted clay, its mountains and forests raised in\nminiature. A door north opens on the Cartographer's Study, a low arch\nwest leads into the Keymaster's Workshop, and the library lies south.\nBrass lamps hang low over the table."
   },
   "203081": {
    "vnum": 203081,
@@ -2382,8 +2382,10 @@
      "description": "To the up lies The Tower of Champions."
     }
    },
-   "description": "Stone walls close in, cool to the touch. The floor is worn smooth by\nlong use. Ways lead north and up.",
-   "placeholder": true
+   "description": "The Hall of Champions is a lofty chamber of white marble where the names\nof the realm's great heroes are carved in gilded letters on tall tablets\nalong the walls. Banners of past deeds hang tattered from the gallery\nrails, and a ring of empty plinths awaits statues not yet raised. A\nspiral stair climbs up into the Tower of Champions, and the library lies\nback north through a high arch. Candles burn steadily in iron stands.",
+   "extra_descs": {
+    "tablets names heroes": "The tablets are cut from pale marble, each name picked out in gold leaf.\nMany tablets stand still smooth and empty, waiting for names yet to be\nearned."
+   }
   },
   "203082": {
    "vnum": 203082,
@@ -2403,8 +2405,8 @@
      "description": "To the east lies The Map Room."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Stone walls\nclose in, cool to the touch. A way leads east.",
-   "placeholder": true
+   "description": "The Keymaster's Workshop is a narrow room smelling of oil and iron\nfilings, its walls hung with board after board of hooks where countless\nkeys once hung, many now bare. A small anvil and a vice are fixed to a\nsturdy bench beneath a lamp, and a rack of fine files stands beside\nthem. Locks of every size, taken apart, are mounted on the wall like\ntrophies. The doorway leads east back to the Map Room.",
+   "extra_descs": {}
   },
   "203083": {
    "vnum": 203083,
@@ -2424,8 +2426,8 @@
      "description": "To the down lies The Hall of Champions."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. A way leads down.",
-   "placeholder": true
+   "description": "The Tower of Champions is a round room at the top of a spiral stair, its\nwalls pierced by tall arched windows that look out over the rooftops of\nGarathorm to the hills beyond. Shields of fallen heroes are hung about\nthe walls, each painted with its bearer's arms. A brazier on a bronze\ntripod burns in the centre of the floor. The stair winds down to the\nHall of Champions.",
+   "extra_descs": {}
   },
   "3084": {
    "vnum": 3084,
@@ -2445,8 +2447,8 @@
      "description": "To the west lies The Combat Practice Yard."
     }
    },
-   "description": "The floor is worn smooth by long use. Dust lies thick in the corners,\nundisturbed for some time. A way leads west.",
-   "placeholder": true
+   "description": "Straw-stuffed dummies hang from hooks along the beams of this long, low\nshed, swaying slightly whenever the door is opened. Most have been\nbeaten and restitched so many times that their sacking is more patch\nthan cloth. Sawdust covers the floorboards to soak up sweat, and a\nsingle lantern burns behind a wire cage by the door. The only way out is\nwest, back into the combat practice yard.",
+   "extra_descs": {}
   },
   "3100": {
    "vnum": 3100,
@@ -2847,8 +2849,8 @@
      "description": "To the south lies Park Road."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Voices and the\nclatter of carts carry from somewhere nearby. Ways lead north and south.",
-   "placeholder": true
+   "description": "Park Road runs straight here between low garden walls overhung with ivy\nand the branches of old fruit trees grown up behind them. The cobbles\nare uneven where roots have heaved them, and a stone drinking fountain\nset in the wall dribbles into a mossy basin. The road goes on north\ntoward a bend and south toward the crossing with Elm Street. The scent\nof cut grass drifts over the walls.",
+   "extra_descs": {}
   },
   "3113": {
    "vnum": 3113,
@@ -3561,8 +3563,8 @@
      "description": "To the down lies End Of Elm Street."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. The paving is\nuneven here, patched with newer stone. A way leads down.",
-   "placeholder": true
+   "description": "High in the branches of a great elm, a broad fork makes a natural seat\nwhere generations of city children have carved their initials into the\ngrey bark. Leaves rustle on every side and sunlight flickers through\nthem, and through gaps in the green you can see the rooftops and the\ncity wall beyond. The trunk is knobbed with old footholds that lead down\nto the end of Elm Street below. The branches sway gently with the wind.",
+   "extra_descs": {}
   },
   "3143": {
    "vnum": 3143,
@@ -3586,8 +3588,8 @@
      "description": "To the west lies On The Concourse."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The air is\nstill and smells faintly of old smoke. Ways lead east and west.",
-   "placeholder": true
+   "description": "Here the Concourse passes beneath a long vaulted arcade built against\nthe city wall, its roof held on stout stone piers and its floor paved\nwith worn flags. Lamps in iron cages hang from the vault, burning even\nat midday, and the noise of the street echoes along the arches. Stalls\nonce stood between the piers, and their sockets still pock the floor.\nThe arcade opens east onto the Concourse near Emerald Avenue and west\ntoward the corner where the wall turns.",
+   "extra_descs": {}
   },
   "3144": {
    "vnum": 3144,
@@ -3609,8 +3611,8 @@
      "description": "To the south lies On The Concourse."
     }
    },
-   "description": "The paving is uneven here, patched with newer stone. Shuttered windows\nand old doorways crowd in on either hand. Ways lead north and south.",
-   "placeholder": true
+   "description": "The Concourse draws near the end of its run along the wall here, and the\nsound of the river can be heard ahead past the rooftops. A tall stone\ncolumn stands at the roadside topped with a weathered bronze lantern,\nlit each evening by the lamplighters. Cart ruts are worn deep into the\ncobbles. The street continues north to the end of the Concourse by the\nbridge and south along the wall.",
+   "extra_descs": {}
   },
   "3145": {
    "vnum": 3145,
@@ -3632,8 +3634,8 @@
      "description": "To the south lies On The Concourse."
     }
    },
-   "description": "Shuttered windows and old doorways crowd in on either hand. Lantern\nhooks and faded signboards hang over the street. Ways lead north and\nsouth.",
-   "placeholder": true
+   "description": "Here the Concourse runs quiet and shaded, the wall on one hand and the\nblind backs of warehouses on the other, so that little sun reaches the\ncobbles. A carved boundary stone at the kerb marks where one ward of the\ncity ends and another begins. Dandelions push up between the paving\nstones. The street goes on north toward the bridge end and south along\nthe wall.",
+   "extra_descs": {}
   },
   "3146": {
    "vnum": 3146,
@@ -3655,8 +3657,8 @@
      "description": "To the south lies On The Concourse."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet. The\npaving is uneven here, patched with newer stone. Ways lead north and\nsouth.",
-   "placeholder": true
+   "description": "Washerwomen's troughs line the foot of the wall along this part of the\nConcourse, a long stone channel fed by a culvert where soapy water foams\nand gurgles away into a drain. Lines of washing are strung across the\nstreet between iron pegs driven into the wall. The air is damp and\nsmells of lye. The Concourse runs on north and back south toward Park\nRoad.",
+   "extra_descs": {}
   },
   "3147": {
    "vnum": 3147,
@@ -3682,8 +3684,8 @@
      "description": "To the south lies On The Concourse."
     }
    },
-   "description": "Voices and the clatter of carts carry from somewhere nearby. Shuttered\nwindows and old doorways crowd in on either hand. Ways lead north, east\nand south.",
-   "placeholder": true
+   "description": "Park Road branches off east here from the Concourse, passing beneath a\nstone archway carved with leaves and fruit, and through it you can\nglimpse the green of garden trees. The Concourse itself goes on north\nand south along the wall, busier at this corner where carts turn in and\nout. Iron bollards protect the corners of the arch, scarred by many a\ncareless wheel. A notice board on the archway is plastered with\nhandbills.",
+   "extra_descs": {}
   },
   "3148": {
    "vnum": 3148,
@@ -3705,8 +3707,8 @@
      "description": "To the south lies On The Concourse."
     }
    },
-   "description": "Shuttered windows and old doorways crowd in on either hand. Worn\nflagstones run between weathered walls, swept by passing feet. Ways lead\nnorth and south.",
-   "placeholder": true
+   "description": "The Concourse narrows here where a guardhouse of squat stone juts from\nthe wall, its single window barred and its door painted with the arms of\nGarathorm. A bench beside the door is polished by the seats of off-duty\nwatchmen. Pigeon-grey slates cover the roofs of the houses across the\nway. The street leads north toward the turning for Park Road and south\nalong the wall.",
+   "extra_descs": {}
   },
   "3149": {
    "vnum": 3149,
@@ -3728,8 +3730,8 @@
      "description": "To the south lies On The Concourse."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Voices and the\nclatter of carts carry from somewhere nearby. Ways lead north and south.",
-   "placeholder": true
+   "description": "This stretch of the Concourse is lined with rope-makers' and chandlers'\nyards, their gates open on the street and the smell of tar and hemp\nheavy on the air. The city wall looms over them, streaked dark where\nrainwater runs down from the battlements. A worn stone marker set into\nthe wall shows the height of some long-ago flood. The Concourse goes on\nnorth and back south.",
+   "extra_descs": {}
   },
   "203150": {
    "vnum": 203150,
@@ -3751,8 +3753,10 @@
      "description": "To the south lies On The Concourse."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Shuttered\nwindows and old doorways crowd in on either hand. Ways lead north and\nsouth.",
-   "placeholder": true
+   "description": "A watering trough cut from a single block of granite stands against the\nwall here, fed by a lead pipe that drips steadily from a lion's-head\nspout. The cobbles around it are always wet and dark, and moss grows\ngreen in their joints. The Concourse runs north and south along the\ninner face of the wall, between it and a row of tall, shuttered houses.\nSomewhere nearby a smith's hammer rings.",
+   "extra_descs": {
+    "lion spout lion's-head pipe": "The bronze lion's head is green with age, its mane worn smooth and its\njaws gaping. A steady trickle of water falls from its mouth into the\ntrough below."
+   }
   },
   "203151": {
    "vnum": 203151,
@@ -3774,8 +3778,8 @@
      "description": "To the south lies On The Concourse."
     }
    },
-   "description": "The paving is uneven here, patched with newer stone. Voices and the\nclatter of carts carry from somewhere nearby. Ways lead north and south.",
-   "placeholder": true
+   "description": "The Concourse turns north here from the corner of the city wall and runs\nalong its inner face, the great stones rising sheer and grey on one side\nof the street. Lean-to sheds and cobblers' stalls huddle against the\nfoot of the wall, their roofs patched with sacking. The way goes on\nnorth along the wall and back south to the corner. Smoke from the\nstalls' braziers hangs in the still air.",
+   "extra_descs": {}
   },
   "203152": {
    "vnum": 203152,
@@ -3801,8 +3805,8 @@
      "description": "To the west lies Northeast End Of The Concourse."
     }
    },
-   "description": "Voices and the clatter of carts carry from somewhere nearby. The paving\nis uneven here, patched with newer stone. Ways lead east, south and\nwest.",
-   "placeholder": true
+   "description": "The Concourse runs here in the lee of the city wall, a broad way of\nflagstones where carts were once turned. The wall rises close by, grey\nand patched, its stones furred with moss in the cracks. The Concourse\nturns south along the wall, and west it leads back to the Northeast End\nOf The Concourse. East, the way bends round and seems to come back on\nitself, as the old streets of Garathorm sometimes do.",
+   "extra_descs": {}
   },
   "203153": {
    "vnum": 203153,
@@ -3829,8 +3833,8 @@
      }
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Shuttered\nwindows and old doorways crowd in on either hand. Ways lead north and\nsouth.",
-   "placeholder": true
+   "description": "The Concourse narrows here between the city wall and the blank backs of\nhouses, and the flagstones give way to rough cobbles. Weeds push up\nalong the foot of the wall, and a broken water butt leans beneath a\nrain-stained gutter pipe. North, the Concourse widens again, while a\nbattered door south is set into a gap between two buildings, a hole in\nthe wall that most passers-by never notice.",
+   "extra_descs": {}
   },
   "203154": {
    "vnum": 203154,
@@ -3859,8 +3863,8 @@
      }
     }
    },
-   "description": "The floor is worn smooth by long use. Shadows gather where the light\ndoes not reach. Ways lead north and south.",
-   "placeholder": true
+   "description": "This is little more than a gap knocked through the backs of two houses\nand roofed over with planks, a cramped hole in the wall barely wide\nenough for two to pass. The bricks are rough and crumbling, and water\ndrips from the boards above into a puddle on the floor. A door north\nopens onto the Concourse, and another door south leads into the gloom of\na dark alley.",
+   "extra_descs": {}
   },
   "203155": {
    "vnum": 203155,
@@ -3888,8 +3892,8 @@
      "description": "To the west lies Storage Shed."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. Ways lead north, south and west.",
-   "placeholder": true
+   "description": "The dark alley here runs beneath overhanging upper storeys that meet\noverhead and shut out all but a grey crack of light. The walls are slick\nwith damp and covered in thieves' marks scratched into the plaster. A\nrickety door west opens into a storage shed, and the alley creeps on\nsouth into deeper shadow. North, the way back leads to the hole in the\nwall.",
+   "extra_descs": {}
   },
   "3156": {
    "vnum": 3156,
@@ -3909,8 +3913,8 @@
      "description": "To the east lies Dark Alley."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The air is\nstill and smells faintly of old smoke. A way leads east.",
-   "placeholder": true
+   "description": "This storage shed is a little larger than its neighbours, built of\ntarred boards under a roof that leaks in one corner. Empty crates have\nbeen stacked into a rough wall, and someone has chalked tallies and\nstrange signs on the boards above them. Damp has blackened the floor\nalong one side where the rain gets in. A door east opens back into the\ndark alley.",
+   "extra_descs": {}
   },
   "3157": {
    "vnum": 3157,
@@ -3930,8 +3934,8 @@
      "description": "To the east lies Dark Alley."
     }
    },
-   "description": "The floor is worn smooth by long use. The air is still and smells\nfaintly of old smoke. A way leads east.",
-   "placeholder": true
+   "description": "Shelves of rough planking line the walls of this cramped storage shed,\nbowed in the middle from years of heavy loads now long gone. The single\nwindow is boarded over, and thin bars of grey light fall through the\ngaps onto a floor of packed earth. The place smells of mould and old\nsacking. A plank door east lets back out into the dark alley.",
+   "extra_descs": {}
   },
   "3158": {
    "vnum": 3158,
@@ -3959,8 +3963,8 @@
      "description": "To the west lies Storage shed."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. Ways lead north, south and west.",
-   "placeholder": true
+   "description": "Refuse has piled up against the walls of this cramped stretch of the\ndark alley, and the smell of rot is thick under the low, sagging roof of\nbeams. A single guttering lamp in an iron bracket gives off more smoke\nthan light. West, a plank door hangs crookedly on its hinges at the\nmouth of a storage shed. The alley runs north toward the hole in the\nwall and south further into the dark.",
+   "extra_descs": {}
   },
   "3159": {
    "vnum": 3159,
@@ -3984,8 +3988,8 @@
      "description": "To the south lies Dark Alley."
     }
    },
-   "description": "The floor is worn smooth by long use. Shadows gather where the light\ndoes not reach. Ways lead north and south.",
-   "placeholder": true
+   "description": "The alley narrows so sharply here that your shoulders brush the cold,\nsweating brick on both sides. Planks nailed across the gap overhead keep\nout the rain but trap every smell, and old straw rots in heaps\nunderfoot. The way runs north toward the lamp-lit stretch of alley and\nsouth into a dead end of shadow.",
+   "extra_descs": {}
   },
   "3160": {
    "vnum": 3160,
@@ -4005,8 +4009,8 @@
      "description": "To the north lies Dark Alley."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Stone walls\nclose in, cool to the touch. A way leads north.",
-   "placeholder": true
+   "description": "The dark alley comes to an end here against a blank wall of old stone,\npart of some forgotten building that Garathorm grew up around. Rusted\nhooks and the stub of an iron bracket jut from the bricks, and a heap of\nbroken barrel staves fills the corner. It is very quiet, the noise of\nthe city reduced to a far murmur beyond the roof. The only way out is\nnorth, back along the alley.",
+   "extra_descs": {}
   },
   "206400": {
    "vnum": 206400,
@@ -4030,8 +4034,10 @@
      "description": "To the west lies End Of Penny Lane."
     }
    },
-   "description": "Shadows gather where the light does not reach. Stone walls close in,\ncool to the touch. Ways lead east and west.",
-   "placeholder": true
+   "description": "Tall bronze doors stand open on the west side of this vaulted entryway,\nletting in the noise of Penny Lane and a wash of daylight that fades\nquickly on the cool stone floor. Within, the air is hushed and smells of\nincense and candle wax. Seven gods are carved in a frieze above the\ninner arch, each gazing down the long hall that runs east to their\nchapels. A basin of holy water stands by the door for those who enter.",
+   "extra_descs": {
+    "frieze gods seven": "The seven gods of the temple stand shoulder to shoulder in the frieze:\nLivana with her wheat, Eranohk with his axe, Quaralin crowned with\nstars, Veranalla rising from a wave, Jojeebe laughing, Zirande hooded\nand Miylorei with open hands."
+   }
   },
   "206401": {
    "vnum": 206401,
@@ -4055,8 +4061,8 @@
      "description": "To the west lies Temple Entryway."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. The floor is worn\nsmooth by long use. Ways lead east and west.",
-   "placeholder": true
+   "description": "A long hallway of pale grey stone runs through the temple here, its\nceiling lost in shadow high above. Iron candle-stands line both walls,\ntheir flames steady in the still air, and worn runners of red carpet\nmuffle every step. East, the hallway opens into a crossing where the\nfirst chapels lie, and west the way leads back to the entryway and its\nbronze doors.",
+   "extra_descs": {}
   },
   "206402": {
    "vnum": 206402,
@@ -4088,8 +4094,8 @@
      "description": "To the west lies Temple Hallway."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Stone walls\nclose in, cool to the touch. Ways lead north, east, south and west.",
-   "placeholder": true
+   "description": "Here the hallway meets its first pair of chapels, their arched doors\nfacing each other across the flagstones. North, an arch wreathed in\ncarved flowers and vines opens into the Chapel of Livana, while south a\ndoorway framed in dark iron leads into the Chapel of Eranohk. The\nhallway runs on east beneath a row of hanging lamps, and west back\ntoward the entryway.",
+   "extra_descs": {}
   },
   "206403": {
    "vnum": 206403,
@@ -4109,8 +4115,8 @@
      "description": "To the south lies Temple Hallway."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Shadows\ngather where the light does not reach. A way leads south.",
-   "placeholder": true
+   "description": "Green light falls through a window of stained glass into the small\nChapel of Livana, where living vines have been trained up the walls and\nacross the vaulted ceiling. A low altar of white stone holds bowls of\nseeds and fresh blossoms, and the air smells of earth and spring. Carved\ninto the face of the altar, a woman with flowing hair holds a sheaf of\nwheat. The arched door south returns to the temple hallway.",
+   "extra_descs": {}
   },
   "206404": {
    "vnum": 206404,
@@ -4130,8 +4136,8 @@
      "description": "To the north lies Temple Hallway."
     }
    },
-   "description": "Shadows gather where the light does not reach. Dust lies thick in the\ncorners, undisturbed for some time. A way leads north.",
-   "placeholder": true
+   "description": "Iron rules the stern Chapel of Eranohk: iron sconces, an iron-bound\naltar, and old shields and swords hung in rows upon the walls as\nofferings. The stone floor is scarred where worshippers have knelt in\narmour, and a red lamp burns before a statue of a bearded warrior\nleaning on a great axe. The air is cold and smells of oil and steel. The\niron-framed doorway north leads back into the hallway.",
+   "extra_descs": {}
   },
   "206405": {
    "vnum": 206405,
@@ -4163,8 +4169,8 @@
      "description": "To the west lies Temple Hallway."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Shadows\ngather where the light does not reach. Ways lead north, east, south and\nwest.",
-   "placeholder": true
+   "description": "The hallway runs on through the heart of the temple, and the sound of\ndistant chanting drifts along its vaulted length. North, a doorway\npainted deep blue and spangled with silver stars opens on the Chapel of\nQuaralin, and south a door carved with rolling waves leads into the\nChapel of Veranalla. More chapels lie east along the hall, and west it\nreturns toward the entryway.",
+   "extra_descs": {}
   },
   "206406": {
    "vnum": 206406,
@@ -4184,8 +4190,10 @@
      "description": "To the south lies Temple Hallway."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Shadows\ngather where the light does not reach. A way leads south.",
-   "placeholder": true
+   "description": "Deep blue paint covers the domed ceiling of the Chapel of Quaralin,\nscattered with silver stars set out in the true shapes of the\nconstellations. Shelves of scrolls and star charts line one wall, and a\nbronze orrery of turning spheres stands upon the altar. A few cushioned\nstools wait for those who come to study or pray in silence. The starry\ndoorway south opens back onto the hallway.",
+   "extra_descs": {
+    "orrery spheres bronze": "Seven bronze spheres hang on slender arms around a golden sun. A small\ncrank at the base turns them, and the priests say it shows the heavens\nas they truly move."
+   }
   },
   "206407": {
    "vnum": 206407,
@@ -4205,8 +4213,8 @@
      "description": "To the north lies Temple Hallway."
     }
    },
-   "description": "Stone walls close in, cool to the touch. Dust lies thick in the corners,\nundisturbed for some time. A way leads north.",
-   "placeholder": true
+   "description": "The Chapel of Veranalla is cool and echoing, its walls tiled in blue and\ngreen like the depths of the sea. A broad basin of water sits where the\naltar would be, fed by a thin trickle from a carved shell in the wall,\nand its gentle sound fills the room. Ropes, oars and little carved boats\nhang on the walls, left in thanks by sailors who came home. The wave-\ncarved door north leads back into the hallway.",
+   "extra_descs": {}
   },
   "206408": {
    "vnum": 206408,
@@ -4226,8 +4234,10 @@
      "description": "To the west lies Temple Hallway."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Stone walls close in,\ncool to the touch. A way leads west.",
-   "placeholder": true
+   "description": "The Temple Sanctuary is a high, round chamber beneath a gilded dome, lit\nby a ring of windows that pour golden light down onto a great altar of\nwhite marble. Seven tall candles burn upon it, one for each god of the\ntemple, and they never seem to gutter. The floor is inlaid with a great\nsun of gold and amber stone, and rows of kneeling benches face the\naltar. The gilded doors west lead back to the hallway.",
+   "extra_descs": {
+    "seven candles altar": "The candles are as thick as a man's arm and never seem to grow shorter.\nEach is a different colour, one for each of the seven gods, and their\nflames burn straight and still."
+   }
   },
   "206409": {
    "vnum": 206409,
@@ -4259,8 +4269,8 @@
      "description": "To the west lies Temple Hallway."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Stone walls close in,\ncool to the touch. Ways lead north, east, south and west.",
-   "placeholder": true
+   "description": "The temple hallway grows dimmer here, the candle-stands set further\napart and the shadows thicker between them. North, a door painted in\ncheerful patches of yellow and red leads into the Chapel of Jojeebe, and\nfrom it comes the faint chime of bells. South, a plain black door marks\nthe Chapel of Zirande, silent and cold. The hallway continues east\ntoward the sanctuary and runs west back the way you came.",
+   "extra_descs": {}
   },
   "206410": {
    "vnum": 206410,
@@ -4280,8 +4290,8 @@
      "description": "To the south lies Temple Hallway."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. The floor is worn\nsmooth by long use. A way leads south.",
-   "placeholder": true
+   "description": "Bright patchwork hangings drape the walls of the Chapel of Jojeebe, and\nstrings of tiny brass bells hang from the ceiling, chiming at the\nfaintest draught. The altar is a round table painted like a gaming\nboard, its rim carved with dice and grinning masks. A smiling statue of\na jester with a cup raised in a toast stands behind it. The patched door\nsouth leads back to the hallway.",
+   "extra_descs": {}
   },
   "206411": {
    "vnum": 206411,
@@ -4301,8 +4311,8 @@
      "description": "To the north lies Temple Hallway."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The air is\nstill and smells faintly of old smoke. A way leads north.",
-   "placeholder": true
+   "description": "The Chapel of Zirande is dark and very still, lit only by a single grey\ncandle in a recess behind the altar. Black hangings cover the walls,\nembroidered with silver owls and the shapes of closed eyes. Upon the\nplain stone altar lies a carved figure of a hooded woman, her hands\nfolded over a key. Every footstep sounds too loud here, and the black\ndoor north opens back into the hallway.",
+   "extra_descs": {}
   },
   "206412": {
    "vnum": 206412,
@@ -4322,8 +4332,8 @@
      "description": "To the south lies Temple Hallway."
     }
    },
-   "description": "Stone walls close in, cool to the touch. The floor is worn smooth by\nlong use. A way leads south.",
-   "placeholder": true
+   "description": "Soft white curtains and a sweet smell of lavender fill the gentle Chapel\nof Miylorei, goddess of healing and mercy. Low cots stand along one wall\nfor the sick who come to pray, and bundles of dried herbs hang from the\nbeams above them. On the altar a marble statue of a young woman holds\nout her open hands, the stone of her palms worn smooth by countless\ntouches. The curtained doorway south leads back to the hallway.",
+   "extra_descs": {}
   },
   "206413": {
    "vnum": 206413,
@@ -4351,8 +4361,8 @@
      "description": "To the west lies Temple Hallway."
     }
    },
-   "description": "Shadows gather where the light does not reach. The floor is worn smooth\nby long use. Ways lead north, east and west.",
-   "placeholder": true
+   "description": "The hallway ends here before a pair of tall gilded doors that open east\ninto the Temple Sanctuary, and a golden light spills through them onto\nthe floor. North, a doorway hung with soft white curtains leads into the\nChapel of Miylorei, and the scent of lavender drifts out from it.\nTapestries of the seven gods line the walls, and the hallway runs back\nwest past the other chapels.",
+   "extra_descs": {}
   },
   "206700": {
    "vnum": 206700,
@@ -4374,8 +4384,8 @@
      "description": "To the west lies Emerald Avenue."
     }
    },
-   "description": "Shuttered windows and old doorways crowd in on either hand. Voices and\nthe clatter of carts carry from somewhere nearby. Ways lead east and\nwest.",
-   "placeholder": true
+   "description": "Bazaar Street begins here where it leaves Emerald Avenue, and at once\nthe air fills with the cries of hawkers and the smell of spice and\nroasting nuts. Coloured awnings stretch from house to house overhead,\nturning the daylight into a patchwork of red and saffron. The street\nruns east into the heart of the bazaar, and west it opens onto the\nquieter cobbles of Emerald Avenue.",
+   "extra_descs": {}
   },
   "206701": {
    "vnum": 206701,
@@ -4405,8 +4415,8 @@
      "description": "To the west lies Bazaar Street."
     }
    },
-   "description": "Shuttered windows and old doorways crowd in on either hand. Voices and\nthe clatter of carts carry from somewhere nearby. Ways lead north, east,\nsouth and west.",
-   "placeholder": true
+   "description": "Two shopfronts face each other across this stretch of Bazaar Street.\nNorth, Imrik's Shop hangs out a crooked wooden sign beside a dusty bow\nwindow, while south, Ruby's Shop glitters behind small panes of red\nglass. The cobbles here are strewn with straw and trodden fruit, and a\ntinker's bell clangs somewhere along the street. The bazaar continues\neast, and west it leads back toward Emerald Avenue.",
+   "extra_descs": {}
   },
   "206702": {
    "vnum": 206702,
@@ -4426,8 +4436,8 @@
      "description": "To the south lies Bazaar Street."
     }
    },
-   "description": "The floor is worn smooth by long use. The air is still and smells\nfaintly of old smoke. A way leads south.",
-   "placeholder": true
+   "description": "Imrik's Shop is a narrow, cluttered room where shelves climb all the way\nto the ceiling, reached by a ladder that slides along a rail. A long\ncounter scarred by knives and coins divides the shop, and a brass scale\nstands at one end of it. Lamps of every shape hang from the beams,\nthough only a few are ever lit. The shop door south opens onto Bazaar\nStreet.",
+   "extra_descs": {}
   },
   "206703": {
    "vnum": 206703,
@@ -4447,8 +4457,8 @@
      "description": "To the north lies Bazaar Street."
     }
    },
-   "description": "Stone walls close in, cool to the touch. The air is still and smells\nfaintly of old smoke. A way leads north.",
-   "placeholder": true
+   "description": "Ruby's Shop glows warm and red, its walls hung with rose-coloured silk\nand its lamps shaded with garnet glass that turns the light the colour\nof wine. A cushioned bench runs beneath the window, and a long counter\nof cherrywood is inlaid with a pattern of small red stones. The faint\nscent of roses lingers about the place. The door leads north onto Bazaar\nStreet.",
+   "extra_descs": {}
   },
   "206704": {
    "vnum": 206704,
@@ -4478,8 +4488,8 @@
      "description": "To the west lies Bazaar Street."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Worn flagstones\nrun between weathered walls, swept by passing feet. Ways lead north,\neast, south and west.",
-   "placeholder": true
+   "description": "The bazaar grows louder here, the street hemmed in by trestles and\nbarrows that spill out from the shops. North, Jelloz's Shop is painted a\nstartling shade of green, and south the dark doorway of Sargoth's Shop\nis flanked by a pair of carved wooden wolves. A public fountain of\nchipped stone stands in a recess in the wall, its spout shaped like a\nlion's head. The street runs on east and west through the market din.",
+   "extra_descs": {}
   },
   "206705": {
    "vnum": 206705,
@@ -4499,8 +4509,8 @@
      "description": "To the south lies Bazaar Street."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The air is\nstill and smells faintly of old smoke. A way leads south.",
-   "placeholder": true
+   "description": "Every wall of Jelloz's Shop is painted the same bright green as its\nfront, and the shelves are stacked with stoppered jars of every size.\nThe air is sweet and sticky, smelling of sugar and preserved fruit. A\nlong counter of green-stained wood runs across the room, with a little\nbrass bell upon it for summoning service. The door south leads back out\nonto Bazaar Street.",
+   "extra_descs": {}
   },
   "206706": {
    "vnum": 206706,
@@ -4520,8 +4530,8 @@
      "description": "To the north lies Bazaar Street."
     }
    },
-   "description": "The floor is worn smooth by long use. Dust lies thick in the corners,\nundisturbed for some time. A way leads north.",
-   "placeholder": true
+   "description": "Sargoth's Shop is a stark, bare-walled room of dark stone with an iron\ngrille across the counter, behind which the shelves stand in shadow. A\nforge-black lamp hangs on a chain and swings slightly whenever the door\nopens. Deep gouges mar the wooden floor, as though something heavy was\nonce dragged across it and out. The door opens north onto Bazaar Street.",
+   "extra_descs": {}
   },
   "206707": {
    "vnum": 206707,
@@ -4551,8 +4561,8 @@
      "description": "To the west lies Bazaar Street."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet.\nLantern hooks and faded signboards hang over the street. Ways lead\nnorth, east, south and west.",
-   "placeholder": true
+   "description": "Here Bazaar Street turns a corner, and the din of the market eddies\naround it like water round a stone. East, Silvina's Shop shows a narrow\nfront of silver-grey stone with a delicate sign of a crescent moon.\nSouth, Akaniz's Shop is half hidden behind a curtain of hanging rugs and\nbrass lamps. The street bends north between the stalls and runs back\nwest through the bazaar.",
+   "extra_descs": {}
   },
   "206708": {
    "vnum": 206708,
@@ -4572,8 +4582,8 @@
      "description": "To the north lies Bazaar Street."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Stone walls\nclose in, cool to the touch. A way leads north.",
-   "placeholder": true
+   "description": "Akaniz's Shop is a long, low room hung with woven rugs from far lands,\ntheir reds and ochres faded by sun and smoke. Brass lamps with coloured\npanes cast patterns across cushions heaped along the walls, and a small\ncharcoal brazier keeps a copper kettle simmering. The smell of strong\ntea and spice fills the air. The door leads north out onto Bazaar\nStreet.",
+   "extra_descs": {}
   },
   "206709": {
    "vnum": 206709,
@@ -4593,8 +4603,8 @@
      "description": "To the west lies Bazaar Street."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The air is\nstill and smells faintly of old smoke. A way leads west.",
-   "placeholder": true
+   "description": "Silvina's Shop is quiet and graceful, its walls washed in pale silver-\ngrey and its floor laid with polished boards that gleam under hanging\nlamps of pierced silver. Glass cases on slender legs stand in a neat\nrow, and a carved bowl of dried lavender is set into the counter beside\na little silver bell. The whole room smells sweetly of it. Its glass-\npaned door opens west onto Bazaar Street.",
+   "extra_descs": {}
   },
   "206710": {
    "vnum": 206710,
@@ -4624,8 +4634,8 @@
      "description": "To the west lies Bedlamzer's Shop."
     }
    },
-   "description": "Shuttered windows and old doorways crowd in on either hand. Lantern\nhooks and faded signboards hang over the street. Ways lead north, east,\nsouth and west.",
-   "placeholder": true
+   "description": "A stone archway spans the street here, so old that its carvings have\nworn to vague, friendly lumps. East, Cardini's Shop is fronted by a\nstriped awning and a board chalked with the day's bargains, while west\nthe door of Bedlamzer's Shop is painted with whirling spirals that make\nthe eye swim. The cobbles rise gently north under more awnings and fall\naway south to the bend in the street.",
+   "extra_descs": {}
   },
   "206711": {
    "vnum": 206711,
@@ -4645,8 +4655,8 @@
      "description": "To the west lies Bazaar Street."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Shadows\ngather where the light does not reach. A way leads west.",
-   "placeholder": true
+   "description": "Cardini's Shop is a neat little parlour with a card table of green baize\nat its centre and velvet drapes drawn across a painted backdrop of\nstars. Mirrors in gilt frames hang on every wall, so that the lamplight\nmultiplies and the room seems far larger than it is. A tall cabinet with\nmany small drawers stands behind the counter. A curtained doorway leads\nwest onto Bazaar Street.",
+   "extra_descs": {}
   },
   "206712": {
    "vnum": 206712,
@@ -4666,8 +4676,8 @@
      "description": "To the east lies Bazaar Street."
     }
    },
-   "description": "Shadows gather where the light does not reach. The floor is worn smooth\nby long use. A way leads east.",
-   "placeholder": true
+   "description": "Bedlamzer's Shop is a riot of colour and noise, its walls painted in\nclashing stripes and its rafters hung with bells, ribbons and paper\nlanterns that jangle whenever the door swings. Wares are heaped on\ntables in no order anyone but the owner could fathom. A cracked slate by\nthe counter is scrawled with prices in three colours of chalk. The door\nleads east to Bazaar Street.",
+   "extra_descs": {}
   },
   "206713": {
    "vnum": 206713,
@@ -4697,8 +4707,8 @@
      "description": "To the west lies Erraticus's Shop."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet.\nShuttered windows and old doorways crowd in on either hand. Ways lead\nnorth, east, south and west.",
-   "placeholder": true
+   "description": "Bazaar Street climbs a short slope here, and the stalls give way to\nproper shopfronts with glazed bow windows. East, Palaon's Shop is neat\nand freshly whitewashed, its brass door handle polished bright. West,\nErraticus's Shop leans at a curious angle, its shutters hanging crooked\nand smoke of an odd violet hue curling from its chimney. The street\ncontinues north toward Merchant Avenue and south back down through the\nbazaar.",
+   "extra_descs": {}
   },
   "6714": {
    "vnum": 6714,
@@ -4718,8 +4728,8 @@
      "description": "To the west lies Bazaar Street."
     }
    },
-   "description": "Stone walls close in, cool to the touch. Dust lies thick in the corners,\nundisturbed for some time. A way leads west.",
-   "placeholder": true
+   "description": "Palaon's Shop is airy and light, with a high ceiling hung with a ring of\nfrosted lamps that shine down on a floor of blue and white tiles.\nSlender shelves of pale ash hold their wares at eye height, and a small\nfountain trickles into a basin by the counter. The room smells of\noranges and clean water. The door opens west onto Bazaar Street.",
+   "extra_descs": {}
   },
   "6715": {
    "vnum": 6715,
@@ -4739,8 +4749,8 @@
      "description": "To the east lies Bazaar Street."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. A way leads east.",
-   "placeholder": true
+   "description": "Nothing in Erraticus's Shop stands quite straight, for the shelves tilt,\nthe counter leans, and the clocks on the far wall all tell a different\nhour. Odd contraptions of brass wire and glass hang from the beams,\nticking and whirring to themselves. Scorch marks blacken one corner of\nthe ceiling above a cluttered workbench. The crooked door opens east\nonto Bazaar Street.",
+   "extra_descs": {}
   },
   "6716": {
    "vnum": 6716,
@@ -4770,8 +4780,8 @@
      "description": "To the west lies Rhinocreed's Shop."
     }
    },
-   "description": "The paving is uneven here, patched with newer stone. Worn flagstones run\nbetween weathered walls, swept by passing feet. Ways lead north, east,\nsouth and west.",
-   "placeholder": true
+   "description": "The bazaar ends here where Bazaar Street meets the wider cobbles of\nMerchant Avenue, which opens east between the tall houses of wealthy\ntraders. North, a heavy door studded with nails marks Shagrat's Shop,\nand west, Rhinocreed's Shop announces itself with a great carved horn\nmounted above the lintel. A worn stone mounting block stands at the\ncorner. South, the awnings of the bazaar crowd down the slope of the\nstreet.",
+   "extra_descs": {}
   },
   "6717": {
    "vnum": 6717,
@@ -4791,8 +4801,10 @@
      "description": "To the east lies Bazaar Street."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The floor is\nworn smooth by long use. A way leads east.",
-   "placeholder": true
+   "description": "Rhinocreed's Shop is built heavy and square, its walls of rough grey\nstone and its floor of flags laid thick enough to bear an ox. Racks of\nstout timber stand along the walls, and a great iron-bound chest is\nbolted to the floor behind the counter. A horned skull of some huge\nbeast is mounted above the hearth, yellow with age. The door leads east\nout to Bazaar Street.",
+   "extra_descs": {
+    "horned skull beast": "The skull is longer than a man's arm, with a single thick horn curving\nup from the snout and a second, broken stump behind it. Someone has\nrubbed the bone with oil until it shines like old ivory."
+   }
   },
   "6718": {
    "vnum": 6718,
@@ -4812,8 +4824,8 @@
      "description": "To the south lies Bazaar Street."
     }
    },
-   "description": "Shadows gather where the light does not reach. Stone walls close in,\ncool to the touch. A way leads south.",
-   "placeholder": true
+   "description": "Shagrat's Shop is a low, smoke-dark room with a ceiling of tarred beams\nso close overhead that tall customers stoop beneath them. Iron hooks and\nchains hang from the rafters, and a scarred counter of black oak runs\nthe width of the room, notched by years of blades tested against its\nedge. A brazier glows in the corner and keeps the place warm and close.\nThe door opens south onto the noise of Bazaar Street.",
+   "extra_descs": {}
   },
   "6719": {
    "vnum": 6719,
@@ -4843,8 +4855,8 @@
      "description": "To the west lies Bazaar Street."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet. The\npaving is uneven here, patched with newer stone. Ways lead north, east,\nsouth and west.",
-   "placeholder": true
+   "description": "Merchant Avenue begins here, where the clamour of Bazaar Street to the\nwest gives way to a broader, better-kept way paved in dressed grey\nstone. Shopfronts face each other across the street, Atreides's Shop\nwith its bow window to the north and Devilhand's Shop behind a red-\npainted door to the south. Hanging signs creak on their irons overhead,\nand the avenue runs on east between rows of merchants' houses. The\nTemple dome rises pale above the rooftops.",
+   "extra_descs": {}
   },
   "6720": {
    "vnum": 6720,
@@ -4864,8 +4876,8 @@
      "description": "To the south lies Merchant Avenue."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Shadows gather where\nthe light does not reach. A way leads south.",
-   "placeholder": true
+   "description": "Atreides's Shop is bright and orderly, lit by a broad bow window whose\nsmall panes of bottle glass throw green-tinted light over the\nfloorboards. Tall cabinets with glazed doors line the walls, each shelf\nlabelled in a neat, upright hand, and a brass scale stands polished on\nthe counter. The air smells faintly of beeswax and cedar. The door at\nthe south side lets out onto Merchant Avenue.",
+   "extra_descs": {}
   },
   "6721": {
    "vnum": 6721,
@@ -4885,8 +4897,8 @@
      "description": "To the north lies Merchant Avenue."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. A way leads north.",
-   "placeholder": true
+   "description": "Devilhand's Shop is a cramped room behind a red-painted door, its walls\nhung with crimson cloth and its ceiling blackened by the smoke of an oil\nlamp shaped like a grinning face. A counter of dark stone divides it,\nworn hollow in the middle by years of coins slid across. Odd charms\ndangle on cords from the beams and turn slowly in the draught. The red\ndoor opens north onto Merchant Avenue.",
+   "extra_descs": {}
   },
   "6722": {
    "vnum": 6722,
@@ -4916,8 +4928,8 @@
      "description": "To the west lies Merchant Avenue."
     }
    },
-   "description": "Voices and the clatter of carts carry from somewhere nearby. Lantern\nhooks and faded signboards hang over the street. Ways lead north, east,\nsouth and west.",
-   "placeholder": true
+   "description": "The avenue widens a little here around an old stone horse trough, its\nwater skimmed with fallen leaves and its rim worn smooth by idle hands.\nVyrath's Shop stands to the north behind a door studded with iron, while\nRevenant's Shop to the south keeps its shutters painted a funereal\nblack. Merchant Avenue carries on east and west, its cobbles swept clean\neach morning by the shopkeepers. Chimney smoke drifts low over the tiled\nroofs.",
+   "extra_descs": {}
   },
   "6723": {
    "vnum": 6723,
@@ -4937,8 +4949,8 @@
      "description": "To the south lies Merchant Avenue."
     }
    },
-   "description": "The floor is worn smooth by long use. Dust lies thick in the corners,\nundisturbed for some time. A way leads south.",
-   "placeholder": true
+   "description": "Vyrath's Shop is a narrow, deep room that smells of old parchment,\ncandle wax and something sharper beneath, like struck flint. Shelves\nclimb the walls to the ceiling, reached by a rolling ladder on an iron\nrail, and a heavy curtain of dark velvet hides a back room from view. A\nsingle lamp of green glass burns on the counter. The iron-studded door\nopens south onto Merchant Avenue.",
+   "extra_descs": {}
   },
   "6724": {
    "vnum": 6724,
@@ -4958,8 +4970,8 @@
      "description": "To the north lies Merchant Avenue."
     }
    },
-   "description": "Shadows gather where the light does not reach. The floor is worn smooth\nby long use. A way leads north.",
-   "placeholder": true
+   "description": "Revenant's Shop is dim and hushed behind its black shutters, lit only by\ntall candles in iron sconces whose flames barely stir. The walls are\npanelled in dark wood carved with twining thorns, and a glass-topped\ncase runs along the counter, its lock heavy and old. A faint chill hangs\nin the air that no fire seems to touch. The door leads north back out to\nMerchant Avenue.",
+   "extra_descs": {}
   },
   "6725": {
    "vnum": 6725,
@@ -4989,8 +5001,8 @@
      "description": "To the west lies Merchant Avenue."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet.\nVoices and the clatter of carts carry from somewhere nearby. Ways lead\nnorth, east, south and west.",
-   "placeholder": true
+   "description": "Here the avenue grows quieter, for the shops on both sides stand empty,\ntheir windows dusty and their doors hung with weathered placards\noffering them for sale. One empty shopfront waits to the north and\nanother to the south, both with fresh paint on the lintels as if someone\nhoped to tempt a buyer. Merchant Avenue runs on east and back west\ntoward the busier stretch. A lamp post of black iron stands at the kerb,\nits glass smoked from years of burning.",
+   "extra_descs": {}
   },
   "6726": {
    "vnum": 6726,
@@ -5010,8 +5022,8 @@
      "description": "To the south lies Merchant Avenue."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Dust lies thick in the\ncorners, undisturbed for some time. A way leads south.",
-   "placeholder": true
+   "description": "This empty shop has been swept clean and left bare, its floorboards pale\nwhere a counter once stood and its walls marked with the ghosts of\nvanished shelves. Dust motes turn in the light from a single grimy\nwindow. A placard nailed inside the door announces that the premises may\nbe had for a fair price from the city's clerks. The door opens south\nonto Merchant Avenue.",
+   "extra_descs": {}
   },
   "6727": {
    "vnum": 6727,
@@ -5031,8 +5043,8 @@
      "description": "To the north lies Merchant Avenue."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The air is\nstill and smells faintly of old smoke. A way leads north.",
-   "placeholder": true
+   "description": "Bare and echoing, this empty shop is larger than it looks from the\nstreet, running back into a deep alcove beneath a low arch. The whole\nplace is swept but unfurnished, and every footstep rings off the plaster\nwalls. A bill of sale, curling and yellow, is pasted beside the\ndoorframe. The door leads north to Merchant Avenue.",
+   "extra_descs": {}
   },
   "6728": {
    "vnum": 6728,
@@ -5062,8 +5074,8 @@
      "description": "To the west lies Merchant Avenue."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Voices and the\nclatter of carts carry from somewhere nearby. Ways lead north, east,\nsouth and west.",
-   "placeholder": true
+   "description": "A row of empty shops lines this stretch of Merchant Avenue, and the\nstreet feels hushed after the bustle nearer the bazaar. Weeds have found\nthe cracks between the cobbles, and a broken sign bracket juts from the\nwall with nothing hanging from it. Vacant shopfronts wait to the north\nand to the south, each with a faded notice of sale in its window. The\navenue goes on east and west.",
+   "extra_descs": {}
   },
   "6729": {
    "vnum": 6729,
@@ -5083,8 +5095,8 @@
      "description": "To the south lies Merchant Avenue."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Stone walls close in,\ncool to the touch. A way leads south.",
-   "placeholder": true
+   "description": "The last owner of this shop left in a hurry, by the look of it, for a\ncounter lies on its side against the far wall and a torn ledger cover is\nnailed to the doorframe as if in spite. The plaster is cracked and\nstained with damp in one corner, and the room smells of mice and old\nsoot from a cold hearth. Light comes only through the open door, which\nleads south to Merchant Avenue.",
+   "extra_descs": {}
   },
   "6730": {
    "vnum": 6730,
@@ -5104,8 +5116,8 @@
      "description": "To the north lies Merchant Avenue."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. A way leads north.",
-   "placeholder": true
+   "description": "A faint smell of tanned leather lingers in this empty shop, and a\nworkbench scored with awl marks stands abandoned beneath the window. The\nshelves have been stripped and the hearth is dead, its iron fire-dogs\nleft behind to rust. Light falls grey through panes that no one has\nwashed in a season or two. A warped door swings north onto Merchant\nAvenue.",
+   "extra_descs": {}
   },
   "6731": {
    "vnum": 6731,
@@ -5135,8 +5147,8 @@
      "description": "To the west lies Merchant Avenue."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Voices and the\nclatter of carts carry from somewhere nearby. Ways lead north, east,\nsouth and west.",
-   "placeholder": true
+   "description": "Merchant Avenue bends here, turning south at a corner where a stone\nmounting block stands for riders. Tolliver's Shop fills the end of the\nstreet to the east, its doorway framed by carved wooden pillars, while\nan empty shop with boarded windows sits to the north. The avenue runs\nback west toward the bazaar and on south past more shopfronts. Rainwater\nfrom the gutters of the corner house has worn a dark channel down its\nwall.",
+   "extra_descs": {}
   },
   "6732": {
    "vnum": 6732,
@@ -5156,8 +5168,8 @@
      "description": "To the south lies Merchant Avenue."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. The floor is worn\nsmooth by long use. A way leads south.",
-   "placeholder": true
+   "description": "Boards cover the window of this empty shop from the inside, and only\nthin blades of daylight slip between them to stripe the dusty floor.\nSomeone has chalked a price on the wall and someone else has crossed it\nout and chalked a lower one. A broken shutter leans in the corner beside\na cold, empty fireplace. The way out is south, back onto Merchant\nAvenue.",
+   "extra_descs": {}
   },
   "6733": {
    "vnum": 6733,
@@ -5177,8 +5189,8 @@
      "description": "To the west lies Merchant Avenue."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Dust lies thick in the\ncorners, undisturbed for some time. A way leads west.",
-   "placeholder": true
+   "description": "Tolliver's Shop is a warm, crowded room under a high timber roof, its\nwalls hung with racks and pegs and its corners stacked with crates\nstencilled with the marks of distant ports. A long counter of honey-\ncoloured pine divides the room, scarred with knife cuts and ring stains\nfrom countless mugs. Lamps on chains light the place day and night. The\ncarved doorway leads west back onto Merchant Avenue.",
+   "extra_descs": {}
   },
   "6734": {
    "vnum": 6734,
@@ -5208,8 +5220,8 @@
      "description": "To the west lies An Unpurchased Shop."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet.\nShuttered windows and old doorways crowd in on either hand. Ways lead\nnorth, east, south and west.",
-   "placeholder": true
+   "description": "The avenue runs straight here between tall, narrow houses whose upper\nstoreys lean out over the street until their eaves almost touch. Empty\nshops face each other across the cobbles, one to the east and one to the\nwest, their doors locked and their sills thick with dust. Merchant\nAvenue continues north to the corner and south toward Luko's Shop at its\nend. Washing lines strung between the upper windows sway in the breeze.",
+   "extra_descs": {}
   },
   "6735": {
    "vnum": 6735,
@@ -5229,8 +5241,8 @@
      "description": "To the east lies Merchant Avenue."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. The floor is worn\nsmooth by long use. A way leads east.",
-   "placeholder": true
+   "description": "This little shop is empty but in good repair, with fresh lime on the\nwalls and a new latch on the door, as if the city has made it ready for\nwhoever buys it next. Pale squares on the plaster show where pictures or\nsigns once hung. A small hearth sits cold and swept beneath a plain\nstone mantel. The way out lies east, onto Merchant Avenue.",
+   "extra_descs": {}
   },
   "6736": {
    "vnum": 6736,
@@ -5250,8 +5262,8 @@
      "description": "To the west lies Merchant Avenue."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Stone walls\nclose in, cool to the touch. A way leads west.",
-   "placeholder": true
+   "description": "A smell of old spice still clings to this empty shop, as though a dealer\nin peppers and cloves once traded here and the walls kept the memory.\nShallow drawers are built into one wall, all of them pulled out and\nempty, and the floor is stained with rings where barrels stood. Cobwebs\nthicken in the corners of the low ceiling. The door leads west to\nMerchant Avenue.",
+   "extra_descs": {}
   },
   "6737": {
    "vnum": 6737,
@@ -5277,8 +5289,8 @@
      "description": "To the west lies An Unpurchased Shop."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Voices and the\nclatter of carts carry from somewhere nearby. Ways lead north, south and\nwest.",
-   "placeholder": true
+   "description": "Merchant Avenue comes to its end here before the painted front of Luko's\nShop to the south, where a hanging lantern burns in a cage of brass. An\nempty shop with a sagging awning stands to the west, and a blank wall of\nold brick closes off the rest of the street. The avenue leads back north\nbetween its rows of shopfronts. Moss grows thick in the shade at the\nfoot of the wall.",
+   "extra_descs": {}
   },
   "6738": {
    "vnum": 6738,
@@ -5298,8 +5310,8 @@
      "description": "To the east lies Merchant Avenue."
     }
    },
-   "description": "The floor is worn smooth by long use. Shadows gather where the light\ndoes not reach. A way leads east.",
-   "placeholder": true
+   "description": "Rain has found its way into this empty shop through the sagging awning\noutside, and a dark stain spreads across the floorboards from the\nthreshold. The walls are whitewashed but flaking, and a row of iron\nhooks along one side hangs empty. An old counter, too heavy to carry\noff, still squats in the middle of the room under a skin of dust. The\ndoor leads east onto Merchant Avenue.",
+   "extra_descs": {}
   },
   "6739": {
    "vnum": 6739,
@@ -5319,8 +5331,8 @@
      "description": "To the north lies Merchant Avenue."
     }
    },
-   "description": "The floor is worn smooth by long use. Stone walls close in, cool to the\ntouch. A way leads north.",
-   "placeholder": true
+   "description": "Luko's Shop is cosy and cluttered, a single room with a beamed ceiling\nand a hearth of round river stones where a fire crackles in all seasons.\nShelves run every which way, some slanting, some crooked, all of them\npacked close, and a painted sign above the counter promises fair\ndealing. A threadbare rug softens the floor before the hearth. The door\nopens north onto Merchant Avenue, beneath a brass lantern.",
+   "extra_descs": {}
   },
   "9784": {
    "vnum": 9784,
@@ -5346,8 +5358,8 @@
      "description": "To the north lies Forest Edge."
     }
    },
-   "description": "Worn flagstones run between weathered walls, swept by passing feet. The\npaving is uneven here, patched with newer stone. Ways lead north, south\nand west.",
-   "placeholder": true
+   "description": "Academy Path sets out from the city here, a lane of packed earth and\nscattered cobbles leading away from the towers of the West Gate, which\nlie just south. North, the lane gives out at the edge of a dark forest\nwhose old oaks stand thick and shadowed, while the path itself bends\nwest toward the School House. A wooden signpost leans at the fork, its\narms weathered grey. Wild grass grows tall along the verges.",
+   "extra_descs": {}
   },
   "9785": {
    "vnum": 9785,
@@ -5369,8 +5381,8 @@
      "description": "To the east lies Academy Path."
     }
    },
-   "description": "Lantern hooks and faded signboards hang over the street. Shuttered\nwindows and old doorways crowd in on either hand. Ways lead north and\neast.",
-   "placeholder": true
+   "description": "The path runs beside a broad hawthorn hedge here, worn into a shallow\ntrough by the feet of scholars coming and going. Through gaps in the\nhedge you glimpse a close-cropped meadow, and the city wall shows grey\nbeyond the fields. The way turns north toward the School House and back\neast to the signpost by the forest's edge. Wildflowers dot the banks.",
+   "extra_descs": {}
   },
   "9786": {
    "vnum": 9786,
@@ -5392,8 +5404,10 @@
      "description": "To the south lies Academy Path."
     }
    },
-   "description": "Voices and the clatter of carts carry from somewhere nearby. Lantern\nhooks and faded signboards hang over the street. Ways lead north and\nsouth.",
-   "placeholder": true
+   "description": "Academy Path climbs a gentle rise here, its ruts filled with gravel to\nspare the boots of students in the wet. An old milestone at the verge\nhas been carved over with initials and doodles, its proper inscription\nlong since worn away. Ahead to the north the roof and bell-cote of the\nSchool House show above the trees, and the path drops back south toward\nthe hedges. A breeze stirs the long grass.",
+   "extra_descs": {
+    "milestone stone": "Beneath the scratched initials and crude drawings you can just make out\na carved number and the faint shape of an open book, the old sign of the\nSchool House."
+   }
   },
   "9787": {
    "vnum": 9787,
@@ -5415,8 +5429,8 @@
      "description": "To the south lies Academy Path."
     }
    },
-   "description": "Shuttered windows and old doorways crowd in on either hand. Worn\nflagstones run between weathered walls, swept by passing feet. Ways lead\nnorth and south.",
-   "placeholder": true
+   "description": "The path ends here in a small swept yard before the Garathorm School\nHouse, a long building of honey-coloured stone with tall windows and a\nbell-cote perched on its roof. Its heavy double doors stand open to the\nnorth beneath a carved lintel. A slate board by the gate lists the day's\nlessons in a schoolmaster's careful hand, and Academy Path runs back\nsouth through the grass. Scuffed hopscotch squares are scratched into\nthe flags of the yard.",
+   "extra_descs": {}
   },
   "3006": {
    "vnum": 3006,

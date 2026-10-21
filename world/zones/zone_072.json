@@ -5540,8 +5540,9 @@
      "description": "The cobblestones lead to The Square Lair"
     }
    },
-   "description": "Stone walls close in, cool to the touch. Dust lies thick in the corners,\nundisturbed for some time. Ways lead north and east.",
-   "placeholder": true
+   "description": "This is the far corner of the lair, where the great square chamber\nnarrows to a dead end of soot-blackened stone. Huge gouges score the\nwalls at the height of a tall man, as if something enormous has\nsharpened its claws here. The lair opens out again to the north and to\nthe east. A heap of cracked bones and charred rubble fills the corner.",
+   "look": "sewer",
+   "extra_descs": {}
   },
   "7321": {
    "vnum": 7321,
@@ -5777,8 +5778,9 @@
      "description": "An open path leads to The Dragon's Lair"
     }
    },
-   "description": "The floor is worn smooth by long use. Stone walls close in, cool to the\ntouch. Ways lead north and east.",
-   "placeholder": true
+   "description": "This room bends sharply in the shape of an L, its long arm running\ntoward a crossing of hallways to the north and its short arm opening\neast into the dragon's lair. The bricks along the short arm are scorched\nand cracked by heat. Ash and soot drift across the floor, and the air is\nuncomfortably warm. Strange clawed prints mark the dust.",
+   "look": "sewer",
+   "extra_descs": {}
   },
   "7328": {
    "vnum": 7328,
@@ -5830,8 +5832,9 @@
      "description": "The cobblestones lead to The Windy Tunnel"
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Shadows gather where\nthe light does not reach. Ways lead south and west.",
-   "placeholder": true
+   "description": "Fire has gutted this chamber, blistering the brick walls and melting the\niron fittings into dripping, twisted shapes. The floor is ankle-deep in\nash, still faintly warm, and the air tastes of smoke. A scorched archway\nto the south opens into the red dragon's lair, glowing dully, while to\nthe west a tunnel draws a breath of cool, moving air.",
+   "look": "sewer",
+   "extra_descs": {}
   },
   "7330": {
    "vnum": 7330,
@@ -6409,8 +6412,9 @@
      }
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Shadows gather where\nthe light does not reach. Ways lead north and south.",
-   "placeholder": true
+   "description": "A broad hallway of old brick opens out of the sewer here, its floor\nraised above the foul water by a ramp of packed rubble. Someone has hung\nlanterns on iron hooks along the walls, though only a couple of candle\nstubs gutter in them. North the passage slopes down into the watery bend\nof the sewer, and south a heavy wooden door, patched with tin, closes\noff the way deeper in. The air stinks of damp and smoke.",
+   "look": "sewer",
+   "extra_descs": {}
   },
   "216001": {
    "vnum": 216001,
@@ -6443,8 +6447,9 @@
      "description": "To the south lies A Crossroad Corridor."
     }
    },
-   "description": "The floor is worn smooth by long use. Dust lies thick in the corners,\nundisturbed for some time. Ways lead north, east and south.",
-   "placeholder": true
+   "description": "Candle stubs stuck to the bricks in puddles of their own wax give this\ncorridor its only light, a weak yellow glow that barely reaches the\narched ceiling. Water seeps down the walls and gathers in a gutter along\nthe floor. A stout door in the east wall leads to a large room, the big\nhallway lies north, and to the south the corridor meets a crossing.",
+   "look": "sewer",
+   "extra_descs": {}
   },
   "216002": {
    "vnum": 216002,
@@ -6464,8 +6469,8 @@
      "description": "To the west lies A Dimly Lit Corridor."
     }
    },
-   "description": "The floor is worn smooth by long use. Dust lies thick in the corners,\nundisturbed for some time. A way leads west.",
-   "placeholder": true
+   "description": "This large chamber was once a cistern, and its vaulted brick ceiling is\nblack with the soot of many fires. Crates and barrels have been stacked\nalong the walls as makeshift tables and seats, and a ragged rug covers\nthe worst of the damp floor. A sour smell of spilt ale and wet wool\nhangs over everything. The only way out is the door to the west.",
+   "extra_descs": {}
   },
   "216003": {
    "vnum": 216003,
@@ -6498,8 +6503,9 @@
      }
     }
    },
-   "description": "Stone walls close in, cool to the touch. Dust lies thick in the corners,\nundisturbed for some time. Ways lead north, east and west.",
-   "placeholder": true
+   "description": "This corridor leads toward the barracks, its brick walls hung with\ntattered blankets to keep out the draught. A door to the west opens on a\nsleeping room, and the corridor continues north toward more barracks.\nThe crossroad lies back to the east, its lantern glow just reaching this\nfar. The floor is worn into a groove by many feet.",
+   "look": "sewer",
+   "extra_descs": {}
   },
   "216004": {
    "vnum": 216004,
@@ -6531,8 +6537,9 @@
      "description": "To the west lies Corridor To The Barracks."
     }
    },
-   "description": "The floor is worn smooth by long use. The air is still and smells\nfaintly of old smoke. Ways lead north, east, south and west.",
-   "placeholder": true
+   "description": "Four brick passages meet here beneath a low dome, and a drain grate in\nthe centre gurgles with dark water running somewhere below. Chalk marks\nscrawled on the walls point the way: north toward the hallway, east and\nsouth along dim corridors, and west toward the barracks. A single\nlantern hangs from a chain overhead, its glass cracked and smoky.",
+   "look": "sewer",
+   "extra_descs": {}
   },
   "216005": {
    "vnum": 216005,
@@ -6565,8 +6572,9 @@
      "description": "To the west lies A Crossroad Corridor."
     }
    },
-   "description": "The floor is worn smooth by long use. The air is still and smells\nfaintly of old smoke. Ways lead east, south and west.",
-   "placeholder": true
+   "description": "The corridor runs on in near-darkness, its bricks furred with grey mould\nand its floor slick underfoot. A door to the east is marked with a\ncrudely painted bed, its planks worn pale around the latch. The passage\nwidens to the south, while the crossroad lies back to the west.\nDroppings and mouldy straw gather in the corners where the candlelight\nnever reaches.",
+   "look": "sewer",
+   "extra_descs": {}
   },
   "216006": {
    "vnum": 216006,
@@ -6586,8 +6594,8 @@
      "description": "To the west lies A Dimly Lit Corridor."
     }
    },
-   "description": "The floor is worn smooth by long use. The air is still and smells\nfaintly of old smoke. A way leads west.",
-   "placeholder": true
+   "description": "Rows of rough cots crowd this low brick room so tightly that there is\nhardly space to walk between them. The blankets are grey with damp, and\nstraw pallets on the floor fill the gaps. Pegs hammered into the mortar\nhold nothing but cobwebs, and the room smells of sweat and mildew. A\nsingle low door leads west, back to the corridor.",
+   "extra_descs": {}
   },
   "216007": {
    "vnum": 216007,
@@ -6607,8 +6615,8 @@
      "description": "To the east lies The Shower Room."
     }
    },
-   "description": "The floor is worn smooth by long use. Stone walls close in, cool to the\ntouch. A way leads east.",
-   "placeholder": true
+   "description": "Straw-stuffed dummies hang from beams across this wide brick room,\nslashed and stabbed until their stuffing spills out. Targets painted on\nthe walls are pocked with knife holes, and a ring has been chalked on\nthe floor for wrestling. Sawdust soaks up some of the damp underfoot.\nThe door east leads to the shower room.",
+   "extra_descs": {}
   },
   "216008": {
    "vnum": 216008,
@@ -6637,8 +6645,8 @@
      }
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Dust lies thick in the\ncorners, undisturbed for some time. Ways lead east and west.",
-   "placeholder": true
+   "description": "Water spills from a broken pipe overhead into this tiled chamber, a\ncrude shower rigged by the gang from the city's own rain drains. The\ntiles are cracked and green with slime, and the floor slopes to a\ngrating that gurgles without pause. Wooden pegs line the walls for\nclothes. Doors lead east to the corridor and west into the training\nroom.",
+   "extra_descs": {}
   },
   "216009": {
    "vnum": 216009,
@@ -6676,8 +6684,9 @@
      }
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The air is\nstill and smells faintly of old smoke. Ways lead north, south and west.",
-   "placeholder": true
+   "description": "Dripping water patters steadily in this stretch of corridor, falling\nfrom a cracked pipe that runs along the ceiling. Most of the candle\nstubs here have drowned in their niches. A door to the west lets out\nwisps of steam and a smell of lye soap, while a sturdier door to the\nsouth is fitted with a lock. The crossroad lies north.",
+   "look": "sewer",
+   "extra_descs": {}
   },
   "216010": {
    "vnum": 216010,
@@ -6709,8 +6718,9 @@
      "description": "To the west lies The Rabdu Rana Storeroom."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Shadows\ngather where the light does not reach. Ways lead north, east, south and\nwest.",
-   "placeholder": true
+   "description": "Here the passage broadens into a wide corridor, its brick arches shored\nup with timber props cut from old ship's beams. Warm smells of cooking\ndrift from a dining room to the east, while a storeroom opens to the\nwest. The corridor runs on south to a fork and back north into dimmer\npassages. The floor here has been swept, after a fashion.",
+   "look": "sewer",
+   "extra_descs": {}
   },
   "216011": {
    "vnum": 216011,
@@ -6730,8 +6740,8 @@
      "description": "To the east lies A Conference Room."
     }
    },
-   "description": "The air is still and smells faintly of old smoke. Dust lies thick in the\ncorners, undisturbed for some time. A way leads east.",
-   "placeholder": true
+   "description": "Brandon's office is neater than anything else in the sewers, with planks\nlaid over the floor to keep off the damp and a tall cabinet with a\nlocked front. A heavy desk bears the scars of a dagger driven into it\nagain and again. A small iron grate high in the wall lets in a breath of\nfresher air from the street above. The door east returns to the\nconference room.",
+   "extra_descs": {}
   },
   "216012": {
    "vnum": 216012,
@@ -6760,8 +6770,8 @@
      }
     }
    },
-   "description": "The floor is worn smooth by long use. The air is still and smells\nfaintly of old smoke. Ways lead north and west.",
-   "placeholder": true
+   "description": "A round table stands in the middle of this room, cut from a single great\nslab of slate laid across stone blocks, with a ring of chairs drawn up\naround it. A charcoal sketch of streets and houses covers one brick\nwall, scrawled with arrows and marks: plans for jobs in the city above.\nDoors lead north to the corridor and west into a private office.",
+   "extra_descs": {}
   },
   "216013": {
    "vnum": 216013,
@@ -6789,8 +6799,9 @@
      "description": "To the south lies The Torture Chamber."
     }
    },
-   "description": "The floor is worn smooth by long use. Shadows gather where the light\ndoes not reach. Ways lead north, east and south.",
-   "placeholder": true
+   "description": "The corridor splits here beneath a sagging brick arch. To the east a\ncurtained doorway leads into Remo's office, and to the south the passage\ndrops toward a chamber from which a smell of old blood and rust creeps\nout. The wide corridor lies to the north. Someone has scratched a\nwarning into the bricks: a crude skull above crossed knives.",
+   "look": "sewer",
+   "extra_descs": {}
   },
   "216014": {
    "vnum": 216014,
@@ -6810,8 +6821,10 @@
      "description": "To the west lies A Three Way Corridor."
     }
    },
-   "description": "Stone walls close in, cool to the touch. Dust lies thick in the corners,\nundisturbed for some time. A way leads west.",
-   "placeholder": true
+   "description": "This cramped office is the most comfortable corner of the hideout, with\na threadbare carpet, a writing desk rescued from some burgled house, and\na stuffed chair leaking horsehair. A map of the sewers has been painted\non the bricks behind the desk, its tunnels marked with tiny daggers and\ncoin signs. Candle soot stains the low ceiling in a black smudge. The\nway out is to the west.",
+   "extra_descs": {
+    "map sewers painted": "The painted map shows the sewer tunnels beneath Garathorm in careful\nlines of black and red. Little daggers mark the gang's hiding places,\nand coin signs mark the houses above that have already been robbed."
+   }
   },
   "216015": {
    "vnum": 216015,
@@ -6835,8 +6848,9 @@
      "description": "To the down lies The Prison."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. Ways lead north and down.",
-   "placeholder": true
+   "description": "Iron rings, chains and hooks are bolted into the dripping brick of this\nchamber, and a heavy rack stands against one wall, its rollers stained\ndark. A brazier of dead coals sits beside a bench of rusted tools. In\nthe floor a trapdoor with an iron grille opens on a ladder leading down\nto the prison. The three-way corridor is north, and the air is thick\nwith the smell of old fear.",
+   "look": "dungeon",
+   "extra_descs": {}
   },
   "216016": {
    "vnum": 216016,
@@ -6856,8 +6870,9 @@
      "description": "To the up lies The Torture Chamber."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Shadows\ngather where the light does not reach. A way leads up.",
-   "placeholder": true
+   "description": "A pit-like cell lies at the bottom of the ladder, walled in old brick\nand floored with filthy straw over standing water. Manacles hang from\nchains along the walls at different heights, some low enough for a\nchild. The only light falls through the grille above, where the ladder\nclimbs back up to the torture chamber. Scratches cover the bricks,\ncounting days that nobody finished counting.",
+   "look": "dungeon",
+   "extra_descs": {}
   },
   "216017": {
    "vnum": 216017,
@@ -6886,8 +6901,9 @@
      }
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. Stone walls\nclose in, cool to the touch. Ways lead south and west.",
-   "placeholder": true
+   "description": "The barracks corridor ends here against a wall of newer brick, laid\ncrudely to seal off an older tunnel beyond. Water has found its way\nthrough the mortar regardless and stains the bricks in long dark\ntongues. A door to the west leads into another room full of beds, and\nthe corridor runs back south.",
+   "look": "sewer",
+   "extra_descs": {}
   },
   "216018": {
    "vnum": 216018,
@@ -6907,8 +6923,8 @@
      "description": "To the east lies The Corridor To The Barracks."
     }
    },
-   "description": "Stone walls close in, cool to the touch. The air is still and smells\nfaintly of old smoke. A way leads east.",
-   "placeholder": true
+   "description": "Bunks built of salvaged timber are stacked three high in this narrow\nroom, so close to the arched ceiling that the top sleepers must lie\nflat. Each bunk has a rag curtain, and initials are carved deep into the\nposts. The air is close and warm and smells of tallow. The door east\nleads back to the corridor.",
+   "extra_descs": {}
   },
   "216019": {
    "vnum": 216019,
@@ -6928,8 +6944,8 @@
      "description": "To the east lies Corridor To The Barracks."
     }
    },
-   "description": "Stone walls close in, cool to the touch. The floor is worn smooth by\nlong use. A way leads east.",
-   "placeholder": true
+   "description": "Hammocks are slung between iron hooks driven into the brickwork here,\ncrossing the room at every height like a fisherman's nets hung to dry. A\nbrazier in the corner keeps off a little of the chill, its smoke\nescaping through a crack in the vault. The floor is littered with straw\nand gnawed bones. The only door leads east to the barracks corridor.",
+   "extra_descs": {}
   },
   "216020": {
    "vnum": 216020,
@@ -6958,8 +6974,8 @@
      "description": "To the west lies A Wide Corridor."
     }
    },
-   "description": "Dust lies thick in the corners, undisturbed for some time. The air is\nstill and smells faintly of old smoke. Ways lead east and west.",
-   "placeholder": true
+   "description": "A long trestle table fills this chamber, built of planks laid across\nbarrels and scarred with knife cuts and burns. Mismatched stools and\nupturned crates serve as seats, and the brick walls are slick with old\ngrease. A door to the east lets out a smell of boiling cabbage and smoke\nfrom the kitchen. The wide corridor lies to the west.",
+   "extra_descs": {}
   },
   "216021": {
    "vnum": 216021,
@@ -6979,8 +6995,8 @@
      "description": "To the west lies A Dining Room."
     }
    },
-   "description": "The floor is worn smooth by long use. Shadows gather where the light\ndoes not reach. A way leads west.",
-   "placeholder": true
+   "description": "A sooty hearth has been knocked into the old brickwork here, its smoke\ndrawn off up a crooked flue toward the streets above. Iron pots hang\nfrom hooks over the ashes, and a chopping block stands in the middle of\nthe room, hacked deep by years of cleaver strokes. A barrel of murky\nwater sits beside the hearth. The door to the dining room is to the\nwest.",
+   "extra_descs": {}
   },
   "216023": {
    "vnum": 216023,
@@ -7000,8 +7016,10 @@
      "description": "To the east lies A Wide Corridor."
     }
    },
-   "description": "Shadows gather where the light does not reach. Dust lies thick in the\ncorners, undisturbed for some time. A way leads east.",
-   "placeholder": true
+   "description": "Shelves of rough planks line this storeroom from floor to ceiling,\nmostly bare now except for empty crates and torn sacks. The words Rabdu\nRana are burned into a board over the doorway, though what they mean is\nanyone's guess. A smell of spice and damp sacking lingers in the still\nair. The wide corridor is back to the east.",
+   "extra_descs": {
+    "board words rabdu rana": "The words are burned deep into a plank of old ship's timber, the letters\nuneven, as if done with a hot poker by someone who could barely write."
+   }
   },
   "7074": {
    "vnum": 7074,

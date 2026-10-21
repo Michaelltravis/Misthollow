@@ -6,12 +6,11 @@ playing the first ten minutes. This page is the deploy + script for that.
 ## Deploy from GitHub (frostpine pulls; nothing reaches in)
 One-time, on frostpine (OpenClaw, or any terminal on that box):
 ```
-cd ~/MUDNEW && git fetch origin claude/nice-johnson-slpinu && git checkout claude/nice-johnson-slpinu \
-  && git reset --hard origin/claude/nice-johnson-slpinu && bash deploy/frostpine.sh && bash deploy/install-autopull.sh
+cd ~/MUDNEW && bash deploy/frostpine.sh main && bash deploy/install-autopull.sh
 ```
-After that, frostpine checks GitHub every minute (`deploy/autopull.sh`, cron). Any push to
-`claude/nice-johnson-slpinu` — from Claude, from GitHub's web editor, from any computer — is live
-within a minute. It restarts the server only when code changed (docs and gauntlet records alone
+After that, frostpine checks GitHub every minute (`deploy/autopull.sh`, cron). Whatever is merged
+into `main` — from Claude, from GitHub's web editor, from any computer — is live within a minute
+(until 2026-10-20 it was any push to `claude/nice-johnson-slpinu`). It restarts the server only when code changed (docs and gauntlet records alone
 don't kick players), keeps live game data that happens to be tracked in git (`data/`, `lib/`,
 `logs/`), and refuses to deploy over uncommitted code edits made on the box. Log: `~/MUDNEW/deploy.log`.
 Remove with `bash deploy/install-autopull.sh --remove`.

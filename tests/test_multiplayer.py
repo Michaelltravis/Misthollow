@@ -25,6 +25,7 @@ import aiohttp
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'src'))
 import test_webmove as tw  # noqa: E402  (check(), failures, HOST/TELNET/MAP)
+import gauntlet_accounts  # noqa: E402  (the test characters, made if missing)
 
 check, failures = tw.check, tw.failures
 MAPSYNC = re.compile(r'\x1b\]MAPSYNC:([^\x07:]+)(?::([^\x07]+))?\x07')
@@ -167,6 +168,7 @@ async def offline():
 
 
 async def live():
+    await gauntlet_accounts.ensure()
     async with aiohttp.ClientSession() as http:
         # ---- the session token ----
         g = await Raw('gauntlet', 'Gauntlet').open()

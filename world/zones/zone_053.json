@@ -141,8 +141,8 @@
      "description": "To the south lies Climbing The Great Pyramid."
     }
    },
-   "description": "Stone walls close in, cool to the touch. Shadows gather where the light\ndoes not reach. Ways lead east and south.",
-   "placeholder": true
+   "description": "You cling to the steep face of the great pyramid, where the plaster has\ncracked away to show huge blocks of yellow stone beneath. The sun beats\ndown without mercy, and the stones are hot enough to blister bare hands.\nBelow, the desert spreads out in waves of gold to the edge of sight. The\nclimb goes on east along a ledge, or south back down the slope.",
+   "extra_descs": {}
   },
   "80305": {
    "vnum": 80305,
@@ -166,8 +166,8 @@
      "description": "To the up lies The Apex Of The Great Pyramid."
     }
    },
-   "description": "Shadows gather where the light does not reach. The air is still and\nsmells faintly of old smoke. Ways lead west and up.",
-   "placeholder": true
+   "description": "A narrow ledge runs across the face of the pyramid here, scarcely wide\nenough for your boots, and the wind hurls stinging sand against your\nback. The apex is close now, just a short scramble up over the last few\ncourses of stone. The glare off the white plaster is blinding. West the\nledge leads back along the face.",
+   "extra_descs": {}
   },
   "5306": {
    "vnum": 5306,

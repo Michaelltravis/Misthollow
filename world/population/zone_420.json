@@ -20,7 +20,13 @@
     "rooms": 2,
     "count": 2,
     "shout": "A horn sounds from nowhere, and the honoured dead answer!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 42090,
+     "chance": 15
+    }
+   ]
   },
   "42001": {
    "name": "honour guard spirit",
@@ -39,7 +45,13 @@
     "rooms": 2,
     "count": 2,
     "shout": "A horn sounds from nowhere, and the honoured dead answer!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 42091,
+     "chance": 20
+    }
+   ]
   },
   "42002": {
    "name": "shade weeping",
@@ -53,7 +65,13 @@
     "undead"
    ],
    "race": "undead",
-   "alignment": 0
+   "alignment": 0,
+   "loot_table": [
+    {
+     "vnum": 42092,
+     "chance": 15
+    }
+   ]
   },
   "42010": {
    "name": "keeper mercy",
@@ -74,7 +92,13 @@
     "rooms": 2,
     "count": 2,
     "shout": "A horn sounds from nowhere, and the honoured dead answer!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 42093,
+     "chance": 35
+    }
+   ]
   },
   "42011": {
    "name": "mourner",
@@ -89,7 +113,13 @@
    ],
    "race": "undead",
    "rank": "elite",
-   "alignment": 0
+   "alignment": 0,
+   "loot_table": [
+    {
+     "vnum": 42094,
+     "chance": 30
+    }
+   ]
   },
   "42030": {
    "name": "first hero",
@@ -143,7 +173,17 @@
       "min_phase": 1
      }
     ]
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 42095,
+     "chance": 35
+    },
+    {
+     "vnum": 42090,
+     "chance": 30
+    }
+   ]
   }
  },
  "spawns": [
@@ -250,5 +290,63 @@
    "why": "a weeping shade"
   }
  ],
- "_fill": "tools/audit/densify.py: 7 more of the zone's own ordinary creatures in its empty rooms, 0.45 hostile per walkable room as the aim"
+ "_fill": "tools/audit/densify.py: 7 more of the zone's own ordinary creatures in its empty rooms, 0.45 hostile per walkable room as the aim",
+ "items": {
+  "42090": {
+   "keywords": "longsword hero tarnished",
+   "short_desc": "a tarnished hero's longsword",
+   "room_desc": "A tarnished hero's longsword lies here.",
+   "description": "A long straight blade gone grey with age, the names of old battles etched down the fuller. It is colder than steel ought to be.",
+   "kind": "weapon",
+   "level": 24,
+   "weapon_type": "slash"
+  },
+  "42091": {
+   "keywords": "breastplate honour guard",
+   "short_desc": "an honour guard's breastplate",
+   "room_desc": "An honour guard's breastplate lies here.",
+   "description": "A polished breastplate chased with laurel leaves in gold, worn by the dead who stand forever in the Honour Rooms.",
+   "kind": "armor",
+   "level": 26,
+   "wear_slot": "body"
+  },
+  "42092": {
+   "keywords": "veil mourning grey silk",
+   "short_desc": "a mourning veil of grey silk",
+   "room_desc": "A mourning veil of grey silk lies here.",
+   "description": "A long veil of fine grey silk, damp as if with tears that never dry. The weeping shades of the Chambers of Sorrow wear them.",
+   "kind": "armor",
+   "level": 22,
+   "wear_slot": "head"
+  },
+  "42093": {
+   "keywords": "phial mercy silver",
+   "short_desc": "a silver phial of the Keeper's mercy",
+   "room_desc": "A silver phial lies here.",
+   "description": "A little silver phial stoppered with wax and stamped with an open hand. The draught inside closes wounds as gently as it was given.",
+   "kind": "potion",
+   "level": 27
+  },
+  "42094": {
+   "keywords": "lamp bronze eternal flame",
+   "short_desc": "a bronze lamp of eternal flame",
+   "room_desc": "A bronze lamp lies here, a small flame burning steadily in it.",
+   "description": "A squat bronze lamp taken from the braziers of the halls, its little flame burning without oil or wick.",
+   "kind": "light",
+   "level": 25
+  },
+  "42095": {
+   "keywords": "crown laurel gold hero",
+   "short_desc": "a laurel crown of the First Hero",
+   "room_desc": "A crown of golden laurel leaves lies here.",
+   "description": "A circlet of beaten gold laurel leaves, worn smooth by a hero's brow over a thousand years of honour. Its wearer stands a little taller.",
+   "kind": "armor",
+   "level": 30,
+   "wear_slot": "head",
+   "bonus": {
+    "cha": 1,
+    "hp": 10
+   }
+  }
+ }
 }

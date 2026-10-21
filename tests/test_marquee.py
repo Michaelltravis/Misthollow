@@ -20,6 +20,7 @@ import aiohttp
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'src'))
 import test_webmove as tw  # noqa: E402  (Telnet helper, check(), failures)
+import gauntlet_accounts  # noqa: E402  (the test characters, made if missing)
 
 check, failures = tw.check, tw.failures
 
@@ -479,12 +480,39 @@ async def fight_here(tn, limit=240, words=None):
     return log
 
 
+RAISED = {}   # what live() changed on Gauntlet: field -> the value it had
+
+
+async def unraise():
+    """Gauntlet as it was before live() raised it."""
+    if not RAISED:
+        return
+    tn = tw.Telnet()
+    await tn.open()
+    for field, value in RAISED.items():
+        if value is not None:
+            await tn.cmd(f'set gauntlet {field} {value}', 0.5)
+    for line in ('restore', 'save', 'quit'):
+        await tn.cmd(line, 0.5)
+    tn.w.close()
+    RAISED.clear()
+
+
 async def live():
     """The warrior's quest on the running server with the test warrior (level 60, an immortal for
     the jumps): offer, accept, the first stage, the tracker in the map payload and the journal,
     a jump to the trial, the trial fought through (waves, gates, Gorrund), the return, the ability."""
+    await gauntlet_accounts.ensure()
     tn = tw.Telnet()
     await tn.open()
+    # the quest is offered from level 45 and live_group's foes are sized for 60: a Gauntlet below
+    # that is raised as live_classes raises its characters, and put back by unraise()
+    await tn.cmd('save', 0.6)
+    was = gauntlet_accounts.saved('Gauntlet') or {}
+    if (was.get('level') or 0) < 60:
+        RAISED.update({f: was.get(k) for f, k in (('level', 'level'), ('maxhp', 'max_hp'), ('damroll', 'damroll'), ('hitroll', 'hitroll'))})
+        for line in ('set gauntlet level 60', 'set gauntlet maxhp 900', 'set gauntlet damroll 150', 'set gauntlet hitroll 40'):
+            await tn.cmd(line, 0.5)
     for line in ('wake', 'stand', 'restore', 'marquee forget'):
         await tn.cmd(line, 0.5)
     await tn.cmd('goto 3023', 0.8)
@@ -503,8 +531,8 @@ async def live():
                 if d.get('type') == 'map_data':
                     block = d['player'].get('quest')
                     break
-    check(block and block['title'] == 'The Fallen Standard' and block['where']['vnum'] == 22005,
-          f"the map payload carries the tracker ({block and block['title']}, marked {block and block['where']})")
+    check(block and block['title'] == 'The Fallen Standard' and (block.get('where') or {}).get('vnum') == 22005,
+          f"the map payload carries the tracker ({block and block['title']}, marked {block and block.get('where')})")
     journal = tw.get_json(f'/quests?player={tw.CHAR}&t={tw.TOKEN}')
     mq_entry = next((q for q in journal.get('active', []) if q.get('marquee')), None)
     check(mq_entry and mq_entry['teaches'] == 'Unbroken Banner', 'the journal lists the marquee quest first')
@@ -519,7 +547,9 @@ async def live():
     check('The Last Bastion - The Outer Wall' in text, 'trial enter: inside the Last Bastion')
     for step, (way, into) in enumerate((('north', 'The Breach'), ('north', 'The Keep'), (None, None))):
         await tn.read(3.5)
-        log = await fight_here(tn)
+        # (a raised Gauntlet with a short sword takes about 4 minutes over Gorrund: the
+        # budget is twice that, and the helper returns as soon as the room is clear)
+        log = await fight_here(tn, limit=480)
         if step == 1:                       # the breach has a second wave
             await tn.read(3.0)
             log += await fight_here(tn)
@@ -672,8 +702,11 @@ async def main():
     await offline()
     await engine()
     if '--offline' not in sys.argv:
-        await live()
-        await live_group()
+        try:
+            await live()
+            await live_group()
+        finally:
+            await unraise()
         await live_classes()
         await live_classes(('thief', 'ranger', 'bard', 'assassin'), fight='ranger')
     print(f"\n{'ALL OK' if not failures else f'{len(failures)} FAILED'}")

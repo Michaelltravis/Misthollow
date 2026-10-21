@@ -1,6 +1,7 @@
 {
  "zone": 54,
  "_about": "New Thalos, the desert city (a living city, no boss): the Sultan's Guard walks the gate roads and Main Street, and comes when a citizen is attacked; the Chief Guard, the Sultan's bodyguards and the beasts of the menagerie are elites; the ixitxachitl in its lair a sub-boss.",
+ "no_boss": "a living city: its guard answers an attack instead",
  "creatures": {
   "5433": {
    "helpers": {

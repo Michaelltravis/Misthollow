@@ -45,7 +45,13 @@
     "stay_zone"
    ],
    "race": "insect",
-   "alignment": 0
+   "alignment": 0,
+   "loot_table": [
+    {
+     "vnum": 43191,
+     "chance": 12
+    }
+   ]
   },
   "43103": {
    "name": "bats belfry swarm",
@@ -77,7 +83,13 @@
     "rooms": 2,
     "count": 2,
     "shout": "A dry rattle echoes through the stone, and the dead stir!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 43190,
+     "chance": 15
+    }
+   ]
   },
   "43110": {
    "name": "bone warden",
@@ -98,7 +110,13 @@
     "rooms": 2,
     "count": 2,
     "shout": "A dry rattle echoes through the stone, and the dead stir!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 43192,
+     "chance": 30
+    }
+   ]
   },
   "43111": {
    "name": "choirmaster fallen",
@@ -113,7 +131,13 @@
    ],
    "race": "undead",
    "rank": "elite",
-   "alignment": -900
+   "alignment": -900,
+   "loot_table": [
+    {
+     "vnum": 43193,
+     "chance": 30
+    }
+   ]
   },
   "43112": {
    "name": "gargoyle roof",
@@ -148,7 +172,13 @@
     "rooms": 2,
     "count": 2,
     "shout": "A dry rattle echoes through the stone, and the dead stir!"
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 43194,
+     "chance": 30
+    }
+   ]
   },
   "43130": {
    "name": "hollow bishop",
@@ -202,7 +232,17 @@
       "min_phase": 1
      }
     ]
-   }
+   },
+   "loot_table": [
+    {
+     "vnum": 43195,
+     "chance": 35
+    },
+    {
+     "vnum": 43192,
+     "chance": 20
+    }
+   ]
   }
  },
  "spawns": [
@@ -376,5 +416,62 @@
    "why": "a skeletal acolyte"
   }
  ],
- "_fill": "tools/audit/densify.py: 14 more of the zone's own ordinary creatures in its empty rooms, 0.45 hostile per walkable room as the aim"
+ "_fill": "tools/audit/densify.py: 14 more of the zone's own ordinary creatures in its empty rooms, 0.45 hostile per walkable room as the aim",
+ "items": {
+  "43190": {
+   "keywords": "beads prayer cord novice",
+   "short_desc": "a novice's cord of prayer beads",
+   "room_desc": "A cord of prayer beads lies here.",
+   "description": "A knotted cord of bone beads worn smooth by fingers that kept counting long after the flesh was gone.",
+   "kind": "treasure",
+   "level": 19
+  },
+  "43191": {
+   "keywords": "buckler beetle shell",
+   "short_desc": "a beetle-shell buckler",
+   "room_desc": "A beetle-shell buckler lies here.",
+   "description": "A round buckler made from a crypt beetle's black wing case, light and harder than oak.",
+   "kind": "armor",
+   "level": 16,
+   "wear_slot": "shield"
+  },
+  "43192": {
+   "keywords": "vambrace bone plated",
+   "short_desc": "a bone-plated vambrace",
+   "room_desc": "A bone-plated vambrace lies here.",
+   "description": "Overlapping plates of polished bone laced over leather, made by the bone warden from the catacombs' own dead.",
+   "kind": "armor",
+   "level": 22,
+   "wear_slot": "arms"
+  },
+  "43193": {
+   "keywords": "lantern candle choirmaster",
+   "short_desc": "a choirmaster's candle-lantern",
+   "room_desc": "A brass candle-lantern lies here.",
+   "description": "A brass lantern with panes of yellowed horn, the kind a choirmaster carried to read the hymnals in the dark loft.",
+   "kind": "light",
+   "level": 22
+  },
+  "43194": {
+   "keywords": "spade grave sexton",
+   "short_desc": "the Sexton's grave spade",
+   "room_desc": "An iron grave spade lies here.",
+   "description": "A long-handled spade with an iron blade honed to an edge, for digging graves and for closing them.",
+   "kind": "weapon",
+   "level": 23,
+   "weapon_type": "slash"
+  },
+  "43195": {
+   "keywords": "censer hollow bishop",
+   "short_desc": "the Hollow Bishop's censer",
+   "room_desc": "A blackened silver censer lies here on its chain.",
+   "description": "A heavy silver censer on a long chain, blackened inside by the ash of a darker incense. Swung, it strikes like a flail.",
+   "kind": "weapon",
+   "level": 25,
+   "weapon_type": "pound",
+   "bonus": {
+    "wis": 1
+   }
+  }
+ }
 }

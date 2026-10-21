@@ -612,6 +612,12 @@ class CommandHandler:
             await on_player_enter(player, target_room)
         except Exception as e:
             logger.debug(f"trap check failed: {e}")
+        # the deep and the dark: breath held under water, shadow corruption (zone_hazards.py)
+        try:
+            import zone_hazards
+            await zone_hazards.on_enter(player, target_room)
+        except Exception:
+            logger.exception('zone hazards on enter')
 
         # Deathtrap rooms
         if player.room and ('deathtrap' in player.room.flags or 'death' in player.room.flags):
@@ -10484,15 +10490,20 @@ class CommandHandler:
             if is_notable:
                 npc_key = f"{getattr(target, 'vnum', 0)}_{target.name.lower().replace(' ', '_')}"
                 npc_desc = getattr(target, 'description', '') or getattr(target, 'long_desc', '') or f"A resident of the realm."
-                
-                # Check for predefined lore about this NPC
+                # titled as the game shows them ("The fighters' guildmaster"), not by keyword: four
+                # guildmasters are all named "guildmaster", and the journal listed them alike
+                shown = (getattr(target, 'short_desc', '') or target.name).strip()
+                shown = shown[:1].upper() + shown[1:]
+
+                # Check for predefined lore about this NPC (by the whole name: a plain "guildmaster"
+                # is not Guildmaster Thrain)
                 for lore_key, lore_data in NOTABLE_NPCS.items():
-                    if lore_key.lower() in target.name.lower() or target.name.lower() in lore_key.lower():
+                    if lore_key.replace('_', ' ') in shown.lower() or lore_data['title'].lower() in shown.lower():
                         npc_desc = lore_data['content']
                         break
-                
+
                 await JournalManager.discover_npc(
-                    player, npc_key, target.name, npc_desc
+                    player, npc_key, shown, npc_desc
                 )
         except Exception:
             pass

@@ -77,7 +77,12 @@ combat, NPCs, and more!
 
 ### Requirements
 - Python 3.8+
-- No external dependencies required!
+- `aiohttp` (the web map, the /play bridge, the admin dashboard): `python3 -m pip install -r requirements.txt`
+
+Install it into the same Python that runs the server. On Windows, `py main.py` follows the
+script's `#!/usr/bin/env python3` line and can start a different Python than the one you
+installed into; run that Python by name instead (`python main.py`, or its full path), from `src/`.
+Tools only: `tools/audio/build.py` also needs `imageio-ffmpeg`.
 
 ### Running the Server
 

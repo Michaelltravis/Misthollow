@@ -12,7 +12,17 @@
     "sentinel"
    ],
    "race": "human",
-   "alignment": 500
+   "alignment": 500,
+   "loot_table": [
+    {
+     "vnum": 41890,
+     "chance": 25
+    },
+    {
+     "vnum": 41891,
+     "chance": 20
+    }
+   ]
   },
   "41801": {
    "name": "rat cellar",
@@ -24,7 +34,13 @@
     "aggressive"
    ],
    "race": "rodent",
-   "alignment": 0
+   "alignment": 0,
+   "loot_table": [
+    {
+     "vnum": 41892,
+     "chance": 20
+    }
+   ]
   },
   "41802": {
    "name": "spider wine giant",
@@ -38,7 +54,17 @@
    ],
    "race": "spider",
    "rank": "sub-boss",
-   "alignment": -200
+   "alignment": -200,
+   "loot_table": [
+    {
+     "vnum": 41893,
+     "chance": 30
+    },
+    {
+     "vnum": 41894,
+     "chance": 30
+    }
+   ]
   }
  },
  "spawns": [
@@ -61,5 +87,52 @@
     209008
    ]
   }
- ]
+ ],
+ "items": {
+  "41890": {
+   "keywords": "knife corkscrew vintner",
+   "short_desc": "a vintner's corkscrew knife",
+   "room_desc": "A vintner's corkscrew knife lies here.",
+   "description": "A folding knife with a curved blade on one side and a steel corkscrew on the other, its horn handle stained purple.",
+   "kind": "weapon",
+   "level": 10,
+   "weapon_type": "pierce"
+  },
+  "41891": {
+   "keywords": "lantern cellar",
+   "short_desc": "a cellar lantern",
+   "room_desc": "A cellar lantern lies here.",
+   "description": "A squat iron lantern with a hood to keep its light low, so as not to warm the casks.",
+   "kind": "light",
+   "level": 10
+  },
+  "41892": {
+   "keywords": "cheese wedge cellar nibbled",
+   "short_desc": "a nibbled wedge of cellar cheese",
+   "room_desc": "A nibbled wedge of cheese lies here.",
+   "description": "A wedge of hard, tangy cheese of the kind kept in the cellar beside the wine, gnawed around the rind.",
+   "kind": "food",
+   "level": 8
+  },
+  "41893": {
+   "keywords": "bottle red garathorm dusty",
+   "short_desc": "a dusty bottle of Garathorm red",
+   "room_desc": "A dusty bottle of wine lies here.",
+   "description": "A cobwebbed bottle of the vineyard's best red, many years in the rack. A long swallow puts heart back into a body.",
+   "kind": "potion",
+   "level": 12
+  },
+  "41894": {
+   "keywords": "cloak spider silk",
+   "short_desc": "a cloak of spider silk",
+   "room_desc": "A grey cloak of spider silk lies here.",
+   "description": "A light, strong cloak cut from the giant wine spider's web, grey and faintly sticky. It moves with you like a shadow.",
+   "kind": "armor",
+   "level": 14,
+   "wear_slot": "about",
+   "bonus": {
+    "dex": 1
+   }
+  }
+ }
 }

@@ -1,0 +1,159 @@
+{
+ "zone": 250,
+ "_about": "Bedlam Arena: the PvP lobby (25000), the five duel rooms (25001-25005) and the gallery (25006) are left to arena.py; the hazard rooms around them hold pit gladiators, arena lions and the champion of the arena in the fire circle, all sentinel so they never wander into a duel.",
+ "no_boss": "the PvP arena: its champion is an elite, the duels are the real fights",
+ "items": {
+  "25090": {
+   "keywords": "gladius pit fighter",
+   "short_desc": "a pit-fighter's gladius",
+   "room_desc": "A pit-fighter's gladius lies here in the sand.",
+   "description": "A short, broad stabbing sword with a bone grip worn dark by sweat, the arena's mark stamped at the hilt.",
+   "kind": "weapon",
+   "level": 32,
+   "weapon_type": "slash"
+  },
+  "25091": {
+   "keywords": "helm bronze gladiator",
+   "short_desc": "a bronze gladiator's helm",
+   "room_desc": "A bronze gladiator's helm lies here.",
+   "description": "A full bronze helm with a broad brim and a grille of crossed bars over the face, crested with a stiff red plume.",
+   "kind": "armor",
+   "level": 32,
+   "wear_slot": "head"
+  },
+  "25092": {
+   "keywords": "salve cutman jar",
+   "short_desc": "a jar of cut-man's salve",
+   "room_desc": "A small clay jar of salve lies here.",
+   "description": "A clay jar of greasy yellow salve that smells of pine tar and honey. The arena's cut-men smear it into wounds between bouts.",
+   "kind": "potion",
+   "level": 34
+  },
+  "25093": {
+   "keywords": "cloak lion skin",
+   "short_desc": "a lion-skin cloak",
+   "room_desc": "A lion-skin cloak lies here, its maned head still on it.",
+   "description": "The tawny hide of an arena lion, its maned head worn as a hood and its forepaws knotted at the throat.",
+   "kind": "armor",
+   "level": 36,
+   "wear_slot": "about"
+  },
+  "25094": {
+   "keywords": "trident champion gilded",
+   "short_desc": "a champion's gilded trident",
+   "room_desc": "A champion's gilded trident lies here.",
+   "description": "A long trident with gilded tines and a shaft wrapped in red leather, carried by the arena's reigning champion. The crowd roars at the sight of it.",
+   "kind": "weapon",
+   "level": 42,
+   "weapon_type": "pierce",
+   "bonus": {
+    "damroll": 2
+   }
+  },
+  "25095": {
+   "keywords": "purse winnings arena",
+   "short_desc": "a fat purse of arena winnings",
+   "room_desc": "A fat purse of coins lies here.",
+   "description": "A heavy leather purse of gold and silver, a champion's share of a season's wagers.",
+   "kind": "treasure",
+   "level": 40
+  }
+ },
+ "creatures": {
+  "25010": {
+   "name": "gladiator pit fighter",
+   "short_desc": "a pit gladiator",
+   "long_desc": "A pit gladiator rolls his shoulders here, waiting for the next bout.",
+   "description": "A scarred fighter in a leather harness and greaves, a short sword in one fist and a net over his shoulder. He fights for the crowd and for his freedom, and he does not care whom.",
+   "level": 32,
+   "flags": [
+    "aggressive",
+    "sentinel"
+   ],
+   "race": "human",
+   "alignment": -100,
+   "loot_table": [
+    {
+     "vnum": 25090,
+     "chance": 20
+    },
+    {
+     "vnum": 25091,
+     "chance": 15
+    },
+    {
+     "vnum": 25092,
+     "chance": 15
+    }
+   ]
+  },
+  "25011": {
+   "name": "lion arena maned",
+   "short_desc": "an arena lion",
+   "long_desc": "An arena lion paces the sand, lashing its tail.",
+   "description": "A great maned lion kept hungry for the games, its hide criss-crossed with old scars from spear and whip.",
+   "level": 36,
+   "flags": [
+    "aggressive",
+    "sentinel"
+   ],
+   "race": "feline",
+   "alignment": 0,
+   "loot_table": [
+    {
+     "vnum": 25093,
+     "chance": 25
+    }
+   ]
+  },
+  "25012": {
+   "name": "champion arena gladiator",
+   "short_desc": "the champion of the arena",
+   "long_desc": "The champion of the arena stands in the ring of fire, raising a gilded trident to an unseen crowd.",
+   "description": "A towering gladiator in gilded scale, his arms ringed with the bronze bands of every bout he has won. He has not lost in the Bedlam Arena in seven seasons.",
+   "level": 42,
+   "rank": "elite",
+   "flags": [
+    "aggressive",
+    "sentinel"
+   ],
+   "race": "human",
+   "alignment": -100,
+   "loot_table": [
+    {
+     "vnum": 25094,
+     "chance": 30
+    },
+    {
+     "vnum": 25095,
+     "chance": 35
+    }
+   ]
+  }
+ },
+ "spawns": [
+  {
+   "vnum": 25010,
+   "rooms": [
+    404,
+    408,
+    410,
+    415,
+    418
+   ]
+  },
+  {
+   "vnum": 25011,
+   "rooms": [
+    417,
+    420
+   ]
+  },
+  {
+   "vnum": 25012,
+   "rooms": [
+    419
+   ]
+  }
+ ]
+}
