@@ -24,6 +24,7 @@ import glob
 import hashlib
 import hmac
 import logging
+import re
 import secrets
 import shutil
 import smtplib
@@ -191,6 +192,21 @@ def _write_save(path: str, data: dict):
     os.replace(tmp, path)
 
 
+EMAIL_RE = re.compile(r'^[^@\s]+@[^@\s]+\.[^@\s.]+$')
+
+
+def email_problem(email: str, account: Optional[Account] = None) -> str:
+    """Why an email won't do for `account` (or a new account) ('' if it will): one account an
+    email, so it can sign in by it."""
+    email = (email or '').strip()
+    if len(email) > 254 or not EMAIL_RE.match(email):
+        return "That isn't an email address."
+    other = AccountManager.find_by_email(email)
+    if other is not None and (account is None or other.account_name != account.account_name):
+        return "That email already belongs to an account."
+    return ''
+
+
 def name_taken(name: str, account: Optional[Account] = None) -> bool:
     """Whether a name is someone's: a character's, or an account's other than `account` (a
     new character may share its own account's name)."""
@@ -204,17 +220,24 @@ class AccountManager:
     """The one place accounts and characters are made, joined, claimed, renamed and deleted."""
 
     @staticmethod
-    async def create_account(account_name: str, password: str) -> Tuple[Optional[Account], str]:
-        """A new, empty account: (account, '') or (None, why not)."""
+    async def create_account(account_name: str, password: str, email: str = '') -> Tuple[Optional[Account], str]:
+        """A new, empty account, with the email it signs in by if one is given: (account, '') or
+        (None, why not)."""
         why = name_problem(account_name) or security.weak(password)
         if why:
             return None, why
+        if email and email_problem(email):
+            return None, email_problem(email)
         password_hash = await security.hash_async(password)
         # checked after the hashing (it awaits): nothing else runs between this and the save
         if name_taken(account_name):
             return None, "That name is already taken."
+        if email and email_problem(email):
+            return None, email_problem(email)
         account = Account(account_name)
         account.password_hash = password_hash
+        if email:
+            account.settings['email'] = email.strip().lower()
         account.save()
         logger.info(f"accounts: made account {account.account_name}")
         return account, ''
@@ -373,12 +396,29 @@ class AccountManager:
 
     @staticmethod
     def set_email(account: Account, email: str) -> bool:
-        """Set account email for password resets."""
-        if not email or '@' not in email:
+        """Set the account's email: it signs in by it, and password resets go to it (False: not
+        an email, or another account's; email_problem says which)."""
+        if email_problem(email, account):
             return False
-        account.settings['email'] = email
+        account.settings['email'] = email.strip().lower()
         account.save()
         return True
+
+    @staticmethod
+    def find_by_email(email: str) -> Optional[Account]:
+        """The account whose email this is (any case), if one."""
+        want = (email or '').strip().lower()
+        if not want:
+            return None
+        for path in glob.glob(os.path.join(ACCOUNTS_DIR, '*.json')):
+            try:
+                with open(path, encoding='utf-8') as f:
+                    data = json.load(f)
+            except (OSError, ValueError):
+                continue
+            if ((data.get('settings') or {}).get('email') or '').strip().lower() == want:
+                return Account.from_dict(data)
+        return None
 
     @staticmethod
     def generate_reset_token(account: Account) -> str:

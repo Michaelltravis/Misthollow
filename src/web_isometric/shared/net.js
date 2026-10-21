@@ -123,7 +123,8 @@
     mapToken: '',              // this session's secret for the map server (MAPSYNC)
     playerPassword: '',
     resumeToken: '',           // signing in with a stored token instead of a password
-    newAccount: false,         // Create account: `newaccount <name>`, then its password twice
+    newAccount: false,         // Create account: `newaccount <name> <email>`, then its password twice
+    newEmail: '',
     account: null,             // the account signed in to: {account, max, chars} (its menu, server.py)
     isLoggedIn: false,
     loginSequenceStarted: false,
@@ -186,16 +187,16 @@
     }
     if (st.newAccount) {
       // its password prompts are answered as they arrive (answerLoginPrompts)
-      MH.sendCommand(`newaccount ${st.playerName}`, false);
+      MH.sendCommand(`newaccount ${st.playerName} ${st.newEmail}`.trim(), false);
       st._loginNameSent = true;
       return;
     }
-    // an account's name (or a hero's): its password, then the account's heroes (an 'account'
-    // message) or, for a hero's name, straight into the world
+    // an account's email or name (or a hero's): its password, then the account's heroes (an
+    // 'account' message)
+    // (the password goes only when its prompt comes: an unknown name gets none, and a
+    // password sent anyway would be read as the next name)
     MH.sendCommand(st.playerName, false);
     st._loginNameSent = true;   // a name re-prompt after this means it was rejected
-    await sleep(500);
-    MH.sendCommand(st.playerPassword, false);
   }
   // the account's heroes: play one, or make one (the menu's own commands; server.py)
   MH.playHero = name => MH.sendCommand(`play ${name}`, false);
@@ -231,18 +232,20 @@
       if (/choose a password/i.test(text)) { sendDelayed('new-pw', st.playerPassword); return; }
       if (/confirm password/i.test(text)) { sendDelayed('new-pw2', st.playerPassword); return; }
       if (!st._loginNameSent) return;
-      if (/already taken/i.test(text)) { MH.bus.emit('login.error', 'That name is taken — choose another.'); return; }
-      const why = /(names must[^.]*\.|passwords must[^.]*\.)/i.exec(text);
+      if (/name is already taken/i.test(text)) { MH.bus.emit('login.error', 'That account name is taken — choose another.'); return; }
+      const why = /(names must[^.]*\.|passwords must[^.]*\.|that isn't an email address\.|that email already belongs to an account\.)/i.exec(text);
       if (why) { MH.bus.emit('login.error', why[1]); return; }
+      return;
+    }
+    if (st._loginNameSent && st.playerPassword && /account password:/i.test(text)) { sendDelayed('login-pw', st.playerPassword); return; }
+    // no account by that email or name: the page asks for a new one (login.js)
+    if (st._loginNameSent && /no account uses the email|is a new name|create account\?/i.test(text)) {
+      MH.bus.emit('login.noaccount', st.playerName);
       return;
     }
     // login failures: give clear feedback instead of a silent hang
     if (st._loginNameSent && /invalid password|wrong password/i.test(text)) {
       MH.bus.emit('login.error', 'Wrong password — try again.');
-      return;
-    }
-    if (st._loginNameSent && /is a new name|create account\?/i.test(text)) {
-      MH.bus.emit('login.error', `There is no account called ${st.playerName}. Create one with “Create account”.`);
       return;
     }
     if (st._loginNameSent && /can't be logged into/i.test(text)) {
@@ -434,14 +437,16 @@
     }
   }
 
-  // log in to an account with its password, make a new account (newAccount), or (token given)
-  // come back as a hero with this browser's stored sign-in
-  MH.connect = function connect(name, password, newAccount, token) {
+  // log in to an account (its email or name) with its password, make a new account (newAccount:
+  // `name` signing in by `email` too), or (token given) come back as a hero with this browser's
+  // stored sign-in
+  MH.connect = function connect(name, password, newAccount, token, email) {
     const st = MH.state;
     st.playerName = name;
     st.playerPassword = token ? '' : password;
     st.resumeToken = token || '';
     st.newAccount = !!newAccount && !token;
+    st.newEmail = st.newAccount ? (email || '') : '';
     st.account = null;
     st.loginSequenceStarted = false;
     st.isLoggedIn = false;

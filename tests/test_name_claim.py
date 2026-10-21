@@ -157,8 +157,15 @@ async def offline():
     for line in ('iverpass12', 'iverpass12'):
         await o.handle_input(line)
     check(accounts.Account.exists('iver') and 'iver' not in server_naming(), '…which, made, it lets go')
+    r, wr = connection()
+    await r.handle_input('newaccount Jorn not-an-email')
+    s, ws = connection()
+    await s.handle_input('Jorn')
+    check("isn't an email" in wr.text() and s.state == s.STATE_CONFIRM_NAME,
+          '…and one refused for its email leaves the name free')
     await k.disconnect()
     await q.disconnect()
+    await s.disconnect()
 
     # a new character's file is made exclusively, even past the name check
     from player import Player

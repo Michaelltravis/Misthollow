@@ -2551,7 +2551,8 @@ class CommandHandler:
                 return
             email = args[1]
             if not AccountManager.set_email(account, email):
-                await player.send(f"{c['red']}Invalid email address.{c['reset']}")
+                from accounts import email_problem
+                await player.send(f"{c['red']}{email_problem(email, account)}{c['reset']}")
                 return
             await player.send(f"{c['bright_green']}Email set to {email}.{c['reset']}")
 

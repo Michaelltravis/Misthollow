@@ -568,15 +568,17 @@ html.env-under #env-vignette { opacity: 1; background: radial-gradient(ellipse a
 #login input:focus, #create input:focus { border-color: var(--gold); box-shadow: inset 0 1px 4px rgba(0,0,0,.7), 0 0 0 2px rgba(216,180,106,.22); }
 #login-resume .lr-who { margin: 2px 0 12px; font: italic 17px var(--lore); color: var(--mist-hi); }
 #login-resume .lr-who b { font: 700 19px var(--display); color: var(--gold); font-style: normal; letter-spacing: .04em; }
-#login-resume .btn, #login-form .btn, #login-chars .btn { width: 100%; }
-/* Log in | Create account */
-#login .login-tabs { display: flex; gap: 4px; margin: -4px 0 10px; padding: 3px; border-radius: 9px; background: rgba(0,0,0,.45); border: 1px solid var(--edge-dim); }
-#login .tab { flex: 1; padding: 8px 6px; border: 0; border-radius: 7px; background: none; cursor: pointer; color: var(--ink-dim);
-  font: 700 12px var(--label); letter-spacing: .14em; text-transform: uppercase; transition: color .15s, background .15s; }
-#login .tab:hover { color: var(--ink); }
-#login .tab.on { color: var(--gold-hi); background: rgba(216,180,106,.14); box-shadow: inset 0 0 0 1px rgba(216,180,106,.45); }
-#login-form:not(.new) .new-only { display: none; }
-#login .login-note { margin: 8px 2px 0; font: italic 14px var(--lore); color: var(--ink-dim); }
+#login-resume .btn, #login-form .btn, #signup-form .btn, #login-chars .btn { width: 100%; }
+/* one account: sign in, or (no account yet) create one */
+#login .lf-title { margin: 0 0 8px; font: 700 15px var(--label); letter-spacing: .18em; text-transform: uppercase; color: var(--gold-hi); }
+#login .login-note { margin: 2px 2px 8px; font: italic 14px var(--lore); color: var(--ink-dim); }
+#login .link-btn { display: block; margin: 10px auto 0; padding: 4px 6px; border: 0; background: none; cursor: pointer;
+  font: 500 14px var(--body); color: var(--gold); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(216,180,106,.45); }
+#login .link-btn:hover, #login .link-btn:focus-visible { color: var(--gold-hi); outline: none; text-decoration-color: currentColor; }
+#login-chars .lc-email { margin: 10px 0 2px; padding-top: 10px; border-top: 1px solid var(--edge-dim); }
+#login-chars .lc-email-row { display: flex; gap: 8px; align-items: center; }
+#login-chars .lc-email-row input { flex: 1 1 auto; min-width: 0; width: auto; }
+#login-chars .lc-email-row .btn { flex: none; width: auto; margin: 0; padding-left: 18px; padding-right: 18px; }
 /* the account's heroes, after logging in */
 #login-chars .lc-head { margin: 0 0 10px; font: italic 16px var(--lore); color: var(--mist-hi); }
 #login-chars .lc-head b { font: 700 18px var(--display); color: var(--gold); font-style: normal; letter-spacing: .04em; text-transform: capitalize; }

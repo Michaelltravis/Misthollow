@@ -134,6 +134,7 @@ class Connection:
         self.play_after = None          # a character asked for by name, opened via its account
         self.held_name = None           # the new name this connection is making (_naming)
         self.new_account_only = False   # `newaccount`: the password makes an account, no hero
+        self.temp_email = ''            # ...signing in by this email too
         self.login_failures = 0         # wrong passwords on this connection (security.py)
         self.forgot_sent = False
         self.is_web = False             # the web bridge announced itself (WEB_MARK): no hard wrap
@@ -282,21 +283,38 @@ class Connection:
             await self.handle_resume(name.split())
             return
 
-        from accounts import AccountManager, name_problem, name_taken
-        # `newaccount <name>`: an account with no character yet (/play's Create account); its
-        # menu's create makes the heroes, of any free names
+        from accounts import AccountManager, name_problem, name_taken, email_problem
+        # `newaccount <name> [<email>]`: an account with no character yet (/play's Create
+        # account), signing in by its email too; its menu's create makes the heroes, of any free names
         if name.lower().startswith('newaccount '):
-            want = name.split(None, 1)[1].strip()
-            why = name_problem(want) or ("That name is already taken." if name_taken(want) or not self._hold_name(want) else '')
+            parts = name.split()
+            want, email = parts[1], (parts[2] if len(parts) > 2 else '')
+            # (held last: a refusal for anything else leaves the name free)
+            why = (name_problem(want) or ("That name is already taken." if name_taken(want) else '')
+                   or (email_problem(email) if email else '') or ('Usage: newaccount <name> [<email>]' if len(parts) > 3 else '')
+                   or ("That name is already taken." if not self._hold_name(want) else ''))
             if why:
                 await self.send(why)
                 await self.send("Enter account name (or character name): ")
                 return
             self.temp_account_name = want.lower()
+            self.temp_email = email
             self.temp_name = None
             self.new_account_only = True
             await self.send(f"Choose a password for the account {want.capitalize()}: ")
             self.state = self.STATE_GET_PASSWORD
+            return
+        # an email: the account that signs in by it
+        if '@' in name:
+            account = AccountManager.find_by_email(name)
+            if account is None:
+                await self.send(f"No account uses the email {name}.")
+                await self.send("Enter account name (or character name): ")
+                return
+            self.temp_account_name = account.account_name
+            self.play_after = self.login_alt = None
+            await self.send("Account password: ")
+            self.state = self.STATE_ACCOUNT_PASSWORD
             return
         why = name_problem(name)
         if why:
@@ -387,7 +405,8 @@ class Connection:
             # `newaccount`: the account alone, then its menu
             from accounts import AccountManager
             self.new_account_only = False
-            account, why = await AccountManager.create_account(self.temp_account_name, password)
+            account, why = await AccountManager.create_account(self.temp_account_name, password, self.temp_email)
+            self.temp_email = ''
             self.temp_password = None
             self._let_name_go()
             if account is None:
@@ -836,9 +855,10 @@ class Connection:
         
         if self.account:
             security.succeeded(self.temp_account_name)
-            # asked for one of its characters by name: straight in
+            # asked for one of its characters by name: straight in (a web page always shows the
+            # account's heroes: one login, every hero)
             wanted, self.play_after = self.play_after, None
-            if wanted and wanted in self.account.characters:
+            if wanted and wanted in self.account.characters and not self.is_web:
                 from player import Player
                 self.player = Player.load(wanted, self.world)
                 if self.player:
@@ -918,8 +938,9 @@ class Connection:
         except (ConnectionResetError, BrokenPipeError, ConnectionAbortedError, OSError):
             pass
     
-    async def show_character_menu(self):
-        """Display character selection menu."""
+    async def show_character_menu(self, note: str = '', bad: bool = False):
+        """Display character selection menu (note: what the last command did, which a web page
+        shows over its list; bad: it was refused)."""
         c = self.config.COLORS
         from accounts import AccountManager
         
@@ -936,6 +957,7 @@ class Connection:
         await self.send(f"  {c['bright_green']}practice <name>{c['reset']}             - Show character skills")
         await self.send(f"  {c['bright_green']}move <name> <up|down> [n]{c['reset']}   - Reorder character list")
         await self.send(f"  {c['bright_green']}password{c['reset']}                    - Change account password")
+        await self.send(f"  {c['bright_green']}email <address>{c['reset']}             - Sign in by this email (and get password resets)")
         await self.send(f"  {c['bright_green']}delete <name>{c['reset']}               - Delete a character")
         await self.send(f"  {c['bright_green']}claim <name>{c['reset']}                - Move in a character from another account of yours")
         await self.send(f"  {c['bright_green']}time{c['reset']}                        - Display game time")
@@ -959,6 +981,7 @@ class Connection:
             # (web_client.py turns it into {type: 'account'})
             import json
             menu = {'account': self.account.account_name, 'max': self.account.settings.get('max_chars', 8),
+                    'email': self.account.settings.get('email') or '', 'note': note, 'bad': bad,
                     'chars': [{k: i[k] for k in ('name', 'level', 'class', 'race')} for i in char_info]}
             await self._send_raw(f"\x1b]ACCOUNT:{json.dumps(menu, separators=(',', ':'))}\x07".encode('utf-8'))
     
@@ -1289,7 +1312,18 @@ class Connection:
             self.account.characters.insert(new_idx, char_name)
             self.account.save()
             await self.send(f"Moved {char_name} to position {new_idx + 1}.")
-        
+
+        elif cmd == 'email':
+            from accounts import AccountManager, email_problem
+            if not args:
+                await self.send(f"Email: {self.account.settings.get('email') or 'none'}. Usage: email <address>")
+                return
+            ok = AccountManager.set_email(self.account, args[0])
+            note = (f"Email set to {self.account.settings['email']}: sign in by it from now on." if ok
+                    else email_problem(args[0], self.account))
+            await self.send(note)
+            await self.show_character_menu(note, bad=not ok)
+
         elif cmd == 'password' or cmd == 'passwd':
             self.temp_new_password = None
             await self.send("Enter new password: ", newline=False)
