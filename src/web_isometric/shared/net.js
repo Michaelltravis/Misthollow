@@ -232,6 +232,14 @@
       if (/choose a password/i.test(text)) { sendDelayed('new-pw', st.playerPassword); return; }
       if (/confirm password/i.test(text)) { sendDelayed('new-pw2', st.playerPassword); return; }
       if (!st._loginNameSent) return;
+      // the email's code (when the server can send mail): the page asks for it (login.js)
+      if (/enter the 6-digit code|type 'resend' for a new one/i.test(text)) {
+        const why = /that code isn't right|that code has expired/i.exec(text);
+        MH.bus.emit('signup.code', { email: st.newEmail, error: why ? `${why[0]}.` : '' });
+        return;
+      }
+      const gone = /(too many codes have been sent just now[^.]*\.|a code couldn't be sent to [^.]+\.[^.]*\.|too many wrong codes|sign-up stopped)/i.exec(text);
+      if (gone) { MH.bus.emit('signup.stopped', gone[1]); return; }
       if (/name is already taken/i.test(text)) { MH.bus.emit('login.error', 'That account name is taken — choose another.'); return; }
       const why = /(names must[^.]*\.|passwords must[^.]*\.|that isn't an email address\.|that email already belongs to an account\.)/i.exec(text);
       if (why) { MH.bus.emit('login.error', why[1]); return; }
