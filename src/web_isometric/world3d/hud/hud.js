@@ -27,7 +27,7 @@ import { createLegend } from './legend.js';
 import { abilityIcon, uiIcon } from './icons.js';
 import { buffList } from './buffs.js';
 import { lookPortrait, creaturePortrait } from './portrait.js';
-import { SLOTS, cleanBar, defaultBar, placeNew, putOnBar, takeOffBar, diffAbilities, usable, costLine, rankOf, MAIN, keyOf, slotForKey } from '../abilities.js';
+import { SLOTS, cleanBar, defaultBar, placeNew, putOnBar, takeOffBar, keepUnseen, diffAbilities, usable, costLine, rankOf, MAIN, keyOf, slotForKey } from '../abilities.js';
 import { createBars } from './bars.js';
 import { conOf, shownName } from '../targeting.js';
 import { recipeFor } from '../abilityfx.js';
@@ -68,9 +68,14 @@ export function createHud() {
     menu: $('#menu'), settings: $('#settings'), slots: $('#slots'), xbars: $('#xbars'),
   };
   const st = { player: null, abilities: null, byId: new Map(), bar: new Array(SLOTS).fill(null), custom: false, barEdited: 0,
-    barSig: '', glow: new Set(), cooldowns: {}, cdAt: 0, target: null, history: [], hi: -1, barsFor: '' };
+    arranged: null, serverSig: '', barSig: '', glow: new Set(), cooldowns: {}, cdAt: 0, target: null, history: [], hi: -1, barsFor: '' };
   // the extra bars (bars.js): floating, movable; their slots behave as the main bar's
-  const bars = createBars(els.xbars, { onChange: () => { st.barSig = ''; renderBar(); try { syncSettings(); } catch (_) {} } });
+  const mainLock = document.createElement('button');
+  mainLock.className = 'barlock';
+  $('#bar-mid').appendChild(mainLock);
+  const bars = createBars(els.xbars, { mainLock, onChange: () => { st.barSig = ''; renderBar(); try { syncSettings(); } catch (_) {} } });
+  const locked = i => bars.lockedSlot(i);
+  const lockedToast = () => toast('That bar is locked: click its 🔒 to change what is on it');
   // a slot anywhere on the bars (main and extra)
   const slotQ = sel => els.slots.querySelector(sel) || els.xbars.querySelector(sel);
   const slotQA = sel => [...els.slots.querySelectorAll(sel), ...els.xbars.querySelectorAll(sel)];
@@ -82,8 +87,10 @@ export function createHud() {
     onUse: id => use(id),
     onAdd: id => {
       // the first free slot on a bar that shows (the main bar first)
-      const i = st.bar.findIndex((x, k) => x === null && (k < MAIN || k - MAIN < 8 * bars.count));
-      if (i < 0) toast('Your bars are full: drag the ability onto a slot (more bars: Settings, O)'); else editBar(putOnBar(st.bar, id, i));
+      const i = st.bar.findIndex((x, k) => x === null && !locked(k) && (k < MAIN || k - MAIN < 8 * bars.count));
+      if (i < 0) toast('Your bars are full (or locked): drag the ability onto a slot (more bars: Settings, O)');
+      else if (st.bar.includes(id) && locked(st.bar.indexOf(id))) lockedToast();
+      else editBar(putOnBar(st.bar, id, i, locked));
     },
     onDragStart: () => { els.ab.classList.add('dragging'); if (els.xbars) els.xbars.classList.add('dragging'); },
     onDragEnd: () => { els.ab.classList.remove('dragging'); if (els.xbars) els.xbars.classList.remove('dragging'); },
@@ -339,7 +346,7 @@ export function createHud() {
       pct: learned[id] || 0, known: !!learned[id], level: i + 1, target: SELF.has(id) ? 'self' : 'enemy' }));
   }
   function buildBar(p) {
-    if (p.name && p.name !== st.barsFor) { st.barsFor = p.name; bars.load(p.name); }
+    if (p.name && p.name !== st.barsFor) { st.barsFor = p.name; st.serverSig = ''; st.barEdited = 0; bars.load(p.name); }
     const cls = String(p.char_class || '').toLowerCase();
     const list = abilityList(p);
     const prev = st.abilities && st.abilities.fromBook === !!books.get(cls) ? st.abilities : null, before = st.bar;
@@ -347,16 +354,24 @@ export function createHud() {
     st.abilities = list;
     st.byId = new Map(list.map(a => [a.id, a]));
     for (const a of list) iconTypes.set(a.id, a.type || 'skill');
-    // a bar you just changed outlives payloads the server sent before it had your change
-    if (performance.now() - st.barEdited > 4000) {
-      st.custom = Array.isArray(p.bar) && p.bar.some(Boolean);
-      st.bar = st.custom ? cleanBar(p.bar, list) : defaultBar(list, KIT[cls] || []);
+    // the server's bar is taken up when it CHANGES. Between map payloads the same player object
+    // comes again with every vitals tick and combat round, carrying the bar as it was then:
+    // taking that up each time undid what you had arranged since (and the next edit sent the
+    // old bar back to the server). Nor is it taken up while a change of yours is on its way.
+    const sig = JSON.stringify(Array.isArray(p.bar) ? p.bar : null);
+    if (sig !== st.serverSig) {
+      st.serverSig = sig;
+      if (performance.now() - st.barEdited > 4000) {
+        st.custom = Array.isArray(p.bar) && p.bar.some(Boolean);
+        st.arranged = st.custom ? p.bar.slice(0, SLOTS) : null;
+      }
     }
+    st.bar = st.custom ? cleanBar(st.arranged, list) : defaultBar(list, KIT[cls] || []);
     if (prev) {
       const { learned, improved } = diffAbilities(prev, list);
       if (learned.length) {
         // into free slots, without moving what is already on your keys
-        const r = placeNew(st.custom ? st.bar : cleanBar(before, list), learned.filter(id => usable(st.byId.get(id))), MAIN + 8 * bars.count);
+        const r = placeNew(st.custom ? st.bar : cleanBar(before, list), learned.filter(id => usable(st.byId.get(id))), MAIN + 8 * bars.count, locked);
         if (r.placed.length || !st.custom) editBar(r.bar, true);
         for (const id of learned) {
           const a = st.byId.get(id), i = st.bar.indexOf(id);
@@ -373,10 +388,12 @@ export function createHud() {
   }
   // send the bar to the server (kept with the character)
   function editBar(bar, quiet) {
+    // (what the bar held that this client can't show yet stays on it: keepUnseen)
+    st.arranged = st.custom ? keepUnseen(bar, st.arranged, st.bar) : bar.slice();
     st.bar = bar;
     st.custom = true;
     st.barEdited = performance.now();
-    MH.sendCommand(`webbar ${bar.map(x => x || '-').join(' ')}`, false);
+    MH.sendCommand(`webbar ${st.arranged.map(x => x || '-').join(' ')}`, false);
     renderBar();
     spellbook.update(st.abilities, st.bar, st.player && st.player.level);
     if (!quiet) requestAnimationFrame(fitChat);
@@ -384,11 +401,11 @@ export function createHud() {
   function slotHtml(i) {
     const id = st.bar[i], a = id && st.byId.get(id), key = keyOf(i);
     if (!a) return `<div class="slot empty" data-i="${i}" data-tip-title="An empty slot${keyTip(i)}" data-tip-sub="Drag an ability here from your spellbook (K)"><span class="key">${key}</span></div>`;
-    return `<div class="slot${st.glow.has(id) ? ' glow' : ''}${a.marquee ? ' marquee' : ''}" data-i="${i}" data-id="${a.id}" draggable="true">`
+    return `<div class="slot${st.glow.has(id) ? ' glow' : ''}${a.marquee ? ' marquee' : ''}${locked(i) ? ' pinned' : ''}" data-i="${i}" data-id="${a.id}" draggable="${!locked(i)}">`
       + `${ICON(a.id)}<span class="key">${key}</span><div class="cd"><i></i><span></span></div></div>`;
   }
   function renderBar() {
-    const sig = JSON.stringify([st.bar, [...st.glow], st.bar.map(id => id && st.byId.has(id)), bars.count]);
+    const sig = JSON.stringify([st.bar, [...st.glow], st.bar.map(id => id && st.byId.has(id)), bars.count, st.bar.map((_, i) => locked(i))]);
     if (sig === st.barSig) return;
     st.barSig = sig;
     const row = (from, to) => Array.from({ length: to - from }, (_, k) => slotHtml(from + k)).join('');
@@ -419,23 +436,21 @@ export function createHud() {
         if (st.bar[i]) MH.bus.emit('hud.slotMenu', { x: e.clientX, y: e.clientY, slot: i, id: st.bar[i], name: (st.byId.get(st.bar[i]) || {}).name });
       });
       el.addEventListener('dragstart', e => {
+        if (locked(i)) { e.preventDefault(); return; }
         e.dataTransfer.setData('text/x-ability', st.bar[i]);
         e.dataTransfer.setData('text/x-slot', String(i));
         e.dataTransfer.effectAllowed = 'move';
         els.ab.classList.add('dragging');
         els.xbars.classList.add('dragging');
       });
-      // dropped nowhere: off the bar
-      el.addEventListener('dragend', e => {
+      // (let go off the bars, it comes off: the document's drop, below)
+      el.addEventListener('dragend', () => {
         els.ab.classList.remove('dragging');
         els.xbars.classList.remove('dragging');
-        if (e.dataTransfer.dropEffect === 'none' && st.bar[i]) {
-          const a = st.byId.get(st.bar[i]);
-          editBar(takeOffBar(st.bar, i));
-          toast(`${a ? a.name : 'That'} is off your bar (it stays in your spellbook, K)`);
-        }
       });
-      el.addEventListener('dragover', e => { if (e.dataTransfer.types.includes('text/x-ability')) { e.preventDefault(); el.classList.add('over'); } });
+      // a locked slot takes the drop too, and keeps what it has: one turned away would read as
+      // let go off the bars, and the ability dragged would come off
+      el.addEventListener('dragover', e => { if (e.dataTransfer.types.includes('text/x-ability')) { e.preventDefault(); if (!locked(i)) el.classList.add('over'); } });
       el.addEventListener('dragleave', () => el.classList.remove('over'));
       el.addEventListener('drop', e => {
         e.preventDefault();
@@ -443,11 +458,29 @@ export function createHud() {
         els.ab.classList.remove('dragging');
         els.xbars.classList.remove('dragging');
         const id = e.dataTransfer.getData('text/x-ability');
-        if (id && st.byId.has(id)) editBar(putOnBar(st.bar, id, i));
+        if (!id || !st.byId.has(id)) return;
+        const next = putOnBar(st.bar, id, i, locked);
+        if (next.every((x, k) => x === st.bar[k])) { if (st.bar[i] !== id) lockedToast(); return; }
+        editBar(next);
       });
     });
     requestAnimationFrame(fitChat);
   }
+  // an ability dragged from a slot and let go off the bars comes off them. Only a drop does it:
+  // a drag called off (Esc), let go outside the window, or on a bar's frame between slots keeps it
+  document.addEventListener('dragover', e => { if (e.dataTransfer.types.includes('text/x-slot')) e.preventDefault(); });
+  document.addEventListener('drop', e => {
+    if (!e.dataTransfer.types.includes('text/x-slot')) return;
+    e.preventDefault();
+    els.ab.classList.remove('dragging');
+    els.xbars.classList.remove('dragging');
+    if (e.target.closest && e.target.closest('#actionbar, #xbars')) return;
+    const i = +e.dataTransfer.getData('text/x-slot'), id = e.dataTransfer.getData('text/x-ability');
+    if (!id || st.bar[i] !== id || locked(i)) return;
+    const a = st.byId.get(id);
+    editBar(takeOffBar(st.bar, i));
+    toast(`${a ? a.name : 'That'} is off your bar (it stays in your spellbook, K)`);
+  });
   // "+2%": an ability on the bar grew
   function tick(id, by) {
     const el = slotQ(`.slot[data-id="${id}"]`);
@@ -1165,7 +1198,7 @@ export function createHud() {
       .map(a => ({ id: a.id, label: a.name, spell: a.type === 'spell' }));
   }
   function useAbility(id) { use(id); }
-  function unslot(i) { if (st.bar[i]) editBar(takeOffBar(st.bar, i)); }
+  function unslot(i) { if (!st.bar[i]) return; if (locked(i)) lockedToast(); else editBar(takeOffBar(st.bar, i)); }
   function prefill(text) { els.input.value = text; els.input.focus(); }
   function openPanel(name) { if (name === 'inventory') inventory.toggle(true); else if (name === 'character') character.toggle(true); else if (name === 'mail') services.show('mail'); }
   function openTrainer(name) { trainer.toggle(true, name || ''); if (MH.refreshState) MH.refreshState(); }
