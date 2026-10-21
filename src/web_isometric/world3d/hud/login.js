@@ -65,19 +65,19 @@ export function setupLogin() {
   const showForm = () => only(form);
   // no account yet: the account first (email, name, password), then its heroes; what was typed
   // at the sign-in carries over
-  function showSignup(why) {
+  function showSignup(why, carry) {
     only(signup);
-    const typed = name.value.trim();
+    const typed = carry ? name.value.trim() : '';
     if (typed.includes('@')) { if (!nEmail.value) nEmail.value = typed; }
     else if (typed && !nName.value) nName.value = typed;
-    if (pass.value && !nPass.value) nPass.value = pass.value;
+    if (carry && pass.value && !nPass.value) nPass.value = pass.value;
     $('#signup-why').textContent = why || 'One account holds all your heroes.';
     say('');
     [nEmail, nName, nPass, nPass2].find(x => !x.value)?.focus();
   }
   $('#to-create').addEventListener('click', () => showSignup());
   $('#to-login').addEventListener('click', () => { showForm(); say(''); (name.value ? pass : name).focus(); });
-  MH.bus.on('login.noaccount', who => showSignup(`There's no account for ${who} yet. Create one to start playing.`));
+  MH.bus.on('login.noaccount', who => showSignup(`There's no account for ${who} yet. Create one to start playing.`, true));
   const rec = MH.auth.get();
   if (rec) {
     resumeBox.querySelector('b').textContent = rec.name;
