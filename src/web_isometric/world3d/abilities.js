@@ -59,14 +59,17 @@ export function defaultBar(abilities, order = []) {
   return bar;
 }
 
+// a slot on a bar the player locked (hud/bars.js): what is on it stays, and nothing new goes on
+const UNLOCKED = () => false;
+
 // newly learned abilities take the first free slots (the main bar first, then the extra bars
-// shown: `upto` slots); returns where
-export function placeNew(bar, ids, upto = SLOTS) {
+// shown: `upto` slots), not a locked bar's; returns where
+export function placeNew(bar, ids, upto = SLOTS, locked = UNLOCKED) {
   const out = bar.slice(), placed = [];
   while (out.length < SLOTS) out.push(null);
   for (const id of ids) {
     if (out.includes(id)) continue;
-    const i = out.indexOf(null);
+    const i = out.findIndex((x, k) => x === null && !locked(k));
     if (i < 0 || i >= upto) break;
     out[i] = id;
     placed.push({ id, slot: i });
@@ -74,19 +77,31 @@ export function placeNew(bar, ids, upto = SLOTS) {
   return { bar: out, placed };
 }
 
-// put an ability in a slot: one already on the bar swaps places with what is there
-export function putOnBar(bar, id, slot) {
-  if (slot < 0 || slot >= SLOTS) return bar.slice();
+// put an ability in a slot: one already on the bar swaps places with what is there. A locked
+// slot neither takes an ability nor gives up the one it holds: the bar comes back as it was
+export function putOnBar(bar, id, slot, locked = UNLOCKED) {
+  if (slot < 0 || slot >= SLOTS || locked(slot)) return bar.slice();
   const out = bar.slice(), from = out.indexOf(id);
-  if (from === slot) return out;
+  if (from === slot || (from >= 0 && locked(from))) return out;
   if (from >= 0) out[from] = out[slot];
   out[slot] = id;
   return out;
 }
 
-export function takeOffBar(bar, slot) {
+export function takeOffBar(bar, slot, locked = UNLOCKED) {
   const out = bar.slice();
-  if (slot >= 0 && slot < SLOTS) out[slot] = null;
+  if (slot >= 0 && slot < SLOTS && !locked(slot)) out[slot] = null;
+  return out;
+}
+
+// a bar you changed, keeping what you could not see: an ability the arrangement holds that the
+// shown bar lacks (the class's book not come yet, a payload without it) stays where it was,
+// unless something now sits there. Only the server knows what you know, and it keeps what is so
+export function keepUnseen(next, arranged, shown) {
+  const out = next.slice(), seen = new Set(shown.filter(Boolean));
+  (Array.isArray(arranged) ? arranged : []).slice(0, SLOTS).forEach((id, i) => {
+    if (id && !seen.has(id) && out[i] == null && !out.includes(id)) out[i] = id;
+  });
   return out;
 }
 

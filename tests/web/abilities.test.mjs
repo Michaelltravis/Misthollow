@@ -2,7 +2,7 @@
 //   node --test tests/web/*.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { SLOTS, MAIN, EXTRA, keyOf, slotForKey, rankOf, cleanBar, defaultBar, placeNew, putOnBar, takeOffBar, diffAbilities, costLine } from '../../src/web_isometric/world3d/abilities.js';
+import { SLOTS, MAIN, EXTRA, keyOf, slotForKey, rankOf, cleanBar, defaultBar, placeNew, putOnBar, takeOffBar, keepUnseen, diffAbilities, costLine } from '../../src/web_isometric/world3d/abilities.js';
 
 const ab = (id, o = {}) => ({ id, name: id, type: 'skill', pct: 50, level: 1, known: true, ...o });
 const LIST = [ab('bash'), ab('kick', { level: 3 }), ab('cleave', { level: 5 }), ab('rally', { level: 9 }), ab('charge', { known: false, pct: 0, level: 20 })];
@@ -75,4 +75,30 @@ test('an old 16-slot bar comes back as 40; a first bar fills only the main bar; 
   assert.deepEqual(placeNew(fullMain, ['late'], MAIN).placed, [], 'with no extra bar showing, nothing is hidden away');
   assert.deepEqual(placeNew(fullMain, ['late'], MAIN + 8).placed, [{ id: 'late', slot: 16 }], 'with one, the new ability goes to bar 3');
   assert.deepEqual(putOnBar(fullMain, 'm0', 33).slice(32, 34), [null, 'm0'], 'any slot of any bar takes an ability');
+});
+
+test('a locked bar keeps what is on it: nothing dragged off, swapped out, dropped on or placed', () => {
+  const bar = new Array(SLOTS).fill(null);
+  bar[0] = 'bash'; bar[16] = 'kick'; bar[17] = 'cleave';
+  const locked = i => i >= 16 && i < 24;              // bar 3 locked
+  assert.deepEqual(putOnBar(bar, 'trip', 18, locked), bar, 'nothing dropped onto a locked bar');
+  assert.deepEqual(putOnBar(bar, 'kick', 1, locked), bar, 'nothing pulled off it to another bar');
+  assert.deepEqual(putOnBar(bar, 'bash', 16, locked), bar, 'nor swapped in from another');
+  assert.deepEqual(takeOffBar(bar, 17, locked), bar, 'nor taken off');
+  assert.deepEqual(putOnBar(bar, 'bash', 2, locked).slice(0, 3), [null, null, 'bash'], 'an unlocked bar moves freely');
+  const full = bar.map((x, i) => (i < MAIN ? x || `m${i}` : x));
+  assert.deepEqual(placeNew(full, ['late'], MAIN + 8, locked).placed, [], 'a new ability does not land on a locked bar');
+  assert.deepEqual(placeNew(full, ['late'], MAIN + 16, locked).placed, [{ id: 'late', slot: 24 }], 'it goes to the next one that is free');
+});
+
+test('a change to the bar keeps what this client could not see', () => {
+  const arranged = new Array(SLOTS).fill(null);
+  arranged[0] = 'bash'; arranged[3] = 'fireball'; arranged[20] = 'heal';
+  const shown = arranged.map(x => (x === 'fireball' ? null : x));       // the book had not come yet
+  const next = putOnBar(shown, 'kick', 1);
+  const sent = keepUnseen(next, arranged, shown);
+  assert.equal(sent[3], 'fireball', 'the unseen ability is still where it was');
+  assert.deepEqual([sent[0], sent[1], sent[20]], ['bash', 'kick', 'heal']);
+  assert.equal(keepUnseen(putOnBar(shown, 'kick', 3), arranged, shown)[3], 'kick', 'what you put in its slot wins');
+  assert.equal(keepUnseen(takeOffBar(shown, 0), arranged, shown)[0], null, 'what you took off stays off');
 });

@@ -393,6 +393,12 @@ html.env-under #env-vignette { opacity: 1; background: radial-gradient(ellipse a
 .slot.attack { box-shadow: 0 0 0 1px #000, 0 0 0 2px rgba(255,120,80,.75), 0 5px 12px rgba(0,0,0,.55); }
 .slot.flee { background: radial-gradient(circle at 50% 35%, #1e2a3a, #070a10 75%); box-shadow: 0 0 0 1px #000, 0 0 0 2px rgba(140,190,240,.55), 0 5px 12px rgba(0,0,0,.55); }
 .slot.locked { opacity: .35; cursor: default; }
+/* the main bar's lock (bars.js): what is on a locked bar can't be dragged off or moved */
+#bar-mid .barlock { position: absolute; right: 2px; top: -9px; z-index: 4; width: 20px; height: 20px; padding: 0; border: 0; border-radius: 5px; cursor: pointer;
+  font-size: 11px; line-height: 20px; background: rgba(8,10,14,.85); box-shadow: 0 0 0 1px #000, 0 0 0 2px rgba(216,180,106,.35); opacity: .45; transition: opacity .2s; }
+#bar-mid:hover .barlock, #bar-mid .barlock.on { opacity: 1; }
+#bar-mid .barlock:hover { box-shadow: 0 0 0 1px #000, 0 0 0 2px var(--gold-hi); }
+.slot.pinned { cursor: pointer; }
 .slot.glow { animation: slot-glow 1.2s ease-in-out infinite alternate; }
 @keyframes slot-glow { from { box-shadow: 0 0 0 1px #000, 0 0 0 2px var(--gold), 0 0 6px rgba(243,217,153,.3); } to { box-shadow: 0 0 0 1px #000, 0 0 0 3px var(--gold-hi), 0 0 22px rgba(243,217,153,.9); } }
 .slot.suggest { animation: slot-suggest .9s ease-in-out infinite alternate; }
