@@ -79,7 +79,7 @@ export const WARDS = {
 // what to draw for a list of ward keys: {shell, orbits: [{kind, color}], rings, motes, hover, fade}
 export function wardPlan(keys) {
   const plan = { shell: null, orbits: [], ring: null, motes: [], hover: false, fade: false,
-    tint: null, fx: [], rate: 1, tremble: false, slump: false, band: false };
+    tint: null, fx: [], rate: 1, restRate: 1, tremble: false, slump: false, band: false };
   let best = -1, tbest = -1;
   for (const k of keys || []) {
     const w = WARDS[k];
@@ -93,6 +93,7 @@ export function wardPlan(keys) {
     if (w.tint != null && w.tp > tbest) { tbest = w.tp; plan.tint = w.tint; }
     if (w.fx && !plan.fx.includes(w.fx)) plan.fx.push(w.fx);
     if (w.rate != null) plan.rate = Math.min(plan.rate, w.rate);
+    if (w.rate != null && !w.slump) plan.restRate = Math.min(plan.restRate, w.rate);   // (all but sleep's)
     if (w.tremble) plan.tremble = true;
     if (w.slump) plan.slump = true;
     if (w.band) plan.band = true;
@@ -298,7 +299,13 @@ export class Wards {
     if (s.band && s.band.parent === root) s.band.position.y = s.eyeY + (root.userData.wardLift || 0);
     // the frightened tremble; a sleeper slumps forward
     if (s.plan.tremble) this.shake(root, (Math.random() - 0.5) * 0.06, (Math.random() - 0.5) * 0.06);
-    if (s.plan.slump) this.lean(root, 0.28);
+    // (one lying down asleep, posture.js, neither slumps nor breathes slowed: its clip is sleep
+    // enough, and its getting down plays at its own pace)
+    if (s.plan.slump) {
+      const lying = !!root.userData.lying;
+      this.lean(root, lying ? 0 : 0.28);
+      root.userData.animRate = lying ? s.plan.restRate : s.plan.rate;
+    }
     if (!this.fx.near(root.position, NEAR)) return;
     if (s.plan.motes.length && (s.motesT -= dt) <= 0) {
       const m = s.plan.motes[Math.floor(Math.random() * s.plan.motes.length)];

@@ -1366,6 +1366,9 @@ def build_combat_payload(player) -> dict:
                         'maxHp': getattr(entity, 'max_hp', 1),
                         'lk': (_look(entity) or {}).get('sig'),
                         **_pos_fields(entity),
+                        # slept, warded or harmed this round: their body shows it before the next map
+                        'position': getattr(entity, 'position', 'standing'),
+                        'wards': _wards(entity),
                         **_ally_combat(entity, player),
                     })
                 continue
@@ -1394,8 +1397,11 @@ def build_combat_payload(player) -> dict:
                 'quest': quest_mark,
                 'fighting': bool(getattr(entity, 'fighting', None) is player),
                 'fighting_name': getattr(getattr(entity, 'fighting', None), 'name', '') or '',
-                # (what lands on it this round shows on its nameplate before the next map)
+                # (what lands on it this round shows on its nameplate before the next map, and on
+                # its body: a sleeper lies down under its Zzz)
                 'auras': _auras(entity),
+                'wards': _wards(entity),
+                'position': getattr(entity, 'position', 'standing') or 'standing',
             }
             hp = getattr(entity, 'hp', None)
             max_hp = getattr(entity, 'max_hp', None)
@@ -1449,6 +1455,9 @@ def build_combat_payload(player) -> dict:
             'gold': getattr(player, 'gold', 0),
             'cooldowns': _cooldowns(player),
             'reactions': _reaction_ready(player),
+            # slept or warded mid-fight: the hero's body shows it (wards.js, posture.js)
+            'wards': _wards(player),
+            'position': getattr(player, 'position', 'standing'),
         },
         'mobs': mobs,
         'players': others,
@@ -1902,6 +1911,8 @@ def _room_entities(room, vnum, player):
                 'quest': quest_mark,
                 'flags': list(getattr(entity, 'flags', []) or []),
                 'pose': _mob_pose(entity),
+                # lying asleep under a spell (Sleep, a lullaby): /play lays the body down
+                'position': getattr(entity, 'position', 'standing') or 'standing',
                 'sex': (getattr(entity, 'sex', 'male') or 'male'),
                 'char_class': (getattr(entity, 'char_class', '') or ''),
                 # who it is fighting (the 3D client keeps your attacker targeted) and what it

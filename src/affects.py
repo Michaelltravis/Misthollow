@@ -48,12 +48,12 @@ class Affect:
 
 
 def _push_affects(character):
-    """A player's affects changed: /play's buff bar is told at once (the map payload otherwise
-    comes only with a move). Coalesced: a spell that sets several affects sends one payload."""
-    if not hasattr(character, 'connection'):
-        return
+    """A character's affects changed: /play is told at once (the map payload otherwise comes only
+    with a move). The player's own page gets its buff bar; everyone else in the room sees a change
+    on the body (a sleeper lying down under its Zzz, a ward's glow: _push_room). Coalesced: a
+    spell that sets several affects sends one payload."""
     wm = getattr(getattr(character, 'world', None), 'web_map', None)
-    if wm is None or not hasattr(wm, 'notify_player') or (hasattr(wm, 'has_play') and not wm.has_play(character)):
+    if wm is None or not hasattr(wm, 'notify_player'):
         return
     try:
         import asyncio
@@ -64,8 +64,30 @@ def _push_affects(character):
         return
     def go():
         character._affect_push = None
-        loop.create_task(wm.notify_player(character))
-    character._affect_push = loop.call_later(0.12, go)
+        if hasattr(character, 'connection') and (not hasattr(wm, 'has_play') or wm.has_play(character)):
+            loop.create_task(wm.notify_player(character))
+        _push_room(wm, loop, character)
+    try:
+        character._affect_push = loop.call_later(0.12, go)
+    except Exception:
+        pass
+
+
+def _push_room(wm, loop, character):
+    """The others in the room see what changed on a body: only when what /play draws of it (its
+    wards, lying asleep or standing) is different from what was last sent."""
+    room = getattr(character, 'room', None)
+    if room is None or not hasattr(wm, 'notify_room'):
+        return
+    try:
+        from map_system import _wards
+        sig = (tuple(_wards(character)), getattr(character, 'position', 'standing'))
+    except Exception:
+        return
+    if getattr(character, '_shown_body', None) == sig:
+        return
+    character._shown_body = sig
+    loop.create_task(wm.notify_room(room, skip=character))
 
 
 def _tick_event(character, affect, amount, heal=False):
@@ -223,6 +245,9 @@ class AffectManager:
         if not hasattr(character, 'affect_flags'):
             character.affect_flags = set()
         character.affect_flags.add(flag_name)
+        # a magical sleep lays the body down (whatever cast it: Sleep, a lullaby, a creature's spell)
+        if flag_name == 'sleeping' and (getattr(character, 'hp', 1) or 0) > 0:
+            character.position = 'sleeping'
         logger.debug(f"  Added flag: {flag_name}")
 
     @staticmethod
@@ -269,6 +294,9 @@ class AffectManager:
 
         if hasattr(character, 'affect_flags') and flag_name in character.affect_flags:
             character.affect_flags.remove(flag_name)
+            # ...and when it lifts (worn off, cleansed, struck awake) the sleeper gets up again
+            if flag_name == 'sleeping' and getattr(character, 'position', None) == 'sleeping':
+                character.position = 'fighting' if getattr(character, 'fighting', None) else 'standing'
             logger.debug(f"  Removed flag: {flag_name}")
 
     @staticmethod

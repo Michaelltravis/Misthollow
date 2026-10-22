@@ -8,12 +8,18 @@ import { mountRider } from './steed.js';
 import { spawnDressed, dress } from './equip.js';
 import { creatureLook, hashStr, npcDress } from './looks.js';
 import { makeProc, makeProp } from './proc.js';
-import { poseFor, postureChange } from './posture.js';
+import { poseFor, postureChange, bodyPosition } from './posture.js';
 import { makeKin } from './kin.js';
 import { isHostile, conOf, shownName } from './targeting.js';
 import { deathStyle, remains, fallOver, nameKey } from './corpse.js';
 import { plateAuras } from './hud/buffs.js';
 import { abilityIcon } from './hud/icons.js';
+
+// lying down (wards.js then leaves a sleeper unslumped and breathing at its own pace)
+const lies = e => e.position === 'sleeping' && !e.riding && e.pose === 'Lie_Idle';
+// has this body the clip? (a rigged body does; a kit or procedural creature, proc.js, has its own
+// few states and lies down in none of them)
+const hasClip = (actor, name) => !!(name && actor && typeof actor.action === 'function' && actor.action(name));
 
 export const CLASS_MODEL = {
   warrior: ['barbarian'], paladin: ['knight'], cleric: ['knight', 0xfff0d0], mage: ['mage'],
@@ -150,7 +156,7 @@ export class Entities {
 
   // a server position (room-local metres) for a creature in a fight: walk it there
   place(e, m) {
-    if (m.x == null || m.z == null || !this.zone) return;
+    if (m.x == null || m.z == null || !this.zone || e.position === 'sleeping') return;
     const room = this.zone.rooms.get(e.vnum);
     if (!room) return;
     const goal = new THREE.Vector3(room.ox + m.x, 0, room.oz + m.z);
@@ -276,7 +282,8 @@ export class Entities {
       if (!e) { this.create(key, w); continue; }
       e.data = w.data;
       if (e.kind === 'player' && e.actor && w.data.look) dress(e.actor, w.data.look, w.data.char_class);
-      if (e.kind === 'player' && e.actor) this.posture(e, w.data.position);
+      // another player sits, rests or sleeps; a creature lies down under a Sleep and gets up again
+      if (e.actor) this.posture(e, bodyPosition(e.kind, w.data));
       // another player on their mount (steed.js)
       if (e.kind === 'player' && e.actor) { e.riding = mountRider(e.actor, w.data.mount || null, e.riding || null); e.plateY = 0; }
       // a dressed person whose gear changed (disarmed, or picked something up)
@@ -298,13 +305,21 @@ export class Entities {
       if (!e) continue;
       Object.assign(e.data, m);
       this.paintAuras(e);
+      if (e.actor && m.position) this.posture(e, bodyPosition('mob', m));
       // (one that came in from next door this round: its room changes here, before the map does)
       if (payload.vnum != null && e.vnum !== payload.vnum && this.zone && this.zone.rooms.get(payload.vnum)) this.moveTo(e, payload.vnum, m);
       else this.place(e, m);
-      if (m.fighting && e.actor && e.root && this.hero) {
+      if (m.fighting && e.actor && e.root && this.hero && e.position !== 'sleeping') {
         e.root.rotation.y = Math.atan2(this.hero.x - e.root.position.x, this.hero.z - e.root.position.z);
         e.actor.once(['1H_Melee_Attack_Chop', '1H_Melee_Attack_Slice_Diagonal', '1H_Melee_Attack_Stab'][(hashStr(e.key) + Date.now()) % 3], 0.08, 1.1);
       }
+    }
+    // the others in the room: slept or warded this round (their body shows it before the next map)
+    for (const p of payload.players || []) {
+      const e = p.name ? this.list.get(`p${p.name}`) : null;
+      if (!e || !e.data) continue;
+      if (p.wards) e.data.wards = p.wards;
+      if (p.position) { e.data.position = p.position; if (e.actor) this.posture(e, p.position); }
     }
   }
 
@@ -338,9 +353,11 @@ export class Entities {
       e.root = actor.root;
       e.root.position.copy(at);
       e.root.rotation.y = (hashStr(key) % 628) / 100;
-      // (a player already resting or asleep when they come into sight is drawn so at once)
-      e.position = isPlayer ? w.data.position || 'standing' : 'standing';
-      e.pose = isPlayer && poseFor(e.position) ? poseFor(e.position).loop : null;
+      // (a player already resting or asleep when they come into sight is drawn so at once, and a
+      // creature already slept: a body without the clips to lie down slumps instead, wards.js)
+      e.position = bodyPosition(w.kind, w.data);
+      e.pose = poseFor(e.position) && hasClip(actor, poseFor(e.position).loop) ? poseFor(e.position).loop : null;
+      e.root.userData.lying = lies(e);
       actor.play(e.pose || (isHostile(w) ? 'Idle_Combat' : actor.idle || 'Idle'), 0, e.still ? 0 : 0.85 + (hashStr(key) % 30) / 100);
       if (isPlayer && w.data.mount) e.riding = mountRider(actor, w.data.mount, null);
       this.engine.scene.add(e.root);
@@ -349,12 +366,17 @@ export class Entities {
 
   // another player rests, sleeps or gets up (payload position): they sit down or lie down once,
   // then hold it (update: poseDue)
+  // (a creature too, slept and woken: one without the rig's clips keeps standing, and slumps)
   posture(e, position) {
     const ch = postureChange(e.position || 'standing', position || 'standing');
     e.position = position || 'standing';
     if (!ch) return;
-    e.pose = ch.loop;
-    const d = ch.once && !e.riding ? e.actor.once(ch.once, 0.2) : 0;
+    e.pose = hasClip(e.actor, ch.loop) ? ch.loop : null;
+    if (e.root) e.root.userData.lying = lies(e);
+    // fallen asleep mid-stride: it drops where it is (the server holds a sleeper still)
+    if (e.position === 'sleeping') { e.goal = null; e.then = null; e.rush = false; }
+    if (ch.loop && !e.pose) return;
+    const d = !e.riding && hasClip(e.actor, ch.once) ? e.actor.once(ch.once, 0.2) : 0;
     e.poseDue = performance.now() + d * 900 + 1;
   }
 
