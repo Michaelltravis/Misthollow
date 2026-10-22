@@ -435,14 +435,14 @@ async function waitFor(page, fn, arg, secs = 60) {
   }
 
   if (MODE === 'deathtrap') {
-    // the castle's inner hall: south of 22007 lies a death trap (22155). It is drawn as a ledge
-    // round a burning abyss; walking at it stops at the edge with a prompt; E dares it
-    check(await goto(22007), 'in the Hall Along The Inner Wall (22007)');
+    // the castle's inner hall: south of 22179 lies a death trap (22205, the Iron Maiden). It is
+    // drawn as a ledge round a burning abyss; walking at it stops at the edge with a prompt; E dares it
+    check(await goto(22179), 'in the Hall Along The Inner Wall (22179)');
     await sleep(2500);
     await page.screenshot({ path: path.join(OUT, 'deathtrap-from-outside.png') });
-    console.log(JSON.stringify(await page.evaluate(() => { const z = MH3D.zone(), r = z.rooms.get(22155), h = MH3D.heroRoom();
+    console.log(JSON.stringify(await page.evaluate(() => { const z = MH3D.zone(), r = z.rooms.get(22205), h = MH3D.heroRoom();
       return { flags: r && r.data.flags, deadly: z.deadly ? z.deadly(r) : 'no fn', exits: h.data.exits, hasDared: !!z.dared }; })));
-    const built = await page.evaluate(() => { const r = MH3D.zone().rooms.get(22155); return !!(r && r.built); });
+    const built = await page.evaluate(() => { const r = MH3D.zone().rooms.get(22205); return !!(r && r.built); });
     check(built, 'the death trap next door is built (seen from here)');
     await page.evaluate(() => { const r = MH3D.heroRoom(), g = MH3D.zone().layoutOf(r).gaps.south;
       MH3D.hero.root.position.set(r.ox + (g.x0 + g.x1 + 1) / 2, 0, r.oz + 15 - 2.2); });
@@ -452,18 +452,18 @@ async function waitFor(page, fn, arg, secs = 60) {
     await sleep(500);
     const at = await page.evaluate(() => MH3D.heroRoom().vnum);
     const text = await page.evaluate(() => !document.getElementById('prompt').classList.contains('hidden') && document.querySelector('#prompt span').textContent);
-    check(at === 22007, `walking at it stops at the edge (still in ${at})`);
+    check(at === 22179, `walking at it stops at the edge (still in ${at})`);
     check(/certain death/i.test(text || ''), `the prompt warns: "${text}"`);
     await page.screenshot({ path: path.join(OUT, 'deathtrap-edge.png') });
     await page.keyboard.press('e');
-    const dared = await page.evaluate(() => MH3D.zone().dared.has(22155));
+    const dared = await page.evaluate(() => MH3D.zone().dared.has(22205));
     check(dared, 'E dares it');
     // inside (an immortal's goto skips the trap): the abyss
-    await page.evaluate(() => MH.sendCommand('goto 22155', false));
-    await waitFor(page, () => MH3D.heroRoom() && MH3D.heroRoom().vnum === 22155, null, 30);
+    await page.evaluate(() => MH.sendCommand('goto 22205', false));
+    await waitFor(page, () => MH3D.heroRoom() && MH3D.heroRoom().vnum === 22205, null, 30);
     await sleep(2500);
     await page.screenshot({ path: path.join(OUT, 'deathtrap-inside.png') });
-    await page.evaluate(() => MH.sendCommand('goto 22007', false));
+    await page.evaluate(() => MH.sendCommand('goto 22179', false));
   }
 
   if (MODE === 'castle') {

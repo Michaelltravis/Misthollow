@@ -150,6 +150,11 @@ async def main():
     trapped = sorted((reach - back) - deadly)
     check(not cut, f'every open room can be reached from the temple ({len(cut)} cannot: {cut[:6]})')
     check(not trapped, f'and walked back from ({len(trapped)} cannot: {trapped[:6]})')
+    # a death trap kills whoever walks in and turns back whoever catches themself (commands.py), so
+    # nobody passes through one: a room behind a death trap is a room nobody reaches or leaves
+    _, reach_safe, back_safe = walker(open_rooms - deadly)
+    behind = sorted(((reach & back) - deadly) - (reach_safe & back_safe))
+    check(not behind, f'and no death trap stands in the way ({len(behind)} only through one: {behind[:6]})')
     zone12 = {v for v, r in W.items() if r.zone is not None and r.zone.number == 12}
     check(zone12 and zone12 == gods, f'the God Rooms, and only they, are for immortals only ({sorted(zone12 ^ gods)[:5]})')
     check(gods <= reach_all and gods <= back_all, f'an immortal reaches the God Rooms and walks back ({sorted(gods - (reach_all & back_all))})')
