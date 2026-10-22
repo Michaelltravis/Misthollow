@@ -6,11 +6,12 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { MOB_RECIPES } from '../../src/web_isometric/world3d/mobfx-hand.js';
-import { MOB_TABLE } from '../../src/web_isometric/world3d/mobfx-table.js';
+import { MOB_TABLE, MOB_REVIEW } from '../../src/web_isometric/world3d/mobfx-table.js';
 import { familyOf, mobRecipe, TABLES } from '../../src/web_isometric/world3d/mobfx.js';
 import { FAMILIES, THEMES, TELLS, validate, signature, creatureRecipe, forRank, rankOf, parse } from '../../src/web_isometric/world3d/abilityfx.js';
 
-const SENT = JSON.parse(readFileSync(new URL('./fixtures/mobfx.json', import.meta.url))).abilities;
+const FIXTURE = JSON.parse(readFileSync(new URL('./fixtures/mobfx.json', import.meta.url)));
+const SENT = FIXTURE.abilities, BOSSES = FIXTURE.bosses;
 const CLIPS = JSON.parse(readFileSync(new URL('./fixtures/abilitybook.json', import.meta.url))).clips;
 
 test('every everyday creature ability the server sends has a line of its own', () => {
@@ -21,6 +22,17 @@ test('every everyday creature ability the server sends has a line of its own', (
 test('no hand line is left over from an ability no creature has', () => {
   const sent = new Set(SENT.map(a => a.fx));
   assert.deepEqual(Object.keys(MOB_RECIPES).filter(id => !sent.has(id)), []);
+});
+
+test('every boss ability is drawn by JEV, by hand, or waits on the review (none falls through)', () => {
+  assert.ok(BOSSES.length > 100, `the bosses' abilities are in the fixture (${BOSSES.length})`);
+  const lost = BOSSES.filter(k => !MOB_TABLE[k] && !MOB_RECIPES[k] && !MOB_REVIEW.includes(k));
+  assert.deepEqual(lost, []);
+  assert.deepEqual(MOB_REVIEW.filter(k => MOB_TABLE[k]), [], 'a reviewed ability has no JEV line');
+  const known = new Set([...BOSSES, ...SENT.map(a => a.fx)]);
+  assert.deepEqual(Object.keys(MOB_TABLE).filter(k => !known.has(k)), [], 'no JEV line for an ability no boss has');
+  // (an ability JEV wasn't sure of still gets a legal look, by its kind)
+  for (const k of MOB_REVIEW) assert.equal(creatureRecipe(TABLES, k, 'beast', { k: 'resolve', kind: 'aoe' }).known, false);
 });
 
 test('every line (hand and generated) parses and names clips the rig has, a known tell', () => {

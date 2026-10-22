@@ -201,8 +201,8 @@ export async function showAbilityGallery(engine) {
   return new THREE.Vector3(3.5, 0, 0.5);
 }
 
-// /play?demo&gallery=mobfx[&only=fire,blow][&rank=normal|elite|boss][&cancel][&secs=1.6][&manual] —
-// every creature ability (mobfx-hand.js) wound up, let go and landed by four creatures of four
+// /play?demo&gallery=mobfx[&jev][&only=fire,blow][&rank=normal|elite|boss][&cancel][&secs=1.6][&manual] —
+// every creature ability (mobfx-hand.js; `jev`: the bosses' lines JEV drew, mobfx-table.js) wound up, let go and landed by four creatures of four
 // families at once, each on a dummy of its own: its tell, its gathering power, its mark on the
 // ground, its release. `cancel` breaks each wind-up instead (the interruption); ← → step, space
 // pauses; `manual` stops the clock (MH3D.gallery.play(i, phase), then engine.step()).
@@ -213,8 +213,9 @@ export const MOBFX_SAMPLES = [
 export async function showMobFxGallery(engine, kits) {
   const q = new URLSearchParams(location.search);
   const only = q.get('only'), rank = q.get('rank') || 'boss', breakIt = q.has('cancel'), secs = Number(q.get('secs')) || 1.6;
-  const [{ FX }, { Director }, { creatureRecipe, timeline }, { MOB_RECIPES }, { familyOf, TABLES }] = await Promise.all([
-    import('./fx.js'), import('./fxdirector.js'), import('./abilityfx.js'), import('./mobfx-hand.js'), import('./mobfx.js')]);
+  const [{ FX }, { Director }, { creatureRecipe, timeline }, { MOB_RECIPES }, { familyOf, TABLES }, { MOB_TABLE }] = await Promise.all(
+    [import('./fx.js'), import('./fxdirector.js'), import('./abilityfx.js'), import('./mobfx-hand.js'), import('./mobfx.js'), import('./mobfx-table.js')]);
+  const LINES = q.has('jev') ? MOB_TABLE : MOB_RECIPES;
   engine.timeScale = Number(q.get('speed')) || 1;
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(44, 30), new THREE.MeshStandardMaterial({ color: 0x4a4740, roughness: 1 }));
   floor.rotation.x = -Math.PI / 2; floor.position.set(9, 0, 0); floor.receiveShadow = true;
@@ -237,7 +238,7 @@ export async function showMobFxGallery(engine, kits) {
     const ent = { fly, look, data: m };
     rows.push({ src: { actor: a, root: a.root, mob: true, ent }, dst: { actor: d, root: d.root, mob: false }, family: familyOf(look, m), m });
   }
-  const ids = Object.keys(MOB_RECIPES).filter(id => !only || only.split(',').some(o => id.includes(o)));
+  const ids = Object.keys(LINES).filter(id => !only || only.split(',').some(o => id.includes(o)));
   const label = document.createElement('div');
   label.style.cssText = 'position:fixed;left:50%;top:14px;transform:translateX(-50%);font:600 18px Georgia,serif;color:#fff;background:#000b;padding:6px 14px;border-radius:6px;z-index:60;text-align:center;white-space:nowrap';
   document.body.appendChild(label);
@@ -267,7 +268,7 @@ export async function showMobFxGallery(engine, kits) {
       });
       end = Math.max(end, timeline(r, 7).end);
     }
-    const line = MOB_RECIPES[id];
+    const line = LINES[id];
     label.innerHTML = `<b>${i + 1}/${ids.length} · ${id.replace(/_/g, ' ')}</b> <span style="font:12px monospace;color:#cde">${rank}${breakIt ? ' · broken' : ''} · ${rows.map(r => r.family).join(' / ')}<br>${line}</span>`;
     wait = (phase === 'all' ? secs : 0) + Math.max(2.2, end + 1.2);
     return { id, line };
