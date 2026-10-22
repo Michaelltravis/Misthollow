@@ -3197,7 +3197,10 @@ class Player(Character):
             except Exception:
                 pass
         await self.do_look([])
-        
+        # a death comes in a creature's round, not a command (execute_command's sync_room never
+        # runs): /play is told of the temple here, or it went on drawing the room you died in
+        await self.sync_room()
+
     async def regen_tick(self):
         """Regenerate HP/mana/move and process affects."""
         # Process bard performance
