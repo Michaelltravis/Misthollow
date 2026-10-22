@@ -859,12 +859,12 @@
      "to_room": 14194,
      "description": "To the south lies Ragged Walkway Atop The Castle."
     },
-    "east": {
+    "west": {
      "to_room": 22183,
-     "description": "To the east lies A Hall Of Sliding Walls."
+     "description": "To the west lies A Hall Of Sliding Walls."
     }
    },
-   "description": "The wall top narrows here between parapets of cracked grey stone, and\nthe walkway runs on north and south. On the inner side, to the east, two\nwalls of polished stone frame a passage that should not be here at all.\nA loose flagstone before it sits a finger's breadth lower than the rest.\nDeep in the castle a chain rattles once, then falls silent.",
+   "description": "The wall top narrows here between parapets of cracked grey stone, and\nthe walkway runs on north and south. To the west, two walls of polished\nstone jut out from the face of the wall around a passage that should not\nbe here at all. A loose flagstone before it sits a finger's breadth\nlower than the rest. Deep in the castle a chain rattles once, then falls\nsilent.",
    "extra_descs": {}
   },
   "14196": {
@@ -1019,7 +1019,7 @@
    "vnum": 22183,
    "name": "A Hall Of Sliding Walls",
    "map": {
-    "x": -9,
+    "x": -11,
     "y": -65,
     "z": 0
    },
@@ -1030,9 +1030,9 @@
     "indoors"
    ],
    "exits": {
-    "west": {
+    "east": {
      "to_room": 22152,
-     "description": "To the west lies Ragged Walkway Atop The Castle."
+     "description": "To the east lies Ragged Walkway Atop The Castle."
     }
    },
    "description": "You step between two walls of polished stone, and the floor drops a\nfinger's breadth beneath your weight with a click. Deep in the castle\nsomething answers, and both walls begin to slide inward with a terrible\ngrinding patience. Crushed armour and old bones are pressed flat into\nthe joints. The way back closes with the rest.",
