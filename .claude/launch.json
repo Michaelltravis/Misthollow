@@ -6,13 +6,6 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-X", "utf8", "-c", "import os, sys, runpy; os.chdir('src'); sys.path.insert(0, '.'); runpy.run_path('main.py', run_name='__main__')"],
       "port": 4001
-    },
-    {
-      "name": "misthollow-alt",
-      "runtimeExecutable": "python",
-      "runtimeArgs": ["-X", "utf8", "-c", "import os, sys, runpy; os.chdir('src'); sys.path.insert(0, '.'); import config; config.Config.PORT=4100; config.Config.MAP_PORT=4101; config.Config.ADMIN_DASHBOARD_PORT=4102; runpy.run_path('main.py', run_name='__main__')"],
-      "port": 4101,
-      "autoPort": false
     }
   ]
 }
