@@ -169,6 +169,53 @@
      }
     ]
    }
+  },
+  "796400": {
+   "name": "vaelith ancient vampire",
+   "short_desc": "Vaelith, an ancient vampire",
+   "long_desc": "Vaelith, an ancient vampire, rises from her obsidian coffin, silk trailing from her shoulders.",
+   "description": "She is tall and grey-pale, dressed in the faded finery of a court that fell a thousand years ago, and her eyes are the deep red of old wine. She sleeps here through the day among her paintings and tapestries, and goes out at night to feed. Her smile shows the tips of long teeth.",
+   "level": 40,
+   "flags": [
+    "aggressive",
+    "sentinel",
+    "undead"
+   ],
+   "rank": "sub-boss",
+   "alignment": -900,
+   "why": "the ancient vampire whose mausoleum this is",
+   "race": "undead"
+  },
+  "796401": {
+   "name": "barrow king mummy lord",
+   "short_desc": "the Barrow King, a mummy lord",
+   "long_desc": "The Barrow King stands beside his sarcophagus, wrapped in grave-cloth gone black with age.",
+   "description": "A mummy lord older than the necropolis around him, crowned in tarnished bronze, his grave-cloths painted with the symbols carved on the walls. He was a king of a people no one remembers, and he was buried with a magic meant to keep him sleeping. That magic is failing. Cold pours off him like water.",
+   "level": 42,
+   "flags": [
+    "aggressive",
+    "sentinel",
+    "undead"
+   ],
+   "rank": "sub-boss",
+   "alignment": -1000,
+   "why": "the ancient evil that sleeps in the sarcophagus",
+   "race": "undead"
+  },
+  "796402": {
+   "name": "ghoul packmaster",
+   "short_desc": "a ghoul packmaster",
+   "long_desc": "A ghoul packmaster crouches among the gnawed bones, sniffing the air.",
+   "description": "Bigger and cleverer than the ghouls it leads, this one has long, grey-nailed hands and a hunter's patience. It sets the ambushes in the warren and drags the freshest corpses below.",
+   "level": 32,
+   "flags": [
+    "aggressive",
+    "undead"
+   ],
+   "rank": "elite",
+   "alignment": -800,
+   "why": "the ghouls of the warren",
+   "race": "undead"
   }
  },
  "patrols": [
@@ -239,6 +286,25 @@
      "why": "poison pools where she breathes: step out"
     }
    ]
+  },
+  {
+   "vnum": 796400,
+   "room": 14009,
+   "why": "the ancient vampire whose mausoleum this is"
+  },
+  {
+   "vnum": 796401,
+   "room": 14015,
+   "why": "the ancient evil that sleeps in the sarcophagus"
+  }
+ ],
+ "spawns": [
+  {
+   "vnum": 796402,
+   "rooms": [
+    14010
+   ],
+   "why": "the ghouls of the warren"
   }
  ]
 }

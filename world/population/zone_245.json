@@ -91,6 +91,21 @@
     ]
    },
    "why": "Shadow Lord Malachar"
+  },
+  "797450": {
+   "name": "mirror malachar shadow reflection",
+   "short_desc": "the Mirror of Malachar",
+   "long_desc": "The Mirror of Malachar sits upon the inverted throne, a perfect reversed copy of the Shadow Lord.",
+   "description": "It is Shadow Lord Malachar in every line, but reversed, as in a glass: the scar on the wrong cheek, the rings on the wrong hand. Perhaps it is the copy. Perhaps it is not. It speaks a moment after you do, in your own voice.",
+   "level": 53,
+   "flags": [
+    "aggressive",
+    "sentinel"
+   ],
+   "rank": "sub-boss",
+   "alignment": -1000,
+   "why": "the copy of Malachar who sits on the mirror throne",
+   "race": "undead"
   }
  },
  "patrols": [
@@ -129,6 +144,11 @@
      "why": "his shadow"
     }
    ]
+  },
+  {
+   "vnum": 797450,
+   "room": 24518,
+   "why": "the copy of Malachar who sits on the mirror throne"
   }
  ]
 }

@@ -435,6 +435,21 @@
    "inventory": [
     22060
    ]
+  },
+  "797200": {
+   "name": "iron bound golem guardian",
+   "short_desc": "an iron-bound golem",
+   "long_desc": "An iron-bound golem stands guard here, its fists the size of anvils.",
+   "description": "A guardian construct of black iron plates riveted over a core of stone, twice the height of a man. Chains hang from its wrists, and the floor is cracked where it has stamped. It was made to keep these chambers, and it keeps them still.",
+   "level": 61,
+   "flags": [
+    "aggressive",
+    "sentinel"
+   ],
+   "rank": "elite",
+   "alignment": 0,
+   "why": "the guardians the chambers are named for",
+   "race": "construct"
   }
  },
  "spawns": [
@@ -527,6 +542,15 @@
     14190
    ],
    "why": "the Carrion Queen on the walkway atop the castle"
+  },
+  {
+   "vnum": 797200,
+   "rooms": [
+    14155,
+    14160,
+    22101
+   ],
+   "why": "the guardians the chambers are named for"
   }
  ],
  "patrols": [

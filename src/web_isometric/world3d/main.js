@@ -628,7 +628,7 @@ async function runGame() {
     }
     if (payload.player) { envLayer.body(payload.player); alerts.setMail(payload.player.mail); }
     if ('world_events' in payload) alerts.setEvents(payload.world_events);
-    if (payload.player) { hud.setPlayer(payload.player); body.update(payload.player); ents.heroLevel = payload.player.level || 1; }
+    if (payload.player) { hud.setPlayer(payload.player); body.update(payload.player); ents.heroLevel = payload.player.level || 1; ents.iconClass = String(payload.player.char_class || '').toLowerCase(); }
     // what the hero wears (gear_look.py): re-dressed when it changes
     if (hero && payload.player && payload.player.look) dress(hero, payload.player.look, payload.player.char_class);
     if (hero && payload.player) ride(payload.player);

@@ -1,6 +1,14 @@
 {
  "_about": "Landmark and boss rooms laid out by hand (src/setpieces.py, Phase 5 of docs/world/room_visuals.md). A room listed here has its things placed where given (x 1-22, y 1-13 on the room's 24 x 15 grid; thrones, altars and statues turn to face the room's middle) in place of those read from its words, and its own light. Pieces: the keys of src/room_features.py FEATURES; c: a colour (red, black, white, gold, silver, green, blue, teal, purple).",
  "rooms": {
+  "8403": {"why": "Ostragoth's bedchamber: the black bed under its rotted canopy, the mirror turned to the wall, the banded chest, the torn curtains he flies in by", "light": "#5a6cff",
+    "layout": [{"k": "bed", "x": 12, "y": 2, "main": true, "c": "black"}, {"k": "mirror", "x": 4, "y": 3, "c": "silver"}, {"k": "chest", "x": 17, "y": 3, "c": "black"},
+               {"k": "candle", "x": 8, "y": 2}, {"k": "candle", "x": 16, "y": 2}, {"k": "rug", "x": 12, "y": 8, "c": "red"},
+               {"k": "banner", "x": 7, "y": 1, "c": "black"}, {"k": "banner", "x": 17, "y": 1, "c": "black"}, {"k": "blood", "x": 10, "y": 6}]},
+  "8424": {"why": "The House of Death: shrouded dead in their niches along the walls, the ring of fused glass at the middle where the Starbringer hangs", "light": "#e8f0ff",
+    "layout": [{"k": "crystal", "x": 12, "y": 7, "main": true, "c": "white"}, {"k": "coffin", "x": 3, "y": 3}, {"k": "coffin", "x": 3, "y": 7},
+               {"k": "coffin", "x": 3, "y": 11}, {"k": "coffin", "x": 21, "y": 3}, {"k": "coffin", "x": 21, "y": 7}, {"k": "coffin", "x": 21, "y": 11},
+               {"k": "ash", "x": 9, "y": 5}, {"k": "ash", "x": 15, "y": 9}, {"k": "bones", "x": 7, "y": 10}, {"k": "weapons", "x": 17, "y": 4}]},
   "24527": {"why": "The Throne of Shadows: Malachar's black throne against the north wall, pillars of shadow, violet crystals", "light": "#8a5cff",
     "layout": [{"k": "throne", "x": 12, "y": 2, "main": true, "c": "black"}, {"k": "pillar", "x": 8, "y": 3}, {"k": "pillar", "x": 16, "y": 3},
                {"k": "pillar", "x": 8, "y": 9}, {"k": "pillar", "x": 16, "y": 9}, {"k": "crystal", "x": 5, "y": 5, "c": "purple"},
@@ -45,6 +53,12 @@
   "4430": {"why": "By the Diamond Altar: the hollow bishop's altar ringed with crystals, candles and banners", "light": "#9adcff",
     "layout": [{"k": "altar", "x": 11, "y": 11, "main": true, "c": "white"}, {"k": "crystal", "x": 8, "y": 10, "c": "teal"}, {"k": "crystal", "x": 15, "y": 10, "c": "teal"},
                {"k": "crystal", "x": 5, "y": 3, "c": "teal"}, {"k": "crystal", "x": 18, "y": 3, "c": "teal"}, {"k": "candle", "x": 10, "y": 12}, {"k": "candle", "x": 14, "y": 12},
-               {"k": "banner", "x": 4, "y": 1}, {"k": "banner", "x": 19, "y": 1}]}
+               {"k": "banner", "x": 4, "y": 1}, {"k": "banner", "x": 19, "y": 1}]},
+  "5698": {"why": "Under the dock at New Thalos: the four wooden pylons it stands on, the iron grate to the west",
+    "layout": [{"k": "piling", "x": 9, "y": 4}, {"k": "piling", "x": 15, "y": 4}, {"k": "piling", "x": 9, "y": 10}, {"k": "piling", "x": 15, "y": 10},
+               {"k": "rubble", "x": 3, "y": 3}]},
+  "5699": {"why": "The Ixitxachitl's lair behind the grate: blood in the water over the bones of its meals", "light": "#b03a3a",
+    "layout": [{"k": "blood", "x": 11, "y": 5, "main": true}, {"k": "blood", "x": 14, "y": 9}, {"k": "bones", "x": 6, "y": 4}, {"k": "bones", "x": 15, "y": 3},
+               {"k": "bones", "x": 17, "y": 11}, {"k": "skull", "x": 8, "y": 11}, {"k": "rubble", "x": 4, "y": 10}, {"k": "rubble", "x": 19, "y": 4}]}
  }
 }

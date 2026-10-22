@@ -14,7 +14,9 @@ function onBody(root, s, lift, from, to, out = _p) {
   const pos = root.position;
   return out.set(pos.x + Math.cos(a) * r, pos.y + lift + s.h * (from + Math.random() * (to - from)), pos.z + Math.sin(a) * r);
 }
-const overHead = (root, s, lift, out = _p) => out.set(root.position.x + (Math.random() - 0.5) * 0.2, root.position.y + lift + s.h + 0.15, root.position.z + (Math.random() - 0.5) * 0.2);
+// (over one lying down, posture.js: just above the body on the ground, not where a head stood)
+const overHead = (root, s, lift, out = _p) => out.set(root.position.x + (Math.random() - 0.5) * 0.2,
+  root.position.y + lift + (root.userData.lying ? Math.min(s.h, 0.55) : s.h) + 0.15, root.position.z + (Math.random() - 0.5) * 0.2);
 
 // kind -> [[every (s), jitter (s), emit(fx, root, s, lift)]...]
 export const HARMS = {

@@ -91,7 +91,7 @@ async def main():
            and r.vnum not in ov['rooms']]      # (a reviewed pin wins: A Small Rocky Path down a wooded hillside)
     check(not mtn, f'no room named as mountain country is drawn as field, hills or forest ({mtn[:4]})')
     water = [r for r in rooms.values() if r.sector_type in rl.WATER_SECTORS]
-    check(all(r.look == r.sector_type for r in water), 'water stays water')
+    check(all(r.look == r.sector_type or r.look == 'underwater' for r in water), 'water stays water (on it, or under it)')
 
     # the Sewer is underground throughout (owner: "sewers should look like a sewer"): no pipe
     # junction drawn as a town street, no ledge as a mountain, no lair as a field
@@ -131,6 +131,14 @@ async def main():
     check(not wrong, f'no room keeps filler its look contradicts ({wrong[:3]})')
     check('canopy' not in rooms[7313].description and 'water' in rooms[7313].description.lower(),
           'the Spongy Room in the sewers lost its birdsong and gained its own dank lines')
+
+    # ---- a water room under the water is the seabed, not the surface (room_looks.under_water)
+    under = {v: rooms[v].look for v in (5698, 5699, 6808, 13325)}
+    check(all(l == 'underwater' for l in under.values()),
+          f'under the dock, the lair behind its grate, the flooded passage and beneath the lake are under the water ({under})')
+    check(all(rooms[v].look == 'water_noswim' for v in (5697, 5689, 13323, 5483)), 'and the sea, the lake and the river over them are not')
+    check(not any(l in rooms[v].description for v in (5698, 5699) for l in rl.FILLER['surface']), 'no spray or breaking waves under the water')
+    check([f['k'] for f in rooms[5698].features].count('piling') == 4, 'under the dock stand its four pylons (world/setpieces.json)')
 
     # ---- the payloads carry it
     from map_system import build_zonemap

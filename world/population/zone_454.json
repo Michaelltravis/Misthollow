@@ -115,6 +115,21 @@
      }
     ]
    }
+  },
+  "799540": {
+   "name": "hulking bugbear brute",
+   "short_desc": "a hulking bugbear brute",
+   "long_desc": "A hulking bugbear brute rises from its nest of hide and straw.",
+   "description": "A bugbear larger than a man by a head, its coarse hair matted and its ears torn. It sleeps in the dens with the others and fights for the chieftain, and a spiked cudgel is never far from its hand.",
+   "level": 18,
+   "flags": [
+    "aggressive",
+    "sentinel"
+   ],
+   "rank": "elite",
+   "alignment": -500,
+   "why": "the biggest sleepers of the dens",
+   "race": "bugbear"
   }
  },
  "patrols": [
@@ -217,5 +232,15 @@
    "why": "a mold-eaten skeleton"
   }
  ],
- "_fill": "tools/audit/densify.py: 20 more of the zone's own ordinary creatures in its empty rooms, 0.45 hostile per walkable room as the aim"
+ "_fill": "tools/audit/densify.py: 20 more of the zone's own ordinary creatures in its empty rooms, 0.45 hostile per walkable room as the aim",
+ "spawns": [
+  {
+   "vnum": 799540,
+   "rooms": [
+    107347,
+    107349
+   ],
+   "why": "the biggest sleepers of the dens"
+  }
+ ]
 }

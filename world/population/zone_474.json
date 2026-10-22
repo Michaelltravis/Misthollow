@@ -115,6 +115,21 @@
      }
     ]
    }
+  },
+  "799740": {
+   "name": "ysilde queen cave elf",
+   "short_desc": "Queen Ysilde of the cave elves",
+   "long_desc": "Queen Ysilde of the cave elves sits before her silver mirror, a moth-embroidered shawl about her shoulders.",
+   "description": "A slender elf with skin the grey of pearl and long silver hair, her eyes pale from a life without the sun. She is the king's queen and his keenest spellcaster, and the guards say it is she, not he, who rules the kingdom.",
+   "level": 19,
+   "flags": [
+    "aggressive",
+    "sentinel"
+   ],
+   "rank": "sub-boss",
+   "alignment": -500,
+   "why": "the queen whose private chamber this is",
+   "race": "elf"
   }
  },
  "patrols": [
@@ -165,6 +180,11 @@
      "why": "step out"
     }
    ]
+  },
+  {
+   "vnum": 799740,
+   "room": 21737,
+   "why": "the queen whose private chamber this is"
   }
  ],
  "fill": [

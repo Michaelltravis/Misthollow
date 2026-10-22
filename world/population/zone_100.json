@@ -121,6 +121,36 @@
      }
     ]
    }
+  },
+  "796000": {
+   "name": "pale lake serpent",
+   "short_desc": "a pale lake serpent",
+   "long_desc": "A pale lake serpent rises from the black water, its blind head swaying.",
+   "description": "A serpent as thick as a man's body and three times as long, bone-white from a life in the dark, its eyes clouded and useless. It hunts by the ripples in the water, and the ripples you make are very loud.",
+   "level": 20,
+   "flags": [
+    "aggressive",
+    "sentinel"
+   ],
+   "rank": "elite",
+   "alignment": 0,
+   "why": "the something large that moves in the lake",
+   "race": "snake"
+  },
+  "796001": {
+   "name": "bloated cave spider",
+   "short_desc": "a bloated cave spider",
+   "long_desc": "A bloated cave spider hangs in the webs above, its belly swollen and pale.",
+   "description": "A cave spider grown fat on kobolds, its abdomen the size of a barrel and its legs as long as spears. It hangs where its webs meet and waits for the trembling of something caught.",
+   "level": 18,
+   "flags": [
+    "aggressive",
+    "sentinel"
+   ],
+   "rank": "elite",
+   "alignment": 0,
+   "why": "what spins the den's webs",
+   "race": "spider"
   }
  },
  "patrols": [
@@ -189,5 +219,21 @@
    "why": "a giant cave bat"
   }
  ],
- "_fill": "tools/audit/densify.py: 6 more of the zone's own ordinary creatures in its empty rooms, 0.45 hostile per walkable room as the aim"
+ "_fill": "tools/audit/densify.py: 6 more of the zone's own ordinary creatures in its empty rooms, 0.45 hostile per walkable room as the aim",
+ "spawns": [
+  {
+   "vnum": 796000,
+   "rooms": [
+    10017
+   ],
+   "why": "the something large that moves in the lake"
+  },
+  {
+   "vnum": 796001,
+   "rooms": [
+    10019
+   ],
+   "why": "what spins the den's webs"
+  }
+ ]
 }

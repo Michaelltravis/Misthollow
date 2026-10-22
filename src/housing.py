@@ -260,6 +260,11 @@ class HouseManager:
         if not house:
             await player.send(f"{c['red']}You don't own a house. Visit the Housing District to buy one!{c['reset']}")
             return
+        import lairs
+        held = lairs.holds(player)
+        if held:
+            await player.send(f"{c['red']}{held}{c['reset']}")
+            return
 
         # Cooldown check
         last_home = getattr(player, '_home_cooldown', 0)
