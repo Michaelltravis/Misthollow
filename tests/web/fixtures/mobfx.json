@@ -1,0 +1,189 @@
+{
+ "abilities": [
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (hex)",
+    "mob_ai.CASTER_DEBUFFS"
+   ],
+   "fx": "blindness",
+   "label": "Blindness"
+  },
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (harm)"
+   ],
+   "fx": "burning_hands",
+   "label": "Burning Hands"
+  },
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (harm)"
+   ],
+   "fx": "chill_touch",
+   "label": "Chill Touch"
+  },
+  {
+   "from": [
+    "mob_ai intent"
+   ],
+   "fx": "coordinated_lunge",
+   "label": "Coordinated Lunge"
+  },
+  {
+   "from": [
+    "mob_ai intent"
+   ],
+   "fx": "crushing_blow",
+   "label": "Crushing Blow"
+  },
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (hex)"
+   ],
+   "fx": "curse",
+   "label": "Curse"
+  },
+  {
+   "from": [
+    "brain/cast.py intent",
+    "combat_hooks instant"
+   ],
+   "fx": "disrupt",
+   "label": "Disrupt"
+  },
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (hex)"
+   ],
+   "fx": "entangle",
+   "label": "Entangle"
+  },
+  {
+   "from": [
+    "mob_ai intent"
+   ],
+   "fx": "fire_breath",
+   "label": "Fire Breath"
+  },
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (harm)",
+    "mob_ai.CASTER_OFFENSIVE"
+   ],
+   "fx": "fireball",
+   "label": "Fireball"
+  },
+  {
+   "from": [
+    "mob_ai intent"
+   ],
+   "fx": "ground_slam",
+   "label": "Ground Slam"
+  },
+  {
+   "from": [
+    "combat_hooks instant"
+   ],
+   "fx": "healing_incantation",
+   "label": "Healing Incantation"
+  },
+  {
+   "from": [
+    "brain/cast.py intent",
+    "combat_hooks instant"
+   ],
+   "fx": "healing_prayer",
+   "label": "Healing Prayer"
+  },
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (harm)",
+    "mob_ai.CASTER_OFFENSIVE"
+   ],
+   "fx": "ice_storm",
+   "label": "Ice Storm"
+  },
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (harm)",
+    "mob_ai.CASTER_OFFENSIVE"
+   ],
+   "fx": "lightning_bolt",
+   "label": "Lightning Bolt"
+  },
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (harm)",
+    "mob_ai.CASTER_OFFENSIVE"
+   ],
+   "fx": "magic_missile",
+   "label": "Magic Missile"
+  },
+  {
+   "from": [
+    "mob_ai intent"
+   ],
+   "fx": "paralyzing_touch",
+   "label": "Paralyzing Touch"
+  },
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (harm)",
+    "mob_ai.CASTER_OFFENSIVE"
+   ],
+   "fx": "shadow_bolt",
+   "label": "Shadow Bolt"
+  },
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (hex)",
+    "mob_ai.CASTER_DEBUFFS"
+   ],
+   "fx": "slow",
+   "label": "Slow"
+  },
+  {
+   "from": [
+    "mob_ai intent"
+   ],
+   "fx": "summon_minions",
+   "label": "Summon Minions"
+  },
+  {
+   "from": [
+    "mob_ai intent"
+   ],
+   "fx": "sweeping_blow",
+   "label": "Sweeping Blow"
+  },
+  {
+   "from": [
+    "mob_ai intent"
+   ],
+   "fx": "terrifying_roar",
+   "label": "Terrifying Roar"
+  },
+  {
+   "from": [
+    "mob_ai intent"
+   ],
+   "fx": "venomous_strike",
+   "label": "Venomous Strike"
+  },
+  {
+   "from": [
+    "combat_hooks instant"
+   ],
+   "fx": "ward",
+   "label": "Ward"
+  },
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (hex)",
+    "mob_ai.CASTER_DEBUFFS"
+   ],
+   "fx": "weaken",
+   "label": "Weaken"
+  }
+ ]
+}

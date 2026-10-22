@@ -111,6 +111,7 @@ async function runDemo() {
     const at = g === 'mobs' ? await showMobGallery(engine) : g === 'beasts' ? await showBeastGallery(engine, kits)
       : g === 'kin' ? await showBeastGallery(engine, kits, KIN_SAMPLES)
       : g === 'abilities' ? await showAbilityGallery(engine)
+      : g === 'mobfx' ? await (await import('./gallery.js')).showMobFxGallery(engine, kits)
       : g === 'gear' ? await showGearGallery(engine)
       : g === 'corpses' ? await (await import('./gallery.js')).showCorpseGallery(engine, kits)
       : g === 'wards' ? await (await import('./gallery.js')).showWardGallery(engine)

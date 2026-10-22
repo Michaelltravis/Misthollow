@@ -201,6 +201,95 @@ export async function showAbilityGallery(engine) {
   return new THREE.Vector3(3.5, 0, 0.5);
 }
 
+// /play?demo&gallery=mobfx[&only=fire,blow][&rank=normal|elite|boss][&cancel][&secs=1.6][&manual] —
+// every creature ability (mobfx-hand.js) wound up, let go and landed by four creatures of four
+// families at once, each on a dummy of its own: its tell, its gathering power, its mark on the
+// ground, its release. `cancel` breaks each wind-up instead (the interruption); ← → step, space
+// pauses; `manual` stops the clock (MH3D.gallery.play(i, phase), then engine.step()).
+export const MOBFX_SAMPLES = [
+  { name: 'spider', short: 'a giant spider' }, { name: 'skeleton', short: 'a skeleton warrior' },
+  { name: 'troll', short: 'a hulking troll' }, { name: 'shaman', short: 'a goblin shaman' },
+];
+export async function showMobFxGallery(engine, kits) {
+  const q = new URLSearchParams(location.search);
+  const only = q.get('only'), rank = q.get('rank') || 'boss', breakIt = q.has('cancel'), secs = Number(q.get('secs')) || 1.6;
+  const [{ FX }, { Director }, { creatureRecipe, timeline }, { MOB_RECIPES }, { familyOf, TABLES }] = await Promise.all([
+    import('./fx.js'), import('./fxdirector.js'), import('./abilityfx.js'), import('./mobfx-hand.js'), import('./mobfx.js')]);
+  engine.timeScale = Number(q.get('speed')) || 1;
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(44, 30), new THREE.MeshStandardMaterial({ color: 0x4a4740, roughness: 1 }));
+  floor.rotation.x = -Math.PI / 2; floor.position.set(9, 0, 0); floor.receiveShadow = true;
+  engine.scene.add(floor);
+  const fx = new FX(engine, document.querySelector('#fct'));
+  const director = new Director({ fx, engine, getHero: () => null, chest: w => w.root.position.clone().setY(w.root.position.y + (w.ent && w.ent.plateY ? w.ent.plateY * 0.45 : 1.0)) });
+  const actors = [], rows = [];
+  for (let i = 0; i < MOBFX_SAMPLES.length; i++) {
+    const m = MOBFX_SAMPLES[i], z = (i - 1.5) * 4.2;
+    const look = creatureLook({ ...m, pv: i });
+    const a = await spawnLook(look, { kits, seed: i });
+    const fly = (look.beast ? look.beast.fly : look.fly) || 0;
+    a.root.position.set(0, fly, z); a.root.rotation.y = Math.PI / 2;
+    a.play('Idle', 0);
+    engine.scene.add(a.root);
+    const d = await spawnLook({ model: 'knight', flat: true, tint: 0x8a7a64 }, { kits });
+    d.root.position.set(7, 0, z); d.root.rotation.y = -Math.PI / 2; d.play('Idle', 0);
+    engine.scene.add(d.root);
+    actors.push(a, d);
+    const ent = { fly, look, data: m };
+    rows.push({ src: { actor: a, root: a.root, mob: true, ent }, dst: { actor: d, root: d.root, mob: false }, family: familyOf(look, m), m });
+  }
+  const ids = Object.keys(MOB_RECIPES).filter(id => !only || only.split(',').some(o => id.includes(o)));
+  const label = document.createElement('div');
+  label.style.cssText = 'position:fixed;left:50%;top:14px;transform:translateX(-50%);font:600 18px Georgia,serif;color:#fff;background:#000b;padding:6px 14px;border-radius:6px;z-index:60;text-align:center;white-space:nowrap';
+  document.body.appendChild(label);
+  let i = -1, wait = 0, paused = false;
+  const live = [];
+  // phase: 'all' (wind up, then let go or break), 'charge' (only the wind-up), 'release' (only the release)
+  function play(n, phase = 'all') {
+    i = ((n % ids.length) + ids.length) % ids.length;
+    const id = ids[i];
+    for (const h of live.splice(0)) h.release();
+    let end = 0;
+    for (const row of rows) {
+      const r = creatureRecipe(TABLES, id, row.family, {}, rank);
+      const ally = r.flags.has('ally');
+      const dst = ally ? row.src : row.dst;
+      row.src.root.position.x = 0; row.src.root.rotation.y = Math.PI / 2;
+      const go = () => director.play(r, { src: row.src, dst, hits: [], e: {}, onLand: () => { if (!ally) row.dst.actor.once('Hit_A', 0.05, 1.2); } });
+      if (phase === 'release') { go(); continue; }
+      const mark = fx.telegraph(dst.root.position.clone(), { radius: r.land && ['nova', 'quake'].includes(r.land.kind) ? 3.2 : 1.6, time: secs, color: breakIt ? 0xa45aff : 0xff3a28 });
+      const h = director.charge(r, row.src, ally ? null : row.dst, secs, { kind: ally ? 'heal' : 'cast' });
+      live.push(h);
+      if (phase === 'charge') continue;
+      fx.after(secs, () => {
+        mark.cancel();
+        if (breakIt) director.collapse(h, 'interrupt');
+        else { h.release(); go(); }
+      });
+      end = Math.max(end, timeline(r, 7).end);
+    }
+    const line = MOB_RECIPES[id];
+    label.innerHTML = `<b>${i + 1}/${ids.length} · ${id.replace(/_/g, ' ')}</b> <span style="font:12px monospace;color:#cde">${rank}${breakIt ? ' · broken' : ''} · ${rows.map(r => r.family).join(' / ')}<br>${line}</span>`;
+    wait = (phase === 'all' ? secs : 0) + Math.max(2.2, end + 1.2);
+    return { id, line };
+  }
+  addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') play(i + 1);
+    else if (e.key === 'ArrowLeft') play(i - 1);
+    else if (e.key === ' ') paused = !paused;
+  });
+  const manual = q.has('manual');
+  engine.onTick(dt => {
+    actors.forEach(a => a.update(dt));
+    if (manual || paused) return;
+    if ((wait -= dt) <= 0) play(i + 1);
+  });
+  if (manual) engine.setManual(true);
+  engine.setMood('night', true);
+  window.MH3D_gallery = { ids, play, fx, director, rows };
+  console.log(`mob fx gallery: ${ids.length} abilities, ${rows.map(r => `${r.m.short} (${r.family})`).join(', ')}`);
+  return new THREE.Vector3(3.5, 0, 0);
+}
+
 // /play?demo&gallery=icons[&cls=mage] — every class's ability icons (hud/icons.js), labelled,
 // and the menu's own icons: a development page for the painted icon set.
 export async function showIconGallery() {

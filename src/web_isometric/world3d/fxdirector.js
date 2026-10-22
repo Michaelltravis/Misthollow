@@ -5,7 +5,7 @@
 // event then only adds what flies and lands. Passive defences (dodges, parries, blocks) get
 // their class's touch through react().
 import * as THREE from 'three';
-import { THEMES, CLIPS, RELEASE, VARIANT_SCHOOL, timeline } from './abilityfx.js';
+import { THEMES, CLIPS, RELEASE, VARIANT_SCHOOL, timeline, themeOf, isCreature } from './abilityfx.js';
 import { SCHOOL } from './fx.js';
 import { SCHOOLS, schoolOf } from './soundtable.js';
 
@@ -27,14 +27,16 @@ export class Director {
 
   // the class's marks (sigils, glyphs, trails) and the school's core (projectiles, impacts)
   palette(r, ev = {}) {
-    const theme = THEMES[r.cls] || THEMES.creature;
+    const theme = themeOf(r.cls);
     const school = r.school || VARIANT_SCHOOL[ev.variant] || ev.school || theme.school;
     const s = SCHOOL[school] || SCHOOL.arcane;
-    const creature = r.cls === 'creature';
+    // a creature's colours are its school's; its family gives only the marks (glyphs, sigils)
+    const creature = isCreature(r.cls);
     return {
       theme, school, spark: s.spark, smoke: s.smoke,
       mark: creature ? s.spark : theme.core, accent: creature ? s.spark : theme.accent, slash: theme.slash,
       glyph: r.glyph || theme.glyph, motif: r.glyph || theme.motif, sigil: theme.sigil,
+      calm: !!r.calm,              // an ordinary creature's (abilityfx.js forRank): the view holds still
     };
   }
 
@@ -113,7 +115,7 @@ export class Director {
     const p0 = root.position.clone().setY(0);
     const fwd = V(Math.sin(root.rotation.y), 0, Math.cos(root.rotation.y));
     const tp = target ? target.root.position.clone().setY(0) : null;
-    const theme = THEMES[r.cls] || THEMES.creature;
+    const theme = themeOf(r.cls);
     const ghostly = r.cls === 'assassin' || r.cls === 'thief';
     const slide = (to, time, height = 0, face = true) => {
       if (ctl) return ctl.dash(to.x, to.z, time, { height, face });
@@ -194,7 +196,141 @@ export class Director {
         break;
       }
       case 'lunge': slide(tp ? before(1.1) : p0.clone().addScaledVector(fwd, 0.8), 0.16); break;
+      // a creature's body (it has no clip for these): up off its feet and down hard, the ground
+      // jumping under it; reared back and snapping forward; thrown back a step
+      case 'slam': {
+        this.pose(who, { squash: 0.16 }, 0.12);
+        fx.after(0.12, () => { this.pose(who, { squash: -0.08 }, 0.1); lift(0.75, 0.32, true); });
+        fx.after(0.44, () => {
+          this.pose(who, { squash: 0.12 }, 0.05);
+          fx.after(0.1, () => this.pose(who, {}, 0.2));
+          fx.p.emit(p0.clone().setY(0.15), { count: 22, color: 0xb8a888, speed: 3.2, up: 0.5, life: 0.6, size: 0.5, grow: 0.6, drag: 2.2 });
+        });
+        break;
+      }
+      case 'rear':
+        this.pose(who, { pitch: -0.32 }, 0.16);
+        fx.after(0.2, () => this.pose(who, { pitch: 0.18 }, 0.08));
+        fx.after(0.36, () => this.pose(who, {}, 0.25));
+        break;
+      case 'recoil': slide(p0.clone().addScaledVector(fwd, -0.9), 0.18, 0, false); this.pose(who, { pitch: -0.15 }, 0.08); fx.after(0.2, () => this.pose(who, {}, 0.3)); break;
       default: break;
+    }
+  }
+
+  // ---- a creature's body language, which its few clips can't say: it leans (pitch: back is
+  // negative), squashes (squash: low and wide), lifts off the ground, trembles (shiver); each
+  // eases to the new pose over `secs`, and an empty pose lets it stand as it was ----
+  pose(who, { pitch = 0, squash = 0, lift = 0, shiver = 0 } = {}, secs = 0.2) {
+    const root = who && who.root;
+    if (!root || who.hero) return;
+    this.poses = this.poses || new WeakMap();
+    let s = this.poses.get(root);
+    if (!s) {
+      s = { cur: { pitch: 0, squash: 0, lift: 0, shiver: 0 }, base: root.scale.clone(), jitter: V(), alive: true };
+      this.poses.set(root, s);
+      root.rotation.order = 'YXZ';           // the lean is the creature's own, whichever way it faces
+      const ent = who.ent;
+      this.fx.add({ update: dt => {
+        const g = s.goal, c = s.cur, k = Math.min(1, dt / Math.max(0.016, s.ease));
+        for (const key of ['pitch', 'squash', 'lift', 'shiver']) c[key] += (g[key] - c[key]) * k;
+        s.ease = Math.max(0.016, s.ease - dt);
+        root.rotation.x = c.pitch;
+        root.scale.set(s.base.x * (1 + c.squash * 0.45), s.base.y * (1 - c.squash), s.base.z * (1 + c.squash * 0.45));
+        // (a flyer's height is its own each frame: entities.js adds the lift to its bob)
+        if (ent && ent.fly) ent.lift = c.lift; else if (c.lift > 0.005 || s.lifted) { root.position.y = Math.max(0, c.lift); s.lifted = c.lift > 0.005; }
+        root.position.x -= s.jitter.x; root.position.z -= s.jitter.z;
+        s.jitter.set((Math.random() - 0.5) * c.shiver, 0, (Math.random() - 0.5) * c.shiver);
+        root.position.x += s.jitter.x; root.position.z += s.jitter.z;
+        const rest = Object.values(g).every(v => v === 0) && Object.values(c).every(v => Math.abs(v) < 0.004);
+        if (rest || (ent && (ent.dying || ent.alive === false))) { s.alive = false; return false; }
+        return true;
+      }, dispose: () => {
+        root.rotation.x = 0;
+        root.scale.copy(s.base);
+        root.position.x -= s.jitter.x; root.position.z -= s.jitter.z;
+        if (ent && ent.fly) ent.lift = 0;
+        this.poses.delete(root);
+      } });
+    }
+    s.goal = { pitch, squash, lift, shiver };
+    s.ease = secs;
+  }
+
+  // ---- a creature winding up (combat.js windup): its body tells you what is coming (TELLS),
+  // what gathers at it builds for the whole wind-up and it glows brighter in its school's colour
+  // as the moment nears; returns a handle the release or the interruption ends ----
+  charge(r, who, target, secs, ev = {}) {
+    const fx = this.fx, root = who && who.root;
+    if (!root) return null;
+    const pal = this.palette(r, ev);
+    const tell = r.tell || ({ heavy: 'rear', aoe: 'crouch', heal: 'gather', debuff: 'gather', cast: 'gather', disrupt: 'still' })[ev.kind] || 'gather';
+    const flyer = !!(who.ent && who.ent.fly);
+    const lean = { rear: { pitch: -0.28, lift: flyer ? 0.5 : 0 }, crouch: { squash: 0.15 }, coil: { pitch: 0.14, squash: 0.12 },
+      shudder: { shiver: 0.07 }, gather: { lift: flyer ? 0.35 : 0.1 }, still: {} }[tell] || {};
+    this.pose(who, lean, Math.min(0.5, secs * 0.4));
+    // the clip that says it best: hands raised (a creature roars), chest out
+    const clip = { gather: 'Spellcast_Long', rear: 'Taunt' }[tell];
+    if (clip && who.actor) who.actor.once(clip, 0.12, clip === 'Spellcast_Long' ? 0.75 : 0.85);
+    if (target && target.root) { const a = root.position, b = target.root.position; root.rotation.y = Math.atan2(b.x - a.x, b.z - a.z); }
+    if (fx.near(root.position)) this.cast(r, who, target, pal, { release: secs });
+    this.sfx('charge', root.position, { school: pal.school });
+    // power drawn in, more and faster as the wind-up fills; the body brightening with it
+    const calm = pal.calm, h = { done: false, pal, who, tell };
+    // (a plain blow's school is near white, which would bleach the body: it smoulders red instead)
+    const glow = pal.school === 'physical' ? 0xff4a1a : pal.mark;
+    let t = 0, glowAt = 0;
+    fx.add({ update: dt => {
+      if (h.done || !root.parent) return false;
+      t += dt;
+      const k = Math.min(1, t / secs);
+      if (fx.near(root.position)) for (let i = Math.ceil(dt * (calm ? 30 : 55) * (0.4 + k)); i > 0; i--) {
+        const c = tell === 'gather' ? this.hands(who) : this.chest(who);
+        const d = V(Math.random() - 0.5, Math.random() - 0.2, Math.random() - 0.5).normalize().multiplyScalar(1.4 - k * 0.5);
+        fx.p.emit(c.clone().add(d), { count: 1, color: Math.random() < 0.7 ? pal.mark : 0xffffff, bright: 1 + k, speed: 0, dir: d.multiplyScalar(-1 / 0.32), life: 0.32, size: 0.13 + k * 0.1, drag: 0 });
+      }
+      if ((glowAt -= dt) <= 0) { glowAt = 0.28; fx.tint(root, glow, { time: 0.42, strength: 0.1 + 0.28 * k, hold: 0.45 }); }
+      // the last instant: a tremor and a flare, the blow is coming
+      if (k > 0.8 && !h.flared) { h.flared = true; this.pose(who, { ...lean, shiver: (lean.shiver || 0) + 0.035 }, 0.08); fx.light(this.chest(who), pal.spark, calm ? 3 : 6, 0.25); }
+      return t < secs + 0.6;
+    } });
+    h.release = () => { if (h.done) return; h.done = true; this.pose(who, {}, 0.12); };
+    return h;
+  }
+
+  // a wind-up broken before it lands (kicked, staggered, snared): what it gathered bursts apart
+  // in smoke and sparks, and the body reels
+  collapse(h, reason = 'interrupt') {
+    if (!h || h.done) return;
+    h.done = true;
+    const fx = this.fx, who = h.who, pal = h.pal;
+    if (!who || !who.root) return;
+    const c = h.tell === 'gather' ? this.hands(who) : this.chest(who);
+    fx.p.emit(c, { count: 26, color: pal.mark, bright: 1.6, speed: 4.2, life: 0.45, size: 0.22, drag: 3 });
+    fx.p.emit(c, { count: 14, color: 0x6a6a74, speed: 1.4, up: 0.6, life: 0.9, size: 0.55, grow: 0.7, drag: 1.6 });
+    fx.shockwave(who.root, { color: pal.mark, radius: 1.8, y: 1, thin: true, time: 0.3 });
+    fx.flash(who.root, 0xffffff, 0.12);
+    // reeling: thrown back (staggered, kicked) or gripped where it stands (snared)
+    if (reason === 'snare') { this.pose(who, { squash: 0.1, shiver: 0.05 }, 0.06); fx.after(0.45, () => this.pose(who, {}, 0.3)); }
+    else { this.pose(who, { pitch: -0.3 }, 0.06); fx.after(0.18, () => this.pose(who, { pitch: 0.12 }, 0.15)); fx.after(0.5, () => this.pose(who, {}, 0.3)); }
+  }
+
+  // ---- a creature's answer to a blow it turned aside (combat.js land): a hop aside, the clang
+  // of a parry, a flinch behind its guard; tinted by its family ----
+  creatureReact(kind, who, cls) {
+    if (!who || !who.root || !this.fx.near(who.root.position)) return;
+    const fx = this.fx, theme = themeOf(cls), p = this.chest(who);
+    if (kind === 'dodge') {
+      const y = who.root.rotation.y, side = Math.random() < 0.5 ? 1 : -1;
+      const from = who.root.position.clone(), to = from.clone().add(V(Math.cos(y) * 0.55 * side, 0, -Math.sin(y) * 0.55 * side));
+      let t = 0;
+      fx.add({ update: dt => { t = Math.min(1, t + dt / 0.16); who.root.position.x = from.x + (to.x - from.x) * t; who.root.position.z = from.z + (to.z - from.z) * t; return t < 1; } });
+      fx.p.emit(from.clone().setY(0.15), { count: 8, color: 0xb8a888, speed: 1.2, up: 0.3, life: 0.45, size: 0.35, grow: 0.5, drag: 2 });
+    } else if (kind === 'parry' || kind === 'block') {
+      fx.sparks(p, 0xffe0a0, kind === 'parry' ? 14 : 8);
+      fx.glyph(p, { glyph: theme.motif, count: 3, color: theme.core, speed: 1.2, life: 0.4, size: 0.3 });
+      this.pose(who, { pitch: -0.12 }, 0.05);
+      fx.after(0.15, () => this.pose(who, {}, 0.2));
     }
   }
 
@@ -460,14 +596,14 @@ export class Director {
         fx.decal(ground, { sigil: 'crack', radius: t.big ? 3.2 : 2.1, time: 2.6, dark: true, opacity: 0.75, spin: 0, grow: 0.5 });
         fx.p.emit(ground.clone().setY(0.2), { count: 22, color: 0xb8a888, speed: 3, up: 1.2, life: 0.7, size: 0.45, grow: 0.5, drag: 2.2 });
         fx.sparks(p, 0xffd8a0, 10);
-        fx.shake(0.14, 0.22);
+        if (!pal.calm) fx.shake(0.14, 0.22);
         break;
       case 'quake':
         fx.decal(ground, { sigil: 'crack', radius: Math.max(3, R), time: 2.8, dark: true, opacity: 0.8, spin: 0, grow: 0.6 });
         fx.growth(ground, { kind: 'stones', count: t.big ? 14 : 10, radius: Math.max(1.6, R * 0.55), time: 1.3, height: 1, color: 0x8a7a6a, glow: 0, ring: false });
         fx.shockwave(ground, { color: 0xd8c8a0, radius: Math.max(3, R) + 1, time: 0.55 });
         fx.p.emit(ground.clone().setY(0.3), { count: 34, color: 0xb8a888, speed: 4, up: 1.4, life: 0.8, size: 0.5, grow: 0.5, drag: 2 });
-        fx.shake(0.28, 0.4);
+        if (!pal.calm) fx.shake(0.28, 0.4);
         break;
       case 'growth':
         fx.growth(ground, { kind: t.arg, color: t.arg === 'spears' ? pal.mark : GROWTH_COLOR[t.arg] || pal.mark, glow: ['ice', 'crystals', 'spears'].includes(t.arg) ? 0.5 : 0.08,

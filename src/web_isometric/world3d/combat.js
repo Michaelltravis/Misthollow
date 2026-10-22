@@ -10,6 +10,7 @@
 import * as THREE from 'three';
 import { recipeFor, timeline, THEMES } from './abilityfx.js';
 import { RECIPES } from './abilityfx-table.js';
+import { mobRecipe } from './mobfx.js';
 import { Director } from './fxdirector.js';
 import { LANDS } from './soundtable.js';
 import { swingClips, rangedBlow } from './gearlook.js';
@@ -41,7 +42,10 @@ function slashColour(src, cls) {
 
 const COLORS = { dmgOut: '#ffe9a8', dmgIn: '#ff6a52', heal: '#7dff8f', miss: '#b8b8c4', crit: '#ffb02a', parry: '#8cc8ff', block: '#9ad0ff', dodge: '#d8e0ff', spell: '#e0b8ff' };
 const keyOf = ref => JSON.stringify(ref || null);
-const abilityId = e => String(e.ability || e.spell || '').toLowerCase().replace(/[\s']+/g, '_');
+// (a creature's ability comes with its look's name: combat_hooks.fx_key)
+const abilityId = e => String(e.fx || e.ability || e.spell || '').toLowerCase().replace(/[\s']+/g, '_');
+// a creature's wind-up let go, named with its look (servers before fx keep the plain release)
+const released = e => e.k === 'resolve' && !!e.fx;
 
 // whether a wound over time is a poison's (its school, or its name: Knife Poison, Serpent Sting...)
 export const poisonTick = (e, school) => school === 'poison' || /poison|venom|sting|plague|toxin/i.test(String(e.dot || ''));
@@ -57,6 +61,7 @@ export class CombatView {
     this.onWound = onWound;           // (entity) => void: its health changed
     this.onAggro = onAggro;           // (mob id, event) => void: a creature went for the hero
     this.telegraphs = new Map();      // mob id -> telegraph
+    this.charges = new Map();         // mob id -> its wind-up's gathering power (fxdirector.js charge)
     this.impacts = new Map();         // "src>dst" -> {at, crit, n}: when this action's blow lands
     this.director = new Director({ fx, engine, getHero, chest: w => this.chest(w) });
     this.director.onSound = (name, at, opts) => this.sfx(name, at, opts);
@@ -94,8 +99,9 @@ export class CombatView {
     if (who.look) return swingClips(who.look, who.cls, ranged);
     return SWING[String(who.cls || '').toLowerCase()] || SWING.paladin;
   }
-  // what the hero is about to do: the recipe (main.js plays its start on the key press)
-  recipe(id, cls, ev = {}) { return recipeFor(RECIPES, id, cls, ev); }
+  // what the hero is about to do: the recipe (main.js plays its start on the key press); a
+  // creature's own (`src` one: mobfx.js, in its family's marks and its rank's size)
+  recipe(id, cls, ev = {}, src = null) { return src && src.mob ? mobRecipe(id, src, ev) : recipeFor(RECIPES, id, cls, ev); }
 
   // ---- who is who ----
   resolve(ref) {
@@ -150,13 +156,13 @@ export class CombatView {
     // ability reaches its target (an area's too), so they are found and timed first
     const reached = new Map();
     list.forEach((e, i) => {
-      if (e.k !== 'ability' && e.k !== 'spell') return;
+      if (e.k !== 'ability' && e.k !== 'spell' && !released(e)) return;
       const who = keyOf(e.src), hits = [];
       for (let j = i + 1; j < list.length; j++) {
         const f = list[j];
         if (keyOf(f.src) !== who) continue;
         if (f.k === 'dmg' || f.k === 'heal') { if (f.dst && !hits.some(h => keyOf(h) === keyOf(f.dst))) hits.push(f.dst); continue; }
-        if (['ability', 'spell', 'attack'].includes(f.k)) break;
+        if (['ability', 'spell', 'attack', 'resolve', 'windup'].includes(f.k)) break;
       }
       reached.set(e, hits);
     });
@@ -181,8 +187,8 @@ export class CombatView {
   }
   // how long an ability or spell takes to reach its target (its recipe's timeline)
   landsIn(e) {
-    const src = this.resolve(e.src), dst = this.resolve(e.dst);
-    const r = this.recipe(abilityId(e), src && !src.mob ? src.cls : null, e);
+    const src = this.resolve(e.src), dst = released(e) ? this.releaseAt(e, src) : this.resolve(e.dst);
+    const r = this.recipe(abilityId(e), src && !src.mob ? src.cls : null, e, src);
     const around = String(e.shape || '') === 'self' || String(e.shape || '').startsWith('nova');
     const dist = src && dst && src.root !== dst.root && (!around || r.travel) ? this.chest(src).distanceTo(this.chest(dst)) : 0;
     let t = timeline(r, dist).land;
@@ -364,6 +370,8 @@ export class CombatView {
       // a crit or a heavy blow shoves a creature back (it staggers: the flinch played slower), and
       // the view darts in when it is the hero's crit or a crit on the hero
       if ((crit || e.heavy) && dst.ent && !dst.hero && src && src.root) this.ents.knock(dst.ent, src.root.position, crit ? 0.55 : 0.35);
+      // (and a creature's whole body reels from it, which its one flinch can't show)
+      if ((crit || e.heavy) && dst.mob && !(dst.ent && dst.ent.dying)) { this.director.pose(dst, { pitch: -0.2 }, 0.05); this.fx.after(0.2, () => this.director.pose(dst, {}, 0.3)); }
       if (crit && ((src && src.hero) || heroHit) && this.engine.punch) this.engine.punch(heroHit ? 1.8 : 1.2);
     } else {
       const word = { miss: 'Miss', dodge: 'Dodge', parry: 'Parry', block: 'Block', resist: 'Resist', immune: 'Immune' }[res] || res;
@@ -373,6 +381,7 @@ export class CombatView {
       if (res === 'dodge' && dst.actor && !dst.hero) dst.actor.once(Math.random() < 0.5 ? 'Dodge_Left' : 'Dodge_Right', 0.05, 1.4);
       if (res === 'dodge' && dst.hero) this.getHero().ctl.swing(Math.random() < 0.5 ? 'Dodge_Left' : 'Dodge_Right', true);
       if (['dodge', 'parry', 'block'].includes(res) && !dst.mob) this.director.react(res, dst);
+      else if (['dodge', 'parry', 'block'].includes(res) && dst.ent) this.director.creatureReact(res, dst, dst.ent.family);
     }
   }
 
@@ -387,7 +396,7 @@ export class CombatView {
       spot.position.copy(this.toWorld(e.at[0], e.at[1]));
       dst = { root: spot, point: true };
     }
-    const r = this.recipe(abilityId(e), src && !src.mob ? src.cls : null, e);
+    const r = this.recipe(abilityId(e), src && !src.mob ? src.cls : null, e, src);
     // something thrown at nobody in particular goes to the hero's target
     if (!dst && src && src.hero && r.travel && this.ents.targeted && this.ents.targeted.root) {
       const t = this.ents.targeted;
@@ -501,7 +510,9 @@ export class CombatView {
       const dst = this.resolve(e.dst) || this.resolve(e.src);
       if (!dst) return;
       this.sfx('heal', dst);
-      if (!announced) {
+      const src = e.fx && !announced ? this.resolve(e.src) : null;
+      if (src && src.mob) this.director.play(this.recipe(e.fx, null, e, src), { src, dst, e });
+      else if (!announced) {
         this.fx.swirl(dst.root, { school: e.school || 'holy', time: 0.8, count: 2 });
         this.fx.p.emit(this.chest(dst), { count: 10, color: 0x8dffa0, speed: 0.6, up: 1.4, life: 0.8, size: 0.2, drag: 1.2 });
       }
@@ -513,7 +524,11 @@ export class CombatView {
     const dst = this.resolve(e.dst);
     if (!dst) return;
     this.sfx(e.k, dst);
-    this.fx.swirl(dst.root, { school: e.school || (e.k === 'debuff' ? 'shadow' : 'holy'), time: 0.8, count: 2 });
+    // a creature's ward is drawn as its ability; what its hex did was shown as the hex landed
+    // (its wind-up's release), so only the name rises
+    const src = e.fx ? this.resolve(e.src) : null;
+    if (src && src.mob && e.k === 'buff') this.director.play(this.recipe(e.fx, null, e, src), { src, dst, e });
+    else if (!(src && src.mob)) this.fx.swirl(dst.root, { school: e.school || (e.k === 'debuff' ? 'shadow' : 'holy'), time: 0.8, count: 2 });
     if (e.name && dst.hero) this.fx.lane(e.k === 'debuff' ? titleOf(e.name) : `+${titleOf(e.name)}`, { color: e.k === 'debuff' ? '#d8a8ff' : '#fff0b0', size: 14 });
     else if (e.name) this.fx.text(this.chest(dst).setY(dst.root.position.y + 2.4), e.name, { color: e.k === 'debuff' ? '#d8a8ff' : '#fff0b0', size: 13, rise: 0.8 });
   }
@@ -546,13 +561,22 @@ export class CombatView {
       : a.shape === 'cone' || !a.shape ? src.root.position.clone() : (target ? target.root.position.clone() : src.root.position.clone());
     let facing = 0;
     if (target) { const d = target.root.position.clone().sub(src.root.position); facing = Math.atan2(-d.z, d.x); }
-    const t = this.fx.telegraph(center, { shape: a.shape || 'circle', radius: a.r || 2.6, angle: a.angle || Math.PI / 2, facing, time: secs });
+    // the mark says what to do about it: violet, break it (kick, bash, silence); red, get out of
+    // it or brace
+    const t = this.fx.telegraph(center, { shape: a.shape || 'circle', radius: a.r || 2.6, angle: a.angle || Math.PI / 2, facing, time: secs,
+      color: e.interruptible ? 0xa45aff : 0xff3a28 });
     this.sfx('windup', src);
     if (!a.x && (a.shape === 'circle' || !a.shape)) t.follow = src.root;
     const key = e.src && e.src.m != null ? `m${e.src.m}` : 'x';
     if (this.telegraphs.get(key)) this.telegraphs.get(key).cancel();
     this.telegraphs.set(key, t);
-    if (src.actor) src.actor.once(src.mob ? 'Block' : 'Spellcast_Long', 0.1, 0.8);
+    // its body tells you what is coming and what it gathers builds until it lets go (its
+    // ability's recipe: mobfx-hand.js)
+    if (this.charges.get(key)) this.charges.get(key).release();
+    if (src.mob) {
+      const h = this.director.charge(this.recipe(abilityId(e), null, e, src), src, target, secs, e);
+      if (h) this.charges.set(key, h);
+    } else if (src.actor) src.actor.once('Spellcast_Long', 0.1, 0.8);
     this.fx.text(this.chest(src).setY(src.root.position.y + 2.6), e.label || 'Winding up!', { color: '#ff8a5a', size: 14, rise: 0.5, life: Math.min(1.6, secs), exact: true });
     // the cues (combatcues.js): step out if you stand where it will land
     if (this.onTelegraph) this.onTelegraph(key, { center: a.x != null ? center : null, follow: t.follow || null, shape: a.shape || 'circle',
@@ -564,6 +588,9 @@ export class CombatView {
     if (t) { t.cancel(); this.telegraphs.delete(key); }
     if (this.onTelegraphEnd) this.onTelegraphEnd(key, 'landed');
     const src = this.resolve(e.src);
+    const h = this.charges.get(key);
+    if (h) { h.release(); this.charges.delete(key); }
+    if (released(e) && src) return this.release(e, src);
     const a = e.area || {};
     // the blow lands on the ground it marked (a heavy blow or a spell where you stood)
     const at = a.x != null ? this.toWorld(a.x, a.z) : src ? src.root.position.clone() : null;
@@ -581,6 +608,38 @@ export class CombatView {
     for (const h of e.hits || []) { const d = this.resolve(h.dst); if (d) this.land(h, src, d, e.school || 'physical'); }
     if (e.dodged) for (const ref of e.dodged) { const d = this.resolve(ref); if (d) this.fx.text(this.chest(d), 'Evaded!', { color: '#a8ffd0', size: 16 }); }
   }
+  // where a creature's wind-up goes when it lets go: the ground it marked (a spot it threw at),
+  // around itself (a sweep, a roar), else whom it was aimed at
+  releaseAt(e, src) {
+    const a = e.area || {};
+    if (a.x != null) {
+      const spot = new THREE.Object3D();
+      spot.position.copy(this.toWorld(a.x, a.z));
+      return { root: spot, point: true };
+    }
+    if (e.kind === 'aoe' || (a.shape === 'circle' && !e.dst)) return null;
+    return this.resolve(e.dst);
+  }
+  // a creature's wind-up lets go (mob_ai intents with their `fx`): its recipe's release, flight and
+  // landing, the target flinching (or the ground empty where they stood), the numbers rising when
+  // it arrives (handle() paired its wounds with it)
+  release(e, src) {
+    const a = e.area || {};
+    const dst = this.releaseAt(e, src);
+    const ev = dst ? e : { ...e, shape: `nova:${a.r || 3}` };
+    const r = this.recipe(abilityId(e), null, ev, src);
+    const school = r.school || e.school || 'physical';
+    // whoever stepped out of the mark isn't struck: their wounds never came
+    const dodged = new Set((e.dodged || []).map(keyOf));
+    const refs = [...(dst && !dst.point ? [e.dst] : []), ...(e._hits || [])].filter(ref => ref && !dodged.has(keyOf(ref)));
+    const struck = [...new Map(refs.map(ref => [keyOf(ref), this.resolve(ref)])).values()].filter(w => w && w.root && w.root !== src.root);
+    const landAll = () => {
+      if (!r.flags.has('ally')) for (const w of struck) this.land({ ...e, res: 'hit', heavy: r.flags.has('heavy') || e.kind === 'heavy' }, src, w, school);
+      for (const ref of e.dodged || []) { const d = this.resolve(ref); if (d) this.fx.text(this.chest(d), 'Evaded!', { color: '#a8ffd0', size: 16 }); }
+    };
+    this.director.play(r, { src, dst: dst || src, hits: struck.filter(w => !dst || w.root !== dst.root), e: ev, onLand: landAll });
+  }
+
   // a wind-up broken before it landed (staggered, kicked, snared, killed, the fight over)
   cancelWindup(e) {
     const key = e.src && e.src.m != null ? `m${e.src.m}` : 'x';
@@ -588,6 +647,11 @@ export class CombatView {
     if (t) { t.fade(); this.telegraphs.delete(key); }
     if (this.onTelegraphEnd) this.onTelegraphEnd(key, e.reason);
     const src = this.resolve(e.src);
+    // what it gathered: gone quietly when it died or the fight ended, burst apart when broken
+    const h = this.charges.get(key);
+    this.charges.delete(key);
+    if (h && (!src || e.reason === 'death' || e.reason === 'end')) h.release();
+    else if (h) this.director.collapse(h, e.reason);
     if (!src || e.reason === 'death' || e.reason === 'end') return;
     // a foe knocked off its stride is open: the cues call for the strike
     if (e.reason === 'stagger' && this.onOpening) this.onOpening(src);
