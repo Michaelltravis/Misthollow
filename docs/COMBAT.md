@@ -183,6 +183,24 @@ has its animation and its rising number (`combat_events.py`), so the chat log do
   - **Gold:** coins fly from the creature to your pack, and "+330" pops on the pack button.
   - **Reputation:** a small card per faction on the right ("Garathorm Guard +16 · Unfriendly"); a new
     standing is shown in gold ("now Neutral").
+- **Creatures cast as heroes do** (`world3d/mobfx-hand.js`, `mobfx.js`). Each creature ability has
+  a recipe in the heroes' six columns. Its events (`windup`, `resolve`, `cancel`, `spell`, `heal`,
+  `buff`, `debuff`) carry `fx`, the ability's name in lower_snake (`combat_hooks.fx_key`):
+  - **The wind-up** is a charge. Its body gives a tell: it rears back, drops low, coils, trembles,
+    or raises its hands. What gathers at it builds for the whole wind-up, and it glows in the
+    school's colour, a heavy blow smouldering red, brighter as the moment nears. The ground mark
+    says what to do: **violet**, break it (kick, bash, silence); **red**, step out or brace.
+  - **The release** is that ability's own throw and landing, aimed where the server says. Its
+    numbers rise when it arrives. Whoever stepped out of the mark gets "Evaded!".
+  - **Broken** (kicked, staggered, snared), what it gathered bursts apart and the creature reels.
+  - **Marks by kind:** a creature leaves its family's marks (beast, undead, elemental, demon, insect,
+    dragon, construct, caster). Its colours stay its school's, so frost reads as frost on anything.
+  - **Size by rank:** a boss gets every flourish. An elite shakes the view a little. An ordinary
+    creature's spells are plain (no shake, hit-stop or flash), so your own spells stay the
+    brightest thing in the fight.
+  - **Checking them:** `/play?demo&gallery=mobfx` plays each ability on four creatures of four
+    families (`&cancel` breaks them instead, `&rank=normal|elite|boss`). `tools/dump_mobfx.py` lists
+    what the server can send, and `tests/web/mobfx.test.mjs` checks each one has a line.
 
 ### Mana Management
 

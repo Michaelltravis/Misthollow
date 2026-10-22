@@ -464,7 +464,8 @@ export class Entities {
       }
       if (e.actor) e.actor.update(dt);
       if (e.riding) { e.riding.steed.update(dt, !!e.goal, 1.5); e.riding.pose(t, !!e.goal); }
-      if (e.fly) e.root.position.y = e.fly + Math.sin(t * 2.1 + (hashStr(e.key) % 9)) * 0.12;
+      // (rising higher as it winds something up: fxdirector.js pose)
+      if (e.fly) e.root.position.y = e.fly + (e.lift || 0) + Math.sin(t * 2.1 + (hashStr(e.key) % 9)) * 0.12;
     }
   }
 

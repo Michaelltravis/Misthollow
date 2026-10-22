@@ -16,7 +16,11 @@ points are wrapped once at startup (install()):
                             too, so each has its own look in 3D (sneaking and hiding are
                             shown only to the one doing it)
   mob_ai                    wind-ups get a ground area and a 'windup' event; when they land,
-                            anyone who has stepped out of the area is spared ('resolve')
+                            anyone who has stepped out of the area is spared ('resolve', aimed
+                            at whom it was meant for); each carries `fx`, the ability's look
+                            (fx_key); a caster's or healer's instant heal and ward, and what a
+                            declared hex, prayer or word of silence did, get 'heal' / 'buff' /
+                            'debuff' events
 
 Positions and ranges live in combat_range.py; the event transport in combat_events.py.
 Telnet players have no position, so for them every range check passes.
@@ -596,6 +600,19 @@ def _school_of_label(label):
     return fx_school(school)
 
 
+def fx_key(label):
+    """The look a creature's ability is drawn with in 3D (world3d/mobfx-hand.js): its name in
+    lower_snake ('Fire Breath' -> fire_breath, "Night's Embrace" -> nights_embrace,
+    'Power Word: Kill' -> power_word_kill)."""
+    import re
+    return re.sub(r'[^a-z0-9]+', '_', str(label or '').lower().replace("'", '')).strip('_') or None
+
+
+def _affect_names(ch):
+    return [getattr(a, 'name', None) or (a.get('name') if isinstance(a, dict) else None)
+            for a in (getattr(ch, 'affects', None) or [])]
+
+
 def _wrap_mob_ai():
     import mob_ai
     orig_declare = mob_ai.declare_intents
@@ -621,7 +638,7 @@ def _wrap_mob_ai():
                 ms += int(cr.round_seconds() * 1000)
             ev.emit(mob.room, 'windup', src=mob, dst=intent.get('target') or getattr(mob, 'fighting', None), label=intent.get('label'),
                     kind=intent.get('kind'), ms=ms, area=intent['area'], school=_school_of_label(intent.get('label')),
-                    interruptible=bool(intent.get('interruptible')) or None)
+                    interruptible=bool(intent.get('interruptible')) or None, fx=fx_key(intent.get('label')))
 
     mob_ai.declare_intents = declare_intents
 
@@ -631,6 +648,9 @@ def _wrap_mob_ai():
         intent = getattr(mob, 'pending_intent', None)
         mob._resolving_intent = intent
         room = getattr(mob, 'room', None)
+        # whom it was aimed at, before the resolution can change who the creature fights: the
+        # release flies to them (and its wounds rise when it gets there)
+        aim = (intent.get('target') or getattr(mob, 'fighting', None)) if intent else None
         with ev.hold():
             mark = ev.mark(room) if room is not None else None
             try:
@@ -640,9 +660,9 @@ def _wrap_mob_ai():
                 if intent and room is not None:
                     dodged = getattr(mob, '_dodged_by_position', None) or []
                     mob._dodged_by_position = []
-                    ev.emit_at(room, mark, 'resolve', src=mob, label=intent.get('label'), kind=intent.get('kind'),
+                    ev.emit_at(room, mark, 'resolve', src=mob, dst=aim, label=intent.get('label'), kind=intent.get('kind'),
                                area=intent.get('area'), school=_school_of_label(intent.get('label')),
-                               dodged=[ev.ref(c) for c in dodged] or None)
+                               dodged=[ev.ref(c) for c in dodged] or None, fx=fx_key(intent.get('label')))
 
     mob_ai._resolve_intent = _resolve_intent
 
@@ -672,8 +692,9 @@ def _wrap_mob_ai():
         area = intent.get('area')
         room = getattr(mob, 'room', None)
         name = spell[0] if isinstance(spell, (tuple, list)) else spell
-        if room is not None:
-            ev.emit(room, 'spell', src=mob, dst=target, spell=str(name), school=_school_of_label(str(name)))
+        # (a declared spell is shown by its wind-up's 'resolve'; only an instant one gets its own)
+        if room is not None and not intent:
+            ev.emit(room, 'spell', src=mob, dst=target, spell=str(name), school=_school_of_label(str(name)), fx=fx_key(name))
         if area and target is not None and _outside(mob, target, area):
             c = mob.config.COLORS
             await room.send_to_room(f"{c['bright_cyan']}{target.name} slips out of the blast — {mob.name}'s spell scorches empty ground!{c['reset']}")
@@ -681,6 +702,92 @@ def _wrap_mob_ai():
         return await orig_cast(mob, target, spell)
 
     mob_ai._cast_offensive = _cast_offensive
+
+    # what a creature does in an instant (a caster's self-heal and ward, a healer's mending):
+    # read from what changed, so the code that does it stays as it is
+    orig_caster = mob_ai._caster_tick
+
+    async def _caster_tick(mob, target):
+        hp0, ac0 = getattr(mob, 'hp', 0), getattr(mob, 'armor_class', 0)
+        acted = await orig_caster(mob, target)
+        room = getattr(mob, 'room', None)
+        if acted and room is not None:
+            if getattr(mob, 'hp', 0) > hp0:
+                ev.emit(room, 'heal', src=mob, dst=mob, amt=int(mob.hp - hp0), school='holy', fx='healing_incantation')
+            elif getattr(mob, 'armor_class', 0) < ac0:
+                ev.emit(room, 'buff', src=mob, dst=mob, name='Ward', school='arcane', fx='ward')
+        return acted
+
+    mob_ai._caster_tick = _caster_tick
+
+    orig_healer = mob_ai._healer_tick
+
+    async def _healer_tick(mob, target):
+        room = getattr(mob, 'room', None)
+        before = {id(ch): (ch, getattr(ch, 'hp', 0)) for ch in getattr(room, 'characters', None) or []}
+        acted = await orig_healer(mob, target)
+        if acted and room is not None:
+            for ch, hp0 in before.values():
+                if getattr(ch, 'hp', 0) > hp0:
+                    ev.emit(room, 'heal', src=mob, dst=ch, amt=int(ch.hp - hp0), school='holy', fx='healing_prayer')
+        return acted
+
+    mob_ai._healer_tick = _healer_tick
+
+    _wrap_brain_cast()
+
+
+def _wrap_brain_cast():
+    """The brain's spells (brain/cast.py): its ward, and what its declared hexes, prayers and
+    words of silence did once they landed (their wind-up's 'resolve' shows the casting)."""
+    from brain import cast
+
+    orig_ward = cast.ward
+
+    async def ward(mob, b):
+        done = await orig_ward(mob, b)
+        if done and getattr(mob, 'room', None) is not None:
+            ev.emit(mob.room, 'buff', src=mob, dst=mob, name='Ward', school='arcane', fx='ward')
+        return done
+
+    cast.ward = ward
+
+    orig_hex = cast.resolve_hex
+
+    async def resolve_hex(mob, target, key):
+        had = len(_affect_names(target))
+        result = await orig_hex(mob, target, key)
+        room = getattr(mob, 'room', None)
+        if room is not None and len(_affect_names(target)) > had:
+            ev.emit(room, 'debuff', src=mob, dst=target, name=key.replace('_', ' ').title(),
+                    school=_school_of_label(key), fx=fx_key(key))
+        return result
+
+    cast.resolve_hex = resolve_hex
+
+    orig_heal = cast.resolve_heal
+
+    async def resolve_heal(mob, who):
+        hp0 = getattr(who, 'hp', 0) if who is not None else 0
+        result = await orig_heal(mob, who)
+        room = getattr(mob, 'room', None)
+        if room is not None and who is not None and getattr(who, 'hp', 0) > hp0:
+            ev.emit(room, 'heal', src=mob, dst=who, amt=int(who.hp - hp0), school='holy', fx='healing_prayer')
+        return result
+
+    cast.resolve_heal = resolve_heal
+
+    orig_disrupt = cast.resolve_disrupt
+
+    async def resolve_disrupt(mob, healer):
+        was = 'silenced' in (getattr(healer, 'affect_flags', None) or ())
+        result = await orig_disrupt(mob, healer)
+        room = getattr(mob, 'room', None)
+        if room is not None and not was and 'silenced' in (getattr(healer, 'affect_flags', None) or ()):
+            ev.emit(room, 'debuff', src=mob, dst=healer, name='Silenced', school='sound', fx='disrupt')
+        return result
+
+    cast.resolve_disrupt = resolve_disrupt
 
 
 def _wrap_intent_cancel(Mobile):
@@ -709,7 +816,8 @@ def _wrap_intent_cancel(Mobile):
             reason = 'snare'
         else:
             reason = 'interrupt'
-        ev.emit(room, 'cancel', src=self, label=old.get('label'), reason=reason)
+        ev.emit(room, 'cancel', src=self, label=old.get('label'), reason=reason, fx=fx_key(old.get('label')),
+                school=_school_of_label(old.get('label')))
 
     Mobile.pending_intent = property(get, set_)
 
