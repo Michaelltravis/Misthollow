@@ -607,7 +607,14 @@ html.env-under #env-vignette { opacity: 1; background: radial-gradient(ellipse a
 #login-status { min-height: 18px; margin-top: 12px; font: 500 13px var(--body); color: var(--ink-dim); }
 #login-status.error { color: #ff9a8a; }
 #create { position: fixed; inset: 0; z-index: 31; display: grid; place-items: center; background: rgba(4,4,8,.6); }
-#create .card { position: relative; width: min(880px, calc(100vw - 32px)); max-height: calc(100vh - 40px); overflow: auto; padding: 24px 26px; scrollbar-gutter: stable; }
+#create .card { position: relative; width: min(880px, calc(100vw - 32px)); max-height: calc(100vh - 40px); padding: 24px 26px;
+  display: flex; flex-direction: column; }
+/* only a step's content scrolls, never the card: its gilded corners stand 4px outside it, so a
+   scrolling card overflowed by that much, and with Windows' scrollbars (which take room) a hover's
+   repaint could bring one and take it away, shifting everything. The content never scrolls
+   sideways and keeps its scrollbar's room; its padding lets a button's glow show */
+#create .card > .body { flex: 1 1 auto; min-height: 0; overflow-x: hidden; overflow-y: auto; scrollbar-gutter: stable;
+  padding: 6px 8px 8px; margin: -6px -8px -8px; }
 #create h2 { margin: 0; font: 700 24px var(--title); color: var(--gold-hi); letter-spacing: .1em; }
 #create .step { color: var(--ink-faint); font: 700 11px var(--label); letter-spacing: .16em; margin-bottom: 4px; }
 #create .hint { color: var(--ink-dim); margin: 4px 0 14px; font: italic 15px var(--lore); }
