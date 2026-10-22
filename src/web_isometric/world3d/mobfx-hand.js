@@ -36,6 +36,8 @@ export const MOB_RECIPES = {
   crushing_blow: 'chop2 slam | dust | - | crack+ | - | physical shake+ stop tell=rear',
   sweeping_blow: 'spin2 spin | dust | - | quake | - | physical shake+ wide tell=crouch',
   coordinated_lunge: 'leapchop lunge | dust | slash:3 | hit+ | - | blood tell=crouch',
+  // a boss wrapping itself in a ward no spell gets through (bosses.py magic_immune_duration)
+  nullifying_aura: 'raise | sigil+ | - | - | bubble+ | arcane ally tell=still',
   // a creature that counts as a boss without a script of its own (mob_ai.BOSS_ABILITIES)
   ground_slam: 'chop2 slam | dust | - | quake+ | - | physical shake+ stop tell=coil',
   terrifying_roar: 'taunt | rings | - | nova | - | shadow shake tell=rear',

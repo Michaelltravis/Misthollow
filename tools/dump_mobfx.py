@@ -62,10 +62,12 @@ def build():
         add(label, 'mob_ai intent')
     for label in _labels(os.path.join(SRC, 'brain', 'cast.py')):
         add(label, 'brain/cast.py intent')
-    # what combat_hooks names itself (a caster's instant mending and ward)
-    with open(os.path.join(SRC, 'combat_hooks.py'), encoding='utf-8') as f:
-        for key in re.findall(r"fx='([a-z_]+)'", f.read()):
-            add(key.replace('_', ' ').title(), 'combat_hooks instant')
+    # what combat_hooks and bosses.py name themselves (a caster's instant mending and ward, a
+    # boss's nullifying aura)
+    for name in ('combat_hooks.py', 'bosses.py'):
+        with open(os.path.join(SRC, name), encoding='utf-8') as f:
+            for key in re.findall(r"fx='([a-z_]+)'", f.read()):
+                add(key.replace('_', ' ').title(), f'{name[:-3]} instant')
     # the bosses' own (world/population boss_config): JEV draws them (tools/jev_mobfx.py), or a
     # person does where it wasn't sure
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

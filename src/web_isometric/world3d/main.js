@@ -407,6 +407,8 @@ async function runGame() {
       else if (e.k === 'cancel' && e.reason !== 'death') hud.targetCast({ end: 'broken' });
     }
   });
+  // a creature the room brings in (a lair's herald, its master in its place: combat.js arrive)
+  MH.bus.on('mob.move', p => { if (hero && p && (p.vnum == null || !heroRoom || p.vnum === heroRoom.vnum)) combat.arrive(p); });
   // your group: frames, the invite popup, loot rolls; click a member to target them (heals and
   // blessings go to your target), right-click for more
   MH.bus.on('group.update', e => hud.party.update(e && e.group));

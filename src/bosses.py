@@ -12,6 +12,18 @@ from typing import Dict, List, Optional
 from mobs import Mobile
 from combat import CombatHandler
 
+
+def fx_key(label):
+    """An ability's look in 3D (combat_hooks.fx_key)."""
+    from combat_hooks import fx_key as key
+    return key(label)
+
+
+def _plain(msg):
+    """A room line without its colour codes (a phase's message, shown over the boss)."""
+    import re
+    return re.sub(r'\x1b\[[0-9;]*[A-Za-z]|\{[a-zA-Z_]+\}', '', str(msg or '')).strip()
+
 logger = logging.getLogger('Misthollow.Bosses')
 
 
@@ -143,6 +155,8 @@ class Boss(Mobile):
                 msg = phase.get('message')
                 if msg and self.room:
                     await self.room.send_to_room(msg)
+                # the 3D client: the boss roars, the ground breaks, the view jolts (combat.js phase)
+                self._emit('phase', n=self.phase_index, label=_plain(msg) or None)
                 spawn = phase.get('spawn_adds')
                 if spawn:
                     await self._spawn_adds(spawn)
@@ -154,6 +168,7 @@ class Boss(Mobile):
             self.ai_state['enraged'] = True
             if self.room:
                 await self.room.send_to_room(f"{self.name} roars and becomes enraged!")
+                self._emit('enrage')
 
     def _select_ability(self) -> Optional[Dict]:
         now = time.time()
@@ -212,13 +227,14 @@ class Boss(Mobile):
             try:
                 import combat_events as ev
                 from combat_hooks import fx_school
-                ev.emit(self.room, 'windup', src=self, dst=target, label=name, kind='aoe' if ability.get('aoe') else 'heavy',
+                ev.emit(self.room, 'windup', src=self, dst=target, label=name, kind=self._kind(ability),
                         ms=int(cast_time * 1000), area=area, school=fx_school(self._ability_school(ability)),
-                        interruptible=bool(ability.get('interruptible')) or None)
+                        interruptible=bool(ability.get('interruptible')) or None, fx=fx_key(name))
             except Exception:
                 pass
         else:
-            await self._resolve_ability(ability, target)
+            # at once: its look goes ahead of the wounds it causes (as a skill's: combat_hooks)
+            await self._released(ability, target, None, 'ability')
 
         cooldown = ability.get('cooldown', 0)
         if name:
@@ -237,25 +253,54 @@ class Boss(Mobile):
             if self.room:
                 await self.room.send_to_room(f"{self.name}'s {ability.get('name')} is interrupted!")
             self.ai_state['cast'] = None
-            self._emit('cancel', label=ability.get('name'), reason='stagger' if ability.get('vulnerable_after') else 'interrupt')
+            self._emit('cancel', label=ability.get('name'), reason='stagger' if ability.get('vulnerable_after') else 'interrupt',
+                       fx=fx_key(ability.get('name')), school=self._fx_school(ability))
             await self._apply_vulnerability(ability)
             return
 
-        self._resolving_area = cast.get('area')
-        self._spared = []
         try:
-            await self._resolve_ability(ability, target)
+            await self._released(ability, target, cast.get('area'), 'resolve')
         finally:
-            area, spared = self._resolving_area, self._spared
-            self._resolving_area, self._spared = None, []
             self.ai_state['cast'] = None      # resolved or not, it is over (a failed one must not freeze the boss)
+
+    async def _released(self, ability: Dict, target, area, k):
+        """Land an ability, and tell the 3D client: its 'resolve' (a wound-up one) or 'ability' (an
+        instant one) goes ahead of the wounds it caused, aimed at whom it was for, so its numbers
+        rise when it arrives; then what it did to the boss itself (a heal, a ward)."""
+        room = self.room
+        hp0 = self.hp
+        self._resolving_area, self._spared = area, []
         try:
             import combat_events as ev
-            from combat_hooks import fx_school
-            ev.emit(self.room, 'resolve', src=self, label=ability.get('name'), kind='aoe' if ability.get('aoe') else 'heavy',
-                    area=area, school=fx_school(self._ability_school(ability)), dodged=[ev.ref(c) for c in spared] or None)
         except Exception:
-            pass
+            ev = None
+        if ev is None or room is None:
+            try:
+                await self._resolve_ability(ability, target)
+            finally:
+                self._resolving_area, self._spared = None, []
+            return
+        with ev.hold():
+            mark = ev.mark(room)
+            try:
+                await self._resolve_ability(ability, target)
+            finally:
+                spared = self._spared
+                self._resolving_area, self._spared = None, []
+                name = ability.get('name')
+                fields = dict(label=name, kind=self._kind(ability), school=self._fx_school(ability), fx=fx_key(name))
+                if k == 'resolve':
+                    fields.update(area=area, dodged=[ev.ref(c) for c in spared] or None)
+                else:
+                    fields.update(ability=name, shape=f"nova:{float(ability.get('radius', 4.5)):g}" if ability.get('aoe') else None)
+                try:
+                    ev.emit_at(room, mark, k, src=self, dst=target, **fields)
+                    if self.hp > hp0:
+                        ev.emit(room, 'heal', src=self, dst=self, amt=int(self.hp - hp0), school='holy', fx=fx_key(name))
+                    if ability.get('magic_immune_duration'):
+                        ev.emit(room, 'buff', src=self, dst=self, name='Nullifying Aura', school='arcane', fx='nullifying_aura')
+                except Exception:
+                    pass
 
     async def _resolve_ability(self, ability: Dict, target):
         if not self.room:
@@ -339,6 +384,23 @@ class Boss(Mobile):
             ev.emit(self.room, k, src=self, **fields)
         except Exception:
             pass
+
+    @staticmethod
+    def _kind(ability: Dict) -> str:
+        """What the 3D client is told it is (combat.js, reactions.js): a blow over an area, a spell
+        you can break, else a heavy blow."""
+        if ability.get('aoe'):
+            return 'aoe'
+        return 'cast' if ability.get('interruptible') else 'heavy'
+
+    def _fx_school(self, ability: Dict) -> str:
+        from combat_hooks import fx_school
+        return fx_school(self._ability_school(ability))
+
+    def _summon_school(self) -> str:
+        """The colour a boss's adds rise in (combat_hooks.summon_school)."""
+        from combat_hooks import summon_school
+        return summon_school(self)
 
     @staticmethod
     def _ability_school(ability: Dict) -> str:
@@ -437,6 +499,13 @@ class Boss(Mobile):
 
         if cap is not None:
             self._called = getattr(self, '_called', []) + spawned
+        # the 3D client: they rise out of the ground around the boss (combat.js summon)
+        if spawned:
+            try:
+                import combat_events as ev
+                self._emit('summon', school=self._summon_school(), adds=[ev.ref(a) for a in spawned])
+            except Exception:
+                pass
         # a quest's boss (marquee.py): its adds belong to the quest too
         hook = getattr(self, 'on_adds', None)
         if hook and spawned:
