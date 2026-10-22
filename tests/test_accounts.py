@@ -424,6 +424,33 @@ async def run(tmp):
     check(save_of('Qathief')['account_name'] == 'bossacct' and json.load(open(done)) == ['m1'],
           'a move runs once; one whose account is not there yet waits')
 
+    # every character, and the endgame kit for each then on the account (a runtime gift)
+    import grants
+    real_runtime = grants.RUNTIME
+    grants.RUNTIME = os.path.join(base, 'runtime_grants.json')
+    try:
+        await write_save('Straggler', level=2)
+        with open(moves, 'w') as f:
+            json.dump({'moves': [{'id': 'm3', 'to_account_of': 'ibolt', 'all': True, 'skip_accounts': ['gauntlet'],
+                                  'gearup': '2026-10-22'}]}, f)
+        accounts.apply_moves(moves, done, os.path.join(base, 'bk3'))
+        a = Account.load('mineacct')
+        check({'Straggler', 'Lowly', 'Qathief'} <= set(a.characters) and save_of('Probeone')['account_name'] == 'gauntlet',
+              '`all` moves every character, but a skipped account\'s')
+        gifts = grants.load_grants()
+        check(all(gifts.get(n.lower(), {}).get('gearup') == '2026-10-22' for n in a.characters) and 'probeone' not in gifts,
+              '`gearup` gives every character then on the account the endgame kit at next login')
+        grants.add_runtime_gifts({'Qamage': {'gearup': '2026-10-23'}})
+        check(grants.load_grants()['qamage']['gearup'] == '2026-10-23' and grants.load_grants()['ibolt']['gearup'] == '2026-10-22',
+              '…kept in the server\'s own gift file, later gifts added to it')
+        check('xtc' in grants.load_grants() and grants.load_grants()['xtc']['gearup'] is True,
+              "…alongside world/grants.json's (its own entries untouched)")
+        check(grants.load_grants(grants.GRANTS).get('ibolt', {}).get('gearup') == '2026-10-22'
+              and 'ibolt' not in grants.load_grants(os.path.join(base, 'nothing.json')),
+              '…only for the real gift file')
+    finally:
+        grants.RUNTIME = real_runtime
+
     # ------------------------------------------------ migration of older saves
     base = fresh(tmp, 'migrate')
     old_hash = hashlib.sha256(b'legacypass').hexdigest()

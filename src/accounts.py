@@ -647,9 +647,11 @@ MOVES_DONE = os.path.join(os.path.dirname(__file__), '..', 'lib', 'moves_done.js
 def apply_moves(path: str = MOVES, done_path: str = MOVES_DONE, backup_root: Optional[str] = None) -> List[str]:
     """Run each move in world/moves.json once, at start (no one is in the world to save over
     it). A move puts characters on the account of a named character (`to_account_of`): those it
-    names, and with `min_level` every character of at least that level, except those on
-    `skip_accounts`; `admin` makes that account an admin one (so characters immortal through
-    their old account stay so). The account's limit grows to hold them. A move whose account
+    names, and with `min_level` every character of at least that level (`all`: every one),
+    except those on `skip_accounts`; `admin` makes that account an admin one (so characters
+    immortal through their old account stay so); `gearup` gives every character then on the
+    account the endgame kit at its next login (its value tells this gift from an earlier one).
+    The account's limit grows to hold them. A move whose account
     isn't there yet waits for a later start; one that ran is recorded in lib/moves_done.json
     and never runs again, so a character later moved elsewhere stays there. Everything a move
     changes is copied first to <backup_root> (default lib/backups/moves-<id>-<time>).
@@ -676,14 +678,14 @@ def apply_moves(path: str = MOVES, done_path: str = MOVES_DONE, backup_root: Opt
             continue
         skip = {a.lower() for a in mv.get('skip_accounts') or []}
         names = [n.capitalize() for n in mv.get('characters') or []]
-        if mv.get('min_level'):
+        if mv.get('min_level') or mv.get('all'):
             for p in sorted(glob.glob(os.path.join(_players_dir(), '*.json'))):
                 try:
                     with open(p, encoding='utf-8') as f:
                         d = json.load(f)
                 except (OSError, ValueError):
                     continue
-                if isinstance(d, dict) and d.get('name') and int(d.get('level') or 0) >= int(mv['min_level']):
+                if isinstance(d, dict) and d.get('name') and int(d.get('level') or 0) >= int(mv.get('min_level') or 0):
                     names.append(d['name'])
         chosen = []
         for n in dict.fromkeys(names):
@@ -713,6 +715,12 @@ def apply_moves(path: str = MOVES, done_path: str = MOVES_DONE, backup_root: Opt
         for n in chosen:
             ok, why = AccountManager.move_character(target, n)
             report.append(f"{n}: {'moved to ' + target.account_name if ok else why}")
+        if mv.get('gearup'):
+            # the endgame kit for every character on the account now (not one made later), at
+            # each one's next login (grants.py, from its runtime file)
+            import grants
+            grants.add_runtime_gifts({n: {'gearup': mv['gearup'], 'why': f"move {mid}"} for n in target.characters})
+            report.append(f"the endgame kit at next login for {', '.join(target.characters)}")
         done.add(mid)
         os.makedirs(os.path.dirname(done_path), exist_ok=True)
         with open(done_path, 'w', encoding='utf-8') as f:
