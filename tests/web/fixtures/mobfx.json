@@ -121,6 +121,13 @@
   },
   {
    "from": [
+    "bosses instant"
+   ],
+   "fx": "nullifying_aura",
+   "label": "Nullifying Aura"
+  },
+  {
+   "from": [
     "mob_ai intent"
    ],
    "fx": "paralyzing_touch",

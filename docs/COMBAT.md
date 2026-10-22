@@ -201,6 +201,17 @@ has its animation and its rising number (`combat_events.py`), so the chat log do
   - **Checking them:** `/play?demo&gallery=mobfx` plays each ability on four creatures of four
     families (`&cancel` breaks them instead, `&rank=normal|elite|boss`). `tools/dump_mobfx.py` lists
     what the server can send, and `tests/web/mobfx.test.mjs` checks each one has a line.
+  - **Bosses** (`bosses.py`) send the same events for their own abilities: a wound-up one's `windup`
+    and `resolve`, an instant one's `ability`, each ahead of its wounds. Their looks are JEV's
+    (`tools/jev_mobfx.py` → `mobfx-table.js`), or a hand line. A boss also has its moments:
+    - **A new phase** (`phase`): it roars, the ground cracks, the view jolts and washes red, and the
+      phase's own words hang over it.
+    - **Enraged** (`enrage`): it smoulders red and sheds embers until it falls.
+    - **Help called** (`summon`): each add rises out of the ground, the dead out of bone, anything
+      else out of smoke.
+  - **A lair's entrance** (`mob_move` "arrive" from `lairs.py`): a creature brought in from above
+    drops out of the sky. One arriving where another came in moments before takes its place: the
+    first bursts into smoke and crimson wisps, and the second rises out of it (Ostragoth's bat).
 
 ### Mana Management
 

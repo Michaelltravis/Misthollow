@@ -297,6 +297,9 @@ export class CombatView {
       case 'windup': return this.windup(e);
       case 'resolve': return this.resolveWindup(e);
       case 'cancel': return this.cancelWindup(e);
+      case 'phase': return this.phase(e);
+      case 'enrage': return this.enrage(e);
+      case 'summon': return this.summon(e);
       case 'hazard': return this.hazard(e);
       case 'gloom': return this.gloom(e);
       case 'death': return this.death(e);
@@ -662,6 +665,149 @@ export class CombatView {
     this.fx.text(p.clone().setY(src.root.position.y + 2.6), word, { color: '#ffe066', size: 15, rise: 0.6 });
     if (src.actor && !(src.ent && src.ent.dying)) src.actor.once(Math.random() < 0.5 ? 'Hit_A' : 'Hit_B', 0.05, 1.0);
   }
+  // ---- a boss's moments (bosses.py) ----
+  // a new phase: it roars, the ground breaks under it, the view jolts and washes red, and what the
+  // phase says hangs over it
+  phase(e) {
+    const src = this.resolve(e.src);
+    if (!src) return;
+    const at = src.root.position.clone().setY(0);
+    if (src.actor) src.actor.once('Taunt', 0.1, 0.8);
+    this.director.pose(src, { pitch: -0.3 }, 0.15);
+    this.fx.after(0.45, () => this.director.pose(src, {}, 0.4));
+    this.sfx('resolve', at, { school: 'physical' });
+    this.fx.decal(at, { sigil: 'crack', radius: 4.2, time: 3.2, dark: true, opacity: 0.8, spin: 0, grow: 0.6 });
+    for (let i = 0; i < 3; i++) this.fx.after(i * 0.16, () => this.fx.shockwave(at, { color: 0xff3a1a, radius: 5 + i * 1.5, time: 0.6 }));
+    this.fx.p.emit(at.clone().setY(0.3), { count: 40, color: 0xb8a888, speed: 4.5, up: 1.6, life: 0.9, size: 0.55, grow: 0.5, drag: 2 });
+    this.fx.shake(0.4, 0.55);
+    this.fx.screen('#ff3a1a', { time: 0.6, opacity: 0.22 });
+    if (this.engine.punch) this.engine.punch(1.6);
+    if (this.engine.hitStop) this.engine.hitStop(120);
+    const words = e.label || `Phase ${(e.n || 1) + 1}`;
+    this.fx.text(this.chest(src).setY(src.root.position.y + (src.ent && src.ent.plateY ? src.ent.plateY : 2.6) + 0.6), words,
+      { color: '#ff7a4a', size: 20, rise: 0.4, life: 2.6, exact: true });
+  }
+  // enraged until it falls: a roar, a red ring, then it smoulders and sheds embers for good
+  enrage(e) {
+    const src = this.resolve(e.src);
+    if (!src || !src.ent) return;
+    if (src.actor) src.actor.once('Taunt', 0.1, 0.9);
+    this.fx.shockwave(src.root.position.clone().setY(0), { color: 0xff2a0a, radius: 4, time: 0.5 });
+    this.fx.text(this.chest(src).setY(src.root.position.y + (src.ent.plateY || 2.6) + 0.5), 'Enraged!', { color: '#ff4a2a', size: 18, rise: 0.5, life: 1.8 });
+    if (src.ent.enraged) return;
+    src.ent.enraged = true;
+    let glowAt = 0;
+    this.fx.add({ update: dt => {
+      const ent = src.ent;
+      if (!ent.root || !ent.root.parent || ent.dying || ent.alive === false) return false;
+      if ((glowAt -= dt) <= 0) { glowAt = 0.9; this.fx.tint(ent.root, 0xff3a1a, { time: 0.9, strength: 0.3, hold: 0.3 }); }
+      if (Math.random() < dt * 14) {
+        const a = Math.random() * Math.PI * 2, p = ent.root.position;
+        this.fx.p.emit(new THREE.Vector3(p.x + Math.cos(a) * 0.6, p.y + 0.3 + Math.random() * 1.2, p.z + Math.sin(a) * 0.6),
+          { count: 1, color: 0xff5a1a, bright: 1.5, speed: 0.2, up: 1.6, life: 0.7, size: 0.16, drag: 0.5 });
+      }
+      return true;
+    } });
+  }
+  // a boss calls for help: it calls them up, and each rises out of the ground where it appears
+  // (the grave's dead in bone, anything else out of smoke); they come with the room's next roster,
+  // so each is waited for a moment
+  summon(e) {
+    const src = this.resolve(e.src);
+    if (src && src.actor) src.actor.once('Spellcast_Summon', 0.1, 0.9);
+    const color = this.colorOf(e.school || 'shadow'), dead = e.school === 'necrotic';
+    (e.adds || []).forEach((ref, i) => {
+      let tries = 0, done = false;
+      this.fx.every(0.1, 30, () => {
+        if (done) return;
+        const w = this.resolve(ref);
+        if (!w && ++tries < 30) return;
+        done = true;
+        if (!w) return;
+        const at = w.root.position.clone().setY(0);
+        this.fx.after(i * 0.12, () => {
+          this.fx.decal(at, { sigil: dead ? 'boneCircle' : 'ring', radius: 1.4, time: 1.6, color, spin: 1.2 });
+          if (dead) this.fx.growth(at, { kind: 'bones', count: 7, radius: 0.9, height: 1.1, time: 1.2, color: 0xe8e2cc, glow: 0.1 });
+          else this.fx.p.emit(at.clone().setY(0.6), { count: 30, color: 0x3a3044, speed: 1.4, up: 0.8, life: 1.0, size: 0.7, grow: 0.8, drag: 1.6 });
+          this.fx.pillar(at, { color, radius: 0.7, time: 0.6 });
+          // up out of the ground
+          const root = w.root, base = root.scale.clone();
+          let t = 0;
+          this.fx.add({ update: dt => {
+            t = Math.min(1, t + dt / 0.6);
+            const k = 1 - Math.pow(1 - t, 3);
+            root.scale.set(base.x * (0.3 + 0.7 * k), base.y * k, base.z * (0.3 + 0.7 * k));
+            return t < 1;
+          }, dispose: () => root.scale.copy(base) });
+        });
+      });
+    });
+  }
+
+  // a creature brought in by the room itself (a lair: lairs.py sends {type: 'mob_move', action:
+  // 'arrive', dir: 'up', name}): it drops in from above; and one that arrives where another came
+  // in a moment before takes its place (the bat that becomes the vampire lord): the first bursts
+  // into smoke and crimson wisps, and the second rises out of it. The message names the creature,
+  // so it is found by name once the room's roster brings it (a few tenths of a second)
+  arrive(m) {
+    if (!m || m.action !== 'arrive') return;
+    const key = s => String(s || '').toLowerCase().replace(/^(a|an|the|some)\s+/, '').trim();
+    const want = key(m.name);
+    // (a lair's master follows its herald in a couple of seconds: lairs.py TURN_DELAY)
+    this.arrivals = (this.arrivals || []).filter(a => performance.now() - a.at < 8000);
+    let tries = 0, found = null;
+    this.fx.every(0.1, 30, () => {
+      if (found || ++tries > 30) return;
+      for (const ent of this.ents.list.values()) {
+        if (ent.kind !== 'mob' || !ent.root || ent._arrived || !ent.data) continue;
+        if (key(ent.data.name) === want || key(ent.data.short) === want) { found = ent; break; }
+      }
+      if (!found) return;
+      found._arrived = true;
+      const before = this.arrivals.find(a => a.ent !== found);
+      this.arrivals.push({ ent: found, at: performance.now(), pos: found.root.position.clone() });
+      if (before) this.transform(before, found);
+      else this.dropIn(found);
+    });
+  }
+  // out of the sky: from high above down to where it stands, dust and a rush of air as it lands
+  dropIn(ent) {
+    const root = ent.root, h = 7, T = 0.9;
+    let t = 0;
+    const set = y => { if (ent.fly) ent.lift = y; else root.position.y = y; };
+    set(h);
+    this.fx.add({ update: dt => {
+      t = Math.min(1, t + dt / T);
+      set(h * Math.pow(1 - t, 2));
+      if (Math.random() < dt * 30) this.fx.p.emit(root.position.clone().setY(root.position.y + 0.8), { count: 1, color: 0x3a3044, speed: 0.4, up: 0.6, life: 0.6, size: 0.4, grow: 0.4, drag: 1.5 });
+      return t < 1;
+    }, dispose: () => {
+      set(0);
+      const at = root.position.clone().setY(0);
+      this.fx.shockwave(at, { color: 0xd8c8a0, radius: 2.6, time: 0.4 });
+      this.fx.p.emit(at.clone().setY(0.2), { count: 24, color: 0xb8a888, speed: 3, up: 0.6, life: 0.7, size: 0.5, grow: 0.5, drag: 2 });
+    } });
+  }
+  // `was` (an arrival a moment ago) becomes `ent`: gone in smoke, and it rises where it was
+  transform(was, ent) {
+    const at = (was.ent.root ? was.ent.root.position : was.pos).clone().setY(0), fx = this.fx;
+    if (was.ent.root) fx.fade(was.ent.root, { time: 0.6, opacity: 0, inT: 0.1, outT: 0.4 });
+    fx.p.emit(at.clone().setY(1.2), { count: 60, color: 0x1a1020, speed: 2.6, up: 0.9, life: 1.4, size: 0.8, grow: 0.9, drag: 1.4, jitter: 0.8 });
+    fx.glyph(at.clone().setY(1.2), { glyph: 'wisp', count: 18, color: 0xc0203a, speed: 2.8, up: 1.6, life: 1.1, size: 0.42, drag: 1.6, spin: 5 });
+    fx.decal(at, { sigil: 'ring', radius: 2.2, time: 2, color: 0xc0203a, spin: 1.5 });
+    fx.shockwave(at, { color: 0xc0203a, radius: 4, time: 0.55 });
+    fx.light(at.clone().setY(1.2), 0xc0203a, 8, 0.5);
+    fx.shake(0.22, 0.35);
+    this.sfx('resolve', at, { school: 'shadow' });
+    // the new one where the old one was, rising out of the smoke from a crouch
+    if (ent.root) {
+      ent.root.position.x = at.x; ent.root.position.z = at.z;
+      const who = { root: ent.root, actor: ent.actor, ent, mob: true };
+      this.director.pose(who, { squash: 0.3 }, 0.01);
+      fx.after(0.35, () => { this.director.pose(who, {}, 0.6); fx.flash(ent.root, 0xc0203a, 0.5); if (ent.actor) ent.actor.once('Taunt', 0.15, 0.8); });
+    }
+  }
+
   // a lasting danger on the ground (a boss's plague pool: boss_mechanics.py): marked for as long as
   // it lasts, with the STEP OUT cue while you stand in it
   hazard(e) {
