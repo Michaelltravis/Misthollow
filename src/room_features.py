@@ -30,6 +30,8 @@ FEATURES = [
     ('statue', r'statues?|idols?|effig(?:y|ies)|carved figures?|hunched old man|plinths?|monuments?\b|memorial stones?', 2, 'centre'),
     ('obelisk', r'obelisks?', 1, 'centre'),
     ('pillar', r'pillars?|columns?|colonnades?', 4, 'edge'),
+    # the wooden legs a dock or a jetty stands on (under the dock at New Thalos, four of them)
+    ('piling', r'pilings?|pylons?|piers? posts?', 4, 'centre'),
     ('well', r'\b(?:a|the|an old|stone|deep|village|town) well\b|\b(?:a|the|village|town|iron) pump\b', 1, 'centre'),
     ('fountain', r'fountains?', 1, 'centre'),
     ('brazier', r'braziers?|fire ?pits?|campfires?|camp fires?|bonfires?|firepits?|hearths?|ring of (?:cold |grey )?ash(?:es)?|cook ?fires?|fireplaces?|circle of (?:blackened |fire-blackened )?stones', 2, 'centre'),
