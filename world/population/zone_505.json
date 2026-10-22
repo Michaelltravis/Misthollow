@@ -120,8 +120,8 @@
  "bosses": [
   {
    "vnum": 650507,
-   "room": 24855,
-   "why": "Bone Gnasher in its lair",
+   "room": 24858,
+   "why": "Bone Gnasher in its lair (Bone Gnasher's Lair, not the Ancient Tunnel beside it)",
    "mechanics": [
     {
      "type": "waves",
@@ -146,6 +146,11 @@
      "why": "step out"
     }
    ]
+  },
+  {
+   "vnum": 650506,
+   "room": 24899,
+   "why": "Estorgoth in his den (Estorgoth's Den, not the dead end above Bone Gnasher's lair)"
   }
  ],
  "fill": [

@@ -66,6 +66,61 @@
   "16025": {
    "rank": "boss",
    "why": "Kaleidos"
+  },
+  "796600": {
+   "name": "xarvoth demon lord",
+   "short_desc": "Xarvoth the Demon Lord",
+   "long_desc": "Xarvoth the Demon Lord sits upon a throne of bone and iron, plotting conquest.",
+   "description": "A towering fiend of black iron hide and red-veined horn, its wings folded like a cloak over the back of the throne. Burning eyes move over maps of a world it means to take, and the air around it shimmers with heat and hatred. The chaos host that pours through this plane is its army, and every demon here answers to its voice.",
+   "level": 48,
+   "flags": [
+    "aggressive",
+    "sentinel",
+    "boss"
+   ],
+   "rank": "boss",
+   "alignment": -1000,
+   "why": "the demon lord who commands the invasion, on his throne",
+   "race": "demon",
+   "boss_config": {
+    "enrage_time": 180,
+    "enrage_multiplier": 1.5,
+    "ability_interval": 5.0,
+    "phases": [
+     {
+      "threshold": 50,
+      "message": "Xarvoth rises from the throne, wings spread wide: \"KNEEL!\""
+     }
+    ],
+    "abilities": [
+     {
+      "name": "Hellfire",
+      "telegraph": "Xarvoth spreads his wings, and hellfire gathers about the throne!",
+      "cast_time": 2,
+      "cooldown": 12,
+      "damage_dice": "3d8+13",
+      "aoe": true,
+      "radius": 4.5
+     },
+     {
+      "name": "Rending Claws",
+      "telegraph": "Xarvoth lunges at you, claws raised!",
+      "cast_time": 1,
+      "cooldown": 7,
+      "damage_dice": "3d10+12",
+      "dodge": true
+     },
+     {
+      "name": "Word of Unmaking",
+      "telegraph": "Xarvoth begins to speak a word that unmakes!",
+      "cast_time": 2.5,
+      "cooldown": 18,
+      "damage_dice": "4d8+15",
+      "interruptible": true,
+      "min_phase": 1
+     }
+    ]
+   }
   }
  },
  "patrols": [
@@ -100,6 +155,35 @@
      "max": 0.75,
      "shout": "The colours of the plane flicker and die...",
      "why": "the plane darkens"
+    }
+   ]
+  },
+  {
+   "vnum": 796600,
+   "room": 16023,
+   "why": "the demon lord who commands the invasion, on his throne",
+   "mechanics": [
+    {
+     "type": "waves",
+     "at": [
+      66,
+      33
+     ],
+     "adds": {
+      "16002": 2
+     },
+     "shout": "Xarvoth roars, and lesser demons claw through the rift!",
+     "why": "his host"
+    },
+    {
+     "type": "plague_pools",
+     "label": "Hellfire",
+     "school": "fire",
+     "every": 9,
+     "radius": 3.0,
+     "last": 12,
+     "pct": 0.05,
+     "why": "burning ground: step out"
     }
    ]
   }

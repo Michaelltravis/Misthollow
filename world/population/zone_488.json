@@ -106,6 +106,21 @@
      }
     ]
    }
+  },
+  "799880": {
+   "name": "king crab spider",
+   "short_desc": "the king crab spider",
+   "long_desc": "The king crab spider hangs in its cables of silk, its claw-like forelegs raised.",
+   "description": "Far bigger than any ordinary crab spider: a hulking, hard-shelled thing the size of an ox, its forelegs thickened into great crushing claws. The bones of men hang in its silk.",
+   "level": 16,
+   "flags": [
+    "aggressive",
+    "sentinel"
+   ],
+   "rank": "sub-boss",
+   "alignment": 0,
+   "why": "the great spider whose den this is",
+   "race": "spider"
   }
  },
  "bosses": [
@@ -137,6 +152,11 @@
      "why": "step out"
     }
    ]
+  },
+  {
+   "vnum": 799880,
+   "room": 5827,
+   "why": "the great spider whose den this is"
   }
  ],
  "fill": [
