@@ -640,6 +640,87 @@ def _free_account_name(name: str) -> Optional[str]:
     return None
 
 
+MOVES = os.path.join(os.path.dirname(__file__), '..', 'world', 'moves.json')
+MOVES_DONE = os.path.join(os.path.dirname(__file__), '..', 'lib', 'moves_done.json')
+
+
+def apply_moves(path: str = MOVES, done_path: str = MOVES_DONE, backup_root: Optional[str] = None) -> List[str]:
+    """Run each move in world/moves.json once, at start (no one is in the world to save over
+    it). A move puts characters on the account of a named character (`to_account_of`): those it
+    names, and with `min_level` every character of at least that level, except those on
+    `skip_accounts`; `admin` makes that account an admin one (so characters immortal through
+    their old account stay so). The account's limit grows to hold them. A move whose account
+    isn't there yet waits for a later start; one that ran is recorded in lib/moves_done.json
+    and never runs again, so a character later moved elsewhere stays there. Everything a move
+    changes is copied first to <backup_root> (default lib/backups/moves-<id>-<time>).
+    Returns what was done, a line a character."""
+    try:
+        with open(path, encoding='utf-8') as f:
+            moves = json.load(f).get('moves') or []
+    except (OSError, ValueError):
+        return []
+    try:
+        with open(done_path, encoding='utf-8') as f:
+            done = set(json.load(f))
+    except (OSError, ValueError):
+        done = set()
+    report = []
+    for mv in moves:
+        mid = mv.get('id')
+        if not mid or mid in done:
+            continue
+        owner = _read_save(mv.get('to_account_of') or '')
+        target = Account.load((owner or {}).get('account_name') or '')
+        if target is None:
+            logger.warning(f"accounts: move {mid} waits: no account holds {mv.get('to_account_of')}")
+            continue
+        skip = {a.lower() for a in mv.get('skip_accounts') or []}
+        names = [n.capitalize() for n in mv.get('characters') or []]
+        if mv.get('min_level'):
+            for p in sorted(glob.glob(os.path.join(_players_dir(), '*.json'))):
+                try:
+                    with open(p, encoding='utf-8') as f:
+                        d = json.load(f)
+                except (OSError, ValueError):
+                    continue
+                if isinstance(d, dict) and d.get('name') and int(d.get('level') or 0) >= int(mv['min_level']):
+                    names.append(d['name'])
+        chosen = []
+        for n in dict.fromkeys(names):
+            d = _read_save(n)
+            acct = ((d or {}).get('account_name') or '').lower()
+            if d is None:
+                report.append(f"{n}: no such character")
+            elif acct == target.account_name:
+                report.append(f"{d.get('name') or n}: already on {target.account_name}")
+            elif acct in skip:
+                report.append(f"{d.get('name') or n}: left on {acct}")
+            else:
+                chosen.append(d.get('name') or n)
+        backup = backup_root or os.path.join(_players_dir(), '..', 'backups', f"moves-{mid}-{datetime.now():%Y%m%d%H%M%S}")
+        os.makedirs(os.path.join(backup, 'players'), exist_ok=True)
+        os.makedirs(os.path.join(backup, 'accounts'), exist_ok=True)
+        for n in chosen:
+            shutil.copy2(_save_path(n), os.path.join(backup, 'players', f'{n.lower()}.json'))
+            src = ((_read_save(n) or {}).get('account_name') or '').lower()
+            if src and Account.exists(src):
+                shutil.copy2(os.path.join(ACCOUNTS_DIR, f'{src}.json'), os.path.join(backup, 'accounts', f'{src}.json'))
+        shutil.copy2(os.path.join(ACCOUNTS_DIR, f'{target.account_name}.json'), os.path.join(backup, 'accounts', f'{target.account_name}.json'))
+        target.settings['max_chars'] = max(target.settings.get('max_chars', 8), len(target.characters) + len(chosen))
+        if mv.get('admin'):
+            target.is_admin = True
+        target.save()
+        for n in chosen:
+            ok, why = AccountManager.move_character(target, n)
+            report.append(f"{n}: {'moved to ' + target.account_name if ok else why}")
+        done.add(mid)
+        os.makedirs(os.path.dirname(done_path), exist_ok=True)
+        with open(done_path, 'w', encoding='utf-8') as f:
+            json.dump(sorted(done), f, indent=2)
+        logger.info(f"accounts: move {mid} onto {target.account_name}: " + '; '.join(report))
+    return report
+
+
 def migrate_saves(backup_root: Optional[str] = None) -> Dict[str, list]:
     """Put every character under lib/players on an account (run at start; once everything is
     on one, it changes nothing):

@@ -1,0 +1,14 @@
+{
+  "_about": "One-time moves of characters onto an account, run at the server's start (src/accounts.py apply_moves): onto the account of the character `to_account_of`, the characters named and (min_level) every one of at least that level, except those on skip_accounts; admin makes that account an admin one. Each id runs once (lib/moves_done.json); one whose account isn't there yet waits for a later start. Saves and accounts it changes are copied first to lib/backups/moves-<id>-<time>.",
+  "moves": [
+    {
+      "id": "2026-10-22-onto-ibolt",
+      "to_account_of": "ibolt",
+      "characters": ["deckard", "xtc", "qawarrior", "qamage", "qacleric", "qathief", "qaranger", "qapaladin", "qanecro", "qabard", "qaassassin"],
+      "min_level": 50,
+      "skip_accounts": ["gauntlet", "gauntletb"],
+      "admin": true,
+      "why": "the owner's own account (their bard Ibolt) holds all their characters, the end-game test ones too (asked for 2026-10-22); admin, so those immortal through the old admin account stay so. The gauntlet suites' Probe* characters stay on their accounts: the live tests sign in as them."
+    }
+  ]
+}

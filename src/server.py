@@ -1871,6 +1871,12 @@ class MUDServer:
             migrate_saves()
         except Exception:
             logger.exception('accounts migration')
+        # ...and any one-time move of characters between accounts (world/moves.json)
+        try:
+            from accounts import apply_moves
+            apply_moves()
+        except Exception:
+            logger.exception('accounts moves')
         self.server = await asyncio.start_server(
             self.handle_connection,
             self.config.HOST,
