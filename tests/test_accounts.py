@@ -381,6 +381,49 @@ async def run(tmp):
     check(AccountManager.move_character(main_acct, 'Loner') == (False, 'This account has no room for another character.'),
           '…and so is one past the account\'s limit')
 
+    # ------------------------------------------------ one-time moves at start (world/moves.json)
+    base = fresh(tmp, 'moves')
+    mine, _ = await AccountManager.create_account('mineacct', 'minepass12')
+    await AccountManager.create_character(mine, 'Ibolt', 'human', 'bard', STATS)
+    boss, _ = await AccountManager.create_account('bossacct', 'bosspass12')
+    boss.is_admin = True
+    boss.save()
+    for n in ('Qamage', 'Qabard'):
+        await AccountManager.create_character(boss, n, 'human', 'mage', STATS)
+    probe, _ = await AccountManager.create_account('gauntlet', 'gauntlet1')
+    await AccountManager.create_character(probe, 'Probeone', 'human', 'thief', STATS)
+    await write_save('Oldhand', level=50)
+    await write_save('Lowly', level=4)
+    for n in ('Probeone',):
+        d = save_of(n)
+        d['level'] = 50
+        with open(os.path.join(Config.PLAYER_DIR, f'{n.lower()}.json'), 'w') as f:
+            json.dump(d, f)
+    moves = os.path.join(base, 'moves.json')
+    done = os.path.join(base, 'moves_done.json')
+    with open(moves, 'w') as f:
+        json.dump({'moves': [{'id': 'm1', 'to_account_of': 'ibolt', 'characters': ['qamage', 'qabard', 'nobody'],
+                              'min_level': 50, 'skip_accounts': ['gauntlet'], 'admin': True}]}, f)
+    report = accounts.apply_moves(moves, done, os.path.join(base, 'bk'))
+    a = Account.load('mineacct')
+    check(sorted(a.characters) == ['Ibolt', 'Oldhand', 'Qabard', 'Qamage'] and a.is_admin
+          and all(save_of(n)['account_name'] == 'mineacct' for n in ('Qamage', 'Qabard', 'Oldhand')),
+          "a move puts the named characters and every one at its level on the account of the named character, made admin")
+    check(save_of('Probeone')['account_name'] == 'gauntlet' and save_of('Lowly')['account_name'] in (None, '')
+          and any('nobody' in r.lower() and 'no such' in r for r in report),
+          '…leaving a skipped account\'s, a lower level\'s, and saying a name is no one')
+    check(Account.load('bossacct') is not None and Account.load('bossacct').characters == [],
+          '…an admin account it empties is kept')
+    check(os.path.exists(os.path.join(base, 'bk', 'players', 'qamage.json')) and os.path.exists(os.path.join(base, 'bk', 'accounts', 'mineacct.json')),
+          '…and what it changed is backed up first')
+    await AccountManager.create_character(boss, 'Qathief', 'human', 'thief', STATS)
+    with open(moves, 'w') as f:
+        json.dump({'moves': [{'id': 'm1', 'to_account_of': 'ibolt', 'characters': ['qathief']},
+                             {'id': 'm2', 'to_account_of': 'nosuchhero', 'characters': ['qathief']}]}, f)
+    accounts.apply_moves(moves, done, os.path.join(base, 'bk2'))
+    check(save_of('Qathief')['account_name'] == 'bossacct' and json.load(open(done)) == ['m1'],
+          'a move runs once; one whose account is not there yet waits')
+
     # ------------------------------------------------ migration of older saves
     base = fresh(tmp, 'migrate')
     old_hash = hashlib.sha256(b'legacypass').hexdigest()
