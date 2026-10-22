@@ -3,7 +3,8 @@
 A creature's wind-ups (mob_ai's intents and the brain's spells, brain/cast.py) and its instant
 heals and wards reach /play with an `fx` (combat_hooks.fx_key); tests/web/mobfx.test.mjs reads
 the file this writes to check, without a running server, that each has a line of its own in
-world3d/mobfx-hand.js. Bosses' scripted abilities (bosses.py) are not here: they come with phase 3.
+world3d/mobfx-hand.js; and every boss ability (world/population) has JEV's line (mobfx-table.js),
+a hand line, or is on the review list (MOB_REVIEW).
     python3 tools/dump_mobfx.py           # write tests/web/fixtures/mobfx.json
     python3 tools/dump_mobfx.py --check   # exit 1 when it is out of date
 """
@@ -65,7 +66,12 @@ def build():
     with open(os.path.join(SRC, 'combat_hooks.py'), encoding='utf-8') as f:
         for key in re.findall(r"fx='([a-z_]+)'", f.read()):
             add(key.replace('_', ' ').title(), 'combat_hooks instant')
-    return {'abilities': sorted(rows.values(), key=lambda r: r['fx'])}
+    # the bosses' own (world/population boss_config): JEV draws them (tools/jev_mobfx.py), or a
+    # person does where it wasn't sure
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from jev_mobfx import boss_abilities
+    bosses = sorted(k for k in boss_abilities() if k not in rows)
+    return {'abilities': sorted(rows.values(), key=lambda r: r['fx']), 'bosses': bosses}
 
 
 def main():

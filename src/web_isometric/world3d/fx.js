@@ -690,10 +690,13 @@ export class FX {
     } });
   }
   // a spray from the chest in a cone (breath, sand, notes, a hail of bolts)
+  // a spray or a breath fanning out to `radius`: its front reaches it about when the ability lands
+  // (abilityfx.js FIXED cone), the rest washing over it and fading (particles slow by their drag:
+  // at full speed and this life they carry 0.8-1.5 radii)
   cone(from, dir, { radius = 7, angle = 0.9, color = 0xffffff, glyph = null, time = 0.3, delay = 0, rate = 120, size = 0.3 } = {}) {
     const d = dir.clone().normalize();
     let t = -delay, acc = 0;
-    const speed = radius / 0.45;
+    const speed = radius / 0.3;
     return this.add({ update: dt => {
       t += dt;
       if (t < 0) return true;
@@ -703,8 +706,8 @@ export class FX {
         const yaw = (Math.random() - 0.5) * angle;
         _v.copy(d).applyAxisAngle(UP, yaw).multiplyScalar(speed);
         _v.y += (Math.random() - 0.3) * 1.5;
-        if (glyph && Math.random() < 0.35) this.glyph(from, { glyph, count: 1, color, speed: 0.1, dir: _v, life: 0.45, size: size * 1.4, drag: 0.5, spin: 4 });
-        else this.p.emit(from, { count: 1, color, speed: 0.3, dir: _v, life: 0.45, size, drag: 0.6 });
+        if (glyph && Math.random() < 0.35) this.glyph(from, { glyph, count: 1, color, speed: 1, spread: 0.15, dir: _v, life: 0.38, size: size * 1.4, drag: 0.6, spin: 4 });
+        else this.p.emit(from, { count: 1, color, speed: 1, spread: 0.15, dir: _v, life: 0.38, size, drag: 0.6 });
       }
       return t < time;
     } });

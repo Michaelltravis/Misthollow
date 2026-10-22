@@ -521,7 +521,8 @@ export class Director {
         break;
       case 'cone': {
         const sp = ev && ev.school ? (SCHOOL[ev.school] || SCHOOL.arcane).spark : pal.spark;
-        fx.cone(from, dir, { radius: r.radius || 7, color: r.school ? pal.spark : sp, glyph: pal.glyph, time: 0.32 });
+        // (as far as whom it is aimed at, and a step past; else the line's reach)
+        fx.cone(from, dir, { radius: dst ? Math.max(3, dist + 1) : r.radius || 7, color: r.school ? pal.spark : sp, glyph: pal.glyph, time: 0.32 });
         break;
       }
       case 'blade':
