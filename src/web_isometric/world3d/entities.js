@@ -12,6 +12,8 @@ import { poseFor, postureChange } from './posture.js';
 import { makeKin } from './kin.js';
 import { isHostile, conOf, shownName } from './targeting.js';
 import { deathStyle, remains, fallOver, nameKey } from './corpse.js';
+import { plateAuras } from './hud/buffs.js';
+import { abilityIcon } from './hud/icons.js';
 
 export const CLASS_MODEL = {
   warrior: ['barbarian'], paladin: ['knight'], cleric: ['knight', 0xfff0d0], mage: ['mage'],
@@ -104,7 +106,30 @@ export class Entities {
     this.dying = [];               // fallen creatures, removed after their death animation
     this.vanished = [];            // gone from this payload: cleared next frame, unless its corpse claims it
     this.hero = null;              // hero position (combat facing)
+    this.iconClass = '';           // the hero's class: a spell's icon here as on their buff bar
     this._v = new THREE.Vector3();
+  }
+
+  // the buffs and debuffs on someone, as small icons under their name (map_system._auras): the
+  // harmful ringed red, each darkening as it wears off. Redrawn only when they change.
+  paintAuras(e) {
+    const el = e.plate && e.plate.querySelector('.auras');
+    if (!el) return;
+    const list = plateAuras(e.data.auras);
+    const sig = list.map(a => `${a.id}:${a.bad ? 1 : 0}:${a.frac.toFixed(2)}`).join('|') + '/' + this.iconClass;
+    if (sig === e._auraSig) return;
+    e._auraSig = sig;
+    el.replaceChildren(...list.map(a => {
+      const d = document.createElement('i');
+      d.className = a.bad ? 'au bad' : 'au';
+      d.style.setProperty('--left', a.frac);
+      d.title = `${a.label}${a.secs != null ? ` · ${a.secs >= 60 ? `${Math.round(a.secs / 60)} min` : `${a.secs} s`}` : ''}`;
+      const img = document.createElement('img');
+      img.alt = '';
+      img.src = abilityIcon(a.id, this.iconClass, { type: 'spell', size: 40 });
+      d.appendChild(img);
+      return d;
+    }));
   }
 
   setZone(zone) {
@@ -260,6 +285,7 @@ export class Entities {
         if (npc) dress(e.actor, npc.look, npc.cls);
       }
       this.markHostile(e);
+      this.paintAuras(e);
       if (e.vnum !== w.vnum) this.moveTo(e, w.vnum, w.data);
       else this.place(e, w.data);
     }
@@ -271,6 +297,7 @@ export class Entities {
       const e = m.id != null ? this.list.get(`m${m.id}`) : null;
       if (!e) continue;
       Object.assign(e.data, m);
+      this.paintAuras(e);
       // (one that came in from next door this round: its room changes here, before the map does)
       if (payload.vnum != null && e.vnum !== payload.vnum && this.zone && this.zone.rooms.get(payload.vnum)) this.moveTo(e, payload.vnum, m);
       else this.place(e, m);
@@ -290,13 +317,14 @@ export class Entities {
     this.list.set(key, e);
     e.plate = document.createElement('div');
     e.plate.className = 'plate ' + (w.kind === 'player' ? 'pl' : isHostile(w) ? 'hostile' : (w.data.shopkeeper || w.data.trainer) ? 'npc' : 'neutral');
-    e.plate.innerHTML = '<span class="row"><span class="lv"></span><span class="nm"></span></span><i class="hp"><b></b></i>';
+    e.plate.innerHTML = '<span class="row"><span class="lv"></span><span class="nm"></span></span><i class="hp"><b></b></i><span class="auras"></span>';
     e.plate.querySelector('.nm').textContent = shownName(w.data, w.kind);
     if (w.kind === 'mob' && w.data.level) e.plate.querySelector('.lv').textContent = w.data.level;
     if (w.data.boss) e.plate.classList.add('boss');
     // an elite (silver) or a sub-boss (gold): a zone's ranks (population.py)
     if (!w.data.boss && (w.data.rank === 'elite' || w.data.rank === 'sub-boss')) e.plate.classList.add(w.data.rank === 'elite' ? 'elite' : 'subboss');
     this.plates.appendChild(e.plate);
+    this.paintAuras(e);
     // another player is dressed in what they wear (equip.js); a creature gets its body from
     // looks.js, and a person their zone gave gear to wears it as a player would
     const isPlayer = w.kind === 'player';

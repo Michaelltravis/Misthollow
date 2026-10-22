@@ -762,6 +762,53 @@ def _ailments(entity):
     return out
 
 
+# what a cleanse lifts (spells.SpellSystem.HARMFUL), and the other holds and harms the target frame
+# lists: an aura with one of these on it is a debuff
+_DEBUFF_FLAGS = AILMENT_FLAGS | {'blind', 'sleeping', 'paralyzed', 'diseased', 'marked', 'fumble'}
+
+
+def _aura_harmful(a):
+    """Whether an affect hurts or holds whoever wears it (a debuff), else it is a buff."""
+    kind = str(getattr(a, 'type', '') or '')
+    if kind == AffectManager.TYPE_DOT:
+        return True
+    if kind == AffectManager.TYPE_HOT:
+        return False
+    to = str(getattr(a, 'applies_to', '') or '').lower()
+    if to in _DEBUFF_FLAGS:
+        return True
+    try:
+        v = float(getattr(a, 'value', 0) or 0)
+    except (TypeError, ValueError):
+        return False
+    # (armour class is better the lower it goes: Armor gives -20)
+    return kind == AffectManager.TYPE_MODIFY_STAT and (v > 0 if to == 'armor_class' else v < 0)
+
+
+def _auras(entity, cap=10):
+    """Every spell and skill on someone, for their nameplate in /play: [{n: name, h: 1 if it
+    harms, r: ticks left, d: ticks it lasts}], one a spell (Armor sets two affects: it shows once,
+    with the longer time), debuffs first."""
+    seen = {}
+    for a in getattr(entity, 'affects', None) or ():
+        name = str(getattr(a, 'name', '') or '')
+        if not name:
+            continue
+        r = int(getattr(a, 'remaining', 0) or 0)
+        d = int(getattr(a, 'duration', 0) or 0)
+        h = _aura_harmful(a)
+        was = seen.get(name)
+        if was is None:
+            seen[name] = {'n': name, 'h': int(h), 'r': r, 'd': d}
+        else:
+            was['h'] = int(was['h'] or h)
+            if r > was['r']:
+                was['r'], was['d'] = r, d
+    if (getattr(entity, 'blinded_rounds', 0) or 0) > 0 and 'blinded' not in seen:   # Pocket Sand
+        seen['blinded'] = {'n': 'blinded', 'h': 1, 'r': 0, 'd': 0}
+    return sorted(seen.values(), key=lambda x: -x['h'])[:cap]
+
+
 def _mount_info(player):
     """The mount the player is currently riding (for a 'riding X' HUD chip and
     in-world rider art), or None when on foot."""
@@ -1347,6 +1394,8 @@ def build_combat_payload(player) -> dict:
                 'quest': quest_mark,
                 'fighting': bool(getattr(entity, 'fighting', None) is player),
                 'fighting_name': getattr(getattr(entity, 'fighting', None), 'name', '') or '',
+                # (what lands on it this round shows on its nameplate before the next map)
+                'auras': _auras(entity),
             }
             hp = getattr(entity, 'hp', None)
             max_hp = getattr(entity, 'max_hp', None)
@@ -1862,6 +1911,7 @@ def _room_entities(room, vnum, player):
                 'special': str(getattr(entity, 'special', '') or ''),
                 'wards': _wards(entity),
                 'ails': _ailments(entity),
+                'auras': _auras(entity),     # its buffs and debuffs, on its nameplate
             }
             # Include HP if available
             hp = getattr(entity, 'hp', None)
@@ -1896,6 +1946,7 @@ def _room_entities(room, vnum, player):
                     'mount': (_mount_info(entity) or {}).get('key') or None,
                     'speed': _speed(entity),
                     'wards': _wards(entity),
+                    'auras': _auras(entity),     # their buffs and debuffs, on their nameplate
                     **_ally_combat(entity, player),
                 })
 

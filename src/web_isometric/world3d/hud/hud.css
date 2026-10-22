@@ -55,6 +55,16 @@ button { font: inherit; color: inherit; }
 .plate.subboss .nm::before { content: '❖ '; color: var(--gold); }
 .plate.subboss .hp { width: calc(90px * var(--ui)); box-shadow: 0 0 0 1px #000, 0 0 0 2px rgba(216,180,106,.6); }
 .plate.boss .hp { width: calc(110px * var(--ui)); height: calc(8px * var(--ui)); box-shadow: 0 0 0 1px #000, 0 0 0 2px rgba(216,180,106,.8), 0 0 10px rgba(243,210,140,.35); }
+/* the buffs and debuffs on them (entities.js paintAuras): small gems, the harmful ringed red,
+   each darkening clockwise as it wears off */
+.plate .auras { display: flex; flex-wrap: wrap; justify-content: center; gap: 3px; max-width: calc(130px * var(--ui)); }
+.plate .auras:empty { display: none; }
+.plate .au { position: relative; width: calc(19px * var(--ui)); height: calc(19px * var(--ui)); border-radius: 4px; overflow: hidden;
+  box-shadow: 0 0 0 1px #000, 0 1px 3px rgba(0,0,0,.8); }
+.plate .au.bad { box-shadow: 0 0 0 1px #000, 0 0 0 2px rgba(255,90,70,.8), 0 1px 3px rgba(0,0,0,.8); }
+.plate .au img { display: block; width: 100%; height: 100%; }
+.plate .au::after { content: ''; position: absolute; inset: 0; background: conic-gradient(rgba(0,0,0,0) calc(var(--left, 1) * 360deg), rgba(0,0,0,.55) 0); }
+.plate.boss .au { width: calc(22px * var(--ui)); height: calc(22px * var(--ui)); }
 /* your target: gold chevrons on either side, breathing */
 .plate.targeted .row::before, .plate.targeted .row::after { font: 900 calc(14px * var(--ui)) var(--body); color: var(--gold-hi);
   text-shadow: 0 0 6px rgba(243,210,140,.8), 0 0 2px #000; animation: breathe 1.2s ease-in-out infinite; }

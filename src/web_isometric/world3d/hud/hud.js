@@ -25,7 +25,7 @@ import { createStable } from './stable.js';
 import { createServices } from './services.js';
 import { createLegend } from './legend.js';
 import { abilityIcon, uiIcon } from './icons.js';
-import { buffList } from './buffs.js';
+import { buffList, auraBase } from './buffs.js';
 import { lookPortrait, creaturePortrait } from './portrait.js';
 import { SLOTS, cleanBar, defaultBar, placeNew, putOnBar, takeOffBar, keepUnseen, diffAbilities, usable, costLine, rankOf, MAIN, keyOf, slotForKey } from '../abilities.js';
 import { createBars } from './bars.js';
@@ -278,7 +278,7 @@ export function createHud() {
     buffSig = nsig;
     $('#buffs').innerHTML = list.map(a => {
       const id = String(a.name || a.spell).toLowerCase();
-      const base = id.replace(/_(invuln|damage|speed|mend|crit|stealth|haste|stun|regen|bonus)$/, '');
+      const base = auraBase(id);
       const bad = BAD.test(id);
       const left = a.remaining != null ? a.remaining : a.duration;
       const frac = a.duration ? Math.max(0, Math.min(1, (left || 0) / a.duration)) : 1;
