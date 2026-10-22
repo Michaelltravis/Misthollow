@@ -734,7 +734,38 @@ def _wrap_mob_ai():
 
     mob_ai._healer_tick = _healer_tick
 
+    # a creature that counts as a boss without a script of its own (mob_ai.BOSS_ABILITIES: the
+    # Carrion Queen, anything over 5000 health): its enrage and its minions, as a scripted boss's
+    # (bosses.py). Its handlers are called through _BOSS_HANDLERS, so they are wrapped there.
+    handlers = mob_ai._BOSS_HANDLERS
+    orig_enrage, orig_summon = handlers['_boss_enrage'], handlers['_boss_summon_adds']
+
+    async def _boss_enrage(mob, target):
+        done = await orig_enrage(mob, target)
+        if done and getattr(mob, 'room', None) is not None:
+            ev.emit(mob.room, 'enrage', src=mob)
+        return done
+
+    async def _boss_summon_adds(mob, target):
+        had = {id(a) for a in getattr(mob, '_minions', None) or []}
+        done = await orig_summon(mob, target)
+        new = [a for a in getattr(mob, '_minions', None) or [] if id(a) not in had]
+        if new and getattr(mob, 'room', None) is not None:
+            ev.emit(mob.room, 'summon', src=mob, school=summon_school(mob), adds=[ev.ref(a) for a in new])
+        return done
+
+    handlers['_boss_enrage'], handlers['_boss_summon_adds'] = _boss_enrage, _boss_summon_adds
+    mob_ai._boss_enrage, mob_ai._boss_summon_adds = _boss_enrage, _boss_summon_adds
+
     _wrap_brain_cast()
+
+
+def summon_school(mob):
+    """The colour a boss's helpers rise in (the 3D client's 'summon'): the grave's for the dead and
+    their masters, else shadow."""
+    words = f"{getattr(mob, 'name', '')} {getattr(mob, 'short_desc', '')}".lower()
+    dead = ('lich', 'necro', 'skeleton', 'zombie', 'wight', 'ghoul', 'vampire', 'death', 'grave', 'bone', 'barrow')
+    return 'necrotic' if any(w in words for w in dead) else 'shadow'
 
 
 def _wrap_brain_cast():

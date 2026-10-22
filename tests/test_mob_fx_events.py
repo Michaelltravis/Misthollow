@@ -31,6 +31,7 @@ async def main():
     from player import Player
     import combat_hooks
     import combat_range as cr
+    from combat_events import ref as ev_ref
     import mob_ai
     import brain
     from brain import cast
@@ -252,6 +253,24 @@ async def main():
     _, summon = first(wm.full, 'summon')
     check(summon is not None and len(summon.get('adds') or []) == 2 and summon.get('school') in ('necrotic', 'shadow'),
           f'calling help sends who came, to rise from the ground ({summon})')
+
+    # ---------------- a creature that counts as a boss without a script (the Carrion Queen): its
+    # minions rise and it enrages on screen too (mob_ai._BOSS_HANDLERS)
+    queen = foe(22222 if 22222 in world.mob_prototypes else 3062, hp=40000)
+    queen.level = 60
+    fight(bo, queen)
+    wm.full = []
+    await mob_ai._BOSS_HANDLERS['_boss_summon_adds'](queen, bo)
+    await asyncio.sleep(0.02)
+    _, summon = first(wm.full, 'summon')
+    check(summon is not None and summon.get('src') == ev_ref(queen) and len(summon.get('adds') or []) >= 1,
+          f"a creature boss's minions are sent to rise ({summon})")
+    queen.ai_state.pop('enraged', None)
+    wm.full = []
+    await mob_ai._BOSS_HANDLERS['_boss_enrage'](queen, bo)
+    await mob_ai._BOSS_HANDLERS['_boss_enrage'](queen, bo)      # (once only)
+    await asyncio.sleep(0.02)
+    check(sum(1 for e in wm.full if e.get('k') == 'enrage') == 1, 'a creature boss enraging sends its moment, once')
 
     print(f"\n{'ALL PASSED' if not failures else f'{len(failures)} FAILED'}")
     return not failures

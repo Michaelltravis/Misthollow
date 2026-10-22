@@ -398,10 +398,9 @@ class Boss(Mobile):
         return fx_school(self._ability_school(ability))
 
     def _summon_school(self) -> str:
-        """The colour a boss's adds rise in: the dead out of the grave, anything else out of shadow."""
-        words = f"{getattr(self, 'name', '')} {getattr(self, 'short_desc', '')}".lower()
-        dead = ('lich', 'necro', 'skeleton', 'zombie', 'wight', 'ghoul', 'vampire', 'death', 'grave', 'bone', 'barrow')
-        return 'necrotic' if any(w in words for w in dead) else 'shadow'
+        """The colour a boss's adds rise in (combat_hooks.summon_school)."""
+        from combat_hooks import summon_school
+        return summon_school(self)
 
     @staticmethod
     def _ability_school(ability: Dict) -> str:
