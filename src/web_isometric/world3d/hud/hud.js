@@ -152,7 +152,14 @@ export function createHud() {
     const w = window.innerWidth;
     const v = pref === 'auto' ? (w >= 1800 ? 1.05 : w >= 1400 ? 0.95 : w >= 1000 ? 0.85 : 0.72) : Number(pref) || 1;
     document.documentElement.style.setProperty('--ui', v);
+    stackParty();
   }
+  // the party frames hang under your own, however tall it has grown (buffs, meters, the riding line)
+  function stackParty() {
+    const r = els.pf.getBoundingClientRect();
+    if (r.height) document.documentElement.style.setProperty('--pf-bottom', `${Math.round(r.bottom)}px`);
+  }
+  if (window.ResizeObserver) new ResizeObserver(stackParty).observe(els.pf);
   window.addEventListener('resize', applyScale);
   applyScale();
 

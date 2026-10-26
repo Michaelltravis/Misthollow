@@ -881,7 +881,7 @@ html.fallen #vignette { background: radial-gradient(ellipse at 50% 46%, rgba(30,
 .tr-buy[disabled] { opacity: .45; cursor: default; border-color: var(--edge-dim); }
 
 /* ---- party frames (under your own), the group invite and loot rolls ---- */
-#party { left: 14px; top: calc(14px + 112px * var(--ui)); display: flex; flex-direction: column; gap: 6px;
+#party { left: 14px; top: calc(var(--pf-bottom, calc(14px + 112px * var(--ui))) + 8px); display: flex; flex-direction: column; gap: 6px;
   transform: scale(var(--ui)); transform-origin: top left; }
 .pt { width: 196px; padding: 6px 9px 7px; border-radius: 8px; cursor: pointer;
   background: linear-gradient(180deg, rgba(20,26,38,.88), rgba(9,12,19,.9)); box-shadow: 0 0 0 1px #000, 0 0 0 2px rgba(216,180,106,.25), 0 4px 12px rgba(0,0,0,.45); }
