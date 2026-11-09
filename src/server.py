@@ -583,7 +583,10 @@ class Connection:
         await self.send(f"\r\n{c['bright_cyan']}══════════════════════════════════════════════════════════════{c['reset']}")
         await self.send(f"{c['bright_yellow']}  Welcome to Misthollow, {self.player.name}!{c['reset']}")
         await self.send(f"{c['white']}  A world of quests, combat, crafting, and adventure awaits.{c['reset']}")
-        await self.send(f"{c['white']}  Type {c['bright_green']}help newbie{c['white']} for a new player guide, or {c['bright_green']}hint{c['white']} for tips.{c['reset']}")
+        if self.is_web:       # /play: keys and windows, not a command line
+            await self.send(f"{c['white']}  Press {c['bright_green']}H{c['white']} for help. The tracker on the right shows your next step.{c['reset']}")
+        else:
+            await self.send(f"{c['white']}  Type {c['bright_green']}help newbie{c['white']} for a new player guide, or {c['bright_green']}hint{c['white']} for tips.{c['reset']}")
         await self.send(f"{c['bright_cyan']}══════════════════════════════════════════════════════════════{c['reset']}\r\n")
 
         # Process rent charges from previous session

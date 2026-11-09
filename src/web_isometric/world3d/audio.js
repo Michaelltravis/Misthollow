@@ -41,7 +41,7 @@ function tone(ctx, out, { f = 440, f2 = null, type = 'sine', dur = 0.2, vol = 0.
   o.start(t); o.stop(t + dur + 0.05);
   return dur + delay;
 }
-function hiss(ctx, out, { dur = 0.3, vol = 0.1, delay = 0, type = 'bandpass', f = 1200, f2 = null, q = 0.8 }) {
+function hiss(ctx, out, { dur = 0.3, vol = 0.1, delay = 0, type = 'bandpass', f = 1200, f2 = null, q = 0.8, attack = null }) {
   const t = ctx.currentTime + delay;
   const src = ctx.createBufferSource();
   src.buffer = noiseBuf(ctx);
@@ -51,7 +51,8 @@ function hiss(ctx, out, { dur = 0.3, vol = 0.1, delay = 0, type = 'bandpass', f 
   if (f2) flt.frequency.exponentialRampToValueAtTime(f2, t + dur);
   const g = ctx.createGain();
   g.gain.setValueAtTime(0.0001, t);
-  g.gain.exponentialRampToValueAtTime(vol, t + Math.min(0.02, dur * 0.2));
+  // (`attack`: a slow swell, so rain's overlapping bursts run together instead of pulsing)
+  g.gain.exponentialRampToValueAtTime(vol, t + (attack != null ? Math.min(attack, dur * 0.45) : Math.min(0.02, dur * 0.2)));
   g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
   src.connect(flt); flt.connect(g); g.connect(out);
   src.start(t, Math.random() * 1.5); src.stop(t + dur + 0.05);
@@ -310,7 +311,7 @@ class Sound {
     lfo.connect(lfoG); lfoG.connect(g.gain);
     src.connect(flt); flt.connect(g); g.connect(this.bus.amb);
     src.start(); lfo.start();
-    this.bed.nodes.push(src, lfo, g);
+    this.bed.nodes.push(src, lfo, g, lfoG);          // (the swell fades with the bed: left at full, it held the old bed up until it was cut)
     if (spec.chirp) {
       const loop = () => {
         if (this.bed.key !== key) return;

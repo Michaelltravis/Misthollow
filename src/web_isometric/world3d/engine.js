@@ -8,6 +8,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { orbitOffset, pitchFor, dragOrbit, nearestTurn } from './orbit.js';
+import { setCharLight } from './charlook.js';
 
 // ?q=low|med|high, default high (the Mac mini and any recent laptop handle it)
 export const QUALITY = {
@@ -58,7 +59,7 @@ export function createEngine(container, opts = {}) {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.shadowMap.enabled = q.shadows;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.type = THREE.PCFShadowMap;     // (soft by itself in this three; PCFSoftShadowMap is gone)
   // count draw calls over the whole frame (shadow + scene + bloom passes), not the last pass
   renderer.info.autoReset = false;
   container.appendChild(renderer.domElement);
@@ -141,14 +142,35 @@ export function createEngine(container, opts = {}) {
         c = vec4(bad.x ? 0.0 : c.r, bad.y ? 0.0 : c.g, bad.z ? 0.0 : c.b, bad.w ? 1.0 : c.a);
         gl_FragColor = min(max(c, vec4(0.0)), vec4(64.0)); }`,
   };
+  // The grade, in linear light before the tone map: a little more contrast about mid-grey and a
+  // little more colour (ACES alone washes the kits' flat colours toward grey), and the shadows
+  // leaning cool against the warm torches.
+  const GRADE = {
+    uniforms: { tDiffuse: { value: null }, uContrast: { value: 1.08 }, uSat: { value: 1.16 } },
+    vertexShader: 'varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+    fragmentShader: `uniform sampler2D tDiffuse; uniform float uContrast; uniform float uSat; varying vec2 vUv;
+      void main() { vec4 c = texture2D(tDiffuse, vUv);
+        vec3 x = max(c.rgb, vec3(0.0));
+        x = 0.18 * pow(x / 0.18, vec3(uContrast));
+        float l = dot(x, vec3(0.2126, 0.7152, 0.0722));
+        x = mix(vec3(l), x, uSat);
+        x += vec3(-0.004, 0.0, 0.008) * (1.0 - smoothstep(0.0, 0.25, l));
+        gl_FragColor = vec4(max(x, vec3(0.0)), c.a); }`,
+  };
   function makeComposer() {
-    const c = new EffectComposer(renderer);
+    // (the scene is drawn into the composer's own target, so the canvas's antialiasing never
+    // applied on Med and High: the target is multisampled instead)
+    const size = renderer.getDrawingBufferSize(new THREE.Vector2());
+    const rt = new THREE.WebGLRenderTarget(size.x, size.y, { type: THREE.HalfFloatType, samples: (api ? api.quality : q).antialias ? 4 : 0 });
+    const c = new EffectComposer(renderer, rt);
     c.addPass(new RenderPass(scene, camera));
     c.addPass(new ShaderPass(SCRUB));
     c.addPass(new UnrealBloomPass(new THREE.Vector2(256, 256), 0.32, 0.45, 0.88));
+    c.addPass(new ShaderPass(GRADE));
     c.addPass(new OutputPass());
     return c;
   }
+  let api = null;
   let composer = q.bloom ? makeComposer() : null;
 
   function resize() {
@@ -190,6 +212,7 @@ export function createEngine(container, opts = {}) {
   // ---- mood blending ----
   const cur = { ...MOODS.day }, want = { ...MOODS.day };
   const colors = { sky: new THREE.Color(), ground: new THREE.Color(), sun: new THREE.Color(), fog: new THREE.Color() };
+  const lastHex = {}, wantC = new THREE.Color();
   let gloomNow = 0, darkNow = 0, flashNow = 0;
   const wNow = { dim: 0, fog: 0, grey: 0 }, GREY = new THREE.Color(0x9aa2ac);
   function setMood(m, instant) {
@@ -200,8 +223,10 @@ export function createEngine(container, opts = {}) {
     const k = 1 - Math.exp(-dt * 2.2);
     for (const key of ['hemi', 'sunI', 'near', 'far', 'exposure', 'bg']) cur[key] += (want[key] - cur[key]) * k;
     for (const key of ['sky', 'ground', 'sun', 'fog']) {
-      colors[key].set(cur[key]).lerp(new THREE.Color(want[key]), k);
-      cur[key] = colors[key].getHex();
+      // (the colour in flight is kept whole: through 8-bit hex each frame it stalled short of the mood, sooner at high frame rates)
+      if (cur[key] !== lastHex[key]) colors[key].set(cur[key]);          // set from outside (an instant mood)
+      colors[key].lerp(wantC.set(want[key]), k);
+      cur[key] = lastHex[key] = colors[key].getHex();
     }
     // a boss's gloom (combat.js gloom): the light dies as it weakens
     gloomNow += ((api.gloom || 0) - gloomNow) * (1 - Math.exp(-dt * 1.5));
@@ -213,18 +238,20 @@ export function createEngine(container, opts = {}) {
     for (const k of ['dim', 'fog', 'grey']) wNow[k] += ((wt[k] || 0) * open - wNow[k]) * (1 - Math.exp(-dt * 0.8));
     flashNow = Math.max(0, flashNow - dt * 5);
     const dim = (1 - 0.85 * gloomNow) * (1 - 0.75 * darkNow);
-    hemi.color.set(cur.sky); hemi.groundColor.set(cur.ground); hemi.intensity = cur.hemi * dim * (1 - 0.35 * wNow.dim) + flashNow * 2.5;
-    sun.color.set(cur.sun); sun.intensity = cur.sunI * dim * (1 - 0.7 * wNow.dim);
-    scene.fog.color.set(cur.fog).lerp(GREY, wNow.grey * 0.6).multiplyScalar(1 - 0.85 * darkNow);
+    hemi.color.copy(colors.sky); hemi.groundColor.copy(colors.ground); hemi.intensity = cur.hemi * dim * (1 - 0.35 * wNow.dim) + flashNow * 2.5;
+    sun.color.copy(colors.sun); sun.intensity = cur.sunI * dim * (1 - 0.7 * wNow.dim);
+    scene.fog.color.copy(colors.fog).lerp(GREY, wNow.grey * 0.6).multiplyScalar(1 - 0.85 * darkNow);
     // under open sky the haze lies further off (far.js draws what is out there; by quality)
     const sight = (cur.bg ?? 0) >= 0.75 ? (api.farSight || 1) : 1;
     scene.fog.near = cur.near * (1 + (sight - 1) * 0.5) * (1 - 0.4 * gloomNow) * (1 - 0.5 * darkNow) * (1 - 0.75 * wNow.fog);
     scene.fog.far = cur.far * sight * (1 - 0.5 * gloomNow) * (1 - 0.45 * darkNow) * (1 - 0.6 * wNow.fog);
     // under open sky the distance fades into the haze itself; enclosed, into the dark
-    scene.background.set(cur.fog).multiplyScalar(cur.bg ?? 0.35);
+    scene.background.copy(colors.fog).multiplyScalar(cur.bg ?? 0.35);
     if (darkNow > 0.01) scene.background.multiplyScalar(1 - 0.9 * darkNow);
     // (the player's own Brightness setting on top: Settings, main.js)
     renderer.toneMappingExposure = cur.exposure * (1 - 0.45 * gloomNow) * (1 - 0.15 * darkNow) * (api.brightness || 1);
+    // the characters' own rim and fill (charlook.js): more of both the darker the place
+    setCharLight(colors.sky, { hemi: cur.hemi, sunI: cur.sunI, darkness: darkNow, gloom: gloomNow });
   }
 
   // ---- loop ----
@@ -301,7 +328,7 @@ export function createEngine(container, opts = {}) {
   // feel by (main.js sets its strength and keeps it with the hero)
   const heroLight = new THREE.PointLight(0xffb36a, 0, 10, 1.6);
   scene.add(heroLight);
-  const api = {
+  api = {
     THREE, renderer, scene, camera, rig, sun, hemi, quality: q,
     timeScale: 1,                      // slow motion for the effects gallery
     darkness: 0,                       // 0..1: a dark room (main.js sight)

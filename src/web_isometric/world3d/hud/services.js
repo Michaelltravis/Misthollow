@@ -1,6 +1,7 @@
 // Bank, mail and storage (B): your gold in the bank (Deposit / Withdraw, at a bank), your mail
 // (Delete; Write puts `mail send` on the command line), and what you keep at an inn (Retrieve
 // there; drop things in with `store`). Data: /services.
+import { netNote } from './netfail.js';
 
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
@@ -57,8 +58,10 @@ export function createServices(root, { fetchServices, send, prefill }) {
     }
   }
   async function refresh() {
-    try { data = await fetchServices(); } catch (_) { data = {}; }
+    let failed = false;
+    try { data = await fetchServices(); } catch (_) { data = {}; failed = true; }
     render();
+    netNote(root, failed, refresh);
   }
   function toggle(on = !open) {
     open = on;

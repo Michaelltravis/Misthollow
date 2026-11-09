@@ -4,6 +4,7 @@
 // `sell <keyword>`; the window asks the server again after each. Hovering a row shows the
 // item's card (inventory.js tooltip, handed in by hud.js: its stats, and how it compares with
 // what you wear), priced at this shop's price rather than the item's own worth.
+import { netNote } from './netfail.js';
 
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
@@ -96,8 +97,10 @@ export function createShop(root, { fetchShop, send, icon, sound, tooltip = null,
     }));
   }
   async function refresh() {
-    try { data = await fetchShop(keeper); } catch (_) { data = { found: false }; }
+    let failed = false;
+    try { data = await fetchShop(keeper); } catch (_) { data = { found: false }; failed = true; }
     render();
+    netNote(root, failed, refresh);
   }
   function toggle(on = !open, name) {
     open = on;

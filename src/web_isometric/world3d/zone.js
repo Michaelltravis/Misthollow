@@ -28,6 +28,7 @@ export class Zone {
     this.zm = zm;
     this.num = zm.zone;
     this.name = zm.name;
+    this.region = zm.region || null;      // {id, name, line, levels}: the region of the world it lies in (regions.py)
     this.wild = !!zm.wild;       // an opened zone (wilds.py): its outdoor land runs on past its rooms
     this.rooms = new Map();
     this.dared = new Set();     // death traps the hero chose to walk into anyway (E at the edge)
@@ -206,6 +207,8 @@ export class Zone {
     if (!room.built) return;
     this.group.remove(room.built.group);
     for (const g of room.built.owned || []) g.dispose();
+    // (instanced props keep a buffer of their own places on the GPU: freed here, their shared shapes left alone)
+    room.built.group.traverse(o => { if (o.isInstancedMesh) o.dispose(); });
     room.built = null;
   }
   prebuild(room, radius = 1) {

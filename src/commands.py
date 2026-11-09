@@ -401,7 +401,8 @@ class CommandHandler:
                         if len(token_matches) == 1:
                             await cls.typed_move(player, token_matches[0])
                             return
-                    await player.send(f"Huh?!? '{original_cmd}' is not a valid command. Type 'help' for a list.")
+                    how = "Press H for help." if getattr(getattr(player, 'connection', None), 'is_web', False) else "Type 'help' for a list."
+                    await player.send(f"Huh?!? '{original_cmd}' is not a valid command. {how}")
 
     @classmethod
     async def _record_collection_item(cls, player: 'Player', item):
@@ -654,7 +655,9 @@ class CommandHandler:
                 await AchievementManager.check_deathtrap(player)
             except Exception:
                 pass
-            await CombatHandler.handle_death(player, player)
+            # the trap kills: Player.die() takes death's price and wakes them at the temple (handle_death
+            # alone, with the player as their own killer, left them standing in the trap, their gold gone)
+            await player.die(None)
             return
 
         player.move -= move_cost
@@ -4736,7 +4739,7 @@ class CommandHandler:
             else:
                 await player.send("Backstab whom?")
                 if player.target:
-                    await player.send(f"{c['yellow']}(Your target is not here. Use 'target <name>' to set a new target){c['reset']}")
+                    await player.send(f"{c['yellow']}(Your target is not here. {'Tab picks a new one' if getattr(getattr(player, 'connection', None), 'is_web', False) else "Use 'target <name>' to set a new target"}){c['reset']}")
                 return
         else:
             # Find target with numbered targeting support
@@ -4831,7 +4834,7 @@ class CommandHandler:
             else:
                 await player.send("Kill whom?")
                 if player.target:
-                    await player.send(f"{c['yellow']}(Your target is not here. Use 'target <name>' to set a new target){c['reset']}")
+                    await player.send(f"{c['yellow']}(Your target is not here. {'Tab picks a new one' if getattr(getattr(player, 'connection', None), 'is_web', False) else "Use 'target <name>' to set a new target"}){c['reset']}")
                 return
         else:
             # Find target with numbered targeting support

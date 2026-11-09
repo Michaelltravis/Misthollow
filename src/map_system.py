@@ -1512,6 +1512,14 @@ def _marquee_block(player):
         return None
 
 
+def _region(zone_num):
+    try:
+        import regions
+        return regions.of(zone_num)
+    except Exception:
+        return None
+
+
 def build_zonemap(world, zone_num: int) -> Optional[dict]:
     """One zone laid out as a single continuous space for the 3D client (/play).
 
@@ -1586,6 +1594,8 @@ def build_zonemap(world, zone_num: int) -> Optional[dict]:
     _ZONEMAP_CACHE[zone_num] = data = {
         'type': 'zonemap', 'zone': zone_num, 'name': zone.name,
         'size': [w, h], 'rooms': out_rooms, 'links': sorted(z for z in links if z is not None),
+        # which of the world's nine regions this is (regions.py; None: none): the banner and the map say it
+        'region': _region(zone_num),
     }
     return data
 

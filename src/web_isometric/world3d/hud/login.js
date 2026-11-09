@@ -124,8 +124,18 @@ export function setupLogin() {
       if (pass2.value !== p) return say("The two passwords don't match.", true);
     }
     ls.set(NAME_KEY, n);
+    // one knock at a time: the button waits for the gate's answer (an error, the hero list, or
+    // eight seconds of nothing) before it takes another press
+    if (btn.disabled) return;
+    btn.disabled = true;
+    clearTimeout(begin.t);
+    begin.t = setTimeout(ready, 8000);
     MH.connect(n, p, isNew);
   }
+  function ready() { clearTimeout(begin.t); btn.disabled = false; }
+  MH.bus.on('login.error', ready);
+  MH.bus.on('login.success', ready);
+  MH.bus.on('login.status', msg => { if (/closed/i.test(msg || '')) ready(); });
   btn.addEventListener('click', begin);
   name.addEventListener('keydown', e => { if (e.key === 'Enter') pass.focus(); e.stopPropagation(); });
   pass.addEventListener('keydown', e => { if (e.key === 'Enter') (isNew ? pass2.focus() : begin()); e.stopPropagation(); });
@@ -183,7 +193,13 @@ export function setupLogin() {
     create.querySelector('h2').textContent = title;
     create.querySelector('.hint').textContent = hint;
     create.querySelector('.body').innerHTML = body;
+    // the choices are reachable by keyboard: Tab to one, Enter or Space takes it
+    create.querySelectorAll('.pick').forEach(el => { el.tabIndex = 0; el.setAttribute('role', 'button'); });
   }
+  create.addEventListener('keydown', e => {
+    const el = e.target && e.target.closest && e.target.closest('.pick');
+    if (el && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); el.click(); }
+  });
   // the hero's name (the account menu's create asks it); nothing sent goes back to the list
   function naming(err) {
     wizard('NEW HERO', 'NAME YOUR HERO', 'The name the mist will remember: 3–12 letters.',
@@ -323,5 +339,9 @@ export function setupLogin() {
     create.classList.add('hidden');
     $('#login').classList.add('hidden');
     if (stage) stage.stop();
+    // the mist gathers while the hero's zone is fetched and built (main.js start() parts it):
+    // the title scene is not left standing under the game's HUD
+    const veil = $('#loading');
+    if (veil && !window.MH3D) { veil.classList.remove('done'); setTimeout(() => veil.classList.add('done'), 20000); }
   });
 }

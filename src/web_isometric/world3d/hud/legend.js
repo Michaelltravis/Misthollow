@@ -2,6 +2,7 @@
 // the server's leaderboards, with your own place. For a warrior, also the war doctrine and the
 // evolution of their abilities by use (`swear <doctrine>`, `evolve <ability>`). Data: /legend,
 // /doctrine.
+import { netNote } from './netfail.js';
 
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
@@ -69,9 +70,11 @@ export function createLegend(root, { fetchLegend, fetchDoctrine, send, isWarrior
     body.querySelectorAll('[data-cmd]').forEach(btn => btn.addEventListener('click', () => act(btn.dataset.cmd)));
   }
   async function refresh() {
-    try { data = await fetchLegend(); } catch (_) { data = {}; }
+    let failed = false;
+    try { data = await fetchLegend(); } catch (_) { data = {}; failed = true; }
     if (isWarrior()) { try { doc = await fetchDoctrine(); } catch (_) { doc = null; } }
     render();
+    netNote(root, failed, refresh);
   }
   function toggle(on = !open) {
     open = on;

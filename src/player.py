@@ -1468,7 +1468,7 @@ class Player(Character):
             player.exp = data['exp']
             player.gold = data['gold']
             player.alignment = data.get('alignment', 0)
-            player.hp = data['hp']
+            player.hp = max(1, data['hp'])          # (a save caught mid-death held -7: nobody wakes below 1)
             player.mana = data['mana']
             player.move = data['move']
             for name in ('max_hp', 'max_mana', 'max_move', 'str', 'int', 'wis', 'dex', 'con', 'cha'):
@@ -3069,6 +3069,7 @@ class Player(Character):
         c = self.config.COLORS
         # a new death: CombatHandler.handle_death (which runs after this) handles each one once
         self._death_processed = False
+        self.died_in_vnum = self.room.vnum if self.room else None      # where the gravestone goes
         
         # Stop fighting
         if self.fighting:
@@ -3150,7 +3151,7 @@ class Player(Character):
         gold_drop = int(self.gold * 0.05)
         if gold_drop > 0:
             self.gold -= gold_drop
-            await self.send(f"{c['yellow']}You drop {gold_drop} gold coins.{c['reset']}")
+            await self.send(f"{c['yellow']}You lose {gold_drop} gold coins.{c['reset']}")
             
         # Restore with partial HP/mana/move (not just 1)
         self.hp = max(1, self.max_hp // 4)  # 25% HP

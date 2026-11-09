@@ -1,5 +1,6 @@
 // The stable (U): your mounts (Mount / Dismount), the ones a stable sells (Buy, at a stable),
 // and your pets and companions with their health (Dismiss). Data: /stable.
+import { netNote } from './netfail.js';
 
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const bar = (hp, max) => `<div class="al-bar"><i style="width:${max ? Math.round(100 * Math.max(0, hp) / max) : 0}%"></i><span>${hp}/${max}</span></div>`;
@@ -40,8 +41,10 @@ export function createStable(root, { fetchStable, send }) {
     body.querySelectorAll('[data-cmd]:not([disabled])').forEach(b => b.addEventListener('click', () => act(b.dataset.cmd)));
   }
   async function refresh() {
-    try { data = await fetchStable(); } catch (_) { data = {}; }
+    let failed = false;
+    try { data = await fetchStable(); } catch (_) { data = {}; failed = true; }
     render();
+    netNote(root, failed, refresh);
   }
   function toggle(on = !open) {
     open = on;

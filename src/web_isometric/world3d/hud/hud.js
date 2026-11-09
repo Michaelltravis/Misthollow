@@ -3,6 +3,7 @@
 // driven by the shared net.js state (`map` payloads, `combat.update`, server text).
 // Actions go out as bus events ('hud.attack', 'hud.ability', 'hud.flee') for main.js,
 // which knows the target and plays the hero's animation.
+import { bannerSays } from './regionsay.js';
 import { splitByKind } from './logkinds.js';
 import { framed as inBox, renderBox, renderLine, renderCols, classify, meters, inList, unprompt, isTitle } from './frames.js';
 import { SCHOOL_CSS } from '../sctlogic.js';
@@ -128,6 +129,7 @@ export function createHud() {
   const legend = createLegend($('#legend'), { fetchLegend: () => q('legend'), fetchDoctrine: () => q('doctrine'), send,
     isWarrior: () => String((MH.state.player || {}).char_class || '').toLowerCase() === 'warrior' });
   const PROGRESS = { talents, almanac, travel, stable, services, legend };
+  const openWindows = [];   // window ids, the one opened last at the end (raise(), below)
   const help = createHelp($('#help'), {
     fetchTopics: () => getJSON('/help'),
     fetchTopic: name => getJSON(`/help?topic=${encodeURIComponent(name)}`),
@@ -149,7 +151,8 @@ export function createHud() {
   // ---- scale ----
   function applyScale() {
     const pref = ls.get('mh3d_ui') || 'auto';
-    const w = window.innerWidth;
+    // a wide but short window is a small one: the height counts as the width it would be at 16:9
+    const w = Math.min(window.innerWidth, window.innerHeight * 16 / 9);
     const v = pref === 'auto' ? (w >= 1800 ? 1.05 : w >= 1400 ? 0.95 : w >= 1000 ? 0.85 : 0.72) : Number(pref) || 1;
     document.documentElement.style.setProperty('--ui', v);
     stackParty();
@@ -323,6 +326,10 @@ export function createHud() {
     showTip(`<div class="tc-name">${esc(el.dataset.tipTitle)}</div>${el.dataset.tipSub ? `<div class="tc-sub">${esc(el.dataset.tipSub)}</div>` : ''}`, r.left + r.width / 2, r.top);
   });
   document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('[data-tip-title], .slot')) hideTip(); });
+  // (a slot or buff re-drawn under the cursor is gone without a mouseout: the tooltip goes with it)
+  setInterval(() => {
+    if (!tip.classList.contains('hidden') && !document.querySelector('[data-tip-title]:hover, .slot:hover')) hideTip();
+  }, 400);
 
   // ---- action bar: Attack (F), your own 16 slots (1-8, Shift+1-8), Flee ----
   // Abilities come from the payload (`abilities`, `bar`: see abilities.js). A character who
@@ -800,14 +807,21 @@ export function createHud() {
 
   // ---- banner + toasts ----
   let bannerTimer = 0;
-  function banner(room, zone) {
-    // mid-fight a room's name would sit on the fight; a new region still announces itself
+  // `region` ({name, line}: the zone's region of the world): named over the zone; its line is
+  // said when you cross into it from another (or first arrive), and the banner stays a little longer
+  let lastRegion = null;
+  function banner(room, zone, region = null) {
+    // mid-fight a room's name would sit on the fight; a new zone still announces itself
     if (MH.state.inCombat && !zone) return;
+    const said = bannerSays(zone, region, lastRegion);
+    if (zone && region) lastRegion = region.id || region.name;
+    els.banner.querySelector('.region').textContent = said.region;
     els.banner.querySelector('.zone').textContent = zone || '';
     els.banner.querySelector('.room').textContent = room || '';
+    els.banner.querySelector('.line').textContent = said.line;
     els.banner.style.opacity = 1;
     clearTimeout(bannerTimer);
-    bannerTimer = setTimeout(() => { els.banner.style.opacity = 0; }, zone ? 3200 : 1800);
+    bannerTimer = setTimeout(() => { els.banner.style.opacity = 0; }, said.line ? 5200 : zone ? 3200 : 1800);
   }
   // the world's news, large and gilded for a few seconds: an achievement, a rare creature sighted
   let heraldTimer = 0;
@@ -927,7 +941,9 @@ export function createHud() {
   }
   MH.bus.on('terminal.echo', () => { box = null; cols = null; });
   // a command typed shows as typed; one the bar sent for a fight goes with the fight ({ text, kind })
-  MH.bus.on('terminal.echo', cmd => (typeof cmd === 'object' ? log(`> ${cmd.text}`, 'cmd', cmd.kind) : log(`> ${cmd}`, 'cmd')));
+  // (the '#46' a bar key adds to name the exact creature is the client's own business)
+  const said = t => String(t).replace(/\s+#\d+$/, '');
+  MH.bus.on('terminal.echo', cmd => (typeof cmd === 'object' ? log(`> ${said(cmd.text)}`, 'cmd', cmd.kind) : log(`> ${said(cmd)}`, 'cmd')));
   // tabs filter the log; the mode chip decides what Enter does with plain text
   document.querySelectorAll('#chat .chat-tabs button').forEach(b => b.addEventListener('click', () => {
     els.log.dataset.tab = b.dataset.tab;
@@ -976,6 +992,7 @@ export function createHud() {
   els.menu.querySelectorAll('button[data-icon]').forEach(b => {
     b.innerHTML = `<img alt="" src="${uiIcon(b.dataset.icon, { size: 72 })}"><kbd>${esc(b.dataset.key || '')}</kbd>`;
     b.dataset.tipTitle = b.dataset.tip; b.dataset.tipSub = b.dataset.key ? `Key: ${b.dataset.key}` : '';
+    b.setAttribute('aria-label', b.dataset.key ? `${b.dataset.tip} (${b.dataset.key})` : b.dataset.tip);
   });
   els.menu.querySelector('[data-act="settings"]').addEventListener('click', () => els.settings.classList.toggle('hidden'));
   // a window opened tells the server (`uiseen`): the tutorial's "type score" steps count it
@@ -1119,19 +1136,28 @@ export function createHud() {
     shop: ['coins', 'ui_close'], lootwin: ['leather', 'ui_close'], talk: ['ui_offer', 'ui_close'], who: ['ui_open', 'ui_close'], help: ['book_open', 'book_close'],
     talents: ['book_open', 'book_close'], almanac: ['book_open', 'book_close'], travel: ['ui_open', 'ui_close'], stable: ['leather', 'ui_close'],
     services: ['coins', 'ui_close'], legend: ['book_open', 'book_close'] };
+  // the window opened last stands in front of the others (they share the middle of the screen), and Esc closes it first
+  function raise(id, open) {
+    const i = openWindows.indexOf(id);
+    if (i >= 0) openWindows.splice(i, 1);
+    if (open) openWindows.push(id);
+    openWindows.forEach((w, n) => { const el = document.getElementById(w); if (el) el.style.zIndex = String(16 + Math.min(n, 5)); });
+    if (!open) { const el = document.getElementById(id); if (el) el.style.zIndex = ''; }
+  }
   for (const [id, [on, off]] of Object.entries(WINDOW_SOUNDS)) {
     const el = document.getElementById(id);
     if (!el) continue;
     let was = !el.classList.contains('hidden');
     new MutationObserver(() => {
       const now = !el.classList.contains('hidden');
-      if (now !== was) { was = now; sound.play(now ? on : off); }
+      if (now !== was) { was = now; sound.play(now ? on : off); raise(id, now); }
     }).observe(el, { attributes: true, attributeFilter: ['class'] });
   }
   // a click on a window's buttons (not the action bar: abilities make their own sounds)
   document.addEventListener('click', e => {
     const b = e.target && e.target.closest && e.target.closest('.panel button, #create .pick, #login .btn');
-    if (b && !b.closest('#actionbar') && !b.matches('[data-act="mute"]')) sound.play('ui_click');
+    // (a button that opens or closes a window: the window makes the sound)
+    if (b && !b.closest('#actionbar') && !b.matches('[data-act="mute"], #menu button, .win-x')) sound.play('ui_click');
   }, true);
   // gold changes hands: coins
   MH.bus.on('terminal.output', ({ text }) => {
@@ -1158,7 +1184,11 @@ export function createHud() {
 
   // ---- keys (when not typing) ----
   window.addEventListener('keydown', e => {
-    if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+    if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) {
+      // Esc in a search box or a number field steps out of it (the chat line has its own Esc)
+      if (e.key === 'Escape' && e.target !== els.input && MH.state.isLoggedIn) e.target.blur();
+      return;
+    }
     if (!MH.state.isLoggedIn) return;
     const k = e.key;
     if (k === 'Enter') { els.input.focus(); e.preventDefault(); return; }
@@ -1173,19 +1203,23 @@ export function createHud() {
       e.preventDefault(); return;
     }
     if (k === 'Escape') {
-      const mapOpen = !$('#bigmap').classList.contains('hidden');
-      const progOpen = Object.values(PROGRESS).some(w => w.open);
-      if (inventory.open || character.open || spellbook.open || trainer.open || journal.open || mapOpen || shop.open || lootwin.open || talk.open || who.open || help.open || progOpen) {
-        for (const w of Object.values(PROGRESS)) w.toggle(false);
-        inventory.toggle(false); character.toggle(false); spellbook.toggle(false); trainer.toggle(false); journal.toggle(false);
-        shop.toggle(false); lootwin.toggle(false); talk.toggle(false); who.toggle(false); help.toggle(false);
-        MH.bus.emit('hud.map', false); return;
-      }
-      MH.bus.emit('hud.untarget'); els.settings.classList.add('hidden'); return;
+      // one press, one window: the one opened last (raise() keeps the order); with none open, the target goes
+      const closers = { inventory: () => inventory.toggle(false), character: () => character.toggle(false), spellbook: () => spellbook.toggle(false),
+        trainer: () => trainer.toggle(false), journal: () => journal.toggle(false), shop: () => shop.toggle(false), lootwin: () => lootwin.toggle(false),
+        talk: () => talk.toggle(false), who: () => who.toggle(false), help: () => help.toggle(false), bigmap: () => MH.bus.emit('hud.map', false),
+        settings: () => els.settings.classList.add('hidden') };
+      for (const [id, w] of Object.entries(PROGRESS)) closers[id] = () => w.toggle(false);
+      for (const id of ['give-pick', 'item-menu']) { const el = document.getElementById(id); if (el && !el.classList.contains('hidden')) { el.classList.add('hidden'); return; } }
+      const top = openWindows.filter(id => { const el = document.getElementById(id); return el && !el.classList.contains('hidden'); }).pop();
+      if (top && closers[top]) { closers[top](); return; }
+      // (a window open from before the HUD watched them: close what is open, as before)
+      const stray = Object.keys(closers).find(id => { const el = document.getElementById(id); return el && !el.classList.contains('hidden'); });
+      if (stray) { closers[stray](); return; }
+      MH.bus.emit('hud.untarget'); return;
     }
-    if ((k === 'i' || k === 'I') && !e.ctrlKey && !e.metaKey) { inventory.toggle(); e.preventDefault(); return; }
-    if ((k === 'c' || k === 'C') && !e.ctrlKey && !e.metaKey) { character.toggle(); e.preventDefault(); return; }
-    if ((k === 'k' || k === 'K') && !e.ctrlKey && !e.metaKey) { spellbook.toggle(); e.preventDefault(); return; }
+    if ((k === 'i' || k === 'I') && !e.ctrlKey && !e.metaKey && !e.altKey) { inventory.toggle(); e.preventDefault(); return; }
+    if ((k === 'c' || k === 'C') && !e.ctrlKey && !e.metaKey && !e.altKey) { character.toggle(); e.preventDefault(); return; }
+    if ((k === 'k' || k === 'K') && !e.ctrlKey && !e.metaKey && !e.altKey) { spellbook.toggle(); e.preventDefault(); return; }
     if (k === 'Tab') { MH.bus.emit('hud.cycleTarget'); e.preventDefault(); return; }
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     if (k === 'l' || k === 'L') { journal.toggle(); e.preventDefault(); return; }
@@ -1217,7 +1251,7 @@ export function createHud() {
     if (!bag.length) { toast('You carry nothing to give.'); return; }
     const word = (it, list) => { const kw = String(it.name || it.short || 'item').toLowerCase().split(/\s+/).find(w => w.length > 1) || 'item';
       let n = 0; for (const o of list) { if (String(o.name || o.short || '').toLowerCase().split(/\s+/).includes(kw)) n++; if (o === it) break; } return n > 1 ? `${n}.${kw}` : kw; };
-    el.innerHTML = `<div class="gp-title">Give ${esc(name)}…</div>` + bag.slice(0, 24).map((it, i) => `<button data-i="${i}">${esc(it.short || it.name)}</button>`).join('')
+    el.innerHTML = `<div class="gp-title">Give ${esc(name)}…</div>` + bag.map((it, i) => `<button data-i="${i}">${esc(it.short || it.name)}</button>`).join('')
       + '<button data-i="gold">Some gold…</button>';
     el.style.left = `${Math.min(x, innerWidth - 240)}px`; el.style.top = `${Math.min(y, innerHeight - 320)}px`;
     el.classList.remove('hidden');

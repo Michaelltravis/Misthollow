@@ -310,7 +310,7 @@ export class Entities {
       if (payload.vnum != null && e.vnum !== payload.vnum && this.zone && this.zone.rooms.get(payload.vnum)) this.moveTo(e, payload.vnum, m);
       else this.place(e, m);
       if (m.fighting && e.actor && e.root && this.hero && e.position !== 'sleeping') {
-        e.root.rotation.y = Math.atan2(this.hero.x - e.root.position.x, this.hero.z - e.root.position.z);
+        e.wantYaw = Math.atan2(this.hero.x - e.root.position.x, this.hero.z - e.root.position.z);
         e.actor.once(['1H_Melee_Attack_Chop', '1H_Melee_Attack_Slice_Diagonal', '1H_Melee_Attack_Stab'][(hashStr(e.key) + Date.now()) % 3], 0.08, 1.1);
       }
     }
@@ -485,6 +485,12 @@ export class Entities {
       if (!e.root) continue;
       // walking to a new room's spot (other players keep up with where they really are:
       // the further behind, the faster they run)
+      // turning to face a way (a foe, the road): a quick turn by the short way round, not a snap
+      if (e.wantYaw != null && e.root) {
+        const r = e.root.rotation, off = Math.atan2(Math.sin(e.wantYaw - r.y), Math.cos(e.wantYaw - r.y));
+        if (Math.abs(off) < 0.02) { r.y = e.wantYaw; e.wantYaw = null; }
+        else r.y += off * (1 - Math.exp(-dt * 14));
+      }
       // knocked back by a heavy blow: a short shove, easing off
       if (e.knock) {
         const k = Math.min(dt, e.knock.t);
@@ -503,7 +509,7 @@ export class Entities {
           const speed = e.kind === 'player' ? Math.min(9 * (e.data.speed || 1), Math.max(3.2, d * 4)) : e.rush ? Math.min(7, Math.max(3.2, d * 1.6)) : 3.2;
           const step = Math.min(d, speed * dt);
           p.x += dx / d * step; p.z += dz / d * step;
-          e.root.rotation.y = Math.atan2(dx, dz);
+          e.wantYaw = Math.atan2(dx, dz);
           if (e.actor) e.actor.play(e.riding ? 'Idle' : speed > 4.5 ? 'Running_A' : 'Walking_A', 0.15, 1.1);
         }
       }

@@ -1,0 +1,226 @@
+{
+ "_about": "The regions of the world (docs/world/WORLD_SPINE.md). Written by tools/world/regions_ledger.py: edit REGIONS there.",
+ "regions": [
+  {
+   "id": "vale",
+   "name": "The Lantern Vale",
+   "line": "Where the lanterns still hold the mist back.",
+   "levels": [
+    1,
+    10
+   ],
+   "zones": [
+    30,
+    403,
+    431,
+    517,
+    260,
+    418,
+    186,
+    36,
+    200,
+    441,
+    60,
+    62,
+    72,
+    488,
+    79,
+    32
+   ]
+  },
+  {
+   "id": "marches",
+   "name": "The Marches",
+   "line": "The road, and the keeps that were raised to guard it.",
+   "levels": [
+    8,
+    20
+   ],
+   "zones": [
+    408,
+    423,
+    150,
+    424,
+    458,
+    416,
+    480,
+    482,
+    414,
+    419,
+    499,
+    25,
+    469,
+    471,
+    502,
+    470,
+    461,
+    518,
+    479
+   ]
+  },
+  {
+   "id": "greenreach",
+   "name": "The Greenreach",
+   "line": "Old forest. It was here before the names were.",
+   "levels": [
+    10,
+    25
+   ],
+   "zones": [
+    435,
+    436,
+    439,
+    445,
+    447,
+    63,
+    61,
+    110,
+    504,
+    51,
+    270,
+    442,
+    519,
+    520
+   ]
+  },
+  {
+   "id": "stonemarch",
+   "name": "The Stonemarch",
+   "line": "The mountains, and the halls the dwarves dug too deep to keep.",
+   "levels": [
+    12,
+    30
+   ],
+   "zones": [
+    40,
+    33,
+    64,
+    90,
+    464,
+    465,
+    467,
+    65,
+    100,
+    472,
+    476,
+    478,
+    474,
+    235
+   ]
+  },
+  {
+   "id": "frostmarch",
+   "name": "The Frostmarch",
+   "line": "The north, where the mist freezes and does not lift.",
+   "levels": [
+    20,
+    35
+   ],
+   "zones": [
+    66,
+    180,
+    190,
+    521,
+    522
+   ]
+  },
+  {
+   "id": "sundersea",
+   "name": "The Sunder Sea",
+   "line": "The lake that was the Hollow ran out to here, and took the coast with it.",
+   "levels": [
+    5,
+    30
+   ],
+   "zones": [
+    50,
+    426,
+    54,
+    52,
+    53,
+    120,
+    9,
+    494,
+    496,
+    495,
+    491,
+    448,
+    449,
+    451,
+    452,
+    453,
+    454,
+    415,
+    455,
+    130,
+    15
+   ]
+  },
+  {
+   "id": "deeproad",
+   "name": "The Deep Road",
+   "line": "The long way under the world, from the lost dwarf-holds to the city of the dead.",
+   "levels": [
+    35,
+    55
+   ],
+   "zones": [
+    501,
+    503,
+    508,
+    509,
+    505,
+    507,
+    512,
+    515,
+    514
+   ]
+  },
+  {
+   "id": "reach",
+   "name": "The Sundered Reach",
+   "line": "East, toward the Throne. Every mile of it was a kingdom once.",
+   "levels": [
+    25,
+    70
+   ],
+   "zones": [
+    67,
+    238,
+    68,
+    240,
+    69,
+    245,
+    248,
+    280,
+    285,
+    290,
+    295,
+    300
+   ]
+  },
+  {
+   "id": "beyond",
+   "name": "The Places Beyond",
+   "line": "Not on any road: reached by a door, a death or a bargain.",
+   "levels": [
+    30,
+    70
+   ],
+   "zones": [
+    481,
+    475,
+    160,
+    80,
+    140,
+    457,
+    220,
+    210,
+    250,
+    429,
+    420,
+    73
+   ]
+  }
+ ]
+}

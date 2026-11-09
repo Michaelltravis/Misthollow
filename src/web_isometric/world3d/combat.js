@@ -116,6 +116,7 @@ export class CombatView {
     if (!who || !other) return;
     const a = who.root.position, b = other.root.position;
     if (who.hero) { const h = this.getHero(); h.ctl.face(b.x, b.z); }
+    else if (who.ent) who.ent.wantYaw = Math.atan2(b.x - a.x, b.z - a.z);      // entities.js turns it there
     else who.root.rotation.y = Math.atan2(b.x - a.x, b.z - a.z);
   }
   play(who, anim, speed = 1) {
@@ -279,7 +280,7 @@ export class CombatView {
       const bite = dst.hero && MH.state && MH.state.player && MH.state.player.max_hp ? e.amt / MH.state.player.max_hp : 0;
       if (crit || killing || bite > 0.04) this.fx.shake(Math.min(0.42, (killing ? 0.26 : crit ? 0.22 : 0.12) + bite * 1.6), killing ? 0.3 : 0.2);
       if (crit) { const src = this.resolve(e.src); if (src && !src.mob) this.director.react('crit', { ...dst, cls: src.cls }); }
-      if ((crit || killing || bite > 0.15) && this.engine.hitStop) this.engine.hitStop(killing ? 110 : bite > 0.15 ? 80 : 70);
+      if ((crit || killing || bite > 0.15) && this.engine.hitStop && this.fx.opts.shake) this.engine.hitStop(killing ? 110 : bite > 0.15 ? 80 : 70);
       // a second or third blow in the same round gets its own swing
       if (imp && imp.n > 1) { const src = this.resolve(e.src); if (src && !src.hero) this.play(src, '1H_Melee_Attack_Slice_Diagonal', 1.3); }
     };
@@ -369,7 +370,7 @@ export class CombatView {
       // a crit or a heavy blow shoves a creature back (it staggers: the flinch played slower), and
       // the view darts in when it is the hero's crit or a crit on the hero
       if ((crit || e.heavy) && dst.ent && !dst.hero && src && src.root) this.ents.knock(dst.ent, src.root.position, crit ? 0.55 : 0.35);
-      if (crit && ((src && src.hero) || heroHit) && this.engine.punch) this.engine.punch(heroHit ? 1.8 : 1.2);
+      if (crit && ((src && src.hero) || heroHit) && this.engine.punch && this.fx.opts.shake) this.engine.punch(heroHit ? 1.8 : 1.2);
     } else {
       const word = { miss: 'Miss', dodge: 'Dodge', parry: 'Parry', block: 'Block', resist: 'Resist', immune: 'Immune' }[res] || res;
       if (heroHit) this.fx.lane(word, { color: COLORS[res] || COLORS.miss, size: 15 });

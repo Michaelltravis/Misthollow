@@ -178,7 +178,8 @@ export class WeatherView {
     this.prints.update(dt);
     const L = this.open ? LOOK[this.kind] : LOOK.clear;
     const want = L.rain || L.snow || L.dust || 0;
-    this.amount += (want - this.amount) * Math.min(1, dt * 0.6);
+    // (under a roof the rain is gone as you step in, not six seconds later)
+    this.amount += (want - this.amount) * Math.min(1, dt * (this.open ? 0.6 : 5));
     if (!this.seeded || this.seeded.distanceTo(c) > BOX * 1.5) this.seed(c);
     const wx = this.wind / 18, wz = this.wind / 40;          // the wind's slant (metres a second, roughly)
     // rain

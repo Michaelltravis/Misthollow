@@ -2724,7 +2724,10 @@ class QuestManager:
         await player.send(f"{c['bright_cyan']}║{c['white']}    🏠 Player housing            🏟 PvP Arena               {c['bright_cyan']}║{c['reset']}")
         await player.send(f"{c['bright_cyan']}╚══════════════════════════════════════════════════════════════╝{c['reset']}")
         await player.send(f"\r\n{c['white']}Sage Aldric at the Temple can teach you the ways of the Realms.")
-        await player.send(f"Type {c['bright_green']}hint{c['white']} anytime for guidance, or {c['bright_green']}help newbie{c['white']} for a full guide.{c['reset']}\r\n")
+        if getattr(getattr(player, 'connection', None), 'is_web', False):
+            await player.send(f"The tracker on the right shows your next step; press {c['bright_green']}H{c['white']} anytime for help.{c['reset']}\r\n")
+        else:
+            await player.send(f"Type {c['bright_green']}hint{c['white']} anytime for guidance, or {c['bright_green']}help newbie{c['white']} for a full guide.{c['reset']}\r\n")
         
         # Auto-accept the first tutorial quest
         await QuestManager.accept_quest(player, 'tutorial_1_awakening')
