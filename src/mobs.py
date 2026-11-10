@@ -559,7 +559,9 @@ class Mobile(Character):
             if 'sentinel' not in self.flags and self.room and track_target.room and track_target.room != self.room:
                 # If target is in adjacent room, move there
                 for direction, exit_data in self.room.exits.items():
-                    if exit_data and exit_data.get('room') == track_target.room and not (KEEP_OUT & track_target.room.flags):
+                    # (nor into a peaceful room after its quarry: the brain's hunters keep out of them too, brain/path.py)
+                    if (exit_data and exit_data.get('room') == track_target.room and not (KEEP_OUT & track_target.room.flags)
+                            and 'peaceful' not in track_target.room.flags):
                         old_room = self.room
                         await old_room.send_to_room(f"{self.name} slips {direction}, tracking a scent.")
                         if self in old_room.characters:

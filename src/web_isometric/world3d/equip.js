@@ -352,7 +352,8 @@ export async function spawnDressed(look, cls, opts = {}) {
   root.add(mesh);
   const actor = new Actor(root, clips);
   actor.gear = { kit, mesh, plan, cls, sig: look && look.sig, glow: material.userData.glow, scale: opts.scale || 1 };
-  material.userData.glow.value = plan.glow;
+  // (a hero's lantern burns whatever they wear: gearlook.js plan.lantern)
+  material.userData.glow.value = Math.max(plan.glow || 0, plan.lantern ? 1 : 0);
   actor.idle = plan.idle;
   shape(actor);
   return actor;

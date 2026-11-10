@@ -2696,6 +2696,37 @@ class QuestManager:
         return available
 
     @staticmethod
+    def next_tutorial(player: 'Player'):
+        """The tutorial step a player should be on when they have none in hand: the first of the chain
+        they have not finished (None: all done). The chain is walked by each quest's `next_quest`;
+        tutorial_4_skills is skipped, as the chain itself skips it (it was merged into the third)."""
+        done = set(getattr(player, 'quests_completed', None) or [])
+        qid, seen = 'tutorial_1_awakening', set()
+        while qid and qid in QUEST_DEFINITIONS and qid not in seen:
+            seen.add(qid)
+            if qid != 'tutorial_4_skills' and qid not in done:
+                return qid
+            qid = QUEST_DEFINITIONS[qid].get('next_quest')
+        return None
+
+    @staticmethod
+    async def resume_tutorial(player: 'Player') -> bool:
+        """Sage Aldric takes back a pupil who set the lessons down: someone under level 10 with no
+        tutorial step in hand and some of the chain undone is given the next one. (Abandoning a
+        step used to end the chain for good: nothing offered it again.)"""
+        if (getattr(player, 'level', 1) or 1) >= 10:
+            return False
+        if any(q.quest_id.startswith('tutorial_') for q in getattr(player, 'active_quests', None) or []):
+            return False
+        qid = QuestManager.next_tutorial(player)
+        if not qid:
+            return False
+        c = player.config.COLORS
+        await player.send(f"\r\n{c['bright_cyan']}Sage Aldric tells you, 'Ah, {player.name}. Shall we take up where we left off?'{c['reset']}")
+        await QuestManager.accept_quest(player, qid)
+        return True
+
+    @staticmethod
     async def start_tutorial(player: 'Player'):
         """
         Start the tutorial quest chain for a new player.

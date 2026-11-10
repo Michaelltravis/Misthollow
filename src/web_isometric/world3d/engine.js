@@ -274,8 +274,11 @@ export function createEngine(container, opts = {}) {
     camera.updateMatrixWorld();
     for (const fn of lateTicks) fn(dt, t);
     // the sun's shadow box follows the hero so shadows stay sharp everywhere
-    sun.position.set(rig.focus.x - 14, 30, rig.focus.z + 10);
-    sun.target.position.copy(rig.focus);
+    // (the sun follows the hero in steps of one shadow texel: followed smoothly, every shadow's
+    // edge crawled as the hero walked)
+    const texel = 48 / sun.shadow.mapSize.x, sx = Math.round(rig.focus.x / texel) * texel, sz = Math.round(rig.focus.z / texel) * texel;
+    sun.position.set(sx - 14, 30, sz + 10);
+    sun.target.position.set(sx, rig.focus.y, sz);
     blendMood(dt);
     renderer.info.reset();
     if (composer) composer.render(dt); else renderer.render(scene, camera);

@@ -101,7 +101,7 @@ export class Adorn {
     const s = this.on.get(a);
     if (!s) return;
     if (s.ring) { this.engine.scene.remove(s.ring); s.ring.geometry.dispose(); s.ring.material.dispose(); }
-    if (s.pulse && a.gear && a.gear.glow) a.gear.glow.value = a.gear.plan.glow;
+    if (s.pulse && a.gear && a.gear.glow) a.gear.glow.value = Math.max(a.gear.plan.glow || 0, a.gear.plan.lantern ? 1 : 0);
     this.on.delete(a);
   }
 }

@@ -107,6 +107,19 @@ async def main():
         again = await again
     check(again is not None and again.hp >= 1, f'a save below 1 hp loads at 1 ({getattr(again, "hp", None)})')
 
+    # ---- a pupil who set the lessons down is taken back (quests.resume_tutorial)
+    from quests import QuestManager
+    pupil = hero_at('Pupiltest', 3001)
+    check(QuestManager.next_tutorial(pupil) == 'tutorial_1_awakening', 'a newcomer starts at the first lesson')
+    pupil.quests_completed = ['tutorial_1_awakening', 'tutorial_2_look_around', 'tutorial_3_know_thyself']
+    pupil.active_quests = []
+    check(QuestManager.next_tutorial(pupil) == 'tutorial_5_combat', 'the next is the first undone (the merged fourth is skipped)')
+    check(await QuestManager.resume_tutorial(pupil) and QuestManager.has_active_quest(pupil, 'tutorial_5_combat'), 'Aldric gives it to one with none in hand')
+    check(not await QuestManager.resume_tutorial(pupil), 'not a second while one is in hand')
+    pupil.active_quests = []
+    pupil.level = 12
+    check(not await QuestManager.resume_tutorial(pupil), 'nor to one past level 10')
+
     print('ALL OK' if not failures else f'{len(failures)} FAILED')
     return 1 if failures else 0
 

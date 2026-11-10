@@ -3,6 +3,7 @@
 // proficiency (the class's whole roster, unlearned ones dimmed); a third works out a fight: what
 // your blows and guard come to and how a bout with a creature would go (combatcalc.js). Everything
 // comes from the map payload's player block; nothing here changes the character.
+import { lookChoices } from './lookstyles.js';
 import { makeStage } from './stage.js';
 import { fight, typicalFoe } from './combatcalc.js';
 
@@ -31,6 +32,12 @@ export function createCharacter() {
 
   const bar = (cur, max, cls) => `<div class="ch-bar ${cls}"><b style="width:${max ? Math.max(0, Math.min(100, cur / max * 100)) : 0}%"></b><span>${cur ?? 0} / ${max ?? 0}</span></div>`;
 
+  // the class's looks, where it has a choice (lookstyles.js): the one worn lit; a click takes the other
+  function looksRow(p) {
+    const list = lookChoices(p.char_class, p.look && p.look.style);
+    return list.length ? `<div class="ch-looks"><span>Look</span>${list.map(l =>
+      `<button class="${l.on ? 'on' : ''}" data-look="${l.id}" title="${esc(l.words)}">${esc(title(l.id))}</button>`).join('')}</div>` : '';
+  }
   function overview(p) {
     const cls = String(p.char_class || '').toLowerCase();
     const prime = PRIME[cls];
@@ -41,7 +48,7 @@ export function createCharacter() {
       <div class="ch-id">
         <div class="ch-name">${esc(p.name)}</div>
         <div class="ch-title">${esc(p.title || '')}</div>
-        <div class="ch-line">Level ${p.level || 1} ${esc(title(p.race))} ${esc(title(p.char_class))}</div>
+        <div class="ch-line">Level ${p.level || 1} ${esc(title(p.race))} ${esc(title(p.char_class))}</div>${looksRow(p)}
         <div class="ch-lab">Health${fromGear(p, 'max_hp')}</div>${bar(p.hp, p.max_hp, 'hp')}
         <div class="ch-lab">${esc(res[2])}${res[2] === 'Mana' ? fromGear(p, 'max_mana') : ''}</div>${bar(res[0], res[1], 'mp')}
         <div class="ch-lab">Movement${fromGear(p, 'max_move')}</div>${bar(p.move, p.max_move, 'mv')}
@@ -195,6 +202,15 @@ export function createCharacter() {
     body.querySelector('.cc-out').innerHTML = calcOut(player.combat, player);
   });
   body.addEventListener('click', e => {
+    const lk = e.target.closest && e.target.closest('.ch-looks button');
+    if (lk) {
+      if (!lk.classList.contains('on')) {
+        MH.sendCommand(`appearance ${lk.dataset.look}`, false);
+        // (the look comes with the hero's own payload: ask for it, as wearing a thing does)
+        setTimeout(() => MH.refreshState && MH.refreshState(), 450);
+      }
+      return;
+    }
     const b = e.target.closest && e.target.closest('[data-pre]');
     if (!b || !player || !player.combat) return;
     foe = b.dataset.pre === 'foe' && player.combat.foe ? fromFoe(player.combat.foe) : typicalFoe(player.level || 1);
@@ -205,7 +221,7 @@ export function createCharacter() {
     if (!player || !open) return;
     const nsig = JSON.stringify([tab, player.level, player.hp, player.mana, player.move, player.exp, player.gold,
       player.affects, player.skills, player.spells, player.hitroll, player.damroll, player.armor_class, player.position,
-      tab === 'combat' ? player.combat : null]);
+      tab === 'combat' ? player.combat : null, player.look && player.look.style]);
     if (nsig === sig) return;
     sig = nsig;
     if (tab === 'combat') combat(player);

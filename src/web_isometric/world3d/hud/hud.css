@@ -1179,3 +1179,11 @@ html.fallen #vignette { background: radial-gradient(ellipse at 50% 46%, rgba(30,
 #banner .region:empty, #banner .line:empty { display: none; }
 #banner .line { margin-top: 8px; font: italic calc(17px * var(--ui)) var(--lore); color: var(--mist-hi); text-shadow: 0 2px 10px #000, 0 0 2px #000; max-width: min(640px, 86vw); }
 #bigmap .bm-region { margin-left: 12px; font: 600 12px var(--label); letter-spacing: .12em; text-transform: uppercase; color: var(--gold); white-space: nowrap; }
+
+/* ---- the Character window: the class's looks, where it has a choice ---- */
+.ch-looks { display: flex; align-items: center; gap: 6px; margin: 0 0 8px; font: 500 12px var(--label); color: var(--ink-dim); letter-spacing: .06em; text-transform: uppercase; }
+.ch-looks span { margin-right: 4px; }
+.ch-looks button { padding: 3px 10px; border-radius: 6px; cursor: pointer; font: 700 11.5px var(--label); letter-spacing: .06em; text-transform: uppercase;
+  border: 1px solid var(--edge-dim); background: rgba(255,255,255,.04); color: var(--ink-dim); }
+.ch-looks button:hover { color: var(--ink); border-color: var(--gold); }
+.ch-looks button.on { color: #1a1206; border-color: #f0d28c; background: linear-gradient(180deg, #f3d999, #b98d45); cursor: default; }

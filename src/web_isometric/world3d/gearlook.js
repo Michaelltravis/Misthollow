@@ -99,6 +99,22 @@ const SHIELD = { round: 'knight-Round_Shield', badge: 'knight-Badge_Shield', squ
 const SHIELD_PAINTED = { round: 'kit-shield_round_color', badge: 'kit-shield_badge_color', square: 'kit-shield_square_color', spike: 'kit-shield_spikes_color' };
 const HEAD = { helm: 'knight-Knight_Helmet', horned: 'barbarian-Barbarian_Hat', hat: 'mage-Mage_Hat' };
 // the archmage's pieces besides the hat and staff (gear_look.py style 'archmage')
+export const LANTERN = 'Lantern_Hip';
+// the warden's pieces (gear_look.py style 'warden', a warrior's: tools/art3d/blender/models/warden.py)
+export const WARDEN = ['Warden_Mantle', 'Warden_Pauldron_L', 'Warden_Pauldron_R', 'Warden_Bracer_L', 'Warden_Bracer_R', 'Warden_Belt', 'Warden_Tabard'];
+// every other class's look (tools/art3d/blender/models/classlooks.py): whose it is, its pieces, and
+// whether its own shoulders stand for the pauldrons fine armour or renown would add
+export const LOOKS = {
+  warden: { cls: 'warrior', pieces: WARDEN, shoulders: true },
+  templar: { cls: 'paladin', pieces: ['Templar_Halo', 'Templar_Pauldron_L', 'Templar_Pauldron_R', 'Templar_Gorget', 'Templar_Tabard', 'Templar_Belt'], shoulders: true },
+  hierophant: { cls: 'cleric', pieces: ['Hiero_Stole', 'Hiero_Sunburst', 'Hiero_Cuff_L', 'Hiero_Cuff_R', 'Hiero_Censer'], shoulders: false },
+  footpad: { cls: 'thief', pieces: ['Footpad_Scarf', 'Footpad_Bandolier', 'Footpad_Pouches', 'Footpad_Wrap_L', 'Footpad_Wrap_R'], shoulders: false },
+  nightblade: { cls: 'assassin', pieces: ['Night_Mantle', 'Night_Blades', 'Night_Sash', 'Night_Bracer_L', 'Night_Bracer_R'], shoulders: true },
+  wayfinder: { cls: 'ranger', pieces: ['Way_Mantle', 'Way_Feathers', 'Way_Bedroll', 'Way_Belt', 'Way_Bracer_L', 'Way_Bracer_R'], shoulders: true },
+  troubadour: { cls: 'bard', pieces: ['Troub_Ruff', 'Troub_Capelet', 'Troub_Lute', 'Troub_Sash', 'Troub_Cuff_L', 'Troub_Cuff_R'], shoulders: false },
+  gravecaller: { cls: 'necromancer', pieces: ['Grave_Collar', 'Grave_Skull', 'Grave_Shroud', 'Grave_Chain', 'Grave_Cuff_L', 'Grave_Cuff_R'], shoulders: true },
+};
+
 export const ARCHMAGE = ['Archmage_Robe', 'Archmage_Mantle', 'Archmage_Cuff_L', 'Archmage_Cuff_R', 'Archmage_Sash', 'Archmage_Beard'];
 const CAPE = { knight: 'knight-Knight_Cape', barbarian: 'barbarian-Barbarian_Cape', mage: 'mage-Mage_Cape', rogue: 'rogue-Rogue_Cape' };
 export const WEAPON_KINDS = new Set(['sword', 'axe', 'dagger', 'mace', 'hammer', 'spear', 'polearm', 'scythe', 'pick', 'claw', 'whip', 'staff', 'wand', 'crossbow', 'bow', 'thrown']);
@@ -265,6 +281,15 @@ export function planLook(look, cls, kit) {
   if (archmage) flesh.hair = 'fur_white';
   for (const [name, roles] of parts) add(name, { ...roles, ...flesh });
   if (archmage) for (const piece of ARCHMAGE) add(piece, {});
+  // a look the hero chose that is their class's (LOOKS: the warrior's warden, the paladin's templar
+  // and the rest): its pieces over whatever armour they wear
+  const chosen = !look.base && LOOKS[String(look.style || '')];
+  const styled = chosen && chosen.cls === cls ? chosen : null;
+  if (styled) for (const piece of styled.pieces) add(piece, {});
+  const warden = !!(styled && styled.shoulders);
+  // the lantern every hero carries at the hip (docs/world/WORLD_SPINE.md: the world's one sign; the
+  // Blender piece, tools/art3d/blender/models/lantern.py). Creatures their zone dressed carry none.
+  if (!look.base) add(LANTERN, {});
   if (archHat) add('Archmage_Hat', {});
 
   // the main hand: a piece from the pack, or a shape built in code; finer ones get a pommel stone
@@ -326,7 +351,8 @@ export function planLook(look, cls, kit) {
   if (look.quiver || (m && m.k === 'bow')) add('kit-quiver', {});
   // the shoulders: pauldrons on fine heavy armour, a mantle from level 35
   const b = look.body;
-  if (!archmage && ((b && b.w >= 2 && (b.t || 0) >= 3) || rn >= 3)) {
+  // (the archmage's mantle and a look's own shoulders stand for them)
+  if (!archmage && !warden && ((b && b.w >= 2 && (b.t || 0) >= 3) || rn >= 3)) {
     // fine heavy armour in its own metal; else a mantle in the class's colour, trimmed as renown rises
     const mantle = b && b.w >= 2 && b.m && (b.t || 0) >= 3 ? { metal: worn(b.m, b), metal_dark: trimFor(b) || darkOf(b.m, b) }
       : { metal: clothOf(b && (b.s || b.c) ? b : {}, cls), metal_dark: rn >= 4 ? 'gold' : 'silver' };
@@ -337,7 +363,8 @@ export function planLook(look, cls, kit) {
   }
   // a light: a lantern at the hip, a torch in a free hand
   const light = look.light && look.light.k;
-  if (light === 'lantern') addons.push({ kind: 'lantern', shape: true, bone: 'hips', spot: 'hip', roles: { gem: 'fire~glow', metal_dark: 'black_iron' } });
+  // (a hero's own lantern already hangs there: the built one is for those without it)
+  if (light === 'lantern' && !(!look.base && kit.pieces[LANTERN])) addons.push({ kind: 'lantern', shape: true, bone: 'hips', spot: 'hip', roles: { gem: 'fire~glow', metal_dark: 'black_iron' } });
   const handFree = !o && !(m && (m.h === 2 || m.k === 'bow'));
   if (light === 'torch' && handFree) procs.push({ shape: 'torch', piece: 'knight-1H_Sword_Offhand', look: { k: 'torch', t: 1 }, roles: { gem: 'fire~glow' } });
 
@@ -348,6 +375,8 @@ export function planLook(look, cls, kit) {
     ...procs.flatMap(p => Object.values(p.roles)), ...addons.flatMap(a => Object.values(a.roles || {}))];
   const legendary = look.aura === 'legendary' || Object.values(look).some(p => p && typeof p === 'object' && p.t === 5);
   const glow = all.some(n => String(n || '').endsWith('~glow')) ? (legendary ? 1.3 : 1) : 0;
+  // (the hero's lantern is lit whatever they wear: equip.js lights the kit's glowing colours for it)
+  const lantern = props.some(p => p.name === LANTERN);
   const adorn = {
     motes: rn >= 4 ? `class_${cls}` : null,
     aura: look.aura || null,
@@ -356,7 +385,7 @@ export function planLook(look, cls, kit) {
     hand: m && m.k === 'bow' ? 'handslotl' : 'handslotr',     // where the weapon's sparks come from
     set: look.set || null,
   };
-  return { key, parts: parts.map(p => p[0]), props, procs, addons, glow, adorn, build: { h: race.h * (sex ? SEX_BUILD[sex].h : 1), w: race.w * (sex ? SEX_BUILD[sex].w : 1) },
+  return { key, parts: parts.map(p => p[0]), props, procs, addons, glow, lantern, adorn, build: { h: race.h * (sex ? SEX_BUILD[sex].h : 1), w: race.w * (sex ? SEX_BUILD[sex].w : 1) },
     idle: twoHanded ? '2H_Melee_Idle' : 'Idle' };
 }
 

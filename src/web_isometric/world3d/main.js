@@ -351,9 +351,10 @@ async function runGame() {
     ents.sightRadius = !s.dark ? 0 : lit ? 16 : eyes ? 14 : 7;
     const L = engine.heroLight;
     if (!L) return;
-    const want = lit ? 64 : blind ? 22 : 0;
-    L.color.setHex(lit ? 0xffb36a : 0x8a9ac8);
-    L.distance = lit ? 17 : 7;
+    // (out of the dark the hero's own lantern still casts a little warmth at their feet)
+    const want = lit ? 64 : blind ? 22 : 5;
+    L.color.setHex(blind ? 0x8a9ac8 : 0xffb36a);
+    L.distance = lit ? 17 : blind ? 7 : 5.5;
     L.intensity += (want - L.intensity) * Math.min(1, dt * 4);
     if (hero && hero.root) L.position.set(hero.root.position.x, hero.root.position.y + 1.7, hero.root.position.z);
   });

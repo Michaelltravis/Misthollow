@@ -24,8 +24,32 @@ from regeneration import RegenerationCalculator
 logger = logging.getLogger('Misthollow.Player')
 
 
-# the looks a hero may choose beyond their class's own (gear_look.py `style`): the archmage is a mage's
-LOOK_STYLES = {'archmage': ('mage',)}
+# the looks a hero may choose beyond their class's own (gear_look.py `style`): one a class (the
+# archmage is a mage's, the warden a warrior's, and so on: tools/art3d/blender/models). LOOK_WORDS says each in a line, with the class's own ('classic').
+LOOK_STYLES = {'archmage': ('mage',), 'warden': ('warrior',), 'templar': ('paladin',), 'hierophant': ('cleric',), 'footpad': ('thief',), 'nightblade': ('assassin',), 'wayfinder': ('ranger',), 'troubadour': ('bard',), 'gravecaller': ('necromancer',)}
+LOOK_WORDS = {
+    'mage': {'classic': 'the young mage in a travelling coat', 'archmage': 'a tall hat, a long white beard, a robe to the ankles'},
+    'warrior': {'classic': 'the fighter as their armour makes them', 'warden': 'a fur mantle, a great pauldron, a crimson tabard at the belt'},
+    'paladin': {'classic': 'the knight in the plate of their order', 'templar': 'a halo behind the head, winged pauldrons, a white tabard with the sun'},
+    'cleric': {'classic': 'the priest in plain vestments', 'hierophant': 'a gold-ended stole, a sunburst behind the shoulders, a censer at the belt'},
+    'thief': {'classic': 'the rogue in travelling leathers', 'footpad': 'a red scarf, a bandolier of knives, pouches at the belt'},
+    'assassin': {'classic': 'the hooded killer', 'nightblade': 'a pointed black mantle, crossed blades on the back, a red sash'},
+    'ranger': {'classic': 'the hooded hunter', 'wayfinder': 'a mantle of leaves, feathers at the shoulder, a bedroll on the back'},
+    'bard': {'classic': 'the player in road clothes', 'troubadour': 'a white ruff, a half-cape, a lute across the back'},
+    'necromancer': {'classic': 'the dark scholar in a robe', 'gravecaller': 'a collar of bone spikes, a skull on the shoulder, a ragged shroud'},
+}
+
+
+# the classes asked their look as they are made (the others choose it after: `appearance`, or the
+# Character window in /play). A warrior is not asked: theirs is the commonest first hero, and one
+# more question before the first step is one too many.
+LOOK_ASKED = ('mage',)
+
+
+def looks_for(char_class):
+    """The looks a class may choose beyond its own, in order ([]: it has the one)."""
+    c = str(char_class or '').lower()
+    return [s for s, classes in LOOK_STYLES.items() if c in classes]
 
 class Character:
     """Base class for all characters (players and NPCs)."""
@@ -507,7 +531,7 @@ class Player(Character):
         self.account_name = None  # Link to account for multi-character
         self.race = "human"
         self.sex = "neutral"  # male, female, or neutral
-        self.look_style = ""  # a mage's look in 3D: "" (classic) or "archmage" (gear_look.py)
+        self.look_style = ""  # the hero's look in 3D: "" (classic) or one of LOOK_STYLES for their class (gear_look.py)
         self.char_class = "warrior"
         self.title = "the Adventurer"
         

@@ -104,6 +104,44 @@ Fountain by day.
    **The design is written: `docs/world/WORLD_SPINE.md`** (the premise, nine regions, the road
    from level 1 to 70, and a ledger of all 122 zones). It waits on the owner's read.
 
+## Characters without a budget: scripted models (done)
+
+The owner has no money for bought 3D art. The project already had the answer: models written as
+Blender scripts (`tools/art3d/blender`, Blender's Python module in `tools/art3d/.venv`), built
+and rendered headless, in the same low-poly style as the CC0 packs. A hero is the pack's body
+dressed from one equipment kit, so what heroes gain is **pieces on the shared rig**: they move
+with all 68 clips.
+
+- **The lantern** (`models/lantern.py`): every hero carries a small iron lantern behind the
+  right hip, its flame lit; out of the dark it casts a little warmth at their feet. The world's
+  one sign (`docs/world/WORLD_SPINE.md`), on every player.
+- **A look for every class** (`models/warden.py`, `models/classlooks.py`, with the mage's
+  earlier `models/archmage.py`): the warrior's warden, the paladin's templar (a glowing halo,
+  winged pauldrons, a sun tabard), the cleric's hierophant, the thief's footpad, the assassin's
+  nightblade, the ranger's wayfinder, the bard's troubadour (a lute on the back), the
+  necromancer's gravecaller (bone spikes, a skull on the shoulder with lit eyes). 54 pieces.
+  Chosen in the Character window (C: "Look") or with `appearance <look>`; only a mage is asked
+  at creation. `mhb/kit.py` holds the shapes and the export, so a new look is a short script.
+- Checks: `tests/test_warden_look.py`, `tests/web/gearlook.test.mjs` (every class's look, its
+  pieces in the kit, nobody else's), `node tools/art3d/qc_models.mjs`; the warden and the
+  templar seen in the live game.
+
+What this route does not do: it adds character and silhouette in the house style; it is not a
+higher-fidelity art style. Bodies and faces are still the pack's.
+
+## The second 3D and play pass (done)
+
+- Shadows no longer crawl as the hero walks (the sun moves in steps of one shadow texel).
+- Torch light no longer jumps from torch to torch (a pooled light goes out before it moves).
+- Creatures swell into place over a fifth of a second instead of appearing whole.
+- A nameplate's health bar is written only when the health changes.
+- Trackers no longer follow a scent into a peaceful room (`mobs.py`).
+- Sage Aldric gives the next lesson to a pupil who abandoned one (`quests.resume_tutorial`):
+  abandoning a tutorial step used to end the chain for good.
+
+Tried and taken back: creatures shrinking away as they leave (a vanished creature is held one
+frame for its corpse to claim; the two did not fit).
+
 ## Pass 2: the owner's calls (each changes how the game plays)
 
 1. **What creatures are called.** The log says "You attack dragon!", "newbie marches east",

@@ -10541,6 +10541,9 @@ class CommandHandler:
                     await player.send(f"    {c['bright_black']}(quest accept {quest_id}){c['reset']}")
                 await player.send(f"\n{c['white']}Use 'quest accept <quest_id>' to accept a quest.{c['reset']}")
 
+        # Sage Aldric gives the next lesson to one who has none in hand (quests.resume_tutorial)
+        if 'aldric' in str(getattr(target, 'name', '')).lower() and getattr(target, 'special', None) in ('sage_aldric', 'quest_giver'):
+            await QuestManager.resume_tutorial(player)
         await QuestManager.check_quest_progress(
             player, 'talk', {'npc_vnum': getattr(target, 'vnum', 0), 'npc_name': target.name}
         )
@@ -14670,8 +14673,8 @@ class CommandHandler:
 
     @classmethod
     async def cmd_appearance(cls, player: 'Player', args: List[str]):
-        """How your hero looks in the 3D world, where their class has a choice (a mage: classic or
-        archmage). Usage: appearance [classic|archmage]"""
+        """How your hero looks in the 3D world: their class's own look ('classic') or its other (a
+        mage's archmage, a warrior's warden, a paladin's templar...). Usage: appearance [classic|<look>]"""
         from player import LOOK_STYLES
         c = player.config.COLORS
         cls_name = str(getattr(player, 'char_class', '') or '').lower()

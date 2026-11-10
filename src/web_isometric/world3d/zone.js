@@ -276,10 +276,21 @@ export class Zone {
       const all = [];
       for (const r of this.rooms.values()) if (r.built) for (const p of r.built.torches) all.push(p);
       all.sort((a, b) => a.distanceToSquared(hero) - b.distanceToSquared(hero));
-      this.lights.forEach((l, i) => {
-        const p = all[i];
-        if (p && p.distanceToSquared(hero) < 30 * 30) { l.position.copy(p); l.userData.on = true; } else l.userData.on = false;
-      });
+      // each pooled light stays on its torch while that torch is one of the nearest; a light whose
+      // torch has fallen behind goes out first and only then moves (moved while lit, the glow jumped
+      // from torch to torch as the hero walked)
+      const near = all.slice(0, this.lights.length).filter(p => p.distanceToSquared(hero) < 30 * 30);
+      const held = new Set();
+      for (const l of this.lights) {
+        if (l.userData.torch && near.includes(l.userData.torch)) { held.add(l.userData.torch); l.userData.on = true; }
+        else { l.userData.on = false; if (l.intensity < 0.6) l.userData.torch = null; }
+      }
+      for (const p of near) {
+        if (held.has(p)) continue;
+        const l = this.lights.find(x => !x.userData.torch && x.intensity < 0.6);
+        if (!l) break;
+        l.position.copy(p); l.userData.torch = p; l.userData.on = true;
+      }
     }
     for (const l of this.lights) {
       const s = l.userData.seed;

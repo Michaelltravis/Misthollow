@@ -100,6 +100,9 @@ function dyingAs(d, dt) {
   }
 }
 
+// how small a body is as it arrives (it grows to its size in a fifth of a second)
+const ARRIVE_FROM = 0.72;
+
 export class Entities {
   constructor(engine, plates, kits = null) {
     this.pullWindow = 0;         // until when a creature changing rooms may be one the hero pulled
@@ -360,6 +363,8 @@ export class Entities {
       e.root.userData.lying = lies(e);
       actor.play(e.pose || (isHostile(w) ? 'Idle_Combat' : actor.idle || 'Idle'), 0, e.still ? 0 : 0.85 + (hashStr(key) % 30) / 100);
       if (isPlayer && w.data.mount) e.riding = mountRider(actor, w.data.mount, null);
+      // (it swells into place over a fifth of a second rather than appear whole: update() grows it)
+      e.arrive = 0; e.root.scale.multiplyScalar(ARRIVE_FROM); e.root.userData.arriveK = ARRIVE_FROM;
       this.engine.scene.add(e.root);
     }).catch(() => {});
   }
@@ -485,6 +490,13 @@ export class Entities {
       if (!e.root) continue;
       // walking to a new room's spot (other players keep up with where they really are:
       // the further behind, the faster they run)
+      if (e.arrive != null) {
+        e.arrive = Math.min(1, e.arrive + dt / 0.2);
+        const k = ARRIVE_FROM + (1 - ARRIVE_FROM) * (1 - Math.pow(1 - e.arrive, 3)), was = e.root.userData.arriveK || k;
+        e.root.scale.multiplyScalar(k / was);            // (by ratio: whatever else sizes the body still holds)
+        e.root.userData.arriveK = k;
+        if (e.arrive >= 1) e.arrive = null;
+      }
       // turning to face a way (a foe, the road): a quick turn by the short way round, not a snap
       if (e.wantYaw != null && e.root) {
         const r = e.root.rotation, off = Math.atan2(Math.sin(e.wantYaw - r.y), Math.cos(e.wantYaw - r.y));
@@ -547,7 +559,9 @@ export class Entities {
         e._conFor = this.heroLevel;
         e.plate.dataset.con = conOf(e.data.level || 1, this.heroLevel).key;
       }
-      e.plate.querySelector('.hp b').style.width = `${Math.max(0, Math.min(1, hp)) * 100}%`;
+      // (the bar is found once, and written only when the health changed)
+      const hpw = `${(Math.max(0, Math.min(1, hp)) * 100).toFixed(1)}%`;
+      if (e._hpw !== hpw) { e._hpw = hpw; (e._hpBar || (e._hpBar = e.plate.querySelector('.hp b'))).style.width = hpw; }
       e.plate.style.opacity = this.target === e.key ? 1 : Math.max(0.25, Math.min(1, (28 - dist) / 8));
     }
   }
