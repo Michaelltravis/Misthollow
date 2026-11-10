@@ -1475,7 +1475,7 @@ QUEST_DEFINITIONS = {
         'name': 'The City That Forgot It Died',
         'description': "At the end of the long way under the world is Morkai, a city so thoroughly lost to the mist that it does not know it is dead. Moloch rules it from a throne of other people's memories. The road cannot be relit while he sits there.",
         'type': 'kill',
-        'level_min': 62,
+        'level_min': 50,   # (the most a hero without a prestige class reaches: prestige.get_max_level)
         'level_max': 70,
         'quest_giver': 3200,  # Sage Aldric, in the Temple
         'after': 'road_deeproad',
@@ -1490,7 +1490,7 @@ QUEST_DEFINITIONS = {
         'name': 'The Shattered Throne',
         'description': "Every road has led here. Whoever broke the Throne is still sitting on what is left of it, and the mist comes out of that room like breath. You have carried a lantern from the Temple to the end of the world. Go in.",
         'type': 'kill',
-        'level_min': 64,
+        'level_min': 50,   # (the most a hero without a prestige class reaches: prestige.get_max_level)
         'level_max': 70,
         'quest_giver': 3200,  # Sage Aldric, in the Temple
         'after': 'road_reach',
@@ -2543,6 +2543,12 @@ class QuestManager:
             await player.send("That quest is not available right now.")
             return
 
+        # one that follows another is not taken before it (`after`): `quest accept <id>` comes
+        # straight here, past the list a quest giver offers (get_available_quests)
+        if not QuestManager.after_done(player, quest_def):
+            await player.send("That quest is not available yet: there is another to finish first.")
+            return
+
         # Check daily quest cooldown
         if quest_def.get('daily') and not QuestManager.can_accept_daily(player, quest_id):
             await player.send("You've already completed this daily quest today. Come back tomorrow!")
@@ -2877,6 +2883,12 @@ class QuestManager:
         return any(q.quest_id == quest_id for q in player.active_quests)
 
     @staticmethod
+    def after_done(player: 'Player', quest_def: dict) -> bool:
+        """Whether the quest this one follows (`after`) is done (True when it follows none)."""
+        need = quest_def.get('after')
+        return not need or need in (getattr(player, 'quests_completed', None) or [])
+
+    @staticmethod
     def get_available_quests(player: 'Player', quest_giver_vnum: int) -> List[str]:
         """
         Get list of available quests from a quest giver.
@@ -2906,7 +2918,7 @@ class QuestManager:
                 continue
 
             # one that follows another (`after`: the quest that must be done first)
-            if quest_def.get('after') and quest_def['after'] not in (getattr(player, 'quests_completed', None) or []):
+            if not QuestManager.after_done(player, quest_def):
                 continue
 
             # Check level requirements

@@ -120,6 +120,26 @@ async def main():
     got = QuestManager.get_available_quests(vet, 3200)
     check('story_marches' in got and 'story_frostmarch' not in got, "and is told after it (and only that region's)")
 
+    # ---- a story is within a mortal's reach, and is not taken before its road by name either
+    import prestige
+    import test_atlas_engine as tae
+    cap = prestige.get_max_level(vet)
+    check(all(q['level_min'] <= cap for q in list(roads.values()) + list(ends.values())),
+          f"every road and story can be offered at a level a hero reaches (the cap is {cap}: {sorted((k, q['level_min']) for k, q in ends.items() if q['level_min'] > cap)})")
+    skip = _P.create_new(name='Skiptest', password=None, race='human', char_class='warrior', stats={k: 13 for k in ('str', 'int', 'wis', 'dex', 'con', 'cha')}, world=world)
+    skip.connection = tae.Conn()
+    skip.level = 30
+    await QuestManager.accept_quest(skip, 'story_vale')
+    check(not QuestManager.has_active_quest(skip, 'story_vale') and 'another to finish first' in tae.said(skip, 2), '`quest accept story_vale` before its road is refused, and says why')
+    skip.quests_completed = ['road_vale']
+    await QuestManager.accept_quest(skip, 'story_vale')
+    check(QuestManager.has_active_quest(skip, 'story_vale'), 'and taken once the road is walked')
+    top = _P.create_new(name='Toptest', password=None, race='human', char_class='warrior', stats={k: 13 for k in ('str', 'int', 'wis', 'dex', 'con', 'cha')}, world=world)
+    top.level = cap
+    top.quests_completed = ['road_deeproad', 'road_reach']
+    got = QuestManager.get_available_quests(top, 3200)
+    check('story_deeproad' in got and 'story_reach' in got, 'at the level cap the last two stories are offered')
+
     # ---- the bells at dusk: heard in the Lantern Vale, and nowhere else
     temple, square = world.rooms[3001], world.rooms[3005]
     check(regions.bells_line(temple) == regions.BELLS_INDOORS, 'in the Temple the bells come through the walls')
