@@ -101,7 +101,14 @@ Models we make ourselves in Blender: see STYLE3D.md (art3d/bodies).
 
 Generated with Tripo (https://www.tripo3d.ai, through its API, developers.tripo3d.ai): **not CC0**.
 These are ours under Tripo's terms of service for paid API use; check those terms before a
-commercial release. Each piece has a spec in `tools/art3d/tripo/` (the prompts and settings),
+commercial release. (Looked up 9 November 2026, from Tripo's own help and blog pages, not the Terms themselves, which
+would not load for an automated reader: paid users are said to own what they put in and what comes
+out, with the right to use, change, distribute and sell it (the help page cites section 5.2.2 of the
+Terms); the free plan is different (section 5.2.1: Tripo keeps the rights); and the API, billed by
+the credit, is said to include commercial use, under terms of its own that are separate from the
+Studio's. Tripo also says it takes no responsibility for the copyright standing of an output. So: the
+four pieces below were made through the paid API and by Tripo's account are ours to ship, but a
+person should read the API terms at developers.tripo3d.ai once before the game is sold.) Each piece has a spec in `tools/art3d/tripo/` (the prompts and settings),
 the model Tripo returned beside it (`<name>.glb`, committed so the kit builds from a fresh clone
 without asking Tripo again) and the log of its tasks and credits (`<name>.run.json`).
 `tools/art3d/tripo.mjs` makes them; `blender/models/tripo_prop.py` fits each to the KayKit rig and

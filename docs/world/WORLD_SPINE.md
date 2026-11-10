@@ -46,6 +46,7 @@ Every room is written and every room can be reached. What it lacks is a reason t
    Coast, the Ashlands, then five zones to the Shattered Throne at level 70. It is 332 rooms of
    9,250, at the far end of a road nothing points down.
 8. **`world/WORLD_MAP.md` describes a world that no longer exists** (16 zones around "Midgaard").
+   *(Retired 9 November: the file is gone; it is in the history before that day.)*
 
 > **Since this was written (9 November):** item 6 was wrong: counted in the loaded world, no zone is
 > empty (the population files people them). The renames in the ledger are applied in play
@@ -169,6 +170,7 @@ Each step stands by itself and can be checked in the game.
 6. **Region by region**: people the empty zones, give each region its opening quest in the city
    and its villain's story, in the order the road runs.
 7. Retire `world/WORLD_MAP.md` (the 16-zone world) in favour of this page and the atlas index.
+   **Done (9 November):** removed. This page and `ATLAS_INDEX.md` are the world's map on paper.
 
 ## 7. The ledger: every zone and what the spine asks of it
 
