@@ -244,3 +244,33 @@ export const REGION_PAD_LEVEL = 0.028;      // each note's peak, on the music bu
 export function regionPad(region) {
   return (region && REGION_PAD[region]) || null;
 }
+
+// ---- a region's own tune ----
+// Over its chord each region has a short phrase, played now and then as soft struck notes (audio.js
+// regionPad): the Vale's lantern-song climbs and comes home, the Frostmarch's falls from a height, the
+// Deep Road's turns on the tritone and does not resolve. `steps`: semitones above the chord's lowest
+// note; `beat`: seconds a step; `wave`: the oscillator. (Written as notes, not recorded: there is no
+// one to record them.)
+export const REGION_MOTIF = {
+  vale: { steps: [0, 4, 7, 9, 7, 4, 2, 0], beat: 0.9, wave: 'triangle' },          // up the major, and home
+  marches: { steps: [0, 7, 5, 7, 2, 0], beat: 1.1, wave: 'triangle' },             // fifths and a fall: a road song with verses missing
+  greenreach: { steps: [0, 4, 6, 7, 11, 7, 6, 4], beat: 0.8, wave: 'sine' },       // the raised fourth, never landing
+  stonemarch: { steps: [0, 3, 7, 5, 3, 0, -2, 0], beat: 1.2, wave: 'triangle' },   // a minor, a step under and back: a work song
+  frostmarch: { steps: [12, 10, 7, 3, 7, 2, 0], beat: 1.4, wave: 'sine' },         // falling from the octave
+  sundersea: { steps: [0, 2, 7, 9, 7, 2, 5, 0], beat: 1.0, wave: 'sine' },         // rocking, like a boat
+  deeproad: { steps: [0, 6, 1, 0, 6, 7, 6], beat: 1.6, wave: 'triangle' },         // the tritone, unresolved
+  reach: { steps: [0, 1, 0, 7, 8, 7, 1, 0], beat: 1.5, wave: 'triangle' },         // semitones leaning on each other
+  beyond: { steps: [0, 2, 4, 6, 8, 10, 8, 4], beat: 1.3, wave: 'sine' },           // whole tones: no home to come to
+};
+export const REGION_MOTIF_LEVEL = 0.03;          // a note's peak, on the music bus
+export const REGION_MOTIF_EVERY = [28, 46];      // seconds between one telling of the tune and the next
+// the tune as notes to play: [{f (Hz), at (seconds from its start), dur}], in a register that carries
+// (the chord's lowest note raised by octaves until it is at least 260 Hz); null when the region has none
+export function regionMotif(region) {
+  const m = region && REGION_MOTIF[region], pad = regionPad(region);
+  if (!m || !pad) return null;
+  let root = pad.notes[0];
+  while (root < 260) root *= 2;
+  const notes = m.steps.map((s, i) => ({ f: root * 2 ** (s / 12), at: i * m.beat, dur: m.beat * (i === m.steps.length - 1 ? 3 : 1.7) }));
+  return { notes, wave: m.wave, length: m.steps.length * m.beat + m.beat * 2 };
+}

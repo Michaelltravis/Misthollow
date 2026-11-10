@@ -102,3 +102,25 @@ test('the audio engine plays the chord, fades the old one, and waits for the fir
   assert.ok(src.includes('gain.connect(this.bus.music)'), 'on the music bus: the Music volume governs it');
   assert.ok(src.includes('v.osc.stop(t + 5)'), 'the old chord is stopped after its fade');
 });
+
+test("each region has a tune over its chord, in a register that carries", async () => {
+  const { REGION_PAD, REGION_MOTIF, REGION_MOTIF_LEVEL, REGION_MOTIF_EVERY, regionMotif } = await import('../../src/web_isometric/world3d/soundtable.js');
+  assert.deepEqual(Object.keys(REGION_MOTIF).sort(), Object.keys(REGION_PAD).sort());
+  const tunes = new Set();
+  for (const id of Object.keys(REGION_MOTIF)) {
+    const m = regionMotif(id);
+    assert.ok(m.notes.length >= 6 && m.notes.length <= 8, `${id}: a phrase, not a song`);
+    for (const n of m.notes) assert.ok(n.f >= 220 && n.f <= 1400 && n.dur > 0, `${id}: ${n.f} Hz can be heard and is not shrill`);
+    assert.ok(m.notes.every((n, i) => i === 0 || n.at > m.notes[i - 1].at), `${id}: one note after another`);
+    assert.ok(m.length > m.notes[m.notes.length - 1].at, `${id}: its length covers its last note`);
+    tunes.add(REGION_MOTIF[id].steps.join(','));
+  }
+  assert.equal(tunes.size, Object.keys(REGION_MOTIF).length, 'no two regions share a tune');
+  assert.equal(REGION_MOTIF.vale.steps[0], REGION_MOTIF.vale.steps.at(-1), 'the Vale comes home');
+  assert.notEqual(REGION_MOTIF.deeproad.steps[0], REGION_MOTIF.deeproad.steps.at(-1), 'the Deep Road does not');
+  assert.ok(REGION_MOTIF_LEVEL <= 0.04 && REGION_MOTIF_EVERY[0] >= 20, 'quiet, and not often');
+  assert.equal(regionMotif('nowhere'), null);
+  const src = (await import('node:fs')).readFileSync(new URL('../../src/web_isometric/world3d/audio.js', import.meta.url), 'utf8');
+  assert.ok(src.includes("this.ctx.state === 'running' && !document.hidden"), 'the tune is not queued while the page is hidden');
+  assert.ok(src.includes('clearTimeout(this.pad.timer);'), 'and stops being told on leaving the region');
+});

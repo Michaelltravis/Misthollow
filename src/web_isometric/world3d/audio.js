@@ -4,7 +4,7 @@
 // the camera's focus. Recorded effects are short mp3s (audio/sfx, CC0); swings, spells and room
 // tone are made here (the 2D client's synths, ported); music streams from audio/music and
 // crossfades between zones and into the battle track. What sounds when: soundtable.js.
-import { SOUNDS, FILES, BEDS, VOICES, schoolOf, regionPad, REGION_PAD_LEVEL } from './soundtable.js';
+import { SOUNDS, FILES, BEDS, VOICES, schoolOf, regionPad, REGION_PAD_LEVEL, regionMotif, REGION_MOTIF_LEVEL, REGION_MOTIF_EVERY } from './soundtable.js';
 
 const BASE = new URL('./audio/', import.meta.url).href;
 const ls = {
@@ -143,7 +143,7 @@ class Sound {
     const q = ls.get('mh3d_quality') || 'high';
     this.maxVoices = VOICES[q === 'med' ? 'medium' : q] || VOICES.high;
     this.bed = { key: null, nodes: [], timer: null };
-    this.pad = { key: null, want: null, voices: [] };      // the region's chord under the music (regionPad)
+    this.pad = { key: null, want: null, voices: [], timer: null };      // the region's chord under the music, and its tune (regionPad)
     this.music = { want: null, zone: null, battle: false, decks: [], cur: -1, timer: null };
     this._unlock = () => this.unlock();
     for (const ev of ['pointerdown', 'keydown', 'touchstart']) window.addEventListener(ev, this._unlock, { capture: true });
@@ -303,9 +303,11 @@ class Sound {
         v.osc.stop(t + 5); v.lfo.stop(t + 5);
       } catch (_) { /* already stopped */ }
     }
-    this.pad = { key: region, want: null, voices: [] };
+    clearTimeout(this.pad.timer);
+    this.pad = { key: region, want: null, voices: [], timer: null };
     const spec = regionPad(region);
     if (!spec) return;
+    this.pad.timer = setTimeout(() => this.motif(region), 9000);      // its tune, once the chord has risen
     spec.notes.forEach((f, i) => {
       const osc = c.createOscillator(), gain = c.createGain(), flt = c.createBiquadFilter();
       const lfo = c.createOscillator(), lfoGain = c.createGain();
@@ -320,6 +322,22 @@ class Sound {
       osc.start(t); lfo.start(t);
       this.pad.voices.push({ osc, gain, lfo, lfoGain });
     });
+  }
+  // the region's tune over its chord (soundtable.js regionMotif), told again every half minute or so
+  // while the hero is still there; not while the page is hidden or the sound stopped (its notes would
+  // all sound at once on coming back)
+  motif(region) {
+    if (!this.ctx || this.pad.key !== region) return;
+    const m = regionMotif(region);
+    if (!m) return;
+    if (this.ctx.state === 'running' && !document.hidden) {
+      for (const n of m.notes) {
+        tone(this.ctx, this.bus.music, { f: n.f, type: m.wave, dur: n.dur, vol: REGION_MOTIF_LEVEL, delay: n.at, attack: 0.06 });
+        tone(this.ctx, this.bus.music, { f: n.f * 2, type: 'sine', dur: n.dur * 0.6, vol: REGION_MOTIF_LEVEL * 0.25, delay: n.at, attack: 0.02 });
+      }
+    }
+    const [lo, hi] = REGION_MOTIF_EVERY;
+    this.pad.timer = setTimeout(() => this.motif(region), (m.length + lo + Math.random() * (hi - lo)) * 1000);
   }
   ambience(key) {
     if (!this.ctx) { this.bed.want = key; return; }
