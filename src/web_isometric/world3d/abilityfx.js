@@ -37,6 +37,23 @@ export const THEMES = {
   creature: { core: 0xffffff, accent: 0xd8d8e8, glyph: 'star', motif: 'star', sigil: 'ring', school: 'arcane', slash: 0xffc0b0 },
 };
 
+// a creature's kind (mobfx.js familyOf): the marks its abilities leave, its colours always its
+// school's (so a lich's frostbolt and a shaman's are told apart by their glyphs and sigils, and
+// any frost still reads as frost)
+export const FAMILIES = {
+  beast: { core: 0xffc0a0, accent: 0xe8d8c0, glyph: 'paw', motif: 'paw', sigil: 'crack', school: 'physical', slash: 0xffc0b0 },
+  undead: { core: 0x8aff6a, accent: 0xd8e8c8, glyph: 'skull', motif: 'bone', sigil: 'boneCircle', school: 'necrotic', slash: 0xb8ffa0 },
+  elemental: { core: 0x9fd8ff, accent: 0xffffff, glyph: 'shard', motif: 'wisp', sigil: 'runeCircle', school: 'arcane', slash: 0xc8e8ff },
+  demon: { core: 0xff5a2a, accent: 0xffb040, glyph: 'flame', motif: 'eye', sigil: 'scorch', school: 'fire', slash: 0xff8a5a },
+  insect: { core: 0xb8ff5a, accent: 0xe0f0a0, glyph: 'drop', motif: 'drop', sigil: 'ring', school: 'poison', slash: 0xd8ff9a },
+  dragon: { core: 0xff7a2a, accent: 0xffd56a, glyph: 'flame', motif: 'shard', sigil: 'scorch', school: 'fire', slash: 0xffb070 },
+  construct: { core: 0xc8ccd4, accent: 0xffe0a0, glyph: 'chevron', motif: 'shard', sigil: 'crest', school: 'physical', slash: 0xe8e0d0 },
+  caster: { core: 0xc87aff, accent: 0x8fc8ff, glyph: 'rune', motif: 'star', sigil: 'runeCircle', school: 'arcane', slash: 0xd0a8ff },
+};
+// a class's theme, a creature family's, else the plain creature's
+export const themeOf = cls => THEMES[cls] || FAMILIES[cls] || THEMES.creature;
+export const isCreature = cls => !THEMES[cls] || cls === 'creature';
+
 // short names for the rig's clips
 export const CLIPS = {
   shoot: 'Spellcast_Shoot', raise: 'Spellcast_Raise', long: 'Spellcast_Long', summon: 'Spellcast_Summon', channel: 'Spellcasting',
@@ -59,7 +76,12 @@ export const RELEASE = {
   sit: 0.5, awaken: 0.6, idle2h: 0.3,
 };
 
-export const MOTIONS = ['leap', 'dash', 'spin', 'spin2', 'hover', 'rise', 'backstep', 'blink', 'hop', 'lunge', 'sidestep', 'blinks'];
+// (slam, rear, recoil: a creature's body, which has no spellcasting clips, says it instead)
+export const MOTIONS = ['leap', 'dash', 'spin', 'spin2', 'hover', 'rise', 'backstep', 'blink', 'hop', 'lunge', 'sidestep', 'blinks',
+  'slam', 'rear', 'recoil'];
+// what a creature's body does while it winds up (tell=<one>): rears back, drops low, coils to
+// spring, trembles, gathers power with lifted hands, or goes still as it glows
+export const TELLS = ['rear', 'crouch', 'coil', 'shudder', 'gather', 'still'];
 export const CASTS = ['sigil', 'gather', 'glyphs', 'motifs', 'flare', 'rings', 'smoke', 'embers', 'aim', 'charge', 'spiral', 'orbit', 'dust'];
 export const TRAVELS = ['slash', 'orb', 'orbs', 'glyph', 'motif', 'bolt', 'sky', 'chain', 'ray', 'skyray', 'tether', 'link', 'arrow',
   'arrows', 'rain', 'rainglyph', 'meteor', 'meteors', 'wave', 'cone', 'blade', 'blades', 'shards', 'pierce'];
@@ -102,9 +124,10 @@ export function parse(line) {
   const [clip, speed] = first.split('*');
   const [then, thenSpeed] = second ? second.split('*') : [null, null];
   const r = { clip, speed: speed ? Number(speed) : 1, then: then || null, thenSpeed: thenSpeed ? Number(thenSpeed) : 1, motion: motion || null,
-    cast: tok(cast), travel: tok(travel), land: tok(land), aura: tok(aura), school: null, glyph: null, radius: null, time: null, flags: new Set(), cols: cols.length };
+    cast: tok(cast), travel: tok(travel), land: tok(land), aura: tok(aura), school: null, glyph: null, radius: null, time: null, tell: null, flags: new Set(), cols: cols.length };
   for (const f of flags.split(/\s+/).filter(Boolean)) {
     if (SCHOOLS.includes(f)) r.school = f;
+    else if (f.startsWith('tell=')) r.tell = f.slice(5);
     else if (f.startsWith('g=')) r.glyph = f.slice(2);
     else if (f.startsWith('r=')) r.radius = Number(f.slice(2));
     else if (f.startsWith('t=')) r.time = Number(f.slice(2));
@@ -134,6 +157,7 @@ export function validate(line, clips = null) {
     else if (!GLYPH_NAMES.includes(t.arg)) out.push(`unknown glyph ${t.arg}`);
   }
   if (r.glyph && !GLYPH_NAMES.includes(r.glyph)) out.push(`unknown glyph ${r.glyph}`);
+  if (r.tell && !TELLS.includes(r.tell)) out.push(`unknown tell ${r.tell}`);
   for (const f of r.flags) if (!FLAGS.includes(f)) out.push(`unknown flag ${f}`);
   return out;
 }
@@ -150,6 +174,7 @@ export function timeline(r, dist = 6) {
   if (r.then) release += 0.3 / (r.speed || 1) + (RELEASE[r.then] || 0.3) / (r.thenSpeed || 1);
   if (r.motion === 'leap') release = Math.max(release, 0.5);
   else if (r.motion === 'rise') release = Math.max(release, 0.7);
+  else if (r.motion === 'slam') release = Math.max(release, 0.42);
   else if (r.motion === 'dash') release = Math.max(release, 0.3);
   else if (r.motion === 'blink' || r.motion === 'blinks') release = Math.max(release, 0.22);
   const t = r.travel;
@@ -170,12 +195,19 @@ export const VARIANT_SCHOOL = {
 // what an unknown ability (a creature's special, something added later) looks like, by what
 // the event says about it
 function fallbackLine(ev = {}, cls = '') {
-  const shape = String(ev.shape || ''), school = ev.school || (THEMES[cls] || THEMES.creature).school;
+  const shape = String(ev.shape || ''), school = ev.school || themeOf(cls).school;
   if (shape === 'self') return `raise | glyphs | - | - | glow | ${school}`;
   if (shape.startsWith('nova')) return `cheer | rings | - | nova | - | ${school}`;
   if (shape.startsWith('cone')) return `long | - | cone | - | - | ${school}`;
   if (shape === 'dash') return `leapchop dash | dust | - | crack | - | ${school}`;
-  if (ev.k === 'spell' || shape.startsWith('blast')) {
+  // a creature's wind-up, by the kind of thing it is (mob_ai intents: combat_hooks 'windup')
+  const kind = String(ev.kind || '');
+  if (kind === 'heavy') return `chop2 slam | dust | - | crack | - | ${school} shake tell=rear`;
+  if (kind === 'aoe') return `spin2 | dust | - | quake | - | ${school} shake tell=crouch`;
+  if (kind === 'debuff') return `long | glyphs | tether | mark | - | ${school} tell=gather`;
+  if (kind === 'heal') return `raise | sigil | - | heal | - | ${ev.school || 'holy'} ally tell=gather`;
+  if (kind === 'disrupt') return `taunt | rings | ray | rings | - | sound tell=still`;
+  if (ev.k === 'spell' || kind === 'cast' || shape.startsWith('blast')) {
     return ({
       fire: 'shoot | gather | orb | blast | - | fire', frost: 'shoot | - | shards:3 | freeze | - | frost',
       lightning: 'shoot | flare | bolt | hit+ | - | lightning', holy: 'raise | flare | - | pillar | - | holy',
@@ -202,4 +234,42 @@ export function recipeFor(table, id, cls, ev = {}) {
   r.id = key; r.cls = c; r.known = !!line;
   cache.set(ck, r);
   return r;
+}
+
+// a creature's ability (its `fx`, combat_hooks.fx_key): the first of `tables` with a line for it
+// (mobfx-hand.js, then the lines tools/jev_mobfx.py writes), else one from what the event says;
+// drawn in its family's marks (FAMILIES) and cut to its rank (forRank)
+export function creatureRecipe(tables, id, family, ev = {}, rank = 'normal') {
+  const key = norm(id), fam = FAMILIES[family] ? family : 'creature';
+  const line = tables.map(t => t && t[key]).find(Boolean) || null;
+  const ck = `mob:${fam}:${rank}:${line ? key : `?${key}:${ev.k || ''}:${ev.shape || ''}:${ev.school || ''}`}`;
+  if (cache.has(ck)) return cache.get(ck);
+  const r = forRank(parse(line || fallbackLine(ev, fam)), rank);
+  r.id = key; r.cls = fam; r.known = !!line;
+  cache.set(ck, r);
+  return r;
+}
+
+// the owner: a creature's spells look as big as its rank. A boss gets every flourish; an elite
+// shakes the view a little; an ordinary creature's are readable but plain, so the hero's own
+// stay the brightest thing in the fight (no shake, no hit-stop or flash, nothing in its large
+// size, nothing lingering)
+export const RANKS = ['normal', 'elite', 'boss'];
+export function rankOf(data = {}) {
+  if (data.boss) return 'boss';
+  return data.rank === 'elite' || data.rank === 'sub-boss' ? 'elite' : 'normal';
+}
+export function forRank(r, rank = 'normal') {
+  if (rank === 'boss') return r;
+  const out = { ...r, flags: new Set(r.flags) };
+  for (const f of ['stop', 'flash']) out.flags.delete(f);
+  if (out.flags.delete('shake+') && rank === 'elite') out.flags.add('shake');
+  if (rank === 'normal') {
+    out.calm = true;               // (its landing doesn't shake the view either: fxdirector.js land)
+    out.flags.delete('shake');
+    for (const k of ['cast', 'travel', 'land', 'aura']) if (out[k] && out[k].big) out[k] = { ...out[k], big: false };
+    // a lasting ward or curse keeps its mark (it is how you see it is on); a flourish goes
+    if (out.aura && !out.flags.has('ally')) out.aura = null;
+  }
+  return out;
 }

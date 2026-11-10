@@ -243,7 +243,7 @@ async def run(tmp):
     check(a is not None and a.characters == [] and save_of('Deckard') is None
           and conn.account is not None and conn.state == conn.STATE_SELECT_CHAR, '…and makes the account alone, opening its menu')
     m = re.search(r'\x1b\]ACCOUNT:(\{[^\x07]*\})\x07', out)
-    check(bool(m) and json.loads(m.group(1)) == {'account': 'deckard', 'max': 8, 'chars': []},
+    check(bool(m) and json.loads(m.group(1)) == {'account': 'deckard', 'max': 8, 'email': '', 'note': '', 'bad': False, 'pending': '', 'chars': []},
           '…which a web page also gets as a hidden ACCOUNT signal')
     out = await say(conn, w, 'create', '')
     check(conn.state == conn.STATE_SELECT_CHAR and out.count('Available commands') == 1,
@@ -270,12 +270,67 @@ async def run(tmp):
     conn, w = connection()
     out = await say(conn, w, 'deckard', 'deckardpass1')
     check('ACCOUNT:' not in out and 'Rook' in out, '…and telnet the menu as text only')
-    # the page's script (net.js): Create account and the account's heroes, no hero auto-played
+    # a web page signing in by a hero's name gets the account's heroes too (one login, every
+    # hero); telnet still goes straight in as that hero
+    conn, w = connection()
+    conn.is_web = True
+    out = await say(conn, w, 'Rook', 'deckardpass1')
+    check(conn.entered is None and conn.state == conn.STATE_SELECT_CHAR and 'ACCOUNT:' in out,
+          "a web page signing in by a hero's name gets the account's heroes")
+    conn, w = connection()
+    await say(conn, w, 'Rook', 'deckardpass1')
+    check(conn.entered is not None and conn.entered.name == 'Rook', '…telnet goes straight in as the hero')
+
+    # ------------------------------------------------ email: one account an email, signing in by it
+    conn, w = connection()
+    conn.is_web = True
+    out = await say(conn, w, 'newaccount Wren Wren@Example.com', 'wrenpass123', 'wrenpass123')
+    a = Account.load('wren')
+    check(a is not None and a.settings['email'] == 'wren@example.com' and conn.state == conn.STATE_SELECT_CHAR,
+          '`newaccount <name> <email>` makes an account that keeps its email')
+    m = re.search(r'\x1b\]ACCOUNT:(\{[^\x07]*\})\x07', out)
+    check(bool(m) and json.loads(m.group(1))['email'] == 'wren@example.com', "…and the page is told it")
+    conn, w = connection()
+    conn.is_web = True
+    out = await say(conn, w, 'WREN@example.COM')
+    check('Account password' in out and conn.temp_account_name == 'wren', 'an email at the login prompt finds its account, in any case')
+    out = await say(conn, w, 'wrenpass123')
+    check(conn.account is not None and conn.account.account_name == 'wren' and conn.state == conn.STATE_SELECT_CHAR,
+          "…and its password opens the account's menu")
+    conn, w = connection()
+    out = await say(conn, w, 'nobody@example.com')
+    check('No account uses the email' in out and conn.state == conn.STATE_GET_NAME, 'an email no account has is said to be none')
+    conn, w = connection()
+    out = await say(conn, w, 'newaccount Finch wren@example.com')
+    check('already belongs to an account' in out and not Account.exists('finch'), '`newaccount` refuses an email another account has')
+    out = await say(conn, w, 'newaccount Finch not-an-email')
+    check("isn't an email" in out and not Account.exists('finch'), '…and one that is not an email')
+    # an older account adds one from its menu
+    conn, w = connection()
+    conn.is_web = True
+    await say(conn, w, 'deckard', 'deckardpass1')
+    out = await say(conn, w, 'email wren@example.com')
+    check('already belongs to an account' in out and not Account.load('deckard').settings.get('email'),
+          "the menu's email refuses another account's")
+    out = await say(conn, w, 'email Deckard@Example.com')
+    m = re.findall(r'\x1b\]ACCOUNT:(\{[^\x07]*\})\x07', out)
+    check('Email set to deckard@example.com' in out and Account.load('deckard').settings['email'] == 'deckard@example.com'
+          and bool(m) and json.loads(m[-1])['email'] == 'deckard@example.com', "…and sets one, showing the menu again")
+    check(json.loads(m[-1])['note'].startswith('Email set to deckard@example.com') and json.loads(m[-1])['bad'] is False,
+          '…with what it did for the page to show over its list')
+    conn, w = connection()
+    await say(conn, w, 'deckard@example.com', 'deckardpass1')
+    check(conn.account is not None and conn.account.account_name == 'deckard', '…which then signs in by it')
+    check(accounts.email_problem('deckard@example.com', Account.load('deckard')) == '', 'an account may keep its own email')
+
+    # the page's script (net.js): sign in by email or name, a new account when there is none,
+    # the account's heroes; the password only after its prompt
     js = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'src', 'web_isometric', 'shared', 'net.js'),
               encoding='utf-8').read()
-    check('multiple characters' not in js and 'joinAccount' not in js and '`newaccount ${' in js
-          and "payload.type === 'account'" in js and "sendDelayed('char-menu'" not in js,
-          "/play's script makes accounts with newaccount and draws the account's heroes")
+    check('multiple characters' not in js and 'joinAccount' not in js and '`newaccount ${st.playerName} ${st.newEmail}`' in js
+          and "payload.type === 'account'" in js and "sendDelayed('char-menu'" not in js
+          and "'login.noaccount'" in js and "sendDelayed('login-pw'" in js,
+          "/play's script signs in, makes accounts with newaccount and draws the account's heroes")
     import web_client
     check(json.loads(web_client.ACCOUNT_PATTERN.search('x\x1b]ACCOUNT:{"account":"a","chars":[]}\x07y').group(1))['account'] == 'a',
           'the bridge finds the ACCOUNT signal')
@@ -325,6 +380,76 @@ async def run(tmp):
     main_acct.settings['max_chars'] = 1
     check(AccountManager.move_character(main_acct, 'Loner') == (False, 'This account has no room for another character.'),
           '…and so is one past the account\'s limit')
+
+    # ------------------------------------------------ one-time moves at start (world/moves.json)
+    base = fresh(tmp, 'moves')
+    mine, _ = await AccountManager.create_account('mineacct', 'minepass12')
+    await AccountManager.create_character(mine, 'Ibolt', 'human', 'bard', STATS)
+    boss, _ = await AccountManager.create_account('bossacct', 'bosspass12')
+    boss.is_admin = True
+    boss.save()
+    for n in ('Qamage', 'Qabard'):
+        await AccountManager.create_character(boss, n, 'human', 'mage', STATS)
+    probe, _ = await AccountManager.create_account('gauntlet', 'gauntlet1')
+    await AccountManager.create_character(probe, 'Probeone', 'human', 'thief', STATS)
+    await write_save('Oldhand', level=50)
+    await write_save('Lowly', level=4)
+    for n in ('Probeone',):
+        d = save_of(n)
+        d['level'] = 50
+        with open(os.path.join(Config.PLAYER_DIR, f'{n.lower()}.json'), 'w') as f:
+            json.dump(d, f)
+    moves = os.path.join(base, 'moves.json')
+    done = os.path.join(base, 'moves_done.json')
+    with open(moves, 'w') as f:
+        json.dump({'moves': [{'id': 'm1', 'to_account_of': 'ibolt', 'characters': ['qamage', 'qabard', 'nobody'],
+                              'min_level': 50, 'skip_accounts': ['gauntlet'], 'admin': True}]}, f)
+    report = accounts.apply_moves(moves, done, os.path.join(base, 'bk'))
+    a = Account.load('mineacct')
+    check(sorted(a.characters) == ['Ibolt', 'Oldhand', 'Qabard', 'Qamage'] and a.is_admin
+          and all(save_of(n)['account_name'] == 'mineacct' for n in ('Qamage', 'Qabard', 'Oldhand')),
+          "a move puts the named characters and every one at its level on the account of the named character, made admin")
+    check(save_of('Probeone')['account_name'] == 'gauntlet' and save_of('Lowly')['account_name'] in (None, '')
+          and any('nobody' in r.lower() and 'no such' in r for r in report),
+          '…leaving a skipped account\'s, a lower level\'s, and saying a name is no one')
+    check(Account.load('bossacct') is not None and Account.load('bossacct').characters == [],
+          '…an admin account it empties is kept')
+    check(os.path.exists(os.path.join(base, 'bk', 'players', 'qamage.json')) and os.path.exists(os.path.join(base, 'bk', 'accounts', 'mineacct.json')),
+          '…and what it changed is backed up first')
+    await AccountManager.create_character(boss, 'Qathief', 'human', 'thief', STATS)
+    with open(moves, 'w') as f:
+        json.dump({'moves': [{'id': 'm1', 'to_account_of': 'ibolt', 'characters': ['qathief']},
+                             {'id': 'm2', 'to_account_of': 'nosuchhero', 'characters': ['qathief']}]}, f)
+    accounts.apply_moves(moves, done, os.path.join(base, 'bk2'))
+    check(save_of('Qathief')['account_name'] == 'bossacct' and json.load(open(done)) == ['m1'],
+          'a move runs once; one whose account is not there yet waits')
+
+    # every character, and the endgame kit for each then on the account (a runtime gift)
+    import grants
+    real_runtime = grants.RUNTIME
+    grants.RUNTIME = os.path.join(base, 'runtime_grants.json')
+    try:
+        await write_save('Straggler', level=2)
+        with open(moves, 'w') as f:
+            json.dump({'moves': [{'id': 'm3', 'to_account_of': 'ibolt', 'all': True, 'skip_accounts': ['gauntlet'],
+                                  'gearup': '2026-10-22'}]}, f)
+        accounts.apply_moves(moves, done, os.path.join(base, 'bk3'))
+        a = Account.load('mineacct')
+        check({'Straggler', 'Lowly', 'Qathief'} <= set(a.characters) and save_of('Probeone')['account_name'] == 'gauntlet',
+              '`all` moves every character, but a skipped account\'s')
+        gifts = grants.load_grants()
+        check(all(gifts.get(n.lower(), {}).get('gearup') == '2026-10-22' for n in a.characters) and 'probeone' not in gifts,
+              '`gearup` gives every character then on the account the endgame kit at next login')
+        grants.add_runtime_gifts({'Qamage': {'gearup': '2026-10-23'}})
+        check(grants.load_grants()['qamage']['gearup'] == '2026-10-23' and grants.load_grants()['ibolt']['gearup'] == '2026-10-22',
+              '…kept in the server\'s own gift file, later gifts added to it')
+        check('xtc' in grants.load_grants() and grants.load_grants()['xtc']['gearup'] is True,
+              "…alongside world/grants.json's (its own entries untouched)")
+        check(grants.load_grants(grants.GRANTS).get('ibolt', {}).get('gearup') == '2026-10-22'
+              and 'ibolt' not in grants.load_grants(os.path.join(base, 'nothing.json')),
+              '…only for the real gift file')
+    finally:
+        grants.RUNTIME = real_runtime
 
     # ------------------------------------------------ migration of older saves
     base = fresh(tmp, 'migrate')

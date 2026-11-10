@@ -6,6 +6,7 @@ Port 4003 by default.
 
 import asyncio
 import codecs
+import ipaddress
 import os
 import json
 import re
@@ -93,13 +94,33 @@ ACCOUNT_PATTERN = re.compile(r'\x1b\]ACCOUNT:(\{[^\x07]*\})\x07')
 CSI_TAIL = re.compile(rb'\x1b(?:\[[0-9;]*)?$')
 
 
+def client_address(request) -> str:
+    """The browser's address. Behind a proxy on this machine (or the local network) the
+    request comes from the proxy, which names the browser in its headers; a request from
+    anywhere else is its own address, whatever its headers say."""
+    peer = request.remote or ''
+    try:
+        ip = ipaddress.ip_address(peer)
+    except ValueError:
+        return ''
+    if ip.is_loopback or ip.is_private:
+        named = (request.headers.get('CF-Connecting-IP')
+                 or (request.headers.get('X-Forwarded-For') or '').split(',')[0]).strip()
+        try:
+            return str(ipaddress.ip_address(named))
+        except ValueError:
+            pass
+    return str(ip)
+
+
 class TelnetBridge:
     """Bridge between WebSocket and telnet connection."""
     
-    def __init__(self, ws: web.WebSocketResponse, mud_host: str = 'localhost', mud_port: int = 4000):
+    def __init__(self, ws: web.WebSocketResponse, mud_host: str = 'localhost', mud_port: int = 4000, client_ip: str = ''):
         self.ws = ws
         self.mud_host = mud_host
         self.mud_port = mud_port
+        self.client_ip = client_ip      # the browser's address, passed on to the game (server.WEB_MARK_RE)
         self.reader: Optional[asyncio.StreamReader] = None
         self.writer: Optional[asyncio.StreamWriter] = None
     
@@ -107,8 +128,10 @@ class TelnetBridge:
         """Connect to the MUD server."""
         try:
             self.reader, self.writer = await asyncio.open_connection(self.mud_host, self.mud_port)
-            # announce a web connection (server.WEB_MARK): the page wraps its own text
-            self.writer.write(b'\x1b]WEB\x07\r\n')
+            # announce a web connection (server.WEB_MARK): the page wraps its own text; and whose
+            # (the game counts sign-ups and email codes by the browser's address, not ours)
+            mark = f'\x1b]WEB:{self.client_ip}\x07' if self.client_ip else '\x1b]WEB\x07'
+            self.writer.write(mark.encode('ascii') + b'\r\n')
             await self.writer.drain()
             return True
         except Exception as e:
@@ -241,7 +264,7 @@ class WebClient:
         ws = web.WebSocketResponse()
         await ws.prepare(request)
         
-        bridge = TelnetBridge(ws, self.mud_host, self.mud_port)
+        bridge = TelnetBridge(ws, self.mud_host, self.mud_port, client_address(request))
         
         if not await bridge.connect():
             await ws.send_json({'type': 'error', 'data': 'Failed to connect to MUD server'})

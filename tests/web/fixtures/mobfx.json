@@ -1,0 +1,378 @@
+{
+ "abilities": [
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (hex)",
+    "mob_ai.CASTER_DEBUFFS"
+   ],
+   "fx": "blindness",
+   "label": "Blindness"
+  },
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (harm)"
+   ],
+   "fx": "burning_hands",
+   "label": "Burning Hands"
+  },
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (harm)"
+   ],
+   "fx": "chill_touch",
+   "label": "Chill Touch"
+  },
+  {
+   "from": [
+    "mob_ai intent"
+   ],
+   "fx": "coordinated_lunge",
+   "label": "Coordinated Lunge"
+  },
+  {
+   "from": [
+    "mob_ai intent"
+   ],
+   "fx": "crushing_blow",
+   "label": "Crushing Blow"
+  },
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (hex)"
+   ],
+   "fx": "curse",
+   "label": "Curse"
+  },
+  {
+   "from": [
+    "brain/cast.py intent",
+    "combat_hooks instant"
+   ],
+   "fx": "disrupt",
+   "label": "Disrupt"
+  },
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (hex)"
+   ],
+   "fx": "entangle",
+   "label": "Entangle"
+  },
+  {
+   "from": [
+    "mob_ai intent"
+   ],
+   "fx": "fire_breath",
+   "label": "Fire Breath"
+  },
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (harm)",
+    "mob_ai.CASTER_OFFENSIVE"
+   ],
+   "fx": "fireball",
+   "label": "Fireball"
+  },
+  {
+   "from": [
+    "mob_ai intent"
+   ],
+   "fx": "ground_slam",
+   "label": "Ground Slam"
+  },
+  {
+   "from": [
+    "combat_hooks instant"
+   ],
+   "fx": "healing_incantation",
+   "label": "Healing Incantation"
+  },
+  {
+   "from": [
+    "brain/cast.py intent",
+    "combat_hooks instant"
+   ],
+   "fx": "healing_prayer",
+   "label": "Healing Prayer"
+  },
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (harm)",
+    "mob_ai.CASTER_OFFENSIVE"
+   ],
+   "fx": "ice_storm",
+   "label": "Ice Storm"
+  },
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (harm)",
+    "mob_ai.CASTER_OFFENSIVE"
+   ],
+   "fx": "lightning_bolt",
+   "label": "Lightning Bolt"
+  },
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (harm)",
+    "mob_ai.CASTER_OFFENSIVE"
+   ],
+   "fx": "magic_missile",
+   "label": "Magic Missile"
+  },
+  {
+   "from": [
+    "bosses instant"
+   ],
+   "fx": "nullifying_aura",
+   "label": "Nullifying Aura"
+  },
+  {
+   "from": [
+    "mob_ai intent"
+   ],
+   "fx": "paralyzing_touch",
+   "label": "Paralyzing Touch"
+  },
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (harm)",
+    "mob_ai.CASTER_OFFENSIVE"
+   ],
+   "fx": "shadow_bolt",
+   "label": "Shadow Bolt"
+  },
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (hex)",
+    "mob_ai.CASTER_DEBUFFS"
+   ],
+   "fx": "slow",
+   "label": "Slow"
+  },
+  {
+   "from": [
+    "mob_ai intent"
+   ],
+   "fx": "summon_minions",
+   "label": "Summon Minions"
+  },
+  {
+   "from": [
+    "mob_ai intent"
+   ],
+   "fx": "sweeping_blow",
+   "label": "Sweeping Blow"
+  },
+  {
+   "from": [
+    "mob_ai intent"
+   ],
+   "fx": "terrifying_roar",
+   "label": "Terrifying Roar"
+  },
+  {
+   "from": [
+    "mob_ai intent"
+   ],
+   "fx": "venomous_strike",
+   "label": "Venomous Strike"
+  },
+  {
+   "from": [
+    "combat_hooks instant"
+   ],
+   "fx": "ward",
+   "label": "Ward"
+  },
+  {
+   "from": [
+    "brain/cast.py SPELLBOOK (hex)",
+    "mob_ai.CASTER_DEBUFFS"
+   ],
+   "fx": "weaken",
+   "label": "Weaken"
+  }
+ ],
+ "bosses": [
+  "abyssal_word",
+  "acid_gout",
+  "arcane_bolt",
+  "arcane_storm",
+  "arcane_torrent",
+  "avalanche",
+  "backhand",
+  "barrow_blade",
+  "barrow_curse",
+  "berserk",
+  "bident",
+  "black_sermon",
+  "blight_wave",
+  "blizzard",
+  "bog_gas",
+  "bone_claw",
+  "bone_club_smash",
+  "bone_dagger",
+  "bone_spike",
+  "bone_storm",
+  "boulder_hurl",
+  "branch_lash",
+  "breath_of_winter",
+  "bribe_the_mob",
+  "brimstone_burst",
+  "brine_bolt",
+  "bring_it_down",
+  "broadside",
+  "call_of_the_swarm",
+  "castling",
+  "caustic_breath",
+  "censer_blow",
+  "challenge",
+  "checkmate",
+  "cinder_lance",
+  "cleave",
+  "cleaver_chop",
+  "cocoon",
+  "cold_wind",
+  "crown_smash",
+  "crozier_strike",
+  "crushing_bite",
+  "crushing_coils",
+  "crushing_grip",
+  "crushing_tide",
+  "curse_of_the_pharaohs",
+  "cutlass",
+  "dark_litany",
+  "death_knell",
+  "deep_freeze",
+  "den_collapse",
+  "disintegration_ray",
+  "diving_strike",
+  "doom",
+  "dragonfire",
+  "draining_touch",
+  "dream_lash",
+  "drowning_curse",
+  "drowning_grasp",
+  "drowning_tide",
+  "eclipse",
+  "eruption",
+  "eternal_sleep",
+  "exiles_cleave",
+  "finger_of_death",
+  "firestorm",
+  "flail_of_ages",
+  "freezing_spray",
+  "fury",
+  "gale",
+  "gnashing_bite",
+  "gore",
+  "granite_talons",
+  "grave_bloom",
+  "grave_chill",
+  "grave_cleave",
+  "grave_grip",
+  "grave_wind",
+  "gravity_collapse",
+  "hellbolt",
+  "helm_of_darkness",
+  "heros_cleave",
+  "hex",
+  "horde_roar",
+  "ice_axe",
+  "ice_lance",
+  "immolation",
+  "inferno",
+  "iron_sword",
+  "judgement",
+  "judgement_of_the_dead",
+  "kingsblade",
+  "labyrinth_roar",
+  "last_rites",
+  "last_stand",
+  "lightning_breath",
+  "lightning_lance",
+  "lloths_wrath",
+  "lose_your_way",
+  "maelstrom",
+  "marrow_blade",
+  "mind_spike",
+  "molten_blade",
+  "mutagen_burst",
+  "necrotic_breath",
+  "night_terror",
+  "open_the_gate",
+  "overload",
+  "pack_fury",
+  "petrifying_gaze",
+  "piston_fist",
+  "plague_squall",
+  "poison_spit",
+  "pommel_crack",
+  "possession",
+  "powder_keg",
+  "power_word_kill",
+  "pyre_surge",
+  "raise_the_guild",
+  "rending_claw",
+  "rending_claws",
+  "rewrite",
+  "rift_cascade",
+  "rite_of_terror",
+  "royal_decree",
+  "royal_rebuke",
+  "royal_tantrum",
+  "sacrificial_knife",
+  "savage_howl",
+  "scimitar_of_fire",
+  "serpent_whip",
+  "shadow_lash",
+  "shadow_nova",
+  "shape_of_terror",
+  "shifting_walls",
+  "skullsplitter",
+  "smokeless_flame",
+  "snatch",
+  "soul_drain",
+  "soul_storm",
+  "spellblade",
+  "splinter_storm",
+  "stampede",
+  "starfall",
+  "steam_vent",
+  "stone_dive",
+  "stone_fist",
+  "summon_the_dark",
+  "sundering_blade",
+  "tail_sweep",
+  "talon_rake",
+  "tentacle_sweep",
+  "the_eye_opens",
+  "thorn_lash",
+  "throat_bite",
+  "thunderclap",
+  "total_eclipse",
+  "transmute",
+  "trident_of_the_deep",
+  "twisted_blade",
+  "umbral_blade",
+  "undertow",
+  "unholy_sermon",
+  "unholy_word",
+  "unmaking",
+  "unmaking_wave",
+  "venom_fang",
+  "venom_sting",
+  "waking_nightmare",
+  "war_screech",
+  "warcry",
+  "warlords_fury",
+  "wave_of_dread",
+  "web_spray",
+  "web_trap",
+  "whispered_doubt",
+  "wing_buffet",
+  "wither",
+  "word_of_unmaking",
+  "world_breaker"
+ ]
+}

@@ -1,7 +1,9 @@
 // Login and character creation for the 3D client. The protocol is the server's own
-// prompts, driven through net.js (MH.connect). Log in: an account's name and password, then
-// its heroes (the account's menu, sent as an 'account' message) to play one or forge one.
-// Create account: a name and a password (twice) make an empty account, then the same list.
+// prompts, driven through net.js (MH.connect). One account holds all of a player's heroes. Sign
+// in: the account's email (or name) and password, then its heroes (the account's menu, sent as
+// an 'account' message) to play one or forge one. No account by what was typed: the card turns
+// into Create your account (email, account name, password twice), which makes an empty account
+// and goes straight on to its first hero.
 // A new hero is its name, then the race, male or female, class and stat-roll prompts,
 // answered from these screens. The class step shows the class's 3D model turning on a small stage.
 import { STYLES, classOfStyle } from './lookstyles.js';
@@ -50,33 +52,53 @@ const LORE = [
 ];
 
 export function setupLogin() {
-  const name = $('#login-name'), pass = $('#login-pass'), pass2 = $('#login-pass2'), status = $('#login-status');
-  const create = $('#create'), btn = $('#login-btn');
-  let creating = false, prime = '';
+  const name = $('#login-name'), pass = $('#login-pass'), status = $('#login-status');
+  const nEmail = $('#new-email'), nName = $('#new-name'), nPass = $('#new-pass'), nPass2 = $('#new-pass2');
+  const create = $('#create');
+  let creating = false, prime = '', madeNow = false;
   const saved = ls.get(NAME_KEY);
   if (saved) name.value = saved;
   const say = (msg, err) => { status.textContent = msg || ''; status.className = err ? 'error' : ''; };
   // this browser signed in before: one click continues (the stored token, not a password)
-  const resumeBox = $('#login-resume'), form = $('#login-form'), chars = $('#login-chars');
-  const showForm = () => { resumeBox.classList.add('hidden'); chars.classList.add('hidden'); form.classList.remove('hidden'); };
-  // Log in | Create account
-  let isNew = false;
-  const tab = which => {
-    isNew = which === 'new';
-    form.classList.toggle('new', isNew);
-    $('#tab-login').classList.toggle('on', !isNew);
-    $('#tab-new').classList.toggle('on', isNew);
-    $('#tab-login').setAttribute('aria-selected', String(!isNew));
-    $('#tab-new').setAttribute('aria-selected', String(isNew));
-    name.placeholder = isNew ? 'New account name' : 'Account name';
-    pass.autocomplete = isNew ? 'new-password' : 'current-password';
-    btn.textContent = isNew ? 'Create account' : 'Enter the Hollow';
-    pass2.value = '';
+  const resumeBox = $('#login-resume'), form = $('#login-form'), signup = $('#signup-form'), chars = $('#login-chars');
+  const codeForm = $('#code-form'), codeIn = $('#code-input');
+  const only = el => [resumeBox, form, signup, codeForm, chars].forEach(x => x.classList.toggle('hidden', x !== el));
+  const showForm = () => only(form);
+  // no account yet: the account first (email, name, password), then its heroes; what was typed
+  // at the sign-in carries over
+  function showSignup(why, carry) {
+    only(signup);
+    const typed = carry ? name.value.trim() : '';
+    if (typed.includes('@')) { if (!nEmail.value) nEmail.value = typed; }
+    else if (typed && !nName.value) nName.value = typed;
+    if (carry && pass.value && !nPass.value) nPass.value = pass.value;
+    $('#signup-why').textContent = why || 'One account holds all your heroes.';
     say('');
-    (name.value ? pass : name).focus();
+    [nEmail, nName, nPass, nPass2].find(x => !x.value)?.focus();
+  }
+  $('#to-create').addEventListener('click', () => showSignup());
+  $('#to-login').addEventListener('click', () => { showForm(); say(''); (name.value ? pass : name).focus(); });
+  MH.bus.on('login.noaccount', who => showSignup(`There's no account for ${who} yet. Create one to start playing.`, true));
+  // the email's code: nothing is made until it comes back (server.py handle_verify_code)
+  MH.bus.on('signup.code', ({ email, error }) => {
+    only(codeForm);
+    $('#code-why').textContent = `We sent a 6-digit code to ${email}. It works for 15 minutes.`;
+    codeIn.value = '';
+    say(error || '', !!error);
+    codeIn.focus();
+  });
+  MH.bus.on('signup.stopped', why => showSignup(why));
+  const sendCode = () => {
+    const v = codeIn.value.replace(/\s/g, '');
+    if (!/^\d{6}$/.test(v)) return say('The code is 6 digits.', true);
+    say('Checking the code…');
+    send(v);
   };
-  $('#tab-login').addEventListener('click', () => tab('login'));
-  $('#tab-new').addEventListener('click', () => { name.value = ''; tab('new'); });
+  $('#code-btn').addEventListener('click', sendCode);
+  codeIn.addEventListener('keydown', e => { if (e.key === 'Enter') sendCode(); e.stopPropagation(); });
+  $('#code-resend').addEventListener('click', () => { say('Sending a new code…'); send('resend'); });
+  // (nothing sent: the server drops the sign-up, and its reply brings the form back)
+  $('#code-back').addEventListener('click', () => send(''));
   const rec = MH.auth.get();
   if (rec) {
     resumeBox.querySelector('b').textContent = rec.name;
@@ -115,40 +137,65 @@ export function setupLogin() {
     }, 8000);
   }
 
-  function begin() {
+  const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s.]+$/;
+  function signIn() {
     const n = name.value.trim(), p = pass.value;
-    if (!n || !p) return say('Need both a name and a password.', true);
-    if (!/^[a-zA-Z]{3,12}$/.test(n)) return say('A name is 3–12 letters (no spaces, numbers or symbols).', true);
-    if (isNew) {
-      if (p.length < 8) return say('Passwords must be at least 8 characters.', true);
-      if (pass2.value !== p) return say("The two passwords don't match.", true);
-    }
+    if (!n || !p) return say('Enter your email (or account name) and your password.', true);
+    if (n.includes('@') ? !EMAIL.test(n) : !/^[a-zA-Z]{3,12}$/.test(n)) return say("That isn't an email or an account name.", true);
     ls.set(NAME_KEY, n);
-    // one knock at a time: the button waits for the gate's answer (an error, the hero list, or
-    // eight seconds of nothing) before it takes another press
-    if (btn.disabled) return;
-    btn.disabled = true;
-    clearTimeout(begin.t);
-    begin.t = setTimeout(ready, 8000);
-    MH.connect(n, p, isNew);
+    knock($('#login-btn'), () => { madeNow = false; MH.connect(n, p, false); });
   }
-  function ready() { clearTimeout(begin.t); btn.disabled = false; }
+  function signUp() {
+    const e = nEmail.value.trim(), n = nName.value.trim(), p = nPass.value;
+    if (!EMAIL.test(e)) return say("That isn't an email address.", true);
+    if (!/^[a-zA-Z]{3,12}$/.test(n)) return say('An account name is 3–12 letters (no spaces, numbers or symbols).', true);
+    if (p.length < 8) return say('Passwords must be at least 8 characters.', true);
+    if (nPass2.value !== p) return say("The two passwords don't match.", true);
+    ls.set(NAME_KEY, e);
+    knock($('#signup-btn'), () => { madeNow = true; MH.connect(n, p, true, undefined, e); });
+  }
+  // one knock at a time: the button pressed waits for the gate's answer (an error, the hero list,
+  // or eight seconds of nothing) before either takes another press
+  let knocking = null, knockT = 0;
+  function knock(b, go) {
+    if (knocking) return;
+    knocking = b; b.disabled = true;
+    clearTimeout(knockT);
+    knockT = setTimeout(ready, 8000);
+    go();
+  }
+  function ready() { clearTimeout(knockT); if (knocking) knocking.disabled = false; knocking = null; }
   MH.bus.on('login.error', ready);
   MH.bus.on('login.success', ready);
   MH.bus.on('login.status', msg => { if (/closed/i.test(msg || '')) ready(); });
-  btn.addEventListener('click', begin);
-  name.addEventListener('keydown', e => { if (e.key === 'Enter') pass.focus(); e.stopPropagation(); });
-  pass.addEventListener('keydown', e => { if (e.key === 'Enter') (isNew ? pass2.focus() : begin()); e.stopPropagation(); });
-  pass2.addEventListener('keydown', e => { if (e.key === 'Enter') begin(); e.stopPropagation(); });
+  $('#login-btn').addEventListener('click', signIn);
+  $('#signup-btn').addEventListener('click', signUp);
+  // Enter moves to the next box, and on the last one sends
+  const chain = (fields, go) => fields.forEach((f, i) => f.addEventListener('keydown', e => {
+    if (e.key === 'Enter') (i < fields.length - 1 ? fields[i + 1].focus() : go());
+    e.stopPropagation();
+  }));
+  chain([name, pass], signIn);
+  chain([nEmail, nName, nPass, nPass2], signUp);
 
   // ---- the account's heroes ----
   const send = v => { const s = MH.state.mudSocket; if (s && s.readyState === WebSocket.OPEN) s.send(v); };
   const esc = s => String(s).replace(/[&<>"']/g, ch => `&#${ch.charCodeAt(0)};`);
   const tint = cls => '#' + (THEMES[cls] || THEMES.creature).core.toString(16).padStart(6, '0');
   function heroes(menu) {
-    resumeBox.classList.add('hidden');
-    form.classList.add('hidden');
-    chars.classList.remove('hidden');
+    only(chars);
+    // an account with no email yet (made before emails): offered here, and its code asked for
+    pendingEmail = menu.pending || '';
+    const box = chars.querySelector('.lc-email'), field = $('#acct-email');
+    box.classList.toggle('hidden', !!menu.email && !pendingEmail);
+    box.querySelector('.login-note').textContent = pendingEmail
+      ? `Enter the 6-digit code we sent to ${pendingEmail}.`
+      : 'Add an email to sign in with it (and to get a reset if you forget your password).';
+    field.value = '';
+    field.type = pendingEmail ? 'text' : 'email';
+    field.placeholder = pendingEmail ? '6-digit code' : 'Email';
+    field.autocomplete = pendingEmail ? 'one-time-code' : 'email';
+    $('#acct-email-btn').textContent = pendingEmail ? 'Confirm' : 'Save';
     chars.querySelector('.lc-head b').textContent = menu.account;
     const list = chars.querySelector('.lc-list');
     list.innerHTML = menu.chars.length ? menu.chars.map(c => {
@@ -171,10 +218,27 @@ export function setupLogin() {
   MH.bus.on('account.menu', menu => {
     // back from a hero half made (the name was taken meanwhile, or Back): the list again
     if (creating) { creating = false; create.classList.add('hidden'); if (stage) stage.stop(); }
-    say(heroNote);
+    // what the menu's last command did (its email), or what the hero wizard learned
+    if (menu.note) say(menu.note, menu.bad); else say(heroNote);
     heroNote = '';
     heroes(menu);
+    // an account just made: straight on to its first hero
+    if (madeNow && !menu.chars.length) { madeNow = false; $('#forge-btn').click(); }
   });
+  // an email for the account; when the server mails codes, the code then (the menu's verify)
+  let pendingEmail = '';
+  const saveEmail = () => {
+    const e = $('#acct-email').value.trim();
+    heroNote = '';
+    if (pendingEmail) {
+      if (!/^\d{6}$/.test(e)) return say('The code is 6 digits.', true);
+      return send(`verify ${e}`);
+    }
+    if (!EMAIL.test(e)) return say("That isn't an email address.", true);
+    send(`email ${e}`);
+  };
+  $('#acct-email-btn').addEventListener('click', saveEmail);
+  $('#acct-email').addEventListener('keydown', e => { if (e.key === 'Enter') saveEmail(); e.stopPropagation(); });
   let heroNote = '', phase = '';
   $('#forge-btn').addEventListener('click', () => {
     creating = true;
