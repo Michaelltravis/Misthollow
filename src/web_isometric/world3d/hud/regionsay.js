@@ -15,6 +15,18 @@ export function bannerSays(zone, region, last = null, levels = null) {
   return { region: region.name, line: warn || (id !== last ? region.line || '' : ''), danger: !!beyond };
 }
 
+// what the map says beside a zone's name: its region, the region's levels, and about what level this
+// zone's own creatures are when that lies outside them ("The Marches \u00b7 levels 8\u201320 \u00b7 here about 25")
+export function mapSays(region, zoneLevel = null) {
+  const parts = [];
+  if (region && region.name) parts.push(region.name);
+  const band = levelsText(region);
+  if (band) parts.push(band);
+  const l = region && region.levels;
+  if (zoneLevel && (!band || zoneLevel < l[0] || zoneLevel > l[1])) parts.push(`${band ? 'here ' : ''}about level ${zoneLevel}`);
+  return parts.join(' \u00b7 ');
+}
+
 // a region's levels as the map says them: "levels 8-20" ('' when it has none)
 export function levelsText(region) {
   const l = region && region.levels;

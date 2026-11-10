@@ -29,6 +29,7 @@ import { createPrompt } from './hud/prompt.js';
 import { createCastbar } from './hud/castbar.js';
 import { charLook } from './charlook.js';
 import { tintFor } from './regionlook.js';
+import { mapSays } from './hud/regionsay.js';
 import { createContextMenu } from './hud/contextmenu.js';
 import { attachWorldInput } from './input.js';
 import { shouldRetarget, retargetOnDeath, refFor, abilityCommand, tabOrder } from './targeting.js';
@@ -528,9 +529,9 @@ async function runGame() {
   const mmBig = createMinimap(bigEl, room => { bigEl.classList.add('hidden'); travelTo(room); }, null, { cell: 1.7, browse: true });
   bigEl.querySelector('.bm-close').addEventListener('click', () => bigEl.classList.add('hidden'));
   let atlasP = null, knownRooms = [];
-  // the region of the zone the big map shows, beside its name (its level band is not said until the
-  // zones are re-levelled to it: docs/world/WORLD_SPINE.md section 5; regionsay.js levelsText is ready)
-  const mapRegion = r => { const el = bigEl.querySelector('.bm-region'); if (el) el.textContent = r && r.name ? r.name : ''; };
+  // the region of the zone the big map shows, beside its name, with the region's levels and (when it
+  // lies outside them) about what level this zone is (regionsay.js mapSays)
+  const mapRegion = (r, level = null) => { const el = bigEl.querySelector('.bm-region'); if (el) el.textContent = mapSays(r, level); };
   const fetchAtlas = () => atlasP || (atlasP = fetch('/atlas').then(r => r.json()).catch(e => { atlasP = null; throw e; }));
   const fetchExplored = async () => (await fetch(`/explored?player=${encodeURIComponent(MH.state.playerName || '')}`)).json();
   const world = createWorldMap(bigEl.querySelector('.wm-canvas'), {
@@ -559,8 +560,8 @@ async function runGame() {
   async function showZone(id, tab = null) {
     world.focusZone(id);
     if (tab) setMapTab(tab);
-    if (!zone || id === zone.num) { mmBig.home(); mapRegion(zone && zone.region); return; }
-    try { const zm = await fetchZonemap(`zone=${id}`); mmBig.browse(mapOfZone(zm), knownRooms); mapRegion(zm.region); }
+    if (!zone || id === zone.num) { mmBig.home(); mapRegion(zone && zone.region, zone && zone.level); return; }
+    try { const zm = await fetchZonemap(`zone=${id}`); mmBig.browse(mapOfZone(zm), knownRooms); mapRegion(zm.region, zm.level); }
     catch (_) { hud.toast('That map could not be unrolled.'); }
   }
   bigEl.querySelector('.bm-zoom').addEventListener('click', e => {
@@ -568,7 +569,7 @@ async function runGame() {
     if (!z) return;
     if (z === 'home') {
       mmBig.home(); world.home();
-      if (zone) { zoneSel.value = String(zone.num); mapRegion(zone.region); }
+      if (zone) { zoneSel.value = String(zone.num); mapRegion(zone.region, zone.level); }
       return;
     }
     const f = z === 'in' ? 1.25 : 0.8;
@@ -740,7 +741,7 @@ async function runGame() {
     loot.clear();
     spots.clear();
     mm.setZone(zone);
-    mapRegion(zone.region);
+    mapRegion(zone.region, zone.level);
     engine.regionTint = tintFor(zone.region);      // the region's cast over the picture (regionlook.js)
     sound.regionPad(zone.region ? zone.region.id : null);      // and its chord under the music (soundtable.js REGION_PAD)
     zmCache.set(zm.zone, zm);
