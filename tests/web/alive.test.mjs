@@ -104,3 +104,19 @@ test('grass bends round the hero and stirs in the wind (instanced Grass_* only, 
   assert.match(main, /GRASS\.hero\.value\.set\(p\.x, p\.y, p\.z\)/);
   assert.match(main, /sky\.prints\.step\(/);
 });
+
+test("each region's own weather: snow in the Frostmarch, ash in the Reach, mist in the Marches, none in the Vale", () => {
+  const { weatherKind } = W;
+  const rain = { sky: 'rainy' }, grey = { sky: 'overcast' }, fog = { sky: 'foggy' }, storm = { sky: 'stormy' };
+  assert.equal(weatherKind(rain, 'forest', 'frostmarch'), 'snow');
+  assert.equal(weatherKind(grey, 'forest', 'frostmarch'), 'snow', 'a grey sky snows there');
+  assert.equal(weatherKind({ sky: 'clear' }, 'forest', 'frostmarch'), 'clear');
+  assert.equal(weatherKind(storm, 'field', 'reach'), 'dust', 'it rains ash in the Reach');
+  assert.equal(weatherKind(grey, 'field', 'marches'), 'fog');
+  assert.equal(weatherKind(fog, 'field', 'vale'), 'cloudy', 'the lanterns hold the mist back');
+  assert.equal(weatherKind(rain, 'field', 'vale'), 'rain');
+  // no region, or one with no weather of its own: as before
+  assert.equal(weatherKind(rain, 'forest'), 'rain');
+  assert.equal(weatherKind(fog, 'field', 'greenreach'), 'fog');
+  assert.equal(weatherKind({ sky: 'rainy', wind: 20 }, 'desert', 'sundersea'), 'dust');
+});

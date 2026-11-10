@@ -22,7 +22,18 @@ export const LOOK = {
 
 // the server's weather as the hero sees it where they stand: a desert's rain is dust (or only
 // cloud), on snowy ground rain falls as snow
-export function weatherKind(w, theme) {
+// `region` (the zone's region of the world, regionlook.js): its own weather on top. In the Frostmarch
+// whatever falls is snow, and a grey sky snows; in the Sundered Reach it rains ash; in the Marches a
+// grey day is mist in the ditches; in the Lantern Vale the lanterns hold the mist back (fog is only cloud).
+export function weatherKind(w, theme, region = null) {
+  const k = baseKind(w, theme);
+  if (region === 'frostmarch') return ['rain', 'storm', 'cloudy', 'fog'].includes(k) ? 'snow' : k;
+  if (region === 'reach') return ['rain', 'storm', 'snow'].includes(k) ? 'dust' : k;
+  if (region === 'marches') return k === 'cloudy' ? 'fog' : k;
+  if (region === 'vale') return k === 'fog' ? 'cloudy' : k;
+  return k;
+}
+function baseKind(w, theme) {
   if (!w || !w.sky) return 'clear';
   let k = { stormy: 'storm', rainy: 'rain', snowy: 'snow', foggy: 'fog', overcast: 'cloudy' }[w.sky] || 'clear';
   if (w.precipitation === 'snow' || w.precipitation === 'sleet') k = k === 'storm' ? 'snow' : (k === 'rain' ? 'snow' : k);

@@ -1263,7 +1263,7 @@ QUEST_DEFINITIONS = {
     # ========== TUTORIAL QUESTS ==========
     'tutorial_1_awakening': {
         'name': 'Awakening',
-        'description': 'Speak with Sage Aldric at the Temple to begin your training. He is right here in the Temple with you. Simply type "talk aldric" to speak with him.',
+        'description': 'You woke in the Temple with a lantern at your hip, its flame already lit. Speak with Sage Aldric to learn what it is for. He is right here in the Temple with you. Simply type "talk aldric" to speak with him.',
         'type': 'tutorial',
         'level_min': 1,
         'level_max': 5,

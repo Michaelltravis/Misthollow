@@ -282,7 +282,7 @@ export const ENDGAME = {"warrior": {"v": 1, "main": {"k": "sword", "h": 2, "m": 
 export async function showGearGallery(engine) {
   const q = new URLSearchParams(location.search);
   const only = q.get('only'), onlyCls = q.get('cls'), onlyTier = q.get('tier'), sex = q.get('sex'), style = q.get('style');
-  const [{ spawnDressed }, { starterLook, CLASS_BASE }, { FX }, { Adorn }] = await Promise.all([import('./equip.js'), import('./gearlook.js'), import('./fx.js'), import('./adorn.js')]);
+  const [{ spawnDressed }, { starterLook, CLASS_BASE, LOOKS }, { FX }, { Adorn }] = await Promise.all([import('./equip.js'), import('./gearlook.js'), import('./fx.js'), import('./adorn.js')]);
   const CLASSES = Object.keys(CLASS_BASE).filter(c => !onlyCls || onlyCls.split(',').includes(c));
   const METAL = ['iron', 'steel', 'steel', 'gold', 'mithril', 'gold'];
   const LEATHER = ['leather', 'leather', 'leather_dark', 'leather_red', 'dragonhide', 'leather_black'];
@@ -303,7 +303,8 @@ export async function showGearGallery(engine) {
     if (t >= 4 && look.main) look.main.e = t === 5 ? 'holy' : 'frost';
     if (t === 5) { for (const k of ['body', 'back']) if (look[k]) look[k].s = 'frostlords_mantle'; if (look.main) look.main.lg = 99001; look.aura = 'legendary'; }
     if (sex) look.sex = sex;
-    if (style) look.style = style;              // ?style=archmage: a mage's chosen look
+    // ?style=archmage: a mage's chosen look; ?style=own: every class in its own (gearlook.js LOOKS)
+    if (style) look.style = style === 'own' ? (cls === 'mage' ? 'archmage' : Object.keys(LOOKS).find(k => LOOKS[k].cls === cls) || '') : style;
     look.sig = `gallery:${cls}:${t}:${sex || ''}:${style || ''}`;
     return look;
   };

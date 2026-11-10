@@ -1428,6 +1428,13 @@ class World:
                 for player in self.players.values():
                     await msgkind.send_ui(player, f"\r\n{c['yellow']}{announcement}{c['reset']}\r\n")
                 logger.info(f"Time: {self.game_time.get_time_string()}")
+            # at dusk the Temple's bells ring over the Lantern Vale (regions.dusk_bells)
+            if self.game_time.hour == 18:
+                try:
+                    import regions
+                    await regions.dusk_bells(self)
+                except Exception:
+                    logger.exception('dusk bells')
             await web_hud.push_sky(self)
 
             # Process NPC schedules (shopkeepers open/close, etc.)

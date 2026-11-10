@@ -7,6 +7,7 @@ import * as THREE from 'three';
 import { buildRoom, ROOM_W, ROOM_H, isIndoor } from './terrain.js';
 import { passageSpot, arrivalSpot, wantsPassage } from './passages.js';
 import { isDeadly } from './deathlogic.js';
+import { stoneFor } from './regionlook.js';
 import { FarView } from './far.js';
 import { landSides } from './edges.js';
 
@@ -20,6 +21,10 @@ export async function fetchZonemap(query) {
   if (!res.ok) throw new Error(`zone map ${query}: ${res.status}`);
   return res.json();
 }
+
+// how far from the hero's cell rooms are built and drawn (east-west, north-south): on Low (a
+// machine drawing without a graphics card) the old, nearer ring; on Med and High a wider one
+export const BUILD_RING = { low: [2, 2], wide: [3, 4] };
 
 export class Zone {
   constructor(engine, kits, zm) {
@@ -79,7 +84,7 @@ export class Zone {
         exits[d] = { to_room: e.to, kind: e.kind, door: !!e.door, nlook: nb ? (nb.data.look || nb.data.sector) : null };
       }
       room.layout = MH.generateRoomTopDown({
-        vnum: r.vnum, name: r.name, description: r.description, sector: r.sector, look: r.look, features: r.features, tone: r.tone, setpiece: r.setpiece,
+        vnum: r.vnum, name: r.name, description: r.description, sector: r.sector, look: r.look, features: r.features, tone: r.tone || stoneFor(this.region), setpiece: r.setpiece,
         flags: r.flags, zone: this.num, exits,
         land: landSides(room, this, MH.themeForSector),     // a water room's sides that are land (edges.js)
       });
@@ -200,7 +205,9 @@ export class Zone {
   // ---- streaming ----
   build(room) {
     if (room.built) return;
-    room.built = buildRoom(this.layoutOf(room), room.ox, room.oz, this.kits, room);
+    const layout = this.layoutOf(room);
+    layout.region = this.region ? this.region.id : null;      // (the region decides its lantern posts: lanternposts.js)
+    room.built = buildRoom(layout, room.ox, room.oz, this.kits, room);
     this.group.add(room.built.group);
   }
   release(room) {
@@ -220,12 +227,17 @@ export class Zone {
 
   update(dt, t, hero, vel) {
     const cx = Math.floor(hero.x / ROOM_W), cy = Math.floor(hero.z / ROOM_H);
-    // one room per frame within 2 cells, nearest first, ahead of the hero first
+    // one room per frame, nearest first, ahead of the hero first: within 3 cells east and west and 4
+    // north and south (a room is 24 m by 15: about 70 m either way, out where the fog is thick. Built
+    // only 2 cells out, each new row came into being inside the fog's near edge as the hero walked)
+    const low = !!(this.engine.quality && this.engine.quality.name === 'low');
+    const [BUILD_X, BUILD_Y] = low ? BUILD_RING.low : BUILD_RING.wide;
     let best = null, bestD = Infinity;
-    for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {
+    for (let dy = -BUILD_Y; dy <= BUILD_Y; dy++) for (let dx = -BUILD_X; dx <= BUILD_X; dx++) {
       const r = this.cells.get(`${cx + dx},${cy + dy}`);
       if (!r || r.built) continue;
-      const d = dx * dx + dy * dy - 0.6 * Math.sign(dx * (vel ? vel.x : 0) + dy * (vel ? vel.y : 0));
+      // (by distance on the ground, so the nearer rows north and south are not kept waiting)
+      const d = dx * dx * 2.56 + dy * dy - 0.6 * Math.sign(dx * (vel ? vel.x : 0) + dy * (vel ? vel.y : 0));
       if (d < bestD) { bestD = d; best = r; }
     }
     if (best) this.build(best);
@@ -233,11 +245,12 @@ export class Zone {
       this._releaseClock = 1;
       for (const r of this.rooms.values()) {
         if (!r.built) continue;
-        const far = Math.max(Math.abs(r.cx - cx), Math.abs(r.cy - cy));
-        if (far > 4) this.release(r);
+        const fx = Math.abs(r.cx - cx), fy = Math.abs(r.cy - cy);
+        if (fx > BUILD_X + 2 || fy > BUILD_Y + 2) this.release(r);
         // kept built for the way back, but not drawn (nor their shadows) past the fog: up to 81
         // rooms were drawn every frame for the few the camera shows
-        else r.built.group.visible = far <= 3;
+        // (on Low, as before: three cells any way)
+        else r.built.group.visible = low ? Math.max(fx, fy) <= 3 : fx <= BUILD_X && fy <= BUILD_Y;
       }
     }
     this.updateLights(dt, t, hero);

@@ -791,5 +791,20 @@
   "height": 0.24,
   "for": "manta rays, ixitxachitl; tinted by bestiary.js",
   "ref": 1.155
+ },
+ "drowned_king": {
+  "kind": "boss",
+  "anims": [
+   "Idle",
+   "Walk",
+   "Run",
+   "Bite_Front",
+   "Bite_InPlace",
+   "HitRecieve",
+   "Death"
+  ],
+  "tris": 2472,
+  "height": 3.695,
+  "for": "Nerathis, the Drowned King (its own colours: not tinted)"
  }
 }

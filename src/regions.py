@@ -55,3 +55,40 @@ def of(zone_num):
         return _by_zone.get(int(zone_num))
     except (TypeError, ValueError):
         return None
+
+
+# ---- the bells at dusk ----
+# "Garathorm's temple bells ring at dusk to call the lost home" (the title screen's own line, and the
+# world's spine: the city stands because its lanterns burn and its bells ring every name at dusk).
+BELLS_OUTDOORS = "The Temple's bells begin to ring across the Vale, a stroke for every name in the city, calling the lost home."
+BELLS_INDOORS = "Through the walls you hear the Temple's bells begin to ring, a stroke for every name in the city."
+
+
+def bells_line(room):
+    """What someone in `room` hears as the bells ring at dusk (None: they are out of earshot: not in
+    the Lantern Vale)."""
+    zone = getattr(room, 'zone', None)
+    r = of(getattr(zone, 'number', None)) if zone is not None else None
+    if not r or r['id'] != 'vale':
+        return None
+    return BELLS_INDOORS if 'indoors' in (getattr(room, 'flags', None) or ()) else BELLS_OUTDOORS
+
+
+async def dusk_bells(world):
+    """Everyone in the Lantern Vale hears the bells: a line in the log, and in /play a bell (the
+    ambient sound, soundtable.js `amb_bell`). Returns how many heard them."""
+    heard = 0
+    web_map = getattr(world, 'web_map', None)
+    for player in list(getattr(world, 'players', {}).values()):
+        line = bells_line(getattr(player, 'room', None))
+        if not line:
+            continue
+        heard += 1
+        c = player.config.COLORS
+        await player.send(f"{c['bright_yellow']}{line}{c['reset']}")
+        try:
+            if web_map and web_map.has_play(player):
+                await web_map.notify_event(player, {'type': 'ambient', 'text': '', 'sound': 'amb_bell', 'key': 'bells'})
+        except Exception:
+            logger.exception('dusk bells: the sound')
+    return heard

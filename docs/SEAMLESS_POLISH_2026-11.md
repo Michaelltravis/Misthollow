@@ -145,23 +145,41 @@ higher-fidelity art style. Bodies and faces are still the pack's.
 Tried and taken back: creatures shrinking away as they leave (a vanished creature is held one
 frame for its corpse to claim; the two did not fit).
 
+## The third batch (done)
+
+- **Lantern posts by the roads** (`world3d/lanternposts.js`): lit in the Lantern Vale (about every
+  second open room), dark in the country beyond, a cold flame where the mist rules; a peaceful
+  room's lantern is tended wherever it stands.
+- **The bells at dusk** (`regions.dusk_bells`): at six everyone in the Vale hears the Temple's
+  bells, as a line and, in /play, a bell. The first lesson says you woke with a lit lantern.
+- **Room pop-in**: on Med and High rooms are built three cells east and west and four north and
+  south (they came into being two cells off, inside the fog's near edge); two cells round are
+  built at once on arriving, on crossing into a zone and on teleporting. Low keeps the old ring
+  (`zone.js BUILD_RING`): the owner's machine once drew in software.
+- **Regions seen and heard**: their own weather (snow in the Frostmarch, ash in the Reach, mist in
+  the Marches, none in the Vale), the dark tune in open country where the mist rules, and their
+  own stone where a zone names none (white, black, red).
+- **Nerathis, the Drowned King**, has his own scripted body (`models/drowned_king.py`): the first
+  region villain made this way.
+- Every class's look was seen in the game's own renderer (`/play?demo&gallery=gear&only=tiers&tier=1&style=own`).
+
 ## Where it stands (end of 9 November)
 
 Done and committed on `claude/seamless-polish`: passes 1 and 3, character lighting and the
-picture, regions in the game, the world's spine, the lantern, a look for every class, the second
-3D and play pass, region casts.
+picture, regions in the game (banner, map, cast, weather, music, stone, lantern posts, bells),
+the world's spine, the first zone's text, the lantern, a look for every class, the Drowned King,
+the second 3D and play pass, room pop-in.
 
-Waiting on the owner (none of it is code that can be decided for them):
+Waiting on the owner (decisions about how the game plays or what things are called):
 - the five calls in pass 2 below (creature names, rest between fights, new-character defaults,
   logging in mid-danger, low-level fight length);
 - the renames and re-levelling in `docs/world/WORLD_SPINE.md` (its ledger).
 
-Open work that needs no decision, largest first:
-- the rest of the Lantern Vale's opening hour (the first zone's text is rewritten in the world's
-  voice; the lantern in the tutorial, lantern posts on the first road and the bells are not);
-- room pop-in and zone borders that rebuild the scene (pass 4);
-- the region villains as scripted boss models (the same pipeline as the looks);
-- region stone, weather and music; the remaining pass 3 and pass 4 items.
+Open work, largest first:
+- the other region villains as scripted bodies (Ostragoth, the Horsemen, the Frost Wyrm has one);
+- the empty zones peopled and each region's opening quest (the spine, step 6);
+- the smaller pass 3 and pass 4 items still listed below (one tooltip system, design tokens,
+  time-sliced room building, other players' walking, `THREE.Timer`).
 
 ## Pass 2: the owner's calls (each changes how the game plays)
 

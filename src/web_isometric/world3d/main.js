@@ -253,7 +253,7 @@ async function runGame() {
   let skyOpen = false, skyTheme = 'field';
   function applySky() {
     const w = lastPayload && lastPayload.weather;
-    sky.set(weatherKind(w, skyTheme), w && w.wind, skyOpen);
+    sky.set(weatherKind(w, skyTheme, zone && zone.region ? zone.region.id : null), w && w.wind, skyOpen);
     GRASS.wind.value = 0.3 + Math.min(1.2, ((w && w.wind) || 0) / 20);
   }
   engine.onTick((dt, t) => {
@@ -715,7 +715,7 @@ async function runGame() {
       relocate: v2 => relocate(v2),
     });
     sync.start(v);
-    zone.prebuild(room, 1);
+    zone.prebuild(room, 2);          // (two cells round, under the veil: the world is whole as the mist parts)
     placeHero(room, zone.centre(room));
     engine.rig.target.copy(hero.root.position);
     engine.placeCamera(true);
@@ -796,7 +796,7 @@ async function runGame() {
     if (onWater && !raft) raft = makeRaft();
     if (raft) { if (onWater && !riding) hero.root.add(raft); else hero.root.remove(raft); }
     const look = { theme: L.theme, zoneKey: L.zoneKey, dark: L.dark, snowy: L.snowy, icy: L.icy,
-      interior: L.theme === 'inside' ? interiorKind(L) : null };
+      interior: L.theme === 'inside' ? interiorKind(L) : null, region: zone && zone.region ? zone.region.id : null };
     sound.setZoneMusic(musicFor(look));
     sound.ambience(bedFor(look));
     stepSurface = surfaceFor(look);
@@ -902,7 +902,7 @@ async function runGame() {
   }
   function teleport(room, pos) {
     sound.play('teleport');
-    zone.prebuild(room, 1);
+    zone.prebuild(room, 2);          // (under the flash)
     placeHero(room, pos);
     ctl.halt();
     engine.rig.target.copy(hero.root.position);
@@ -949,7 +949,9 @@ async function runGame() {
         if (!zm) { hop = null; climb = null; return relocate(v); }
         enterZone(zm);
         const r = zone.rooms.get(v);
-        land(r, zone.arrival(r, h.from.vnum, h.dir), h.from.vnum, h.seamless);
+        // (a room is a couple of milliseconds to build: two cells round at once, rather than have the
+        // new zone come into being room by room over the next second)
+        land(r, zone.arrival(r, h.from.vnum, h.dir), h.from.vnum, h.seamless, 2);
         hud.banner(r.name, zone.name, zone.region);
         if (lastPayload) { ents.sync(lastPayload, MH.state.playerName); loot.sync(lastPayload); spots.sync(lastPayload); }
       } else {
@@ -965,8 +967,9 @@ async function runGame() {
     else travel = null;
   }
   // arrive: appear on the passage that leads back, then step off it to the arrival point
-  function land(room, at, fromVnum, seamless = false) {
-    zone.prebuild(room, 1);
+  // (`radius`: how far round the arrival room is built at once; a new zone starts empty, so 2 there)
+  function land(room, at, fromVnum, seamless = false, radius = 1) {
+    zone.prebuild(room, radius);
     const side = Object.keys(room.data.exits).find(d => room.data.exits[d].to === fromVnum && room.data.exits[d].kind !== 'open');
     const from = side ? zone.passageWorld(room, side) : at.clone();
     placeHero(room, at);

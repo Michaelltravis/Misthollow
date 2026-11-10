@@ -48,6 +48,8 @@ export const BESTIARY = [
   [/\bbroken ones?\b/, { mob: 'cyclops', body: 'ogre', h: 2.2, tint: 0x9a8a6a }],
   [/\bthicket beast\b/, { mob: 'farm_pig', h: 2.2, tint: 0x6a4a2a, body: 'pig' }],
   [/\b(sewer king|rat king)\b/, { proc: 'rat', body: 'rat_king', h: 1.0, tint: 0x7a6656 }],
+  // Nerathis, the Drowned King (tools/art3d/blender/models/drowned_king.py): his own body and colours
+  [/\b(nerathis|drowned king)\b/, { mob: 'cyclops', body: 'drowned_king', h: 3.3 }],
   [/\bstick mother\b/, { proc: 'spider', h: 1.8, tint: 0x6a5032, body: 'stick_mother' }],
   [/\b(deepspawn|argos)\b/, { mob: 'cthulhu', h: 1.6, fly: 0.2, tint: 0x7a6a5a, body: 'horror' }],
   [/\b(abyssal angler|anglerfish)\b/, { mob: 'piranha', h: 1.4, tint: 0x2a3440, body: 'fish' }],

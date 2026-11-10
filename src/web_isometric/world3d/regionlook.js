@@ -21,3 +21,12 @@ export const NO_TINT = [1, 1, 1];
 export function tintFor(region) {
   return (region && REGION_TINT[region.id]) || NO_TINT;
 }
+
+// A region's own stone, for a zone whose words name none (zone_tone.py reads a zone's stone from its
+// rooms; most say nothing): the Frostmarch builds in white stone, the Deep Road is black, the Sundered
+// Reach red. The other regions keep the kit's grey. Returns a tone as zone_tone.py sends one, or null.
+export const REGION_STONE = { frostmarch: 'white', deeproad: 'black', reach: 'red' };
+export function stoneFor(region) {
+  const stone = region && REGION_STONE[region.id];
+  return stone ? { stone } : null;
+}

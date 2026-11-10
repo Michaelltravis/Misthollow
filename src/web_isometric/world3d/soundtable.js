@@ -161,7 +161,14 @@ export const MUSIC = ['town', 'wilds', 'inn', 'dungeon', 'dark', 'battle'];
 const DARK = new Set(['web', 'darkforest', 'swamp', 'necropolis', 'darkcastle', 'voidstar', 'volcanic', 'drow']);
 const DUNGEON = new Set(['sewer', 'mines', 'dwarvenhall', 'clockwork', 'arcane']);
 const TOWN = new Set(['midgaard', 'rome', 'sandstone', 'castle', 'temple', 'chessboard']);
-export function musicFor({ theme, zoneKey, dark, interior } = {}) {
+// `region`: the zone's region of the world. Where the mist rules (the Deep Road, the Sundered Reach,
+// the Places Beyond) open country has no pastoral tune: the dark one plays there.
+const MIST_RULES = new Set(['deeproad', 'reach', 'beyond']);
+export function musicFor({ theme, zoneKey, dark, interior, region } = {}) {
+  const m = placeMusic({ theme, zoneKey, dark, interior });
+  return m === 'wilds' && MIST_RULES.has(region) ? 'dark' : m;
+}
+function placeMusic({ theme, zoneKey, dark, interior } = {}) {
   if (theme === 'inside' && interior === 'tavern') return 'inn';
   if (theme === 'crypt' || theme === 'volcanic' || theme === 'web' || theme === 'necropolis' || theme === 'drow') return 'dark';
   if (theme === 'cave' || theme === 'mine' || theme === 'sewer' || theme === 'foundry') return 'dungeon';
