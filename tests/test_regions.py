@@ -88,6 +88,23 @@ async def main():
           'a lifted creature has at least the health of its new level')
     check(not any(p.get('_releveled') for p in spawned(30)), 'a zone not in the file is as it was')
 
+    # ---- the roads out: a quest to each region's gate, from Sage Aldric in the Temple
+    from quests import QUEST_DEFINITIONS, QuestManager
+    roads = {k: q for k, q in QUEST_DEFINITIONS.items() if k.startswith('road_')}
+    check(len(roads) == 8 and {q['region'] for q in roads.values()} == {r['id'] for r in data['regions']} - {'beyond'}, 'one for every region with a road into it')
+    aldric = [m for m in world.npcs if getattr(m, 'vnum', None) == 3200]
+    check(bool(aldric) and aldric[0].room.vnum == 3001, 'Sage Aldric stands in the Temple')
+    for k, q in roads.items():
+        target = world.rooms.get(int(q['objectives'][0]['target']))
+        check(target is not None and regions.of(target.zone.number)['id'] == q['region'], f"{q['name']}: its goal is a room of {q['region']}")
+    young = hero_at_level = None
+    from player import Player as _P
+    young = _P.create_new(name='Roadtest', password=None, race='human', char_class='warrior', stats={k: 13 for k in ('str', 'int', 'wis', 'dex', 'con', 'cha')}, world=world)
+    young.level = 7
+    offered = set(QuestManager.get_available_quests(young, 3200))
+    check({'road_vale', 'road_marches', 'road_sundersea'} <= offered and 'road_reach' not in offered and 'road_deeproad' not in offered,
+          f'at level 7 the near roads are offered, the far ones not ({sorted(k for k in offered if k.startswith("road_"))})')
+
     # ---- the bells at dusk: heard in the Lantern Vale, and nowhere else
     temple, square = world.rooms[3001], world.rooms[3005]
     check(regions.bells_line(temple) == regions.BELLS_INDOORS, 'in the Temple the bells come through the walls')

@@ -1260,6 +1260,123 @@ QUEST_DEFINITIONS = {
         'repeatable': False
     },
 
+    # ========== THE ROADS OUT (docs/world/WORLD_SPINE.md, step 6: each region's opening quest) ==========
+    # Sage Aldric, in the Temple, sends a lantern-bearer to the gate of each region when they are of a
+    # level for it: a walk there, and the region's own banner as they arrive. (Not the Guard's captain
+    # at the fountain: he speaks only to those the Guard counts as friends.)
+    'road_vale': {
+        'name': 'The First Dark Lantern',
+        'description': 'The lantern on the plains road went out three nights ago, and nobody the Guard sent has said why. Walk out by the road and see how it stands.',
+        'type': 'visit',
+        'level_min': 1,
+        'level_max': 12,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'objectives': [
+            {'type': 'visit', 'description': 'Go out to the Plains', 'target': 6092, 'required': 1}
+        ],
+        'rewards': {'exp': 150, 'gold': 20, 'items': []},
+        'repeatable': False,
+        'region': 'vale'
+    },
+    'road_marches': {
+        'name': 'The Lantern Road',
+        'description': 'The old road runs out from the gate past keeps that were raised to guard it. Half of them have fallen. Go out onto the road and see how far its lanterns still burn.',
+        'type': 'visit',
+        'level_min': 6,
+        'level_max': 22,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'objectives': [
+            {'type': 'visit', 'description': 'Go out to the Lantern Road', 'target': 9702, 'required': 1}
+        ],
+        'rewards': {'exp': 900, 'gold': 120, 'items': []},
+        'repeatable': False,
+        'region': 'marches'
+    },
+    'road_sundersea': {
+        'name': 'Where the Lake Ran Out',
+        'description': 'When the Throne was shattered the lake emptied down this river in a night. You will need a raft or a boat. Go down to the water and look on what it left.',
+        'type': 'visit',
+        'level_min': 5,
+        'level_max': 30,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'objectives': [
+            {'type': 'visit', 'description': 'Go out to the Desert River', 'target': 3203, 'required': 1}
+        ],
+        'rewards': {'exp': 750, 'gold': 100, 'items': []},
+        'repeatable': False,
+        'region': 'sundersea'
+    },
+    'road_greenreach': {
+        'name': 'Under the Old Trees',
+        'description': 'West of the road the forest is older than the kingdom was, and it has never needed our lanterns. Go as far as its eaves.',
+        'type': 'visit',
+        'level_min': 8,
+        'level_max': 26,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'objectives': [
+            {'type': 'visit', 'description': 'Go out to the Minar Wood', 'target': 2341, 'required': 1}
+        ],
+        'rewards': {'exp': 1200, 'gold': 160, 'items': []},
+        'repeatable': False,
+        'region': 'greenreach'
+    },
+    'road_stonemarch': {
+        'name': 'The High Passes',
+        'description': 'The dwarves dug their halls under those mountains, and dug too deep to keep them. Climb to the passes and see what still holds them.',
+        'type': 'visit',
+        'level_min': 10,
+        'level_max': 30,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'objectives': [
+            {'type': 'visit', 'description': 'Go out to the Mountain Range', 'target': 8506, 'required': 1}
+        ],
+        'rewards': {'exp': 1500, 'gold': 200, 'items': []},
+        'repeatable': False,
+        'region': 'stonemarch'
+    },
+    'road_frostmarch': {
+        'name': 'North, Where It Froze',
+        'description': 'In the north the mist did not lift. It froze. Take warm gear and a full pack, and go as far as the wilderness trail.',
+        'type': 'visit',
+        'level_min': 18,
+        'level_max': 36,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'objectives': [
+            {'type': 'visit', 'description': 'Go out to the Northern Wilderness', 'target': 6607, 'required': 1}
+        ],
+        'rewards': {'exp': 2700, 'gold': 360, 'items': []},
+        'repeatable': False,
+        'region': 'frostmarch'
+    },
+    'road_reach': {
+        'name': 'East, Toward the Throne',
+        'description': 'Every mile east of here was a kingdom once. The Throne is at the end of it. Go as far as the highland trail, and come back if you can.',
+        'type': 'visit',
+        'level_min': 23,
+        'level_max': 40,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'objectives': [
+            {'type': 'visit', 'description': 'Go out to the Eastern Highlands', 'target': 6700, 'required': 1}
+        ],
+        'rewards': {'exp': 3450, 'gold': 460, 'items': []},
+        'repeatable': False,
+        'region': 'reach'
+    },
+    'road_deeproad': {
+        'name': 'The Long Way Under',
+        'description': 'There is a road under the world, from the lost dwarf-holds to a city that does not know it died. Its gate is the bridge across the ravine. Go and stand on it.',
+        'type': 'visit',
+        'level_min': 33,
+        'level_max': 55,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'objectives': [
+            {'type': 'visit', 'description': 'Go out to Aredrel', 'target': 24702, 'required': 1}
+        ],
+        'rewards': {'exp': 4950, 'gold': 660, 'items': []},
+        'repeatable': False,
+        'region': 'deeproad'
+    },
+
     # ========== TUTORIAL QUESTS ==========
     'tutorial_1_awakening': {
         'name': 'Awakening',

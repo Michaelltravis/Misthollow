@@ -268,12 +268,14 @@ export function createEngine(container, opts = {}) {
   // ticks move the world; late ticks run once the camera is placed for this frame (screen
   // overlays: nameplates, floating text, the see-through circle, prompts, the minimap)
   const ticks = [], lateTicks = [];
-  const clock = new THREE.Clock();
+  // (THREE.Timer: Clock is deprecated. sinceLast() is the seconds since it was last asked)
+  const clock = new THREE.Timer();
+  const sinceLast = () => { clock.update(); return clock.getDelta(); };
   let frames = 0, stopUntil = 0, elapsed = 0;
   // `fixed`: a step of exactly that long (engine.step: screenshots of effects mid-flight)
   function frame(fixed) {
     // hit-stop: a big blow freezes the world for a few frames (time crawls, it never stops)
-    const raw = fixed != null ? fixed : Math.min(clock.getDelta(), 0.05) * api.timeScale;
+    const raw = fixed != null ? fixed : Math.min(sinceLast(), 0.05) * api.timeScale;
     const dt = performance.now() < stopUntil ? raw * 0.06 : raw;
     const t = (elapsed += dt);
     for (const fn of ticks) fn(dt, t);
@@ -359,7 +361,7 @@ export function createEngine(container, opts = {}) {
     setMood, placeCamera, MOODS,
     // stop the loop and advance by hand, `n` frames of `dt` each (a slow machine still shows
     // every moment of an effect); setManual(false) starts the loop again
-    setManual(on) { renderer.setAnimationLoop(on ? null : () => { frame(); fitResolution(); }); clock.getDelta(); },
+    setManual(on) { renderer.setAnimationLoop(on ? null : () => { frame(); fitResolution(); }); sinceLast(); },
     get pixelRatio() { return renderer.getPixelRatio(); },
     step(dt = 1 / 30, n = 1) { for (let i = 0; i < n; i++) frame(dt); },
     get frames() { return frames; },

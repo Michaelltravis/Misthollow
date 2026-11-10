@@ -497,6 +497,13 @@ export class Entities {
         e.root.userData.arriveK = k;
         if (e.arrive >= 1) e.arrive = null;
       }
+      if (e.settling) {
+        if (e.goal) e.settling = 0;                       // told to walk on: no stop at all
+        else if ((e.settling -= dt) <= 0) {
+          e.settling = 0;
+          if (e.actor) e.actor.play(e.riding ? 'Idle' : e.pose || e.actor.idle || 'Idle', 0.18, e.still ? 0 : 1);
+        }
+      }
       // turning to face a way (a foe, the road): a quick turn by the short way round, not a snap
       if (e.wantYaw != null && e.root) {
         const r = e.root.rotation, off = Math.atan2(Math.sin(e.wantYaw - r.y), Math.cos(e.wantYaw - r.y));
@@ -515,6 +522,9 @@ export class Entities {
       if (e.goal && !held) {
         const p = e.root.position, dx = e.goal.x - p.x, dz = e.goal.z - p.z, d = Math.hypot(dx, dz);
         if (d < 0.1 && e.then) { e.goal = e.then; e.then = null; }
+        // (another player reaches each reported spot a little before the next is told: they keep their
+        // stride for a third of a second rather than stop and start between every two)
+        else if (d < 0.1 && e.kind === 'player' && !e.settling) { e.goal = null; e.rush = false; e.settling = 0.3; }
         else if (d < 0.1) { e.goal = null; e.rush = false; if (e.actor) e.actor.play(e.riding ? 'Idle' : e.pose || (isHostile(e) ? 'Idle_Combat' : e.actor.idle || 'Idle'), 0.18, e.still ? 0 : 1); }
         else {
           // (a creature charging over from next door runs)

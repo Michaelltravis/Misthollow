@@ -323,9 +323,26 @@ export function createHud() {
     const el = e.target.closest && e.target.closest('[data-tip-title]');
     if (!el) return;
     const r = el.getBoundingClientRect();
-    showTip(`<div class="tc-name">${esc(el.dataset.tipTitle)}</div>${el.dataset.tipSub ? `<div class="tc-sub">${esc(el.dataset.tipSub)}</div>` : ''}`, r.left + r.width / 2, r.top);
+    showTip(`${el.dataset.tipTitle ? `<div class="tc-name">${esc(el.dataset.tipTitle)}</div>` : ''}${el.dataset.tipSub ? `<div class="tc-sub">${esc(el.dataset.tipSub)}</div>` : ''}`, r.left + r.width / 2, r.top);
   });
   document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('[data-tip-title], .slot')) hideTip(); });
+  // the browser's own tooltips (title=...) on the HUD become the HUD's: one look, no grey box after a wait.
+  // What had a title keeps it as its name for a screen reader.
+  const adoptTitles = root => (root.querySelectorAll ? root.querySelectorAll('[title]') : []).forEach(el => {
+    const t = el.getAttribute('title');
+    if (!t || el.closest('#login, #create')) return;
+    if (!el.dataset.tipTitle) {
+      // (a few words are a name; a sentence is the small print under the thing's own words)
+      const own = el.textContent.trim().replace(/\s+/g, ' ');
+      if (t.length <= 28) el.dataset.tipTitle = t;
+      else { el.dataset.tipTitle = own.length <= 28 ? own : ''; el.dataset.tipSub = t; }
+      if (!el.getAttribute('aria-label') && !own) el.setAttribute('aria-label', t);
+    }
+    el.removeAttribute('title');
+  });
+  adoptTitles(document.body);
+  new MutationObserver(list => { for (const m of list) for (const n of m.addedNodes) if (n.nodeType === 1) { if (n.hasAttribute && n.hasAttribute('title')) adoptTitles(n.parentNode || n); else adoptTitles(n); } })
+    .observe(document.body, { childList: true, subtree: true });
   // (a slot or buff re-drawn under the cursor is gone without a mouseout: the tooltip goes with it)
   setInterval(() => {
     if (!tip.classList.contains('hidden') && !document.querySelector('[data-tip-title]:hover, .slot:hover')) hideTip();

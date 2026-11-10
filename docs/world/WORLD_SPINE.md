@@ -47,6 +47,12 @@ Every room is written and every room can be reached. What it lacks is a reason t
    9,250, at the far end of a road nothing points down.
 8. **`world/WORLD_MAP.md` describes a world that no longer exists** (16 zones around "Midgaard").
 
+> **Since this was written (9 November):** item 6 was wrong: counted in the loaded world, no zone is
+> empty (the population files people them). The renames in the ledger are applied in play
+> (`world/zone_names.json`); the Frostmarch is lifted (`world/zone_levels.json`); a zone far beyond
+> you says so on its banner, in place of moving ways in; each region with a road has its opening
+> quest. `docs/SEAMLESS_POLISH_2026-11.md` has the list and how to take each back.
+
 ## 2. The premise
 
 One paragraph, built from the lines the title screen already speaks:

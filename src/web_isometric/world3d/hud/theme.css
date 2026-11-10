@@ -16,6 +16,11 @@
 
 :root {
   --ui: 1;
+  /* shared edges and signals (hud.css used these as raw colours in a dozen places) */
+  --gold-edge: #f0d28c;
+  --danger: #ff7a6a;
+  --warn: #ffb84a;
+  --good: #7ee07e;
   /* type */
   --display: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
   --title: 'Cinzel', Georgia, 'Times New Roman', serif;

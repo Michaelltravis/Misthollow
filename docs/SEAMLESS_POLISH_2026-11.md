@@ -163,23 +163,48 @@ frame for its corpse to claim; the two did not fit).
   region villain made this way.
 - Every class's look was seen in the game's own renderer (`/play?demo&gallery=gear&only=tiers&tier=1&style=own`).
 
+## The fourth batch: the owner's calls, made (9 November)
+
+The owner set a standing instruction to continue without stopping to ask. The calls in pass 2
+and the ledger's renames were therefore made as recommended. **Each is small and easy to take
+back**; how is said beside it.
+
+| Call | What was done | To take it back |
+|---|---|---|
+| What creatures are called | A one-word name is said as its fuller description ("the baby dragon"); the keyword still finds it | `Mobile.said_name` in `mobs.py`: restore the one-word rule |
+| Rest between fights | Out of a fight for about ten seconds, a twentieth of health, mana and movement every five | `Player.BREATH = 0` |
+| Newcomers' defaults | Loot is picked up; at level 5 or less a hero runs at a fifth of their health until they set a wimpy | `autoloot` default in `player.py`; `NEWCOMER_WIMPY_LEVEL = 0` |
+| Logging in mid-danger | Under three tenths of their health in a room that is not peaceful: they wake at the temple | `World.login_unsafe` returns False |
+| First fights too long | Creatures of levels 1-9 carry less health (six tenths at level 1, the whole from 10) | `Mobile.EARLY_FROM = 1.0` |
+| Zone names | 28 zones renamed in play (`world/zone_names.json`); the zone files keep theirs | take a line out of the file |
+| The Frostmarch's levels | Its five zones lifted to 20-38 at load (`world/zone_levels.json`) | take a zone out of the file |
+| Danger near the city | Not by moving ways in: the banner warns when a zone is eight or more levels beyond you | `BEYOND_BY` in `hud/regionsay.js` |
+
+Also in this batch:
+- **Ostragoth and the four Horsemen** on scripted bodies of their own (`models/villains.py`), found
+  by prototype, never by a word in a name.
+- **A road quest to each region's gate** from Sage Aldric (eight: `road_*` in `quests.py`).
+- One tooltip look (the item tooltip as the others; the browser's own `title=` tips taken into
+  it), the first design tokens (`--gold-edge`, `--danger`, `--warn`, `--good`), `THREE.Timer` for
+  the frame clock, other players keep their stride between position updates.
+- **A correction**: no zone is empty. Counted in the loaded world, every zone in a region has
+  creatures (the population files give them); the list in the world's spine came from the zone
+  files alone.
+- Measured, and left: a room takes about 2 ms to rebuild, so time-slicing the build is not needed.
+
 ## Where it stands (end of 9 November)
 
-Done and committed on `claude/seamless-polish`: passes 1 and 3, character lighting and the
-picture, regions in the game (banner, map, cast, weather, music, stone, lantern posts, bells),
-the world's spine, the first zone's text, the lantern, a look for every class, the Drowned King,
-the second 3D and play pass, room pop-in.
+Everything in this document is done and committed on `claude/seamless-polish` except what is
+listed here.
 
-Waiting on the owner (decisions about how the game plays or what things are called):
-- the five calls in pass 2 below (creature names, rest between fights, new-character defaults,
-  logging in mid-danger, low-level fight length);
-- the renames and re-levelling in `docs/world/WORLD_SPINE.md` (its ledger).
+For the owner to look at (made, not waiting): the eight calls in the table above.
 
-Open work, largest first:
-- the other region villains as scripted bodies (Ostragoth, the Horsemen, the Frost Wyrm has one);
-- the empty zones peopled and each region's opening quest (the spine, step 6);
-- the smaller pass 3 and pass 4 items still listed below (one tooltip system, design tokens,
-  time-sliced room building, other players' walking, `THREE.Timer`).
+Not seen or heard by the one who made them (the test browser was hidden: no sound, throttled
+frames): the bells, region weather and music, the frame rate with the wider room ring, the
+villains in their own rooms. Each has a test; none replaces an owner's look.
+
+Open, and larger than a pass: each region's own story beyond its first road quest; music written
+for regions (there are six tracks); the remaining raw colours in `hud.css` moved onto tokens.
 
 ## Pass 2: the owner's calls (each changes how the game plays)
 
