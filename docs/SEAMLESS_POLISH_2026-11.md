@@ -238,8 +238,9 @@ Seen and heard in the running game (as the test paladin, with the immortal `sett
 
 Everything in this document is done and committed on `claude/seamless-polish`.
 
-For the owner to look at: the eight calls in the fourth batch's table (each with how to take it
-back). The branch is local: nothing has been pushed.
+The eight calls in the fourth batch's table were put to the owner on 9 November: **"Keep all
+eight."** They stand (each can still be taken back as the table says). The branch is pushed and
+its pull request open (#209, on #208); nothing is merged or deployed.
 
 ## Pass 2: the owner's calls (each changes how the game plays)
 
