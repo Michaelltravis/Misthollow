@@ -133,8 +133,9 @@ export class WeatherView {
   constructor(engine, fx, sound) {
     this.engine = engine; this.fx = fx; this.sound = sound;
     const scene = engine.scene;
-    const n = COUNT[(engine.quality && engine.quality.name) || 'high'] || COUNT.high;
-    this.n = n;
+    // room for the most any quality asks; `this.n` of them fall (setTier: a change in Settings is felt at once)
+    const n = Math.max(...Object.values(COUNT));
+    this.setTier((engine.quality && engine.quality.name) || 'high');
     // rain: short streaks
     this.rainPos = new Float32Array(n * 6);
     this.drops = new Float32Array(n * 3);
@@ -172,9 +173,13 @@ export class WeatherView {
     this.engine.weather = { dim: L.dim, fog: L.fog, grey: L.grey };
   }
 
-  // seed the falling things in the box round the hero
+  // how much falls, by graphics quality
+  setTier(tier) { this.n = COUNT[tier] || COUNT.high; }
+
+  // seed the falling things in the box round the hero (all there is room for: a higher quality
+  // chosen later finds its drops already placed)
   seed(c) {
-    for (let i = 0; i < this.n; i++) {
+    for (let i = 0; i < this.drops.length / 3; i++) {
       this.drops[i * 3] = c.x + (Math.random() * 2 - 1) * BOX;
       this.drops[i * 3 + 1] = Math.random() * TOP;
       this.drops[i * 3 + 2] = c.z + (Math.random() * 2 - 1) * BOX;

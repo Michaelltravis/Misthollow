@@ -195,6 +195,11 @@ export function createHud() {
   let portraitFor = '', lastLevel = 0;
   // a moment: a title over light rays (a level gained, a fall)
   let momentTimer = 0;
+  // What stands in the middle of the screen says so on <body> (mid-react, mid-moment, mid-herald,
+  // mid-banner), and the stylesheet keeps them off each other: a blow to answer comes before a
+  // level gained, that before the world's news, that before a place's name; the toasts move below
+  // whichever is up (hud.css "the middle of the screen").
+  const mid = (what, on) => document.body.classList.toggle(`mid-${what}`, !!on);
   function moment({ kicker = '', title = '', sub = '', tone = '' }) {
     const m = $('#moment');
     m.querySelector('.mo-kicker').textContent = kicker;
@@ -204,7 +209,8 @@ export function createHud() {
     void m.offsetWidth;
     m.classList.add('in');
     clearTimeout(momentTimer);
-    momentTimer = setTimeout(() => m.classList.add('hidden'), 4300);
+    mid('moment', true);
+    momentTimer = setTimeout(() => { m.classList.add('hidden'); mid('moment', false); }, 4300);
   }
   // the death card: who did it, what it cost, where you wake (player.py sends a 'fallen' event
   // with them; the death event alone shows the card at once, the details fill it in)
@@ -839,7 +845,8 @@ export function createHud() {
     els.banner.querySelector('.line').textContent = said.line;
     els.banner.style.opacity = 1;
     clearTimeout(bannerTimer);
-    bannerTimer = setTimeout(() => { els.banner.style.opacity = 0; }, said.line ? 5200 : zone ? 3200 : 1800);
+    mid('banner', true);
+    bannerTimer = setTimeout(() => { els.banner.style.opacity = 0; mid('banner', false); }, said.line ? 5200 : zone ? 3200 : 1800);
   }
   // the world's news, large and gilded for a few seconds: an achievement, a rare creature sighted
   let heraldTimer = 0;
@@ -851,7 +858,8 @@ export function createHud() {
     el.querySelector('.hd-t').textContent = title;
     el.querySelector('.hd-s').textContent = sub;
     clearTimeout(heraldTimer);
-    heraldTimer = setTimeout(() => { el.className = `hud ${tone}`; }, 5200);
+    mid('herald', true);
+    heraldTimer = setTimeout(() => { el.className = `hud ${tone}`; mid('herald', false); }, 5200);
   }
   function toast(msg, ms = 2900) {
     if (!msg) return;

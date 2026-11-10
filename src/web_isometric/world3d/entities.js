@@ -10,6 +10,7 @@ import { creatureLook, hashStr, npcDress } from './looks.js';
 import { makeProc, makeProp } from './proc.js';
 import { poseFor, postureChange, bodyPosition } from './posture.js';
 import { makeKin } from './kin.js';
+import { freeBody } from './freebody.js';
 import { isHostile, conOf, shownName } from './targeting.js';
 import { deathStyle, remains, fallOver, nameKey } from './corpse.js';
 import { plateAuras } from './hud/buffs.js';
@@ -420,7 +421,7 @@ export class Entities {
     // a creature that was fighting or out of health died: let it fall, then clear it away
     const died = !now && e.actor && e.kind === 'mob' && ((e.data.maxHp && e.data.hp <= 0) || e.data.fighting);
     if (!died) {
-      if (now) this.engine.scene.remove(e.root);
+      if (now) { this.engine.scene.remove(e.root); freeBody(e.root); }
       else this.vanished.push(e);
       return;
     }
@@ -478,13 +479,13 @@ export class Entities {
 
   update(dt, t, hero) {
     this.hero = hero;
-    for (const e of this.vanished) this.engine.scene.remove(e.root);
+    for (const e of this.vanished) { this.engine.scene.remove(e.root); freeBody(e.root); }      // (one its corpse claimed has left this list)
     this.vanished.length = 0;
     for (let i = this.dying.length - 1; i >= 0; i--) {
       const d = this.dying[i];
       if (d.fall) d.fall.update(dt);
       if (d.style && d.style !== 'fall') dyingAs(d, dt);
-      if ((d.left -= dt) <= 0) { this.engine.scene.remove(d.e.root); this.dying.splice(i, 1); for (const m of d.mats || []) m.dispose(); }
+      if ((d.left -= dt) <= 0) { this.engine.scene.remove(d.e.root); this.dying.splice(i, 1); for (const m of d.mats || []) m.dispose(); freeBody(d.e.root); }
     }
     for (const e of this.list.values()) {
       if (!e.root) continue;

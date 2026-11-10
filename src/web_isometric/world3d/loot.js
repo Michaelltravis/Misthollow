@@ -5,6 +5,7 @@
 // right-click for more. Each sits on one of its room's free spots, the same spot every time.
 import * as THREE from 'three';
 import { groundItems } from './lootlogic.js';
+import { freeBody } from './freebody.js';
 import { victimOf, fallOver, deaden, footprint, stain, grave, bodyBox } from './corpse.js';
 
 const RING_MAX = 1.4;     // a corpse's ring, however big the body (a dragon's filled the room)
@@ -139,7 +140,7 @@ export class GroundLoot {
   }
 
   remove(l) {
-    if (l.body) this.engine.scene.remove(l.body);
+    if (l.body) { this.engine.scene.remove(l.body); freeBody(l.body); }
     for (const m of l.mats || []) m.dispose();
     this.engine.scene.remove(l.root);
     l.root.traverse(o => {

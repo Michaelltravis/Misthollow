@@ -28,6 +28,9 @@
   --on-gold: #1a1206;      /* text on that face */
   --star: #ffd86a;         /* quest stars and marks */
   --coin: #e8c050;         /* gold amounts */
+  --danger-soft: #ff9a8a; /* a warning said gently: a fallen title, a debuff's name */
+  --good-soft: #8fd18a; /* a gain said gently */
+  --blood: #7a1210;    /* the dark end of a health bar or a wound */
   /* type */
   --display: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
   --title: 'Cinzel', Georgia, 'Times New Roman', serif;

@@ -1565,9 +1565,12 @@ async function runGame() {
     const ent = row.kind === 'mob' ? ents.list.get(`m${row.id}`) : ents.list.get(`p${row.name}`);
     if (ent) menuFor({ kind: ent.kind === 'player' ? 'player' : 'mob', ent }, x, y);
   });
-  // graphics quality from Settings, at once (only smoother edges wait for a reload)
+  // graphics quality from Settings, at once (only smoother edges wait for a reload): the picture, and
+  // what each part may spend on it (how many effects, how much rain, how many sounds, how many auras)
   MH.bus.on('hud.quality', q => {
     if (engine.setQuality(q)) hud.toast('Smoother edges come with the next reload');
+    const tier = engine.quality.name;
+    for (const part of [fx, sky, sound, wards, adorn]) part.setTier(tier);
     if (heroRoom) applyFar(zone.layoutOf(heroRoom));
   });
 
@@ -1581,6 +1584,7 @@ async function runGame() {
     if (sig !== reactSig) {
       reactSig = sig;
       reactEl.classList.toggle('hidden', !c);
+      document.body.classList.toggle('mid-react', !!c);      // the banner and the news stand aside (hud.css)
       if (c) reactEl.innerHTML = `<span class="rx-what">${cap(String(c.label)).replace(/[&<>"]/g, '')}!</span>`
         + c.keys.map(k => `<span class="rx-key${c.used === k ? ' used' : ''}"><kbd>${k.toUpperCase()}</kbd>${REACTIONS[k].label}</span>`).join('')
         + '<span class="rx-bar"></span>';

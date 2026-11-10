@@ -23,6 +23,8 @@ const _p = new THREE.Vector3();
 const wanted = a => !!(a && (a.motes || a.aura || a.legendary || a.element));
 
 export class Adorn {
+  setTier(tier) { this.tier = tier; }      // graphics quality, changed in Settings
+
   constructor(engine, fx) {
     this.engine = engine;
     this.fx = fx;

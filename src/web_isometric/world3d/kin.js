@@ -5,6 +5,7 @@
 // code through proc.js's ProcActor (idle, walk, attack, hit, death), so entities.js treats a kit
 // body like any other. Built 1 m tall; `height` scales it.
 import * as THREE from 'three';
+import { ownBody } from './freebody.js';
 import { ProcActor } from './proc.js';
 import { rng } from './kinrecipe.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
@@ -728,5 +729,6 @@ export const KIN_PLANS = Object.keys(BUILD);
 export function makeKin(recipe, { height = 1 } = {}) {
   const a = BUILD[recipe.plan](recipe);
   a.root.scale.setScalar(height);
+  ownBody(a.root);      // its buffers and materials are its alone: freed when it is cleared away (freebody.js)
   return a;
 }

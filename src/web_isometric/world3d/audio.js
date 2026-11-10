@@ -140,8 +140,7 @@ class Sound {
     // the 2D client's one switch ("ambience off") silences /play too until it is set here
     const m = ls.get('mh3d_mute');
     this.muted = m != null ? m === '1' : ls.get('misthollow_ambience') === 'off';
-    const q = ls.get('mh3d_quality') || 'high';
-    this.maxVoices = VOICES[q === 'med' ? 'medium' : q] || VOICES.high;
+    this.setTier(ls.get('mh3d_quality') || 'high');
     this.bed = { key: null, nodes: [], timer: null };
     this.pad = { key: null, want: null, voices: [], timer: null };      // the region's chord under the music, and its tune (regionPad)
     this.music = { want: null, zone: null, battle: false, decks: [], cur: -1, timer: null };
@@ -152,6 +151,9 @@ class Sound {
       if (document.hidden) this.ctx.suspend().catch(() => {}); else this.ctx.resume().catch(() => {});
     });
   }
+
+  // how many voices at once, by graphics quality (again when it is changed in Settings)
+  setTier(q) { this.maxVoices = VOICES[q === 'med' ? 'medium' : q] || VOICES.high; }
 
   // ---- start (on a user gesture: browsers keep audio off until then) ----
   unlock() {
