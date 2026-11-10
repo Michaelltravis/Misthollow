@@ -81,8 +81,8 @@
    "hp_dice": "2d10+40",
    "level": 2,
    "long_desc": "A shambling thing stands here, looking about as if it has forgotten what it came for.",
-   "name": "newbie",
-   "short_desc": "the newbie monster",
+   "name": "shambler",
+   "short_desc": "the shambler",
    "vnum": 18602,
    "inventory": [
     18613
@@ -127,8 +127,8 @@
    ],
    "level": 3,
    "long_desc": "A guard of the watch-house is here, looking for the dragon that got out.",
-   "name": "keeper",
-   "short_desc": "the Newbie Guard",
+   "name": "guard",
+   "short_desc": "the watch-house guard",
    "vnum": 18604
   },
   "18605": {
@@ -146,7 +146,7 @@
    "level": 5,
    "long_desc": "The alchemist is here, bent over something that has not worked yet.",
    "name": "alchemist",
-   "short_desc": "the Newbie Alchemist",
+   "short_desc": "the watch-house alchemist",
    "vnum": 18605
   },
   "18606": {
@@ -178,8 +178,8 @@
    "hp_dice": "4d10+64",
    "level": 4,
    "long_desc": "A gaunt figure in a novice's coat stands here. The mist has had this one: there is nobody behind the eyes.",
-   "name": "zombie",
-   "short_desc": "the zombiefied newbie",
+   "name": "novice",
+   "short_desc": "the mist-taken novice",
    "vnum": 18607,
    "inventory": [
     18622
@@ -219,7 +219,7 @@
    "level": 7,
    "long_desc": "A massive minotaur stands here, considering what you will taste like.",
    "name": "minotaur",
-   "short_desc": "the massive Minotaur",
+   "short_desc": "the massive minotaur",
    "vnum": 18609,
    "loot_table": [
     {
@@ -345,8 +345,8 @@
    "hp_dice": "2d10+40",
    "level": 2,
    "long_desc": "A novice is here, pleased with himself and eager to tell you why.",
-   "name": "newbie",
-   "short_desc": "the annoying newbie",
+   "name": "novice",
+   "short_desc": "the boastful novice",
    "vnum": 18611,
    "inventory": [
     18616
@@ -363,8 +363,8 @@
    "hp_dice": "1d10+28",
    "level": 1,
    "long_desc": "A novice is here, turning a map round and round.",
-   "name": "newbie",
-   "short_desc": "the clueless newbie",
+   "name": "novice",
+   "short_desc": "the lost-looking novice",
    "vnum": 18612,
    "inventory": [
     18615
@@ -384,8 +384,8 @@
    "hp_dice": "3d10+52",
    "level": 3,
    "long_desc": "A novice is here, talking, whether or not anyone is listening.",
-   "name": "newbie",
-   "short_desc": "the talkative newbie",
+   "name": "novice",
+   "short_desc": "the talkative novice",
    "vnum": 18613,
    "inventory": [
     18612
@@ -402,8 +402,8 @@
    "hp_dice": "4d10+64",
    "level": 4,
    "long_desc": "A novice is here, wandering with no clear idea of where.",
-   "name": "wanderer",
-   "short_desc": "the lost newbie",
+   "name": "novice",
+   "short_desc": "the wandering novice",
    "vnum": 18614,
    "inventory": [
     18613,
@@ -427,8 +427,8 @@
    "hp_dice": "5d10+76",
    "level": 5,
    "long_desc": "A novice is here who looks as if he knows what he is about.",
-   "name": "veteran",
-   "short_desc": "the smart newbie",
+   "name": "novice",
+   "short_desc": "the steady novice",
    "vnum": 18615,
    "inventory": [
     18602,
@@ -443,8 +443,8 @@
    "damage_dice": "1d5",
    "item_type": "weapon",
    "name": "sword",
-   "room_desc": "A shiny newbie sword is lying here waiting to be possessed.",
-   "short_desc": "a shiny newbie sword",
+   "room_desc": "A novice's shiny sword is lying here waiting to be possessed.",
+   "short_desc": "a novice's shiny sword",
    "value": 0,
    "vnum": 18601,
    "weapon_type": "slash",
@@ -455,8 +455,8 @@
    "armor_bonus": 4,
    "item_type": "armor",
    "name": "vest",
-   "room_desc": "A bright green newbie vest is lying here looking for a body to hug.",
-   "short_desc": "a bright green newbie vest",
+   "room_desc": "A novice's bright green vest is lying here looking for a body to hug.",
+   "short_desc": "a novice's bright green vest",
    "value": 0,
    "vnum": 18602,
    "weight": 4,
@@ -469,8 +469,8 @@
    "armor_bonus": 3,
    "item_type": "armor",
    "name": "helm",
-   "room_desc": "A bright newbie helm is hoping a loose head will wander by.",
-   "short_desc": "a bright newbie helm",
+   "room_desc": "A novice's bright helm is hoping a loose head will wander by.",
+   "short_desc": "a novice's bright helm",
    "value": 0,
    "vnum": 18603,
    "weight": 4,
@@ -483,8 +483,8 @@
    "armor_bonus": 0,
    "item_type": "armor",
    "name": "cloak",
-   "room_desc": "A dark newbie cloak is lying here hoping to smother you.",
-   "short_desc": "a dark newbie cloak",
+   "room_desc": "A novice's dark cloak is lying here hoping to smother you.",
+   "short_desc": "a novice's dark cloak",
    "value": 100,
    "vnum": 18604,
    "weight": 2,
@@ -497,8 +497,8 @@
    "armor_bonus": 0,
    "item_type": "armor",
    "name": "ring",
-   "room_desc": "A newbie signet ring is lying in the dust here.",
-   "short_desc": "a newbie signet ring",
+   "room_desc": "A novice's signet ring is lying in the dust here.",
+   "short_desc": "a novice's signet ring",
    "value": 500,
    "vnum": 18605,
    "weight": 1,
@@ -511,8 +511,8 @@
    "damage_dice": "1d4",
    "item_type": "weapon",
    "name": "dagger",
-   "room_desc": "A shiny newbie dagger is lying here looking for a back to stab.",
-   "short_desc": "a shiny newbie dagger",
+   "room_desc": "A novice's shiny dagger is lying here looking for a back to stab.",
+   "short_desc": "a novice's shiny dagger",
    "value": 0,
    "vnum": 18606,
    "weapon_type": "pierce",
@@ -536,7 +536,7 @@
   "18608": {
    "item_type": "key",
    "name": "key",
-   "room_desc": "A key with the newbie crest on it is here.",
+   "room_desc": "A key with the novice's crest on it is here.",
    "short_desc": "a wee little key",
    "value": 0,
    "vnum": 18608,
@@ -581,7 +581,7 @@
    "item_type": "armor",
    "name": "leggings",
    "room_desc": "A pair of neat looking leggings are here.",
-   "short_desc": "some cool newbie leggings",
+   "short_desc": "some novice's cool leggings",
    "value": 200,
    "vnum": 18612,
    "weight": 4,
@@ -595,7 +595,7 @@
    "item_type": "armor",
    "name": "sleeves",
    "room_desc": "A set of nifty sleeves is here.",
-   "short_desc": "some cool newbie sleeves",
+   "short_desc": "some novice's cool sleeves",
    "value": 400,
    "vnum": 18613,
    "weight": 3,
@@ -608,8 +608,8 @@
    "damage_dice": "2d6",
    "item_type": "weapon",
    "name": "mace",
-   "room_desc": "A finely crafted newbie mace is waiting for a worthy owner.",
-   "short_desc": "a glowing newbie mace",
+   "room_desc": "A novice's finely crafted mace is waiting for a worthy owner.",
+   "short_desc": "a novice's glowing mace",
    "value": 300,
    "vnum": 18614,
    "weapon_type": "pound",
@@ -826,7 +826,7 @@
    "description": "An arch of old city stone stands open here, a lantern bracket rusting on either side of it. This was a watch-house of the lantern-bearers once; the Temple still sends the newly woken here to find their feet. The way in is north. Behind you the smoke and noise of the city go on as they always have.",
    "exits": {
     "north": {
-     "description": "You see the start of the newbie zone.",
+     "description": "You see the arch of the Proving Halls.",
      "to_room": 18601
     },
     "west": {
@@ -843,7 +843,7 @@
      "vnum": 18602
     }
    ],
-   "name": "The Entrance To The Newbie Zone",
+   "name": "The Arch Of The Proving Halls",
    "sector_type": "city",
    "vnum": 18600,
    "extra_descs": {
@@ -858,7 +858,7 @@
      "to_room": 18602
     },
     "south": {
-     "description": "The entrance to the newbie zone... how dull",
+     "description": "The way into the Proving Halls.",
      "to_room": 18600
     }
    },
@@ -1723,7 +1723,7 @@
    },
    "extra_descs": {
     "": "wall",
-    "words picture wall": "The scrawl reads: 'I was a newbie here. Now I have a castle. Keep walking.' The crude picture is, generously, a castle."
+    "words picture wall": "Names, cut deep, some with a year beside them. Under the last of them someone has scratched: 'I began here. Keep walking.' The crude picture is, generously, a lantern."
    },
    "flags": [
     "dark",
@@ -1753,7 +1753,7 @@
    },
    "extra_descs": {
     "": "plaque nameplate name",
-    "statue": "The statue shows an adventurer mid-stride, chin up, pack square. The plaque says only: ONWARD. Newbies touch the boot for luck; the bronze shines there."
+    "statue": "The statue shows a lantern-bearer mid-stride, chin up, pack square. The plaque says only: ONWARD. The newly woken touch the boot for luck; the bronze shines there."
    },
    "flags": [
     "dark",
@@ -1926,7 +1926,7 @@
    },
    "extra_descs": {
     "": "floor design",
-    "desk design decorations": "Fresh flowers stand in a vase no one is ever seen refilling. The newbie hall keeps its small mysteries."
+    "desk design decorations": "Fresh flowers stand in a vase no one is ever seen refilling. The watch-house keeps its small mysteries."
    },
    "flags": [
     "dark",

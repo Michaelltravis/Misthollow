@@ -22,7 +22,7 @@ COLS = {'iron': 'black_iron', 'brass': 'brass', 'flame': 'fire~glow', 'ember': '
 # back +Y). The left hip is behind the shield and the game's camera looks from behind and above, so
 # this is where it shows most of the time
 X, Y, TOP = -0.36, 0.36, 0.66          # the belt ring
-R, H = 0.1, 0.21                       # the cage's radius and height (large for its wearer: it must read from the game's camera)
+R, H = 0.135, 0.28                     # the cage's radius and height (large for its wearer: at 0.1 by 0.21 it was a few pixels from the game's camera)
 SIX = math.pi / 6                      # a face forward, not a corner
 
 

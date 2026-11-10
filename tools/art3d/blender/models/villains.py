@@ -15,6 +15,7 @@
 import math
 
 import mhb
+import mhb.body
 from mhb import Skel, Palette, part, finish_body, Clips, gaits
 from mhb.forms import humanoid, humanoid_clips
 
@@ -185,10 +186,19 @@ if V == 'death':
     hx, hyy = hand_r.x, hand_r.y - 0.02 * H
     add(part('cyl', 'snath', (hx, hyy, hand_r.z + 0.22 * H), (0.012 * H, 0.012 * H, 0.6 * H), segments=6), 'glass', 'arm2.R')
     top = hand_r.z + 0.8 * H
-    for i in range(5):                                # the blade: a curve of five tapering pieces, out and down
-        a = R(8 + 20 * i)
-        add(part('cube', f'blade{i}', (hx + (0.06 + 0.1 * i) * H * math.cos(a) * 0.9, hyy, top - (0.016 * i * i) * H),
-                 ((0.062 - 0.006 * i) * H, 0.008 * H, (0.05 - 0.008 * i) * H), rot=(0, R(14 * i), 0)), 'metal', 'arm2.R')
+    # the blade: one curved plate, broad at the snath and drawn to a point, sweeping out and down
+    n, r = 9, 0.34 * H
+    outer, inner = [], []
+    for i in range(n + 1):
+        t = 1.75 * i / n                              # radians round the curve
+        w = 0.085 * H * (1 - i / n) ** 0.8            # its breadth here
+        ox, oz = hx + r * math.sin(t), top + 0.02 * H - r * (1 - math.cos(t))
+        outer.append((ox, hyy, oz))
+        inner.append((ox - w * math.sin(t), hyy, oz - w * math.cos(t)))
+    verts = outer + inner
+    faces = [(i, i + 1, n + 1 + i + 1, n + 1 + i) for i in range(n)]
+    add(mhb.body.poly('blade', verts, faces, 0.012 * H), 'metal', 'arm2.R')
+    add(part('cube', 'tang', (hx + 0.012 * H, hyy, top + 0.0 * H), (0.03 * H, 0.012 * H, 0.03 * H)), 'trim', 'arm2.R')
 
 body = finish_body(body, arm, parts, budget=7000)
 

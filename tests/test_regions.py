@@ -140,6 +140,26 @@ async def main():
     got = QuestManager.get_available_quests(top, 3200)
     check('story_deeproad' in got and 'story_reach' in got, 'at the level cap the last two stories are offered')
 
+    # ---- words of another author's world are said otherwise (world/words.json, regions.apply_words)
+    fix = regions._replacer({'Lloth': 'Ishaleth', 'yochlol': 'silk-handmaiden'})
+    check(fix('the Temple Of Lloth') == 'the Temple Of Ishaleth' and fix('a Yochlol waits') == 'a Silk-handmaiden waits' and fix('lloth temple') == 'Ishaleth temple',
+          'whole words; a name keeps its capital, a common word takes the case it replaces')
+    check(fix('slothful') == 'slothful' and fix('no such word') == 'no such word', 'never inside another word')
+    import json as _json
+    texts = []
+    for r in world.rooms.values():
+        texts += [r.name, r.description or ''] + list((getattr(r, 'extra_descs', None) or {}).values())
+    texts.append(_json.dumps(list(world.mob_prototypes.values()), default=str))
+    texts.append(_json.dumps(list(world.obj_prototypes.values()), default=str))
+    left = [t[:60] for t in texts if _re.search(r'\b(lloth|lolth|yochlol)\b', str(t), _re.I)]
+    check(not left, f"no room, creature or thing still says them ({left[:3]})")
+    check(any('Ishaleth' in str(t) for t in texts), 'and the Umbral City has its own goddess')
+    # the first zone's own names
+    check(world.rooms[18600].name == 'The Arch Of The Proving Halls', "the first zone's arch is named for the Proving Halls")
+    newbie = [t[:50] for t in ([r.name for r in world.zones[186].rooms.values()] + [_json.dumps(p, default=str) for v, p in world.mob_prototypes.items() if 18600 <= v < 18700]
+              + [_json.dumps(p, default=str) for v, p in world.obj_prototypes.items() if 18600 <= v < 18700]) if _re.search(r'newbie', t, _re.I)]
+    check(not newbie, f'nothing in the first zone is called a newbie any more ({newbie[:3]})')
+
     # ---- the bells at dusk: heard in the Lantern Vale, and nowhere else
     temple, square = world.rooms[3001], world.rooms[3005]
     check(regions.bells_line(temple) == regions.BELLS_INDOORS, 'in the Temple the bells come through the walls')

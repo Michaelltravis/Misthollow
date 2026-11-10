@@ -3,7 +3,7 @@
 the warrior's warden (models/warden.py) every class but none has one:
 
     templar      a paladin   a halo behind the head, winged pauldrons, a gorget, a white tabard with the sun
-    hierophant   a cleric    a gold-ended stole, a sunburst behind the shoulders, wide cuffs, a censer
+    hierophant   a cleric    a gold-ended stole, a sunburst behind the head, wide cuffs, a censer
     footpad      a thief     a red scarf with tails, a bandolier of knives, belt pouches, arm wraps
     nightblade   an assassin a pointed black mantle, crossed blades on the back, a red sash, arm blades
     wayfinder    a ranger    a mantle of leaves, feathers at the shoulder, a bedroll, fur-trimmed bracers
@@ -124,18 +124,20 @@ def hierophant():
         pal.paint(yoke, 'white')
         parts.append(yoke)
         pieces = {'Hiero_Stole': (kit.join('Hiero_Stole', parts), kit.cloth_weights(0.60, 0.30, legs=0.35, upper=(0.97, 'chest')))}
-        disc = kit.shell('disc', [(0, 0, 0, 0.17, 0.17), (0, 0, 0.025, 0.15, 0.15), (0, 0, 0.035, 0, 0)], segs=12, cap_lo=True, smooth=False)
+        # behind the head, its rays reaching past it on every side (behind the shoulders it was hidden
+        # by the head from in front and by the body from above)
+        disc = kit.shell('disc', [(0, 0, 0, 0.24, 0.24), (0, 0, 0.025, 0.21, 0.21), (0, 0, 0.035, 0, 0)], segs=12, cap_lo=True, smooth=False)
         disc.rotation_euler = (R(-90), 0, 0)
-        disc.location = (0, 0.42, 1.32)
+        disc.location = (0, 0.55, 1.78)
         pal.paint(disc, 'glow')
         burst = [disc]
-        for k in range(10):
-            a = k * math.pi / 5
-            long = 0.26 if k % 2 == 0 else 0.17
-            f = kit.fin(f'ray{k}', [(-0.035, 0.16), (0.035, 0.16), (0, 0.16 + long)], at=(0, 0.43, 1.32), thickness=0.02, rot=(0, a, 0))
+        for k in range(12):
+            a = k * math.pi / 6
+            long = 0.58 if k % 2 == 0 else 0.40
+            f = kit.fin(f'ray{k}', [(-0.055, 0.2), (0.055, 0.2), (0, 0.2 + long)], at=(0, 0.56, 1.78), thickness=0.022, rot=(0, a, 0))
             pal.paint(f, 'gold')
             burst.append(f)
-        pieces['Hiero_Sunburst'] = (kit.join('Hiero_Sunburst', burst), 'chest')
+        pieces['Hiero_Sunburst'] = (kit.join('Hiero_Sunburst', burst), 'head')
         for side, tag in ((1, 'L'), (-1, 'R')):
             pieces[f'Hiero_Cuff_{tag}'] = (cuff(pal, f'Hiero_Cuff_{tag}', side, 'white', 'gold', flare=0.25), f'lowerarm.{tag.lower()}')
         b = belt(pal, 'gold', h=0.07)

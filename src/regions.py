@@ -176,3 +176,67 @@ def relevel(world, path=None):
             n += 1
         done[znum] = n
     return done
+
+
+# ---- words of another author's world ----
+WORDS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'world', 'words.json')
+
+
+def _replacer(words):
+    import re
+    if not words:
+        return None
+    table = {k.lower(): v for k, v in words.items()}
+    pat = re.compile(r'\b(' + '|'.join(re.escape(k) for k in sorted(words, key=len, reverse=True)) + r')\b', re.I)
+
+    def one(m):
+        new = table[m.group(0).lower()]
+        return new[:1].upper() + new[1:] if m.group(0)[:1].isupper() else new
+    return lambda text: pat.sub(one, text) if isinstance(text, str) and pat.search(text) else text
+
+
+def reword(value, fix):
+    """`value` (a string, or a dict or list of them, however deep) with every word replaced; dicts and
+    lists are changed in place and returned."""
+    if isinstance(value, str):
+        return fix(value)
+    if isinstance(value, dict):
+        for k in list(value):
+            value[k] = reword(value[k], fix)
+    elif isinstance(value, list):
+        for i, v in enumerate(value):
+            value[i] = reword(v, fix)
+    return value
+
+
+def apply_words(world, path=None):
+    """Replace the words in world/words.json in every room (its name, its description, what can be
+    looked at in it), creature and thing (run once as the world loads, before anything spawns).
+    Returns how many strings changed."""
+    try:
+        with open(path or WORDS_PATH, encoding='utf-8') as f:
+            words = json.load(f).get('words') or {}
+    except (OSError, ValueError) as e:
+        logger.warning(f'no words: {e}')
+        return 0
+    fix = _replacer(words)
+    if fix is None:
+        return 0
+    changed = 0
+
+    def counted(text):
+        nonlocal changed
+        new = fix(text)
+        if new != text:
+            changed += 1
+        return new
+    for room in getattr(world, 'rooms', {}).values():
+        room.name = counted(room.name)
+        room.description = counted(getattr(room, 'description', '') or '')
+        if isinstance(getattr(room, 'extra_descs', None), dict):
+            reword(room.extra_descs, counted)
+    for table in (getattr(world, 'mob_prototypes', {}), getattr(world, 'obj_prototypes', {})):
+        for proto in table.values():
+            if isinstance(proto, dict):
+                reword(proto, counted)
+    return changed

@@ -195,8 +195,12 @@ class Mobile(Character):
         if not name or not short or short.endswith(('.', '!')):
             return None
         bare = _re.sub(r'^(a|an|the|some)\s+', '', short, flags=_re.I)
-        if name.lower() in (short.lower(), bare.lower()):
+        if name.lower() == short.lower():
             return None
+        if name.lower() == bare.lower():
+            # the description is the name with its article: one word takes it ("the rat"), so the log
+            # reads "You attack the rat!"; a name of several words is left as it was written
+            return short if len(name.split()) < 2 else None
         if len(name.split()) < 2:
             # one word: only when the description is that creature's fuller name
             return short if _re.search(r'\b' + _re.escape(name.lower()) + r'\b', short.lower()) else None

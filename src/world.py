@@ -779,6 +779,14 @@ class World:
             pass
         
         # Reset zones (spawn mobs and objects)
+        # words of another author's world, said otherwise (world/words.json), before anything spawns
+        try:
+            import regions
+            n = regions.apply_words(self)
+            if n:
+                logger.info(f"words: {n} strings")
+        except Exception as e:
+            logger.error(f"words failed: {e}")
         await self.reset_all_zones()
 
         # Spawn faction NPCs

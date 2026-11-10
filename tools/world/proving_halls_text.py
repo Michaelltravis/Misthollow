@@ -8,9 +8,8 @@ place the world should sound like itself: an old watch-house of the lantern-bear
 edge, half given back to the damp, where the Temple still sends the newly woken to find their feet.
 The mist gets into its lower passages; what it has touched down there has forgotten its name.
 
-Only the words change: every room keeps its name, exits, flags and creatures, and every creature
-its name and numbers (the zone's own name and its creatures' names are on the owner's rename list,
-not changed here).
+Every room keeps its exits, flags and creatures, and every creature its numbers. Names that spoke
+of "newbies" are changed too (ROOM_NAMES, MOB_NAMES, thing_text): the owner kept the renames.
 
     python3 tools/world/proving_halls_text.py            # rewrites world/zones/zone_186.json in place
     python3 tools/world/proving_halls_text.py --check    # fails if a room or creature is not covered
@@ -65,6 +64,33 @@ ROOMS = {
     18647: "The hall opens into a wide room under a high dome. A stair climbs to a balcony open to the sky. The room continues north; ways also lead south and west.",
 }
 
+# what a room, a creature or a thing is called, where the old name spoke of "newbies" (the owner kept
+# the renames, 9 November). A creature's `name` is the word a player types to find it.
+ROOM_NAMES = {18600: 'The Arch Of The Proving Halls'}
+MOB_NAMES = {
+    18602: ('shambler', 'the shambler'),
+    18604: ('guard', 'the watch-house guard'),
+    18605: ('alchemist', 'the watch-house alchemist'),
+    18607: ('novice', 'the mist-taken novice'),
+    18609: ('minotaur', 'the massive minotaur'),
+    18611: ('novice', 'the boastful novice'),
+    18612: ('novice', 'the lost-looking novice'),
+    18613: ('novice', 'the talkative novice'),
+    18614: ('novice', 'the wandering novice'),
+    18615: ('novice', 'the steady novice'),
+}
+
+
+def thing_text(text):
+    """A thing's words without "newbie": "a shiny newbie sword" -> "a novice's shiny sword"."""
+    import re
+    if not isinstance(text, str):
+        return text
+    text = re.sub(r"\b([Aa]n?|[Ss]ome) ((?:[\w-]+ ){0,2})newbie (\w)", lambda m: f"{'A' if m.group(1)[0].isupper() else 'a'} novice's {m.group(2)}{m.group(3)}"
+                  if m.group(1).lower() in ('a', 'an') else f"{m.group(1)} novice's {m.group(2)}{m.group(3)}", text)
+    return re.sub(r"\bnewbie\b", "novice's", re.sub(r"\bNewbie\b", "Novice's", text))
+
+
 # a creature's line in the room (its name and numbers are not touched)
 MOBS = {
     18601: "A big, heavy-jawed pit-beast stands here, sizing you up.",
@@ -102,6 +128,14 @@ def main():
         rooms[str(v)]['description'] = text
     for v, text in MOBS.items():
         mobs[str(v)]['long_desc'] = text
+    for v, name in ROOM_NAMES.items():
+        rooms[str(v)]['name'] = name
+    for v, (name, short) in MOB_NAMES.items():
+        mobs[str(v)]['name'], mobs[str(v)]['short_desc'] = name, short
+    for obj in (zone.get('objects') or {}).values():
+        for k in ('short_desc', 'room_desc', 'long_desc', 'description'):
+            if k in obj:
+                obj[k] = thing_text(obj[k])
     # written the way the zone files are (one space a level, the letters as they are, a last
     # newline), so the change is its words alone; a file in another format is left as it is
     if json.dumps(json.loads(raw), indent=1, ensure_ascii=False) + '\n' != raw:
