@@ -223,8 +223,11 @@ Seen and heard in the running game (as the test paladin, with the immortal `sett
   server by the game's own sign-up, raised and brought to the antechamber by an immortal) walked
   north into the chamber. It stood empty for four seconds; then Ostragoth was there on his own
   body, cast Night's Embrace (the Brace / Sidestep prompt showed), and neither `flee` nor walking
-  south took the hero out: the lair holds. The moment of his arrival was sampled once a second,
-  so the bat's own shape in the air was not caught in a frame.
+  south took the hero out: the lair holds. Run again watching for his herald: 1.2 s after the
+  hero walks in, "a great black bat" is in the room on a bat's body ("a great black bat bursts in
+  out of the night and wheels about the canopy of the bed"); at 3.6 s it is gone and Ostragoth
+  stands in its place ("the wings become a cloak, and the cloak a man"), on his own body by 4.2 s.
+  The test hero and its account were removed afterwards, and the server stopped.
 - **The cost of the wider room ring**, by timing drawn frames (the engine stepped by hand, 120
   frames a sample, a pixel read back each sample so the graphics card's work is counted): on the
   Lantern Road at 1280x720, High, an RTX 4070, **2.3 ms a frame with the wide ring (19 rooms
