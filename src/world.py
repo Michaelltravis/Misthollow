@@ -709,6 +709,14 @@ class World:
             population.apply(self)
         except Exception as e:
             logger.error(f"population failed: {e}")
+        # zones lifted to their region's levels (world/zone_levels.json: the Frostmarch)
+        try:
+            import regions
+            lifted = regions.relevel(self)
+            if lifted:
+                logger.info(f"zone levels: {lifted}")
+        except Exception as e:
+            logger.error(f"zone levels failed: {e}")
         # secret ways hidden until found (zone_hazards.py: Shadowspire's mirror door and library)
         try:
             import zone_hazards
@@ -892,6 +900,13 @@ class World:
                 data = json.load(f)
                 
             zone = Zone.from_dict(data)
+            # (what it is called in play: world/zone_names.json; its file's own name is kept beside it)
+            try:
+                import regions
+                zone.file_name = zone.name
+                zone.name = regions.zone_name(zone.number, zone.name)
+            except Exception:
+                pass
             self.zones[zone.number] = zone
             
             # Add rooms to global lookup

@@ -721,7 +721,7 @@ async function runGame() {
     engine.placeCamera(true);
     hud.showGame(true);
     $('#loading').classList.add('done');          // the mist parts on the world, built (login.success drew it)
-    hud.banner(room.name, zone.name, zone.region);
+    hud.banner(room.name, zone.name, zone.region, zone.level);
     ents.sync(payload, MH.state.playerName); loot.sync(payload); spots.sync(payload); followLoot(payload);
     mm.setExplored((payload.rooms || []).map(r => r.vnum));
     mm.setTime(payload.time);
@@ -892,7 +892,7 @@ async function runGame() {
       enterZone(zm);
       const r = zone.rooms.get(v);
       teleport(r, oldV != null ? zone.arrival(r, oldV, null) : zone.centre(r));
-      hud.banner(r.name, zone.name, zone.region);
+      hud.banner(r.name, zone.name, zone.region, zone.level);
       if (lastPayload) { ents.sync(lastPayload, MH.state.playerName); loot.sync(lastPayload); spots.sync(lastPayload); }
     } finally {
       const next = relocating && relocating.next;
@@ -952,7 +952,7 @@ async function runGame() {
         // (a room is a couple of milliseconds to build: two cells round at once, rather than have the
         // new zone come into being room by room over the next second)
         land(r, zone.arrival(r, h.from.vnum, h.dir), h.from.vnum, h.seamless, 2);
-        hud.banner(r.name, zone.name, zone.region);
+        hud.banner(r.name, zone.name, zone.region, zone.level);
         if (lastPayload) { ents.sync(lastPayload, MH.state.playerName); loot.sync(lastPayload); spots.sync(lastPayload); }
       } else {
         const r = zone.rooms.get(v);

@@ -33,6 +33,7 @@ export class Zone {
     this.zm = zm;
     this.num = zm.zone;
     this.name = zm.name;
+    this.level = zm.level || null;        // about what level its creatures are (map_system._zone_level)
     this.region = zm.region || null;      // {id, name, line, levels}: the region of the world it lies in (regions.py)
     this.wild = !!zm.wild;       // an opened zone (wilds.py): its outdoor land runs on past its rooms
     this.rooms = new Map();

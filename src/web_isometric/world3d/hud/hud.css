@@ -1187,3 +1187,4 @@ html.fallen #vignette { background: radial-gradient(ellipse at 50% 46%, rgba(30,
   border: 1px solid var(--edge-dim); background: rgba(255,255,255,.04); color: var(--ink-dim); }
 .ch-looks button:hover { color: var(--ink); border-color: var(--gold); }
 .ch-looks button.on { color: #1a1206; border-color: #f0d28c; background: linear-gradient(180deg, #f3d999, #b98d45); cursor: default; }
+#banner.danger .line { color: #ff8a70; font-style: normal; font-weight: 600; }

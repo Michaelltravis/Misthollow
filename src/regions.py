@@ -92,3 +92,87 @@ async def dusk_bells(world):
         except Exception:
             logger.exception('dusk bells: the sound')
     return heard
+
+
+# ---- what a zone is called ----
+NAMES_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'world', 'zone_names.json')
+_names = None
+
+
+def zone_name(zone_num, name):
+    """A zone's name in play: the one world/zone_names.json gives it, else its own (`name`)."""
+    global _names
+    if _names is None:
+        _names = {}
+        try:
+            with open(NAMES_PATH, encoding='utf-8') as f:
+                _names = {int(k): str(v) for k, v in (json.load(f).get('names') or {}).items() if str(v).strip()}
+        except (OSError, ValueError) as e:
+            logger.warning(f'no zone names: {e}')
+    try:
+        return _names.get(int(zone_num), name)
+    except (TypeError, ValueError):
+        return name
+
+
+# ---- a zone lifted to its region's levels ----
+LEVELS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'world', 'zone_levels.json')
+
+
+def new_level(level, rule):
+    """A creature's level under a zone's rule {add, lo, hi}: `add` more, held within [lo, hi]; one
+    already above the band keeps its own."""
+    level = int(level or 1)
+    lo, hi = int(rule.get('lo', 1)), int(rule.get('hi', 999))
+    if level >= hi:
+        return level
+    return max(lo, min(hi, level + int(rule.get('add', 0))))
+
+
+def relevel(world, path=None):
+    """Lift the creatures of the zones in world/zone_levels.json (run once as the world loads, after
+    the population is applied and before anything spawns). Returns {zone: creatures lifted}."""
+    try:
+        with open(path or LEVELS_PATH, encoding='utf-8') as f:
+            rules = {int(k): v for k, v in (json.load(f).get('zones') or {}).items()}
+    except (OSError, ValueError) as e:
+        logger.warning(f'no zone levels: {e}')
+        return {}
+    import population
+    done = {}
+    for znum, rule in rules.items():
+        zone = world.zones.get(znum)
+        if zone is None:
+            continue
+        vnums = set()
+        for room in getattr(zone, 'rooms', {}).values():
+            for reset in getattr(room, 'mob_resets', None) or []:
+                v = reset.get('vnum') if isinstance(reset, dict) else reset
+                if v is not None:
+                    vnums.add(int(v))
+        n = 0
+        for v in sorted(vnums):
+            proto = world.mob_prototypes.get(v)
+            if not proto or proto.get('_releveled'):
+                continue
+            old = int(proto.get('level') or 1)
+            new = new_level(old, rule)
+            if new == old:
+                continue
+            want = population.numbers(new, proto.get('rank'))
+            have_hp = proto.get('max_hp') or population._avg(proto.get('hp_dice')) or 0
+            proto['level'] = new
+            if want['max_hp'] > have_hp:
+                proto['hp_dice'] = want['hp_dice']
+                if proto.get('max_hp'):
+                    proto['max_hp'] = proto['hp'] = want['max_hp']
+            if population._avg(want['damage_dice']) > (population._avg(proto.get('damage_dice')) or 0):
+                proto['damage_dice'] = want['damage_dice']
+            for k in ('hitroll', 'damroll'):
+                proto[k] = max(int(proto.get(k) or 0), want[k])
+            proto['exp'] = max(int(proto.get('exp') or 0), int((proto.get('exp') or want['exp']) * new / max(1, old)))
+            proto['gold'] = max(int(proto.get('gold') or 0), want['gold'])
+            proto['_releveled'] = old
+            n += 1
+        done[znum] = n
+    return done

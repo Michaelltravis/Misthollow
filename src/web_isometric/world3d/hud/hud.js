@@ -810,10 +810,11 @@ export function createHud() {
   // `region` ({name, line}: the zone's region of the world): named over the zone; its line is
   // said when you cross into it from another (or first arrive), and the banner stays a little longer
   let lastRegion = null;
-  function banner(room, zone, region = null) {
+  function banner(room, zone, region = null, zoneLevel = null) {
     // mid-fight a room's name would sit on the fight; a new zone still announces itself
     if (MH.state.inCombat && !zone) return;
-    const said = bannerSays(zone, region, lastRegion);
+    const said = bannerSays(zone, region, lastRegion, { zone: zoneLevel, hero: (MH.state.player || {}).level });
+    els.banner.classList.toggle('danger', !!said.danger);
     if (zone && region) lastRegion = region.id || region.name;
     els.banner.querySelector('.region').textContent = said.region;
     els.banner.querySelector('.zone').textContent = zone || '';

@@ -49,6 +49,7 @@ async def main():
     Config.PLAYER_DIR = tempfile.mkdtemp()
     from world import World
     import map_system
+    build_zm = map_system.build_zonemap
     world = World(Config())
     await world.load()
     zm = map_system.build_zonemap(world, world.rooms[3001].zone.number)
@@ -57,6 +58,35 @@ async def main():
     check(zm12 is None or zm12.get('region') is None, "the God Rooms' map says none")
     named = [z for z in world.zones.values() if regions.of(z.number)]
     check(len(named) >= 120, f'{len(named)} loaded zones have a region')
+
+    # ---- what zones are called in play (world/zone_names.json)
+    check(world.zones[186].name == 'The Proving Halls' and world.zones[186].file_name == 'Newbie Zone', 'the first zone is the Proving Halls; its file keeps the old name')
+    check(world.zones[408].name == 'The Lantern Road' and world.zones[30].name == 'Garathorm Inner City', 'a renamed zone and one that keeps its name')
+    import re as _re
+    borrowed = _re.compile(r'\b(Moria|Gondor|Olympus|Elvandar|Atuan|Salem|Hommlet|Drow City|Isle of Lag|Newbie)\b|\bI{1,2}$')
+    left = sorted(z.name for z in world.zones.values() if regions.of(z.number) and borrowed.search(z.name))
+    check(not left, f"no zone in a region is still called by a builder's numeral or another author's name ({left})")
+    check(build_zm(world, 186)['name'] == 'The Proving Halls', "the zone's map says the new name")
+
+    # ---- the Frostmarch lifted to 20-35 (world/zone_levels.json, regions.relevel)
+    check(regions.new_level(3, {'add': 10, 'lo': 20, 'hi': 26}) == 20 and regions.new_level(14, {'add': 10, 'lo': 20, 'hi': 26}) == 24
+          and regions.new_level(19, {'add': 10, 'lo': 20, 'hi': 26}) == 26 and regions.new_level(45, {'add': 10, 'lo': 20, 'hi': 26}) == 45,
+          'a creature gains the levels, held in the band; one above it keeps its own')
+    import statistics
+    def spawned(znum):
+        vs = {int(r.get('vnum') if isinstance(r, dict) else r) for room in world.zones[znum].rooms.values() for r in (getattr(room, 'mob_resets', None) or [])}
+        return [world.mob_prototypes[v] for v in vs if v in world.mob_prototypes]
+    for znum, lo in ((66, 20), (180, 22), (521, 24), (522, 28), (190, 30)):
+        ps = spawned(znum)
+        med = statistics.median(p['level'] for p in ps) if ps else 0
+        # (a creature that also lives in an earlier zone keeps the level it was given there)
+        under = [p for p in ps if p['level'] < lo]
+        check(ps and len(under) <= 1 and med >= lo, f'{world.zones[znum].name}: its creatures are level {lo} and up (median {med}; {len(under)} shared with an earlier zone)')
+    import population
+    lifted = [p for p in spawned(522) if p.get('_releveled')]
+    check(lifted and all((p.get('max_hp') or population._avg(p['hp_dice'])) >= population.numbers(p['level'], p.get('rank'))['max_hp'] * 0.95 for p in lifted),
+          'a lifted creature has at least the health of its new level')
+    check(not any(p.get('_releveled') for p in spawned(30)), 'a zone not in the file is as it was')
 
     # ---- the bells at dusk: heard in the Lantern Vale, and nowhere else
     temple, square = world.rooms[3001], world.rooms[3005]
