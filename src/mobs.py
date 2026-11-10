@@ -184,12 +184,39 @@ class Mobile(Character):
     def said_name(name: str, short: str) -> Optional[str]:
         """What a creature is called in play when its name is a list of keywords ("ogre wandering
         brute giant", the build-out's way): its description ("a wandering ogre"). None when the name
-        already reads as one: a single word ("rat") or the description itself."""
+        already reads as one: the description itself, or a single word its description does not
+        hold.
+
+        A single keyword whose description names the same creature more fully ("dragon", "the baby
+        dragon") is said as the description too (the owner's seamless pass, November 2026): the log
+        said "You attack dragon!" under a nameplate reading "Baby dragon". The word stays its
+        keyword, so "kill dragon" finds it as before."""
         name, short = (name or '').strip(), (short or '').strip()
-        if len(name.split()) < 2 or not short or short.endswith(('.', '!')):
+        if not name or not short or short.endswith(('.', '!')):
             return None
         bare = _re.sub(r'^(a|an|the|some)\s+', '', short, flags=_re.I)
-        return None if name.lower() in (short.lower(), bare.lower()) else short
+        if name.lower() in (short.lower(), bare.lower()):
+            return None
+        if len(name.split()) < 2:
+            # one word: only when the description is that creature's fuller name
+            return short if _re.search(r'\b' + _re.escape(name.lower()) + r'\b', short.lower()) else None
+        return short
+
+    # The first ten levels' creatures carry less health than their dice say (the owner's seamless
+    # pass, November 2026): the stock areas gave a level-4 creature 86 hp against a new warrior's 6 to
+    # 10 a blow, ten rounds a fight. Six tenths at level 1, rising evenly to the whole at level 10.
+    # Bosses, sub-bosses and elites keep theirs.
+    EARLY_FROM, EARLY_UNTIL = 0.6, 10
+
+    @staticmethod
+    def early_health(level, proto=None) -> float:
+        proto = proto or {}
+        if proto.get('boss_config') is not None or proto.get('rank') in ('elite', 'sub-boss', 'boss') or 'boss' in (proto.get('flags') or ()):
+            return 1.0
+        level = max(1, int(level or 1))
+        if level >= Mobile.EARLY_UNTIL:
+            return 1.0
+        return Mobile.EARLY_FROM + (1 - Mobile.EARLY_FROM) * (level - 1) / (Mobile.EARLY_UNTIL - 1)
 
     @staticmethod
     def apply_prototype(mob: 'Mobile', proto: dict, world: 'World') -> 'Mobile':
@@ -240,6 +267,7 @@ class Mobile(Character):
         else:
             hp_dice = proto.get('hp_dice', f'{mob.level}d10+{mob.level * 5}')
             mob.max_hp = Mobile.roll_dice(hp_dice)
+        mob.max_hp = max(1, int(mob.max_hp * Mobile.early_health(mob.level, proto)))
         mob.hp = mob.max_hp
 
         # Mana and movement

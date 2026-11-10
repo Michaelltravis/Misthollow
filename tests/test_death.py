@@ -120,6 +120,52 @@ async def main():
     pupil.level = 12
     check(not await QuestManager.resume_tutorial(pupil), 'nor to one past level 10')
 
+    # ---- catching your breath between fights (Player.catch_breath)
+    rest = hero_at('Resttest', 3001)
+    rest.max_hp, rest.hp = 100, 20
+    rest.fighting = None
+    rest.position = 'standing'
+    check(rest.catch_breath() == 0, 'the first calm tick gives nothing yet')
+    check(rest.catch_breath() == 5 and rest.hp == 25, 'from the second, a twentieth of their health a tick')
+    rest.fighting = mob
+    check(rest.catch_breath() == 0 and rest.hp == 25, 'not in a fight')
+    rest.fighting = None
+    check(rest.catch_breath() == 0, 'and the calm is counted afresh after one')
+    rest.hp = 99
+    rest.catch_breath()
+    check(rest.hp == 100, 'never past full')
+
+    # ---- newcomers: loot picked up, and running at a fifth of their health until they choose
+    new = hero_at('Newtest', 3001)
+    check(new.autoloot is True, 'a new hero picks up what their kills carried')
+    new.max_hp, new.level = 40, 1
+    check(new.wimpy_now() == 8, f'a newcomer runs at a fifth of their health ({new.wimpy_now()})')
+    new.level = 6
+    check(new.wimpy_now() == 0, 'past level 5 only if they set it')
+    new.level = 2
+    await CommandHandler.cmd_wimpy(new, ['0'])
+    check(new.wimpy_set and new.wimpy_now() == 0, '`wimpy 0` turns it off, for good')
+    await CommandHandler.cmd_wimpy(new, ['12'])
+    check(new.wimpy_now() == 12, 'and their own number is kept')
+
+    # ---- waking where you left, unless you left it dying
+    wild = fight_room
+    low = hero_at('Lowtest', wild.vnum)
+    low.max_hp, low.hp, low.room_vnum = 100, 20, wild.vnum
+    check(world.login_room(low) is low.recall_room(), 'under three tenths of their health in a wild room: they wake at the temple')
+    low.hp = 60
+    check(world.login_room(low) is wild, 'hale, they wake where they left')
+    low.hp, low.room_vnum = 5, 3001
+    check(world.login_room(low) is world.rooms[3001], 'a peaceful room is safe to wake in, however hurt')
+
+    # ---- the first ten levels' creatures carry less health (Mobile.early_health)
+    from mobs import Mobile
+    check(abs(Mobile.early_health(1) - 0.6) < 1e-9 and Mobile.early_health(10) == 1.0 and Mobile.early_health(40) == 1.0, 'six tenths at level 1, the whole from level 10')
+    check(0.7 < Mobile.early_health(4) < 0.76, f'a level-4 creature about three quarters ({Mobile.early_health(4):.2f})')
+    check(Mobile.early_health(3, {'boss_config': {}}) == 1.0 and Mobile.early_health(3, {'rank': 'elite'}) == 1.0, 'bosses and elites keep theirs')
+    dragon = create_mob_from_prototype(dict(world.mob_prototypes[18603]), world)
+    check(50 <= dragon.max_hp <= 70, f'the baby dragon (level 4, 86 by its dice) has about 63 ({dragon.max_hp})')
+
     print('ALL OK' if not failures else f'{len(failures)} FAILED')
     return 1 if failures else 0
 

@@ -87,6 +87,7 @@ class Character:
         self.fighting = None
         self.stance = 'normal'
         self.wimpy = 0
+        self.wimpy_set = False          # whether the player chose their own wimpy (`wimpy <hp>`, 0 for none)
         self.flee_cooldown_until = 0
         self.escape_cooldown_until = 0
         self.disengage_cooldown_until = 0
@@ -572,7 +573,7 @@ class Player(Character):
         self.target_labels = {}  # Label system: {"DEAD": character_obj, "TANK": char_obj}
 
         # Autoloot settings
-        self.autoloot = False  # Automatically loot items from corpses
+        self.autoloot = True  # Automatically loot items from corpses (on for a new hero since November 2026: every kill needed a corpse click)
         self.autoloot_gold = True  # Automatically loot gold from corpses (default on)
         self.autogold = True  # Automatically pick up gold from the ground
 
@@ -1320,6 +1321,7 @@ class Player(Character):
             'compact_mode': self.compact_mode,
             'stance': getattr(self, 'stance', 'normal'),
             'wimpy': getattr(self, 'wimpy', 0),
+            'wimpy_set': bool(getattr(self, 'wimpy_set', False)),
             'show_room_vnums': self.show_room_vnums,
             'autoexit': self.autoexit,
             'recall_point': self.recall_point,
@@ -1576,6 +1578,8 @@ class Player(Character):
             player.compact_mode = data.get('compact_mode', False)
             player.stance = data.get('stance', 'normal')
             player.wimpy = data.get('wimpy', 0)
+            # (a save from before the flag: one that set a wimpy chose it; one at 0 gets the newcomer's)
+            player.wimpy_set = bool(data.get('wimpy_set', bool(data.get('wimpy', 0))))
             player.autoexit = data.get('autoexit', True)
             player.recall_point = renumbered(data.get('recall_point', 3001))
             player.marquee = data.get('marquee')
@@ -3026,7 +3030,7 @@ class Player(Character):
 
         # Auto-flee (wimpy)
         if self.hp > 0 and self.is_fighting:
-            wimpy = getattr(self, 'wimpy', 0)
+            wimpy = self.wimpy_now()
             if wimpy and self.hp <= wimpy:
                 try:
                     now = time.time()
@@ -3397,6 +3401,38 @@ class Player(Character):
         self.hp = min(self.max_hp, self.hp + hp_regen)
         self.mana = min(self.max_mana, self.mana + mana_regen)
         self.move = min(self.max_move, self.move + move_regen)
+        self.catch_breath()
+
+    # Catching your breath (the owner's seamless pass, November 2026): out of a fight for two minor
+    # ticks (about ten seconds), a hero gets back a twentieth of their health, mana and movement
+    # each tick, standing or resting, fed or not. A 75 hp warrior got 8 hp a minute before (3 when
+    # thirsty): five to seven minutes from a death back to full, spent doing nothing.
+    CALM_TICKS, BREATH = 2, 0.05
+
+    def catch_breath(self) -> int:
+        """One minor tick of it; returns the health given."""
+        if self.fighting or self.position in ('fighting', 'dead'):
+            self._calm_ticks = 0
+            return 0
+        self._calm_ticks = getattr(self, '_calm_ticks', 0) + 1
+        if self._calm_ticks < self.CALM_TICKS:
+            return 0
+        before = self.hp
+        for cur, top in (('hp', 'max_hp'), ('mana', 'max_mana'), ('move', 'max_move')):
+            cap = getattr(self, top, 0) or 0
+            if getattr(self, cur, 0) < cap:
+                setattr(self, cur, min(cap, getattr(self, cur) + max(1, int(cap * self.BREATH + 0.999))))
+        return self.hp - before
+
+    NEWCOMER_WIMPY_LEVEL = 5
+
+    def wimpy_now(self) -> int:
+        """The health at which this hero runs from a fight: what they set (`wimpy`), or, for a hero
+        of level 5 or less who never set one, a fifth of their health (a newcomer's first hard
+        fight ended in a death they had no warning of). `wimpy 0` turns it off."""
+        if getattr(self, 'wimpy_set', False) or (getattr(self, 'level', 1) or 1) > self.NEWCOMER_WIMPY_LEVEL:
+            return int(getattr(self, 'wimpy', 0) or 0)
+        return max(1, int((self.max_hp or 0) * 0.2))
 
     async def process_performance_tick(self):
         """Process bard performance effects each tick."""

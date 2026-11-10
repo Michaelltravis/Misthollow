@@ -1130,10 +1130,20 @@ class World:
         be there; else (a private trial closed while they were away, the God Rooms, a land sealed
         until built) their recall room, or the temple."""
         room = self.get_room(getattr(player, 'room_vnum', None) or self.config.STARTING_ROOM)
-        if room is None or not room.admits(player):
+        if room is None or not room.admits(player) or self.login_unsafe(player, room):
             room = (player.recall_room() if hasattr(player, 'recall_room') else None) \
                 or self.get_room(self.config.STARTING_ROOM)
         return room
+
+    @staticmethod
+    def login_unsafe(player, room) -> bool:
+        """Whether a player should not wake where they left: under three tenths of their health in a
+        room that is not peaceful (they wake at the temple instead). A hero saved at -7 hp among the
+        creatures that had them there was hunted down again as they logged in."""
+        top = getattr(player, 'max_hp', 0) or 0
+        if not top or 'peaceful' in (getattr(room, 'flags', None) or ()):
+            return False
+        return (getattr(player, 'hp', top) or 0) < top * 0.3
         
     async def add_player(self, player: 'Player'):
         """Add a player to the world."""

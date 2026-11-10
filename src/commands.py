@@ -13440,6 +13440,7 @@ class CommandHandler:
             amount = player.max_hp
         
         player.wimpy = amount
+        player.wimpy_set = True          # (their own choice from now on, 0 included: player.wimpy_now)
         
         if amount > 0:
             await player.send(f"{c['green']}You will flee when HP drops below {amount}.{c['reset']}")

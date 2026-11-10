@@ -28,7 +28,10 @@ async def main():
     said = Mobile.said_name
     check(said('ogre wandering brute giant', 'a wandering ogre') == 'a wandering ogre', 'a keyword list is said as its description')
     check(said('gorak drillmaster sergeant master', 'Gorak the Drillmaster') == 'Gorak the Drillmaster', 'a named creature by its name')
-    check(said('rat', 'the sewer rat') is None, 'a one-word name stays')
+    check(said('rat', 'the sewer rat') == 'the sewer rat', 'a one-word name is said as its fuller description')
+    check(said('dragon', 'the baby dragon') == 'the baby dragon', '"dragon" is "the baby dragon" in the log, as on its nameplate')
+    check(said('rat', 'the rat') is None and said('rat', 'a rat') is None, 'a description that only adds an article changes nothing')
+    check(said('grimtooth', 'the weaponsmith') is None, 'a one-word name its description does not hold stays (a proper name)')
     check(said('wyvern hatchling', 'a wyvern hatchling') is None, 'a name that is already the description stays')
     check(said('giant spider', 'A giant spider lurks here.') is None, 'a room sentence is no name')
 
