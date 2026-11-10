@@ -8,6 +8,8 @@ world/population/zone_<n>.json) run beside its abilities every AI tick (bosses.B
   waves          at health thresholds, a wave of servants rises
   gloom          the room darkens as the boss weakens (the 3D client dims its light)
 
+Any of them given "below": <health %> waits for the fight's last stretch (Ostragoth's thirst at 30%).
+
 The 3D client sees them as events: 'hazard' (a lasting danger zone on the ground, with the STEP
 OUT cue), 'gloom' (how dark), and the boss's own windups and adds.
 """
@@ -178,9 +180,10 @@ class Hunger(Mechanic):
             k = 0.5 if p is None else 1.0          # a telnet fighter, who cannot step, starves slower
             dmg = max(1, int(ch.max_hp * float(s.get('pct', 0.025)) * k))
             ch.move = max(0, getattr(ch, 'move', 0) - int(s.get('stamina', 10) * k))
-            await ch.send(f"Hunger hollows you out! [{dmg}]")
-            _emit(boss, 'debuff', dst=ch, label='Starving', school='necrotic')
-            await ch.take_damage(dmg, boss, 'necrotic')
+            school = s.get('school', 'necrotic')
+            await ch.send(f"{s.get('hit', 'Hunger hollows you out!')} [{dmg}]")
+            _emit(boss, 'debuff', dst=ch, label=s.get('label', 'Starving'), school=school)
+            await ch.take_damage(dmg, boss, school)
 
 
 class Waves(Mechanic):

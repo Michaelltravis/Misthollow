@@ -17,6 +17,9 @@ import { swingClips, rangedBlow } from './gearlook.js';
 import { SCHOOL } from './fx.js';
 import { SCHOOL_CSS, titleOf, harmColour } from './sctlogic.js';
 
+// a body lying asleep on the ground (entities.js, controller.js: posture.js's Lie_Idle)
+const lying = who => !!(who && who.root && who.root.userData && who.root.userData.lying);
+
 // the ordinary swing, by class: for anyone without a look (gearlook.js swingClips picks it
 // from what the hand holds)
 const SWING = {
@@ -230,7 +233,8 @@ export class CombatView {
     this._winced = this._winced || new Map();
     if (!who || now - (this._winced.get(who) || 0) < 1500) return;
     this._winced.set(who, now);
-    if (dst.hero) this.getHero().ctl.swing('Hit_B', true, { speed: 0.9 });
+    if (lying(dst)) { /* a sleeper on the ground stays down */ }
+    else if (dst.hero) this.getHero().ctl.swing('Hit_B', true, { speed: 0.9 });
     else if (dst.actor && !(dst.ent && dst.ent.dying)) dst.actor.once('Hit_A', 0.08, 0.85);
     this.fx.p.emit(p, { count: 7, color: 0x6aa83a, bright: 0.8, speed: 0.55, up: 0.45, life: 1.1, size: 0.38, grow: 0.6, drag: 1.6 });
     this.fx.glyph(p, { glyph: 'bubble', count: 4, color: 0x9cff5a, bright: 1.4, speed: 0.5, up: 0.7, life: 0.9, size: 0.14, drag: 1.2 });
@@ -368,8 +372,9 @@ export class CombatView {
       const crit = e.crit || res === 'crit';
       this.fx.impact(p, school, crit || e.heavy);
       this.fx.flash(dst.root, heroHit ? 0xff2a1a : 0xffe0c0, 0.16);
-      if (dst.actor && !dst.hero && !(dst.ent && dst.ent.dying)) dst.actor.once(Math.random() < 0.5 ? 'Hit_A' : 'Hit_B', 0.05, crit || e.heavy ? 0.85 : 1.2);
-      if (dst.hero) this.getHero().ctl.swing(Math.random() < 0.5 ? 'Hit_A' : 'Hit_B', true);
+      // (one lying asleep does not jerk up to flinch: the blow wakes it, and it gets up, posture.js)
+      if (dst.actor && !dst.hero && !(dst.ent && dst.ent.dying) && !lying(dst)) dst.actor.once(Math.random() < 0.5 ? 'Hit_A' : 'Hit_B', 0.05, crit || e.heavy ? 0.85 : 1.2);
+      if (dst.hero && !lying(dst)) this.getHero().ctl.swing(Math.random() < 0.5 ? 'Hit_A' : 'Hit_B', true);
       // a crit or a heavy blow shoves a creature back (it staggers: the flinch played slower), and
       // the view darts in when it is the hero's crit or a crit on the hero
       if ((crit || e.heavy) && dst.ent && !dst.hero && src && src.root) this.ents.knock(dst.ent, src.root.position, crit ? 0.55 : 0.35);
@@ -663,7 +668,7 @@ export class CombatView {
     this.sfx('cancel', src);
     const word = { stagger: 'Staggered!', snare: 'Snared!' }[e.reason] || 'Interrupted!';
     this.fx.text(p.clone().setY(src.root.position.y + 2.6), word, { color: '#ffe066', size: 15, rise: 0.6 });
-    if (src.actor && !(src.ent && src.ent.dying)) src.actor.once(Math.random() < 0.5 ? 'Hit_A' : 'Hit_B', 0.05, 1.0);
+    if (src.actor && !(src.ent && src.ent.dying) && !lying(src)) src.actor.once(Math.random() < 0.5 ? 'Hit_A' : 'Hit_B', 0.05, 1.0);
   }
   // ---- a boss's moments (bosses.py) ----
   // a new phase: it roars, the ground breaks under it, the view jolts and washes red, and what the

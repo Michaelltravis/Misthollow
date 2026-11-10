@@ -3662,7 +3662,12 @@ class SpellHandler:
                 await caster.send(f"{c['red']}You failed to raise any zombies!{c['reset']}")
 
         elif special == 'recall':
-            # Teleport to temple
+            # Teleport to temple (a way out of a fight, and of a sealed lair: lairs.py)
+            if getattr(caster, 'fighting', None) is not None:
+                from combat import CombatHandler
+                await CombatHandler.end_combat(caster, caster.fighting)
+                for foe in [ch for ch in list(getattr(caster.room, 'characters', None) or []) if getattr(ch, 'fighting', None) is caster]:
+                    foe.fighting = None
             if caster.room:
                 await caster.room.send_to_room(
                     f"{caster.name} disappears!",
@@ -3680,8 +3685,13 @@ class SpellHandler:
                 
         elif special == 'teleport':
             # Random teleport (dangerous!), but never into a room the caster may not be in
-            # (the God Rooms, a land sealed until built)
-            rooms = [r for r in caster.world.rooms.values() if r.admits(caster)]
+            # (the God Rooms, a land sealed until built), nor out of or into a sealed lair
+            import lairs
+            held = lairs.holds(caster)
+            if held:
+                await caster.send(f"{c['red']}{held}{c['reset']}")
+                return
+            rooms = [r for r in caster.world.rooms.values() if r.admits(caster) and not lairs.closed_to(r)]
             if rooms:
                 new_room = random.choice(rooms)
                 if caster.room:
@@ -4015,14 +4025,26 @@ class SpellHandler:
                 await caster.send(f"{c['yellow']}You can't summon yourself!{c['reset']}")
                 return
 
-            # Check if target can be summoned (no summon protection, not in combat)
-            if target_player.is_fighting:
+            # Check if target can be summoned (no summon protection, not in combat), though a
+            # summons is a way out of a sealed lair, fighting or not (lairs.py)
+            import lairs
+            held = lairs.holds(target_player)
+            if target_player.is_fighting and not held:
                 await caster.send(f"{c['red']}{target_player.name} is fighting and cannot be summoned!{c['reset']}")
                 return
-            # nor into a room they may not be in (the God Rooms, a sealed land)
+            # nor into a room they may not be in (the God Rooms, a sealed land, a sealed lair)
             if not caster.room or not caster.room.admits(target_player):
                 await caster.send(f"{c['red']}A divine force will not let {target_player.name} be brought here.{c['reset']}")
                 return
+            barred = lairs.closed_to(caster.room)
+            if barred:
+                await caster.send(f"{c['red']}{barred}{c['reset']}")
+                return
+            if target_player.is_fighting:
+                from combat import CombatHandler
+                await CombatHandler.end_combat(target_player, target_player.fighting)
+                for foe in [ch for ch in list(target_player.room.characters) if getattr(ch, 'fighting', None) is target_player]:
+                    foe.fighting = None
 
             # Move player
             old_room = target_player.room

@@ -14,7 +14,7 @@ register('data:text/javascript,' + encodeURIComponent(
 const THREE = await import('three');
 const { WARDS, wardPlan, planKey, Wards, HAZE } = await import('../../src/web_isometric/world3d/wards.js');
 const { HARMS, emitHarms } = await import('../../src/web_isometric/world3d/harms.js');
-const { buffList } = await import('../../src/web_isometric/world3d/hud/buffs.js');
+const { buffList, auraBase, plateAuras } = await import('../../src/web_isometric/world3d/hud/buffs.js');
 
 test('a plan: the strongest shell, two orbits at most, a ring, motes, flying', () => {
   const p = wardPlan(['shielded', 'sanctuary', 'stoneskin', 'fire_shield', 'ice_armor', 'prot_evil', 'bless', 'fly', 'nonsense']);
@@ -150,4 +150,19 @@ test('one buff icon a spell: Armor\'s two affects show once, with the longer tim
     { name: 'armor', applies_to: 'armour_ward', remaining: 120, duration: 150 },
     { name: 'Bless', remaining: 10, duration: 24 }, { name: 'bless', remaining: 5, duration: 24 }, null, {}]);
   assert.deepEqual(list.map(a => [a.name, a.remaining]), [['armor', 120], ['Bless', 10]]);
+});
+
+test('a nameplate\'s auras (map_system._auras): debuffs first, each its share of time left', () => {
+  const list = plateAuras([
+    { n: 'bless', h: 0, r: 6, d: 12 }, { n: 'poison', h: 1, r: 3, d: 8 }, { n: 'Shield Wall_invuln', h: 0, r: 0, d: 0 },
+    { n: 'curse', h: 1, r: 20, d: 10 }, null, { h: 1 }]);
+  assert.deepEqual(list.map(a => [a.id, a.bad]), [['poison', true], ['curse', true], ['bless', false], ['shield_wall', false]]);
+  assert.equal(list[0].frac, 3 / 8);
+  assert.equal(list[0].secs, 18);
+  assert.equal(list[1].frac, 1, 'never more than full');
+  assert.equal(list[3].secs, null, 'no time on one with no length');
+  assert.equal(list[3].label, 'Shield Wall invuln');
+  assert.equal(plateAuras(Array.from({ length: 12 }, (_, i) => ({ n: `s${i}` }))).length, 8);
+  assert.deepEqual(plateAuras(undefined), []);
+  assert.equal(auraBase('Divine Shield_damage'), 'divine_shield');
 });

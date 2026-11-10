@@ -3368,6 +3368,12 @@ class CombatHandler:
         if player.is_fighting:
             await player.send(f"{c['red']}You cannot shadow step while in combat!{c['reset']}")
             return
+        # not out of a sealed lair, nor into one (lairs.py)
+        import lairs
+        held = (lairs.holds(player) or lairs.closed_to(target.room)) if target.room is not player.room else None
+        if held:
+            await player.send(f"{c['red']}{held}{c['reset']}")
+            return
 
         # Cost move points
         if player.move < 20:

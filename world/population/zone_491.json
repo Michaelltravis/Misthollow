@@ -97,6 +97,76 @@
      }
     ]
    }
+  },
+  "799910": {
+   "name": "sea king merman lord",
+   "short_desc": "the Sea King, a merman lord",
+   "long_desc": "The Sea King sits upon his throne of twisted coral, a golden trident across his knees.",
+   "description": "A merman lord of great size, his scales the blue-green of deep water and his beard braided with pearls. A crown of coral and gold sits on his brow. The merman guards of this hall answer to him, and he does not forgive those who come uninvited into his court.",
+   "level": 26,
+   "flags": [
+    "aggressive",
+    "sentinel",
+    "boss"
+   ],
+   "rank": "boss",
+   "alignment": 0,
+   "why": "the Sea King on his throne",
+   "race": "merfolk",
+   "boss_config": {
+    "enrage_time": 180,
+    "enrage_multiplier": 1.5,
+    "ability_interval": 5.0,
+    "phases": [
+     {
+      "threshold": 50,
+      "message": "The Sea King rises from the throne: \"To me, my guard!\""
+     }
+    ],
+    "abilities": [
+     {
+      "name": "Tidal Surge",
+      "telegraph": "The Sea King lifts his trident, and the water in the air surges!",
+      "cast_time": 2,
+      "cooldown": 12,
+      "damage_dice": "3d8+7",
+      "aoe": true,
+      "radius": 4.5
+     },
+     {
+      "name": "Trident Thrust",
+      "telegraph": "The Sea King drives his trident at you!",
+      "cast_time": 1,
+      "cooldown": 7,
+      "damage_dice": "3d10+6",
+      "dodge": true
+     },
+     {
+      "name": "Call of the Deep",
+      "telegraph": "The Sea King begins a long, low song of the deep!",
+      "cast_time": 2.5,
+      "cooldown": 18,
+      "damage_dice": "4d8+9",
+      "interruptible": true,
+      "min_phase": 1
+     }
+    ]
+   }
+  },
+  "799911": {
+   "name": "harpy queen",
+   "short_desc": "the harpy queen",
+   "long_desc": "The harpy queen perches on the rim of her nest, shrieking into the wind.",
+   "description": "Larger than the matrons who serve her, with a crown of gull feathers and a face that was once beautiful. Her talons are hooked like a fisherman's gaff, and the shiny things scattered round the nest are hers.",
+   "level": 24,
+   "flags": [
+    "aggressive",
+    "sentinel"
+   ],
+   "rank": "sub-boss",
+   "alignment": -500,
+   "why": "the harpy queen in her nest",
+   "race": "harpy"
   }
  },
  "patrols": [
@@ -146,6 +216,32 @@
      "why": "step out"
     }
    ]
+  },
+  {
+   "vnum": 799910,
+   "room": 15140,
+   "why": "the Sea King on his throne",
+   "mechanics": [
+    {
+     "type": "call_guards",
+     "at": [
+      70,
+      40
+     ],
+     "count": 2,
+     "rooms": 4,
+     "raise": [
+      649104
+     ],
+     "shout": "The Sea King strikes the dais with his trident: \"Guards!\"",
+     "why": "his merman guard"
+    }
+   ]
+  },
+  {
+   "vnum": 799911,
+   "room": 15187,
+   "why": "the harpy queen in her nest"
   }
  ],
  "fill": [

@@ -43,8 +43,19 @@ async def main():
             check(len(ms) == 1 and ms[0].room.vnum == int(b['room']) and getattr(ms[0], 'is_boss', False)
                   and [m.spec['type'] for m in ms[0].mechanics] == want and getattr(ms[0], 'rank', None) in (None, 'boss'),
                   f'zone {z}: {b["why"]} ({want})')
+        # a lair's boss is in no room until someone walks in (lairs.py): made as he will be, he is a
+        # boss with his mechanics and rank
+        import lairs
+        in_lair = {int(b['vnum']) for b in d.get('lairs') or []}
+        for b in d.get('lairs') or []:
+            m = bosses.create_mob_from_prototype(world.mob_prototypes[int(b['vnum'])], world)
+            want = [x['type'] for x in b.get('mechanics') or []]
+            check(not npcs(int(b['vnum'])) and lairs.lair_of(world.rooms[int(b['room'])]) is not None
+                  and getattr(m, 'is_boss', False) and [x.spec['type'] for x in m.mechanics] == want
+                  and getattr(m, 'rank', None) == 'boss' and getattr(m, 'zone_sized', False),
+                  f'zone {z}: {b["why"]} ({want})')
         for v, c in (d.get('creatures') or {}).items():
-            if c.get('rank') and 'name' not in c:
+            if c.get('rank') and 'name' not in c and int(v) not in in_lair:
                 ms = npcs(int(v))
                 floor = population.numbers(ms[0].level, c['rank'])['max_hp'] * 0.95 if ms else 0
                 if ms and getattr(ms[0], 'zone_sized', False):

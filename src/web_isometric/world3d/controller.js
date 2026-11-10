@@ -79,6 +79,8 @@ export class Controller {
   setPosture(position) {
     const ch = postureChange(this.position, position || 'standing');
     this.position = position || 'standing';
+    // lying asleep (wards.js: no slump, no slowed breathing, the Zzz low over the body)
+    this.actor.root.userData.lying = this.position === 'sleeping' && !this.mounted;
     if (!ch) return;
     this.pose = ch.loop;
     if (ch.once && !this.mounted) {

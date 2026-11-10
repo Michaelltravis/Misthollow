@@ -86,6 +86,16 @@ function statue() {
     { geometry: new THREE.BoxGeometry(0.95, 0.16, 0.22).translate(0, 1.62, 0), material: mat(STONE) },
   ]);
 }
+// a dock's piling: a tarred post, green with weed and crusted with barnacles at its foot; under
+// the water it runs up out of sight to the deck
+function piling(tall) {
+  return made(`piling${tall ? 'T' : ''}`, () => {
+    const h = tall ? 5 : 2.4;
+    const post = new THREE.CylinderGeometry(0.22, 0.26, h, 9).translate(0, h / 2, 0);
+    const weed = new THREE.CylinderGeometry(0.29, 0.32, 1.1, 9).translate(0, 0.55, 0);
+    return [{ geometry: post, material: mat(0x7a5a40) }, { geometry: weed, material: mat(0x5a8a48, { roughness: 1 }) }];
+  });
+}
 function obelisk() {
   return made('obelisk', () => {
     const g = new THREE.CylinderGeometry(0.22, 0.38, 3.4, 4, 1).rotateY(Math.PI / 4).translate(0, 1.7, 0);
@@ -462,6 +472,7 @@ export function drawFeatures(c) {
       }
       case 'statue': put(blocker(statue()), cx, cz, yaw, s * (main ? 1.6 : 1.3)); break;
       case 'obelisk': put(blocker(obelisk()), cx, cz, yaw, s); break;
+      case 'piling': put(blocker(piling(layout.theme === 'underwater')), cx, cz, yaw, 1); break;
       case 'pillar': if (layout.theme === 'drow') put(blocker(drowPillar()), cx, cz, 0, 1); else if (D) put(blocker(D.get(v === 0 ? 'pillar_decorated' : 'column')), cx, cz, 0, 1); break;
       // (the town kit is built small: its props stand at x4-5, its wells at x2.6, as terrain-town.js has them)
       case 'well': if (T) put(blocker(T.get(['building_well_blue', 'building_well_green', 'building_well_red'][v])), cx, cz, yaw, 2.6); break;

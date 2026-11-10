@@ -34,11 +34,11 @@ export const BESTIARY = [
   [/\b(pixie|pixies|sprite|sprites|fairy|fairies|faerie|nixie|brownie)\b/, { person: 'mage', loadout: ['1H_Wand'], tint: 0xd8f0c0, scale: 0.42, fly: 0.9 }],
   [/\b(efreeti|efreet|ifrit|ifreet)\b/, { mob: 'ghost', h: 2.0, tint: 0xff8a3a, fly: 0.4, body: 'elemental' }],
   [/\b(djinn|djinni|genie|marid|jinn)\b/, { mob: 'ghost', h: 2.0, tint: 0x6ab8ff, fly: 0.4, body: 'elemental' }],
-  [/\b(fire elemental|flame elemental|flame dweller|magma|scoria|salamander king|fire spirits?|flame spirits?|ember spirits?)\b/, { mob: 'ghost', h: 1.7, tint: 0xff7a2a, fly: 0.2, body: 'elemental' }],
-  [/\b(water elemental|tide elemental|wave elemental)\b/, { mob: 'ghost', h: 1.7, tint: 0x4a9aff, fly: 0.2, body: 'elemental' }],
+  [/\b(fire elemental|fire guardian|flame elemental|flame dweller|magma|scoria|salamander king|fire spirits?|flame spirits?|ember spirits?)\b/, { mob: 'ghost', h: 1.7, tint: 0xff7a2a, fly: 0.2, body: 'elemental' }],
+  [/\b(water elemental|water guardian|tide elemental|wave elemental)\b/, { mob: 'ghost', h: 1.7, tint: 0x4a9aff, fly: 0.2, body: 'elemental' }],
   [/\b(ice elemental|frost elemental|crystallized|crystal elemental)\b/, { mob: 'ghost', h: 1.7, tint: 0x9fd8ff, fly: 0.2, body: 'elemental' }],
   [/\b(earth elemental|dirt devil|sandman|sand elemental|mud elemental)\b/, { mob: 'yeti', h: 1.9, tint: 0x9a7a54, body: 'elemental' }],
-  [/\b(air elemental|aerial servant|wind elemental|cloud elemental)\b/, { mob: 'ghost', h: 1.7, tint: 0xe8f4ff, fly: 0.4, body: 'elemental' }],
+  [/\b(air elemental|air guardian|aerial servant|wind elemental|cloud elemental)\b/, { mob: 'ghost', h: 1.7, tint: 0xe8f4ff, fly: 0.4, body: 'elemental' }],
   [/\b(chaos elemental|elemental)\b/, { mob: 'ghost', h: 1.7, tint: 0xc87aff, fly: 0.2, body: 'elemental' }],
   // the populated zones' monsters (world/population): stone, stitched flesh, things from below
   [/\b(gargoyle|gargoyles)\b/, { mob: 'demon', body: 'demon', h: 1.4, tint: 0x8a8a86 }],
@@ -78,7 +78,7 @@ export const BESTIARY = [
   [/\b(slime|slimes|slimeball|ooze|oozes)\b/, { mob: 'q_slime', h: 0.8, prefer: true, own: 'green', orTinted: { proc: 'slime', h: 0.85 } }],
   [/\b(jelly|blob|pudding|gelatinous|lemure|yochlol|pit beast|dustdigger|cube)\b/, { proc: 'slime', h: 0.85 }],
   // crawling things (not bees)
-  [/\b(spider queen|queen spider|zyraxxis)\b/, { proc: 'spider', body: 'spider_queen', h: 1.4 }],
+  [/\b(spider queen|queen spider|zyraxxis|king crab spider)\b/,{ proc: 'spider', body: 'spider_queen', h: 1.4 }],
   [/\b(drider|driders)\b/, { proc: 'spider', h: 1.4, tint: 0x4a3a5a, body: 'spider' }],
   [/\b(spider|spiders|arachnid|tarantula|broodmother|spiderling|spinner|cleaver|spine reavers?)\b/, { proc: 'spider', h: 0.8, body: 'spider', tint: 0x7a5e48 }],
   [/\b(beetle|beetles|scarab|cockroach|roach|crawler|tick|ant|ants)\b/, { proc: 'spider', h: 0.5, tint: 0x5a4030, body: 'beetle' }],
@@ -94,7 +94,7 @@ export const BESTIARY = [
   [/\b(rat|rats|mouse|mice|rodent|vermin|giant rat)\b/, { proc: 'rat', h: 0.42, body: 'rat', tint: 0x8a7a6a }],
   [/\bbadgers?\b/, { mob: 'farm_pig', h: 0.5, tint: 0x55585c, body: 'pig' }],   // low, stocky and grey, not a rat
   [/\b(squirrel|chipmunk|weasel|ferret|stoat|badger|otter|mole|hedgehog|porcupine|raccoon|skunk|beaver|marmot|vole|shrew|mongoose)\b/, { proc: 'rat', h: 0.45, tint: 0x9a6a44, body: 'rat' }],
-  [/\b(sea serpent|sea serpents)\b/, { proc: 'snake', h: 1.4, tint: 0x3a7a8a, body: 'serpent' }],
+  [/\b(sea|lake) serpents?\b/,{ proc: 'snake', h: 1.4, tint: 0x3a7a8a, body: 'serpent' }],
   [/\b(sea snakes?)\b/, { proc: 'snake', h: 0.7, tint: 0x3a7a8a, body: 'snake' }],
   [/\bdragon turtle\b/, { mob: 'yellowdragon', h: 2.6, tint: 0x4a8a6a, body: 'turtle' }],
   [/\b(turtle|turtles|tortoise|terrapin)\b/, { mob: 'crab', h: 0.6, tint: 0x6a8a4a, body: 'turtle' }],

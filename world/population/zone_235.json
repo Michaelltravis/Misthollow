@@ -159,6 +159,21 @@
     ]
    },
    "why": "the Goblin King"
+  },
+  "797350": {
+   "name": "cave troll brute",
+   "short_desc": "a cave troll brute",
+   "long_desc": "A cave troll brute squats among cracked bones, eyeing you with dim, hungry interest.",
+   "description": "A great grey-green troll with arms that hang to its knees and a jaw full of broken teeth. The goblin king keeps its kind as enforcers, and pays them in meat. It gnaws a thighbone while it watches you, and it has not decided yet whether you are trouble or dinner.",
+   "level": 22,
+   "flags": [
+    "aggressive",
+    "sentinel"
+   ],
+   "rank": "elite",
+   "alignment": -500,
+   "why": "the warrens' cave trolls in their den",
+   "race": "troll"
   }
  },
  "patrols": [
@@ -198,6 +213,26 @@
      "why": "his berserkers"
     }
    ]
+  },
+  {
+   "vnum": 23508,
+   "room": 23513,
+   "why": "the goblin shaman in his sanctum (the Shaman's Sanctum, not the mushroom farm)"
+  },
+  {
+   "vnum": 23504,
+   "room": 23506,
+   "why": "the massive cave spider in its nest (Spider Nest Cavern, not the goblin barracks)"
+  }
+ ],
+ "spawns": [
+  {
+   "vnum": 797350,
+   "rooms": [
+    23515,
+    23515
+   ],
+   "why": "the warrens' cave trolls in their den"
   }
  ]
 }

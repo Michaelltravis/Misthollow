@@ -442,12 +442,14 @@ FILLER = {
     'mountain': ('Bare rock dominates the landscape.', 'Snow clings to shadowed crevices.', 'The path is steep and treacherous.',
                  'The air is thin and cold at this altitude.', 'The wind howls around exposed peaks.'),
     'hills': ('Rocks jut from the grassy slopes.',),
-    'water': ('Waves crash and foam relentlessly.', 'The depths are dark and unknowable.', 'The roar of water fills your ears.',
-              'Spray mists the air around.'),
+    'water': ('The depths are dark and unknowable.', 'The roar of water fills your ears.'),
+    # (the surface's: not under the water, under_water)
+    'surface': ('Waves crash and foam relentlessly.', 'Spray mists the air around.'),
 }
 FILLER_FITS = {'city': {'city', 'castle'}, 'forest': {'forest', 'darkforest', 'web', 'swamp'},
                'field': {'field', 'hills', 'shore', 'village', 'camp', 'garden'}, 'mountain': {'mountain', 'hills', 'snow'},
-               'hills': {'hills', 'field', 'mountain'}, 'water': WATER_SECTORS | {'shore'}}
+               'hills': {'hills', 'field', 'mountain'}, 'water': WATER_SECTORS | {'shore'},
+               'surface': {'water_swim', 'water_noswim', 'shore'}}
 OWN_LINES = {
     'sewer': ('Foul water trickles along a channel down the middle of the floor.', 'Pipes sweat and drip somewhere in the dark.',
               'The stench of rot and wet stone hangs heavy in the air.', 'Slime streaks the curved brick walls.',
@@ -496,6 +498,57 @@ def scrub_filler(world):
     return n
 
 
+# ---------------------------------------------------------------- under the water
+# A room typed open water whose place is under it (Under The Dock, Beneath The Shallow Lake) drew as
+# the sea's surface: waves, the far shore, a door standing in open water (the owner, of the grate
+# under New Thalos's dock: "it doesn't look like a lair"). Such a room is drawn as the seabed:
+#   its name or its words say so: under the dock, beneath the lake, water that fills the passage;
+#   you dive into it: a way down from the water above, and its way up leads back to that water;
+#   or every way out of it leads under the water (the lair behind the grate under the dock).
+UNDER_NAME = re.compile(r'\b(under ?water|(?:under|beneath|below) (?:the )?(?:docks?|piers?|jetty|wharf|waves|surface|water|sea|lake|'
+                        r'shallow lake|river|pool)|sea ?floor|ocean floor|sea ?bed|lake ?bed|river ?bed)\b', re.I)
+UNDER_DESC = re.compile(r'\b(water (?:that )?fills the (?:passage|chamber|tunnel|room) completely|water closes (?:around|over) you|'
+                        r'swim+ing (?:under|beneath)(?:neath)? the|holding your breath)\b', re.I)
+
+
+def under_water(rooms, ov):
+    """Give the water rooms that lie under the water the 'underwater' look; returns how many."""
+    water = {'water_swim', 'water_noswim'}
+    free = lambda r: (getattr(r, 'sector_type', '') in water and r.look_why is None and r.vnum not in ov['rooms'])
+
+    def way(room, d):
+        ex = (getattr(room, 'exits', None) or {}).get(d)
+        to = ex.get('to_room') if isinstance(ex, dict) else ex
+        try:
+            return rooms.get(int(to))
+        except (TypeError, ValueError):
+            return None
+
+    under = set()
+    for room in rooms.values():
+        if not free(room):
+            continue
+        up = way(room, 'up')
+        dived = (up is not None and getattr(up, 'sector_type', '') in water
+                 and any(way(n, 'down') is room for n in _neighbours(room, rooms)))
+        if UNDER_NAME.search(room.name or '') or UNDER_DESC.search(room.description or '') or dived:
+            under.add(room)
+    # (out from those, while every way out of a water room leads under the water)
+    grew = True
+    while grew:
+        grew = False
+        for room in rooms.values():
+            if room in under or not free(room):
+                continue
+            near = list(_neighbours(room, rooms))
+            if near and all(n in under or getattr(n, 'look', None) == 'underwater' for n in near):
+                under.add(room)
+                grew = True
+    for room in under:
+        room.look, room.look_why = 'underwater', 'description'
+    return len(under)
+
+
 def classify(world, overrides=None):
     """Give every room its `look` (and `look_why`). Returns the counts per look."""
     rooms = getattr(world, 'rooms', {}) or {}
@@ -528,6 +581,7 @@ def classify(world, overrides=None):
         if not look and _zone(room) in ov['zones'] and _fits(room, ov['zones'][_zone(room)]):
             look, why = ov['zones'][_zone(room)], 'zone'
         room.look, room.look_why = (look, why) if look else (sector, None)
+    under_water(rooms, ov)
     # neighbours: waves out from the rooms with a look of their own
     for wave in range(max(n for n, _ in SPREAD.values())):
         taken = {}

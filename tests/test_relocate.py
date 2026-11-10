@@ -65,6 +65,11 @@ async def main():
     check(fm.sent == [3014] and 3014 in h.explored_rooms, f'moved by a command: the 3D client is sent the new room ({fm.sent})')
     await h.execute_command('look', [])
     check(fm.sent == [3014], 'a command that does not move you sends nothing more')
+    # slain in a creature's round (no command of yours runs): /play is still sent the temple
+    temple = h.recall_room()
+    await h.die(None)
+    check(h.room is temple and temple.vnum != 3014 and fm.sent == [3014, temple.vnum],
+          f'killed: the 3D client is sent the temple you wake in ({fm.sent})')
     # the teleport spell itself
     from spells import SpellHandler
     import inspect

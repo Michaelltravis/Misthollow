@@ -131,6 +131,11 @@ def can_travel(player) -> Tuple[bool, str]:
     if player.room and 'no_recall' in player.room.flags:
         return False, "Powerful magic prevents you from traveling from here!"
 
+    import lairs
+    held = lairs.holds(player)
+    if held:
+        return False, held
+
     return True, ""
 
 

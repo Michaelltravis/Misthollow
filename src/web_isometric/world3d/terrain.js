@@ -567,10 +567,13 @@ function exitFeatures(group, layout, ox, oz, room, kits, owned) {
       const [x, z] = horiz ? [ox + mid, oz + edge] : [ox + edge, oz + mid];
       const info = room.doors[dir];
       if (e.door && (e.kind !== 'open' || dir === 'south' || dir === 'east')) {
-        const d = makeDoor(span, horiz);
+        const d = makeDoor(span, horiz, GRATE_RE.test((info && info.name) || ''));
         d.position.set(x, 0, z);
         group.add(d);
         doors[dir] = d;
+        // in open water nothing holds a door up: it stands in a wall across that side (the city
+        // wall a river's grating is let into, the rock round the grate under the dock)
+        if (WATERY.has(layout.theme)) doorWall(group, kits, layout.theme, horiz, x, z, horiz ? ox : oz, horiz ? ox + ROOM_W : oz + ROOM_H, span);
       }
       if (e.kind !== 'open') {
         const zoneExit = e.kind === 'zone';
@@ -604,7 +607,11 @@ function exitFeatures(group, layout, ox, oz, room, kits, owned) {
     if (!t) continue;
     const cx = ox + t.x + 0.5, cz = oz + t.y + 0.5;
     const e = room.data.exits[key];
-    if (key === 'up') {
+    // under the water the way up is the light of the surface; on it, the way down is a dive into
+    // the deep, not a flight of stone steps
+    if (key === 'up' && layout.theme === 'underwater') group.add(surfaceShaft(cx, cz));
+    else if (key === 'down' && (layout.theme === 'water_swim' || layout.theme === 'water_noswim')) group.add(diveSpot(cx, cz));
+    else if (key === 'up') {
       // the KayKit staircase climbs toward its -z; turned so the bottom step faces west (into
       // the room, where you arrive) and centred on the stairs tile
       const st = kits.dungeon.get('stairs');
@@ -672,18 +679,116 @@ function stairwell(cx, cz) {
   return g;
 }
 
+// the way up from under the water: light falling from the surface onto a pale patch of seabed,
+// and bubbles rising up it
+function surfaceShaft(cx, cz) {
+  const g = new THREE.Group();
+  const shaft = new THREE.Mesh(SHAFT_GEO, SHAFT_MAT);
+  shaft.position.set(cx, 4.5, cz);
+  g.add(shaft);
+  const pool = new THREE.Mesh(DISC_GEO, SHAFT_FLOOR_MAT);
+  pool.scale.setScalar(1.5);
+  pool.position.set(cx, 0.03, cz);
+  g.add(pool);
+  g.add(bubbleColumn(cx, cz, 0.3, 14));
+  return g;
+}
+
+// the way down from the water's surface: a dark round of deep water ringed with foam, bubbles
+// breaking on it
+function diveSpot(cx, cz) {
+  const g = new THREE.Group();
+  const deep = new THREE.Mesh(DISC_GEO, DEEP_MAT);
+  deep.scale.setScalar(1.3);
+  deep.position.set(cx, -0.1, cz);
+  deep.renderOrder = 2;
+  g.add(deep);
+  const foam = new THREE.Mesh(FOAM_GEO, FOAM_MAT);
+  foam.position.set(cx, -0.09, cz);
+  foam.renderOrder = 3;
+  g.add(foam);
+  g.add(bubbleColumn(cx, cz, -0.05, 5));
+  return g;
+}
+
+function bubbleColumn(cx, cz, y0, n) {
+  const m = new THREE.InstancedMesh(BUBBLE_GEO, BUBBLE_MAT, n);
+  for (let i = 0; i < n; i++) {
+    const a = i * 2.39, r = 0.25 + (i % 3) * 0.2;
+    m.setMatrixAt(i, trs(cx + Math.cos(a) * r, y0 + (i / n) * (n > 6 ? 6 : 0.1), cz + Math.sin(a) * r, 0, 0.6 + (i % 4) * 0.25));
+  }
+  return m;
+}
+
+// a wall across a water room's side, from corner to corner, with the doorway's lintel over the
+// door: masonry in the room's stone, crusted blue-grey under the water
+function doorWall(group, kits, theme, horiz, x, z, from, to, span) {
+  const D = kits.dungeon;
+  const base = D && D.get('wall');
+  if (!base) return;
+  const wall = asOccluder(theme === 'underwater' ? tinted(base, new THREE.Color(1.1, 1.3, 1.4), 'seawall') : base);
+  const WALL_H = 3.4, LINTEL = 2.5;
+  // (x, z: the doorway's middle; the side runs from..to, in world x or z)
+  const put = (along, w, y, h) => {
+    const m4 = trs(horiz ? x + along : x, y, horiz ? z : z + along, horiz ? 0 : Math.PI / 2, w / 4, h / 4, 1);
+    for (const p of wall.parts) {
+      const mesh = new THREE.Mesh(p.geometry, p.material);
+      mesh.applyMatrix4(m4);
+      mesh.castShadow = mesh.receiveShadow = true;
+      group.add(mesh);
+    }
+  };
+  const c = horiz ? x : z;
+  for (const [a, b] of [[from - c, -span / 2], [span / 2, to - c]]) {
+    const L = b - a;
+    if (L < 0.5) continue;
+    const n = Math.max(1, Math.round(L / 4)), w = L / n;
+    for (let i = 0; i < n; i++) put(a + (i + 0.5) * w, w, 0, WALL_H);
+  }
+  put(0, span, LINTEL, WALL_H - LINTEL);
+}
+
+// a door's name says bars, not planks: a grate, a grating, a portcullis
+const GRATE_RE = /\b(grat(?:e|es|ing|ings)|bars|portcullis|grille?)\b/i;
+const WATERY = new Set(['water_swim', 'water_noswim', 'underwater']);
+
 // a plank door (double for wide openings) that swings open on its hinges; locked, it shows
-// iron bands and a padlock
-function makeDoor(span, horiz) {
+// iron bands and a padlock. A grate is a frame of iron bars instead (see-through)
+function makeDoor(span, horiz, grate = false) {
   const g = new THREE.Group();
   const leaves = span > 5.5 ? 2 : 1, w = span / leaves;
   const parts = [], lockBits = [];
   for (let i = 0; i < leaves; i++) {
     const hinge = new THREE.Group();
     const along = -span / 2 + (i === 0 ? 0 : span);
+    const cx = i === 0 ? w / 2 : -w / 2;
+    if (grate) {
+      // upright bars every ~0.3 m between a top and a bottom rail and one across the middle
+      const n = Math.max(3, Math.round(w / 0.3));
+      const bars = new THREE.InstancedMesh(BAR_GEO, GRATE_MAT, n);
+      for (let k = 0; k < n; k++) bars.setMatrixAt(k, trs(cx - w / 2 + (k + 0.5) * (w / n), 0, 0, 0, 1));
+      bars.castShadow = true;
+      hinge.add(bars);
+      for (const y of [0.12, 1.2, 2.3]) {
+        const rail = new THREE.Mesh(BAND_GEO, GRATE_MAT);
+        rail.scale.set(w, 1.4, 0.7);
+        rail.position.set(cx, y, 0);
+        hinge.add(rail);
+      }
+      if (i === 0) {
+        const lock = new THREE.Mesh(LOCK_GEO, LOCK_MAT);
+        lock.position.set(leaves === 2 ? w - 0.12 : w - 0.28, 1.15, 0);
+        hinge.add(lock);
+        lockBits.push(lock);
+      }
+      hinge.position.x = along;
+      g.add(hinge);
+      parts.push({ hinge, sign: i === 0 ? 1 : -1 });
+      continue;
+    }
     const leaf = new THREE.Mesh(DOOR_GEO, occluder(DOOR_MAT));          // see-through when in the way
     leaf.scale.set(w, 1, 1);
-    leaf.position.x = i === 0 ? w / 2 : -w / 2;
+    leaf.position.x = cx;
     leaf.castShadow = leaf.receiveShadow = true;
     hinge.add(leaf);
     for (const y of [0.55, 1.85]) {
@@ -825,6 +930,19 @@ const STEP_MATS = [0x4a4440, 0x2e2a28, 0x1a1817, 0x0e0d0d].map(c => new THREE.Me
   polygonOffset: true, polygonOffsetFactor: -3, polygonOffsetUnits: -3 }));
 const RIM_MAT = new THREE.MeshStandardMaterial({ color: 0x77736c, roughness: 0.9 });
 const DOOR_MAT = new THREE.MeshStandardMaterial({ color: 0x6b4426, roughness: 0.85 });
+// a grate's bars: rusted iron
+const BAR_GEO = new THREE.CylinderGeometry(0.035, 0.035, 2.4, 6).translate(0, 1.2, 0);
+const GRATE_MAT = new THREE.MeshStandardMaterial({ color: 0x8a6a52, roughness: 0.55, metalness: 0.5 });
+// the light from the surface; a dive into the deep; bubbles
+const SHAFT_GEO = new THREE.CylinderGeometry(0.9, 1.5, 9, 14, 1, true);
+const SHAFT_MAT = new THREE.MeshBasicMaterial({ color: 0xbaf2ff, transparent: true, opacity: 0.16, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide });
+const DISC_GEO = new THREE.CircleGeometry(1, 28).rotateX(-Math.PI / 2);
+const SHAFT_FLOOR_MAT = new THREE.MeshBasicMaterial({ color: 0x9adcd8, transparent: true, opacity: 0.35, depthWrite: false, blending: THREE.AdditiveBlending });
+const DEEP_MAT = new THREE.MeshStandardMaterial({ color: 0x0a2836, roughness: 0.2, transparent: true, opacity: 0.7, depthWrite: false });
+const FOAM_GEO = new THREE.RingGeometry(1.2, 1.45, 32).rotateX(-Math.PI / 2);
+const FOAM_MAT = new THREE.MeshBasicMaterial({ color: 0xdff4f8, transparent: true, opacity: 0.28, depthWrite: false });
+const BUBBLE_GEO = new THREE.IcosahedronGeometry(0.08, 1);
+const BUBBLE_MAT = new THREE.MeshStandardMaterial({ color: 0xd8f4ff, emissive: 0x2a5a6a, roughness: 0.1, transparent: true, opacity: 0.6, depthWrite: false });
 const GROUND_MAT = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.95, metalness: 0 });
 const WATER_GEO = new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2);
 

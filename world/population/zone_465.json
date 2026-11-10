@@ -115,6 +115,51 @@
      }
     ]
    }
+  },
+  "799650": {
+   "name": "guardian water elemental",
+   "short_desc": "the Water Guardian",
+   "long_desc": "The Water Guardian rises out of the black water, a warrior shaped of the flood itself.",
+   "description": "A tall column of still, black water holds the shape of an armoured warrior, a water elemental bound to this chamber when the deep ways were cut. Its surface mirrors the arched ceiling, and where a face should be, the water turns in slow spirals like the waves carved on the ledges. It has stood in the drip and the cold for an age, and it does not let the living pass.",
+   "level": 20,
+   "flags": [
+    "aggressive",
+    "sentinel"
+   ],
+   "rank": "elite",
+   "alignment": 0,
+   "why": "the guardian its chamber is named for (the Earth and Stone Guardians' chambers have their stone guardians)",
+   "race": "elemental"
+  },
+  "799651": {
+   "name": "guardian fire elemental",
+   "short_desc": "the Fire Guardian",
+   "long_desc": "The Fire Guardian stands at the head of the glass stair, a shape of living flame.",
+   "description": "A fire elemental bound into the shape of a man, its body a roaring column of red and gold flame and its eyes two white-hot coals. The cracks in the floor brighten when it moves, and the air around it ripples with heat. It keeps the stair down into the furnace-light, and whatever waits below.",
+   "level": 20,
+   "flags": [
+    "aggressive",
+    "sentinel"
+   ],
+   "rank": "elite",
+   "alignment": 0,
+   "why": "the guardian its chamber is named for (the Earth and Stone Guardians' chambers have their stone guardians)",
+   "race": "elemental"
+  },
+  "799652": {
+   "name": "guardian air elemental",
+   "short_desc": "the Air Guardian",
+   "long_desc": "The Air Guardian circles beneath the painted dome, a whirl of wind and grey feathers.",
+   "description": "An air elemental bound to this chamber, all but invisible: a rushing column of wind that carries feathers, dust and the whistle of a distant choir. Now and then the shape of a face forms in the whirling grey, stern and cold. Every breath of air in the room is part of it.",
+   "level": 20,
+   "flags": [
+    "aggressive",
+    "sentinel"
+   ],
+   "rank": "elite",
+   "alignment": 0,
+   "why": "the guardian its chamber is named for (the Earth and Stone Guardians' chambers have their stone guardians)",
+   "race": "elemental"
   }
  },
  "patrols": [
@@ -228,5 +273,28 @@
    "why": "a rattling skeleton miner"
   }
  ],
- "_fill": "tools/audit/densify.py: 19 more of the zone's own ordinary creatures in its empty rooms, 0.45 hostile per walkable room as the aim"
+ "_fill": "tools/audit/densify.py: 19 more of the zone's own ordinary creatures in its empty rooms, 0.45 hostile per walkable room as the aim",
+ "spawns": [
+  {
+   "vnum": 799650,
+   "rooms": [
+    20581
+   ],
+   "why": "the guardian its chamber is named for (the Earth and Stone Guardians' chambers have their stone guardians)"
+  },
+  {
+   "vnum": 799651,
+   "rooms": [
+    20588
+   ],
+   "why": "the guardian its chamber is named for (the Earth and Stone Guardians' chambers have their stone guardians)"
+  },
+  {
+   "vnum": 799652,
+   "rooms": [
+    20578
+   ],
+   "why": "the guardian its chamber is named for (the Earth and Stone Guardians' chambers have their stone guardians)"
+  }
+ ]
 }
