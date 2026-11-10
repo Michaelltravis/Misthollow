@@ -149,6 +149,11 @@ Each step stands by itself and can be checked in the game.
    help page and test that names a zone follows).
 3. **The Vale rewritten as the opening hour**: the Proving Halls in the world's voice, the
    lantern in the tutorial, lantern posts on the first stretch of road, the bells at dusk.
+   **Begun (9 November):** the first zone's 41 rooms and 15 creature lines are rewritten in
+   the world's voice (`tools/world/proving_halls_text.py`): an old watch-house of the
+   lantern-bearers, the mist in its lower passages, names cut in a wall, the city's lanterns
+   seen from its balcony. Names are untouched (the rename list). Still to do: the lantern in
+   the tutorial, lantern posts on the road, the bells.
 4. **The road made true**: the Frostmarch raised, the two ways in moved, the Vale ordered
    (balance work: `tools/balance`, the population files).
 5. **Region looks**: light, stone, weather and music chosen by region. **Begun (9 November):**

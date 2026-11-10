@@ -157,8 +157,8 @@ Waiting on the owner (none of it is code that can be decided for them):
 - the renames and re-levelling in `docs/world/WORLD_SPINE.md` (its ledger).
 
 Open work that needs no decision, largest first:
-- the Lantern Vale as the opening hour (the Proving Halls rewritten in the world's voice, the
-  lantern in the tutorial, lantern posts on the first road);
+- the rest of the Lantern Vale's opening hour (the first zone's text is rewritten in the world's
+  voice; the lantern in the tutorial, lantern posts on the first road and the bells are not);
 - room pop-in and zone borders that rebuild the scene (pass 4);
 - the region villains as scripted boss models (the same pipeline as the looks);
 - region stone, weather and music; the remaining pass 3 and pass 4 items.
