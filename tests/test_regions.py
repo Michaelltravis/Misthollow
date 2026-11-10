@@ -201,6 +201,36 @@ async def main():
     heard = await regions.dusk_bells(world)
     check(heard == 1 and 'bells' in tae.said(near, 1).lower() and 'bells' not in tae.said(away, 3).lower(), 'at dusk those in the Vale are told, the others are not')
 
+    # ---- a creature that attacks on sight does not wander into a peaceful room (mobs.wander_ai)
+    import random as _rnd
+    import mobs as _mobs
+    from bosses import create_mob_from_prototype as _make
+    calm = next(r for r in world.rooms.values() if 'peaceful' in r.flags and not (_mobs.KEEP_OUT & r.flags)
+                and getattr(r, 'sector_type', '') not in _mobs.WATER_SECTORS)
+    here = next(r for r in world.rooms.values() if r is not calm and 'peaceful' not in r.flags and r.exits)
+    wolf = _make(next(iter(world.mob_prototypes.values())), world)
+    wolf.special, wolf.owner, wolf.fighting, wolf.home_zone = None, None, None, None
+    was_exits, was_rand = here.exits, _rnd.randint
+    here.exits = {'north': {'room': calm}}
+    _rnd.randint = lambda a, b: a
+    try:
+        wolf.flags = {'aggressive'}
+        wolf.room = here
+        here.characters.append(wolf)
+        for _ in range(4):
+            await wolf.wander_ai()
+        check(wolf.room is here, 'a creature that attacks on sight stays out of a peaceful room')
+        wolf.flags = set()
+        for _ in range(4):
+            await wolf.wander_ai()
+            if wolf.room is not here:
+                break
+        check(wolf.room is calm, 'one that does not may walk in as before')
+    finally:
+        here.exits, _rnd.randint = was_exits, was_rand
+        for r in (here, calm):
+            if wolf in r.characters:
+                r.characters.remove(wolf)
     print('ALL OK' if not failures else f'{len(failures)} FAILED')
     return 1 if failures else 0
 

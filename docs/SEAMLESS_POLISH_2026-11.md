@@ -234,13 +234,99 @@ Seen and heard in the running game (as the test paladin, with the immortal `sett
   drawn) against 2.2 ms with the old (9 rooms)**. A tenth of a millisecond. A machine without a
   graphics card is on Low, which keeps the old ring.
 
+## The sixth batch: the rough spots and what was listed but not done (9 November)
+
+**Models**
+- The Reaper's scythe is one curved blade (it was five separate plates): `models/villains.py`.
+- The lantern at every hero's hip is a third larger (`models/lantern.py`): at its first size it was a
+  few pixels from the game's camera.
+- The cleric's sunburst stands behind the head, twelve long rays (`models/classlooks.py`): behind
+  the shoulders the head hid it from in front and the body from above.
+
+**Names**
+- Nothing in the first zone says "newbie": its arch, ten creatures ("the mist-taken novice", "the
+  watch-house guard"), its things ("a novice's shiny sword"), what can be looked at in its rooms,
+  and the shout of its helpers (`tools/world/proving_halls_text.py`, `world/population/zone_186.json`).
+- The Umbral City's goddess is Ishaleth, and her handmaidens silk-handmaidens: the two names from
+  another author's world are said otherwise as the world loads (`world/words.json`,
+  `regions.apply_words`). The zone files keep their words; a line taken out of the list puts one back.
+- A one-word creature keeps its article in the log ("You attack the rat").
+
+**Levels**
+- Eight zones that sat under their region's levels are lifted into them (`world/zone_levels.json`):
+  Castle Of Caboon, the Mirrormere, Aredrel, the Eastern Highlands, the World Of Chaos, the City of
+  Ancients, Fameland, the Mindflayer's Lair. No zone is under its region now. Zones above their
+  region (the Cathedral inside Garathorm, Morkai under the Deep Road) are not lowered: the banner
+  warns of them, and the map says so.
+- The big map says a zone's region, the region's levels, and the zone's own when it lies outside
+  them: "The Lantern Vale · levels 1–10 · here about level 12" (`regionsay.js mapSays`).
+- Measured (`tools/balance/zones.py`, each zone at its creatures' median level): a party of three
+  clears every lifted zone and the five of the Frostmarch without a death (worst fight 8% to 53% of
+  a hero's health). Alone, a clear costs 0 to 2 deaths in each, but for Castle Of Caboon (7, 2 and
+  6 for warrior, cleric and mage), which cost 7, 4 and 5 before it was lifted: its level-19
+  cultists are the danger, as they were. The Mirrormere could not be measured (the simulator's
+  heroes do not cross water).
+
+**Stories**
+- Each region's story is four chapters, all from Sage Aldric: the road (`road_*`), the villain's
+  hand in the region (`trail_*`: goblins on the Plains, cultists in the Marches, spiders in the
+  wood, mine orcs below the Deeping, wolves in the north, the drowned shades, the Deep Road's
+  ghouls, the Foundry's clockwork soldiers), the villain (`story_*`), and the road walked again
+  once it has fallen (`lit_*`). Each follows the one before (`after`).
+
+**Sound**
+- Each region has a tune of its own over its chord (`soundtable.js REGION_MOTIF`): six to eight
+  soft notes, told again every half minute or so. The Vale's climbs the major and comes home; the
+  Frostmarch's falls from the octave; the Deep Road's turns on the tritone and does not resolve.
+  Written as notes: there is no one to record them. **Not heard by anyone yet**: the tests check
+  the notes, their register and their timing, not whether they are pleasant.
+
+**The 3D client**
+- A made creature gives back its buffers and materials when it is cleared away (`freebody.js`):
+  gone at once, gone quietly, after dying, or with the corpse that kept its body.
+- A quality chosen in Settings reaches the effects' budget, how much rain falls, how many sounds
+  play at once and how many auras are drawn, at once (`setTier` on each).
+- The middle of the screen shows one thing at a time: a blow to answer, then a level gained, then
+  the world's news, then a place's name; the toasts move below whichever is up (`hud.js mid`).
+- Windows fade out as they fade in (0.14 s; where a browser cannot hold `display` through a
+  transition they close at once, as before).
+- Twenty-six more raw colours in `hud.css` are tokens (324 to 298); three new ones
+  (`--danger-soft`, `--good-soft`, `--blood`). The rest are used once or twice by one component.
+- The class looks were checked on live heroes: each of the seven test heroes, given its look with
+  `appearance`, is dressed in its pieces (the paladin's halo, pauldrons, gorget, tabard and belt;
+  the cleric's stole, sunburst, cuffs and censer; and so on), each with the lantern at the hip.
+  By the pieces on the hero, not by eye: the browser pane was hidden, so no picture was taken. The
+  looks themselves were seen in the gallery in the third batch.
+
+**Play**
+- A creature that attacks on sight does not wander into a peaceful room (23 of them are not marked
+  `no_mob`); guards and keepers come and go as before.
+
+**Housekeeping**
+- `world/WORLD_MAP.md` (the 16-zone world around "Midgaard") is retired.
+- Tripo's terms, as far as its own pages say them, are in `docs/art/SOURCES.md`: by its account
+  what the paid API makes is the buyer's to ship. The API's own terms would not load for an
+  automated reader; a person should read them once before the game is sold.
+- The nine failures in `tests/test_gates.py` were the test's, not the world's: nine room owners are
+  placed as sub-bosses or elites on purpose, and the check allowed only bosses. One in
+  `tests/test_buildout.py` was the same kind (a lifted creature takes its new level's numbers).
+- `main` is merged in (31 commits): three small conflicts, in the login form (main's two forms
+  keep "one knock at a time"), a crit's reel, and the bar lock's colours.
+
 ## Where it stands (end of 9 November)
 
-Everything in this document is done and committed on `claude/seamless-polish`.
+Everything above is done and committed on `claude/seamless-polish`, pull request #209 (on #208);
+nothing is merged or deployed. The eight calls in the fourth batch's table were put to the owner
+on 9 November: **"Keep all eight."** They stand (each can still be taken back as the table says).
 
-The eight calls in the fourth batch's table were put to the owner on 9 November: **"Keep all
-eight."** They stand (each can still be taken back as the table says). The branch is pushed and
-its pull request open (#209, on #208); nothing is merged or deployed.
+Not done, and why:
+- **Nobody has listened to the game.** The region chords and tunes, the bells and the voice budget
+  are checked as numbers. They need an ear.
+- **Frame rate on other machines** is not measured (one machine, one card).
+- **One tooltip system in place of three**, time-sliced room building, and the next zone built
+  before its border are still as the audit found them (below): each is a rewrite of a working
+  part, and none is a visible fault today.
+- The 119 broad `except Exception:` blocks in `commands.py` and `combat.py` have not been read.
 
 ## Pass 2: the owner's calls (each changes how the game plays)
 

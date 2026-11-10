@@ -5,7 +5,7 @@ export const STYLES = {
   mage: [['classic', 'The young mage in a travelling coat.'], ['archmage', 'A tall hat, a long white beard, a robe to the ankles and a moon staff.']],
   warrior: [['classic', 'The fighter as their armour makes them.'], ['warden', 'A fur mantle, a great pauldron on the shield arm, bracers, and a crimson tabard at a broad belt.']],
   paladin: [['classic', 'The knight in the plate of their order.'], ['templar', 'A halo behind the head, winged pauldrons, a white tabard with the sun.']],
-  cleric: [['classic', 'The priest in plain vestments.'], ['hierophant', 'A gold-ended stole, a sunburst behind the shoulders, a censer at the belt.']],
+  cleric: [['classic', 'The priest in plain vestments.'], ['hierophant', 'A gold-ended stole, a sunburst behind the head, a censer at the belt.']],
   thief: [['classic', 'The rogue in travelling leathers.'], ['footpad', 'A red scarf, a bandolier of knives, pouches at the belt.']],
   assassin: [['classic', 'The hooded killer.'], ['nightblade', 'A pointed black mantle, crossed blades on the back, a red sash.']],
   ranger: [['classic', 'The hooded hunter.'], ['wayfinder', 'A mantle of leaves, feathers at the shoulder, a bedroll on the back.']],

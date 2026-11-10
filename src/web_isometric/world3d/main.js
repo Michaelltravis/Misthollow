@@ -1480,7 +1480,7 @@ async function runGame() {
   }
   // ---- right-click (press and release without dragging): a menu for what is under it ----
   // (a right-drag turns the camera: input.js tells them apart)
-  attachWorldInput(engine, canvas, { onContext: openContext, typing: e => /INPUT|TEXTAREA/.test((e.target || {}).tagName || '') });
+  attachWorldInput(engine, canvas, { onContext: openContext, typing: e => /INPUT|TEXTAREA|SELECT/.test((e.target || {}).tagName || '') });
   function pickAt(x, y) {
     const ent = ents.pick(x, y);
     if (ent) return { kind: ent.kind === 'player' ? 'player' : 'mob', ent };

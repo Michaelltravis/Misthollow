@@ -1176,6 +1176,11 @@ class Mobile(Character):
                 # Don't wander into no_mob rooms (nor the God Rooms)
                 if KEEP_OUT & target_room.flags:
                     continue
+                # nor, if it would attack on sight, into a peaceful one (23 peaceful rooms are not
+                # marked no_mob: a wolf in a chapel could not bite, but should not be there); the
+                # folk who live among them, guards and keepers, come and go as before
+                if 'peaceful' in target_room.flags and 'aggressive' in self.flags:
+                    continue
                 # Don't wander out of home zone (unless no home zone set)
                 if self.home_zone is not None:
                     target_zone = zone_of(target_room)

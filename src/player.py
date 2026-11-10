@@ -31,7 +31,7 @@ LOOK_WORDS = {
     'mage': {'classic': 'the young mage in a travelling coat', 'archmage': 'a tall hat, a long white beard, a robe to the ankles'},
     'warrior': {'classic': 'the fighter as their armour makes them', 'warden': 'a fur mantle, a great pauldron, a crimson tabard at the belt'},
     'paladin': {'classic': 'the knight in the plate of their order', 'templar': 'a halo behind the head, winged pauldrons, a white tabard with the sun'},
-    'cleric': {'classic': 'the priest in plain vestments', 'hierophant': 'a gold-ended stole, a sunburst behind the shoulders, a censer at the belt'},
+    'cleric': {'classic': 'the priest in plain vestments', 'hierophant': 'a gold-ended stole, a sunburst behind the head, a censer at the belt'},
     'thief': {'classic': 'the rogue in travelling leathers', 'footpad': 'a red scarf, a bandolier of knives, pouches at the belt'},
     'assassin': {'classic': 'the hooded killer', 'nightblade': 'a pointed black mantle, crossed blades on the back, a red sash'},
     'ranger': {'classic': 'the hooded hunter', 'wayfinder': 'a mantle of leaves, feathers at the shoulder, a bedroll on the back'},
