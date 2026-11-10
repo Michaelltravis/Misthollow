@@ -146,15 +146,16 @@ export function createEngine(container, opts = {}) {
   // little more colour (ACES alone washes the kits' flat colours toward grey), and the shadows
   // leaning cool against the warm torches.
   const GRADE = {
-    uniforms: { tDiffuse: { value: null }, uContrast: { value: 1.08 }, uSat: { value: 1.16 } },
+    uniforms: { tDiffuse: { value: null }, uContrast: { value: 1.08 }, uSat: { value: 1.16 }, uTint: { value: new THREE.Vector3(1, 1, 1) } },
     vertexShader: 'varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
-    fragmentShader: `uniform sampler2D tDiffuse; uniform float uContrast; uniform float uSat; varying vec2 vUv;
+    fragmentShader: `uniform sampler2D tDiffuse; uniform float uContrast; uniform float uSat; uniform vec3 uTint; varying vec2 vUv;
       void main() { vec4 c = texture2D(tDiffuse, vUv);
         vec3 x = max(c.rgb, vec3(0.0));
         x = 0.18 * pow(x / 0.18, vec3(uContrast));
         float l = dot(x, vec3(0.2126, 0.7152, 0.0722));
         x = mix(vec3(l), x, uSat);
         x += vec3(-0.004, 0.0, 0.008) * (1.0 - smoothstep(0.0, 0.25, l));
+        x *= uTint;                                   // the region's cast (regionlook.js)
         gl_FragColor = vec4(max(x, vec3(0.0)), c.a); }`,
   };
   function makeComposer() {
@@ -166,11 +167,16 @@ export function createEngine(container, opts = {}) {
     c.addPass(new RenderPass(scene, camera));
     c.addPass(new ShaderPass(SCRUB));
     c.addPass(new UnrealBloomPass(new THREE.Vector2(256, 256), 0.32, 0.45, 0.88));
-    c.addPass(new ShaderPass(GRADE));
+    gradePass = new ShaderPass(GRADE);
+    gradePass.uniforms.uTint.value.copy(tintNow);
+    c.addPass(gradePass);
     c.addPass(new OutputPass());
     return c;
   }
   let api = null;
+  // the region's cast over the picture (api.regionTint: [r, g, b], main.js sets it as a zone is entered)
+  let gradePass = null;
+  const tintNow = new THREE.Vector3(1, 1, 1);
   let composer = q.bloom ? makeComposer() : null;
 
   function resize() {
@@ -250,6 +256,10 @@ export function createEngine(container, opts = {}) {
     if (darkNow > 0.01) scene.background.multiplyScalar(1 - 0.9 * darkNow);
     // (the player's own Brightness setting on top: Settings, main.js)
     renderer.toneMappingExposure = cur.exposure * (1 - 0.45 * gloomNow) * (1 - 0.15 * darkNow) * (api.brightness || 1);
+    // the region's cast eases in over a couple of seconds as a border is crossed
+    const rt = api.regionTint || [1, 1, 1], tk = 1 - Math.exp(-dt * 0.9);
+    tintNow.x += (rt[0] - tintNow.x) * tk; tintNow.y += (rt[1] - tintNow.y) * tk; tintNow.z += (rt[2] - tintNow.z) * tk;
+    if (gradePass) gradePass.uniforms.uTint.value.copy(tintNow);
     // the characters' own rim and fill (charlook.js): more of both the darker the place
     setCharLight(colors.sky, { hemi: cur.hemi, sunI: cur.sunI, darkness: darkNow, gloom: gloomNow });
   }

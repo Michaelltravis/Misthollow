@@ -28,6 +28,7 @@ import { doorPrompt, doorVerbs, doorAnchor, cap } from './doorlogic.js';
 import { createPrompt } from './hud/prompt.js';
 import { createCastbar } from './hud/castbar.js';
 import { charLook } from './charlook.js';
+import { tintFor } from './regionlook.js';
 import { createContextMenu } from './hud/contextmenu.js';
 import { attachWorldInput } from './input.js';
 import { shouldRetarget, retargetOnDeath, refFor, abilityCommand, tabOrder } from './targeting.js';
@@ -740,6 +741,7 @@ async function runGame() {
     spots.clear();
     mm.setZone(zone);
     mapRegion(zone.region);
+    engine.regionTint = tintFor(zone.region);      // the region's cast over the picture (regionlook.js)
     zmCache.set(zm.zone, zm);
     nextDoor(zone);
   }

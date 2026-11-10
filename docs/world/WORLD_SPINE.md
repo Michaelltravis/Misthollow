@@ -151,7 +151,10 @@ Each step stands by itself and can be checked in the game.
    lantern in the tutorial, lantern posts on the first stretch of road, the bells at dusk.
 4. **The road made true**: the Frostmarch raised, the two ways in moved, the Vale ordered
    (balance work: `tools/balance`, the population files).
-5. **Region looks**: light, stone, weather and music chosen by region.
+5. **Region looks**: light, stone, weather and music chosen by region. **Begun (9 November):**
+   each region has a slight colour cast over the whole picture (`world3d/regionlook.js`, eased in
+   as a border is crossed): the Vale warm, the Frostmarch cold, the Reach ash-red. Stone,
+   weather and music by region are still to do.
 6. **Region by region**: people the empty zones, give each region its opening quest in the city
    and its villain's story, in the order the road runs.
 7. Retire `world/WORLD_MAP.md` (the 16-zone world) in favour of this page and the atlas index.

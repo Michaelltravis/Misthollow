@@ -139,8 +139,29 @@ higher-fidelity art style. Bodies and faces are still the pack's.
 - Sage Aldric gives the next lesson to a pupil who abandoned one (`quests.resume_tutorial`):
   abandoning a tutorial step used to end the chain for good.
 
+- Each of the nine regions has its own slight colour cast (`regionlook.js`), eased in as a border
+  is crossed, so a new region is seen as well as named.
+
 Tried and taken back: creatures shrinking away as they leave (a vanished creature is held one
 frame for its corpse to claim; the two did not fit).
+
+## Where it stands (end of 9 November)
+
+Done and committed on `claude/seamless-polish`: passes 1 and 3, character lighting and the
+picture, regions in the game, the world's spine, the lantern, a look for every class, the second
+3D and play pass, region casts.
+
+Waiting on the owner (none of it is code that can be decided for them):
+- the five calls in pass 2 below (creature names, rest between fights, new-character defaults,
+  logging in mid-danger, low-level fight length);
+- the renames and re-levelling in `docs/world/WORLD_SPINE.md` (its ledger).
+
+Open work that needs no decision, largest first:
+- the Lantern Vale as the opening hour (the Proving Halls rewritten in the world's voice, the
+  lantern in the tutorial, lantern posts on the first road);
+- room pop-in and zone borders that rebuild the scene (pass 4);
+- the region villains as scripted boss models (the same pipeline as the looks);
+- region stone, weather and music; the remaining pass 3 and pass 4 items.
 
 ## Pass 2: the owner's calls (each changes how the game plays)
 
