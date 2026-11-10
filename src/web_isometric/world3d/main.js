@@ -742,6 +742,7 @@ async function runGame() {
     mm.setZone(zone);
     mapRegion(zone.region);
     engine.regionTint = tintFor(zone.region);      // the region's cast over the picture (regionlook.js)
+    sound.regionPad(zone.region ? zone.region.id : null);      // and its chord under the music (soundtable.js REGION_PAD)
     zmCache.set(zm.zone, zm);
     nextDoor(zone);
   }

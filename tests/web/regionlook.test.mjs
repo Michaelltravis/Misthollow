@@ -76,3 +76,29 @@ test('the great villains have bodies of their own, found by prototype and never 
     assert.ok(new RegExp(`${vnum}: 'body:${v}'`).test(src), `prototype ${vnum} is ${v}`);
   }
 });
+
+test("each region has a chord of its own under the music, quiet, and no two alike", async () => {
+  const { REGION_PAD, REGION_PAD_LEVEL, regionPad } = await import('../../src/web_isometric/world3d/soundtable.js');
+  assert.deepEqual(Object.keys(REGION_PAD).sort(), regions.map(r => r.id).sort());
+  const seen = new Set();
+  for (const [id, p] of Object.entries(REGION_PAD)) {
+    assert.ok(p.notes.length >= 3 && p.notes.length <= 4, `${id}: three or four notes`);
+    assert.ok(p.notes.every(f => f >= 55 && f <= 800), `${id}: in the low and middle register`);
+    assert.ok(['sine', 'triangle', 'sawtooth'].includes(p.wave) && p.cut >= 300 && p.cut <= 2000);
+    seen.add(p.notes.join());
+  }
+  assert.equal(seen.size, regions.length);
+  assert.ok(REGION_PAD_LEVEL <= 0.04, 'felt more than heard');
+  assert.equal(regionPad('nowhere'), null);
+  assert.equal(regionPad(null), null);
+  // the Frostmarch sits higher than the Deep Road
+  assert.ok(Math.max(...REGION_PAD.frostmarch.notes) > Math.max(...REGION_PAD.deeproad.notes) * 3);
+});
+
+test('the audio engine plays the chord, fades the old one, and waits for the first click', async () => {
+  const src = fs.readFileSync(new URL('../../src/web_isometric/world3d/audio.js', import.meta.url), 'utf8');
+  assert.ok(/regionPad\(region\) \{\s+if \(!this\.ctx\) \{ this\.pad\.want = region; return; \}/.test(src), 'before sound is allowed the region is remembered');
+  assert.ok(src.includes('if (this.pad.want) { const w = this.pad.want; this.pad.want = null; this.regionPad(w); }'), 'and played once it is');
+  assert.ok(src.includes('gain.connect(this.bus.music)'), 'on the music bus: the Music volume governs it');
+  assert.ok(src.includes('v.osc.stop(t + 5)'), 'the old chord is stopped after its fade');
+});

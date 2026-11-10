@@ -1377,6 +1377,131 @@ QUEST_DEFINITIONS = {
         'region': 'deeproad'
     },
 
+    # ========== THE ROADS' ENDS: each region's story after its road quest ==========
+    # Sage Aldric tells a lantern-bearer who has walked a region's road (`after`: road_<region>) what
+    # put its lanterns out: the region's great villain, and the bargain it made with the mist
+    # (docs/world/WORLD_SPINE.md section 2).
+    'story_vale': {
+        'name': 'The King in the Fields',
+        'description': "The lantern on the plains road did not go out by itself. Grukthar, who calls himself king of the goblins, has been putting them out one by one: his people see better without them. Find him in the Plains and end it, and the Guard will relight the road behind you.",
+        'type': 'kill',
+        'level_min': 16,
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'road_vale',
+        'objectives': [
+            {'type': 'kill', 'description': 'Defeat Grukthar the Goblin King', 'target': 'goblin king', 'required': 1}
+        ],
+        'rewards': {'exp': 8800, 'gold': 1100, 'items': []},
+        'repeatable': False,
+        'region': 'vale'
+    },
+    'story_marches': {
+        'name': 'The Name-Taker',
+        'description': "The keeps along the road did not fall to any army. Ostragoth kept his own name through the mist by taking other people's: every traveller he has fed on is someone the bells no longer ring for. His castle stands at the end of the Badlands. Go there and give those names back.",
+        'type': 'kill',
+        'level_min': 15,
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'road_marches',
+        'objectives': [
+            {'type': 'kill', 'description': 'Defeat Ostragoth, the vampire lord', 'target': 'ostragoth', 'required': 1}
+        ],
+        'rewards': {'exp': 8400, 'gold': 1050, 'items': []},
+        'repeatable': False,
+        'region': 'marches'
+    },
+    'story_greenreach': {
+        'name': 'The Weaver of the Wood',
+        'description': "The old forest never needed our lanterns, and now something in it is spinning the light out of the air. Zyraxxis has webbed the heart of the wood so thick that the mist pools under it and does not move. Cut her out of it.",
+        'type': 'kill',
+        'level_min': 20,
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'road_greenreach',
+        'objectives': [
+            {'type': 'kill', 'description': 'Defeat Zyraxxis the Spider Queen', 'target': 'zyraxxis', 'required': 1}
+        ],
+        'rewards': {'exp': 10400, 'gold': 1300, 'items': []},
+        'repeatable': False,
+        'region': 'greenreach'
+    },
+    'story_stonemarch': {
+        'name': 'What the Dwarves Left Locked',
+        'description': "The dwarves dug too deep, and when they fled they left a keeper in the maze below their kingdom to see that nothing followed them up. It has kept that door for so long that it has forgotten which side it guards. Go down through the Dwarven Kingdom and put it to rest.",
+        'type': 'kill',
+        'level_min': 23,
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'road_stonemarch',
+        'objectives': [
+            {'type': 'kill', 'description': 'Defeat the mazekeeper', 'target': 'mazekeeper', 'required': 1}
+        ],
+        'rewards': {'exp': 11600, 'gold': 1450, 'items': []},
+        'repeatable': False,
+        'region': 'stonemarch'
+    },
+    'story_frostmarch': {
+        'name': 'The Frozen Sky',
+        'description': "In the north the mist froze, and it froze because of what sleeps on the Frostspire. Vyrkothas breathes it out as rime, and every winter it reaches a little further south. Climb the spire. Bring the thaw.",
+        'type': 'kill',
+        'level_min': 32,
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'road_frostmarch',
+        'objectives': [
+            {'type': 'kill', 'description': 'Defeat Vyrkothas the Frost Wyrm', 'target': 'vyrkothas', 'required': 1}
+        ],
+        'rewards': {'exp': 15200, 'gold': 1900, 'items': []},
+        'repeatable': False,
+        'region': 'frostmarch'
+    },
+    'story_sundersea': {
+        'name': 'The King Who Drowned With His Name',
+        'description': "When the lake ran out to the sea, Nerathis went with it rather than be forgotten on the shore. He kept his name by drowning with it, and he keeps a court of the drowned who had no such choice. Go down into the Sunken Ruins of Atal'narath and let them go.",
+        'type': 'kill',
+        'level_min': 20,
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'road_sundersea',
+        'objectives': [
+            {'type': 'kill', 'description': 'Defeat Nerathis, the Drowned King', 'target': 'nerathis', 'required': 1}
+        ],
+        'rewards': {'exp': 10400, 'gold': 1300, 'items': []},
+        'repeatable': False,
+        'region': 'sundersea'
+    },
+    'story_deeproad': {
+        'name': 'The City That Forgot It Died',
+        'description': "At the end of the long way under the world is Morkai, a city so thoroughly lost to the mist that it does not know it is dead. Moloch rules it from a throne of other people's memories. The road cannot be relit while he sits there.",
+        'type': 'kill',
+        'level_min': 62,
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'road_deeproad',
+        'objectives': [
+            {'type': 'kill', 'description': 'Defeat Moloch, the Ancient Demon Lord', 'target': 'moloch', 'required': 1}
+        ],
+        'rewards': {'exp': 27200, 'gold': 3400, 'items': []},
+        'repeatable': False,
+        'region': 'deeproad'
+    },
+    'story_reach': {
+        'name': 'The Shattered Throne',
+        'description': "Every road has led here. Whoever broke the Throne is still sitting on what is left of it, and the mist comes out of that room like breath. You have carried a lantern from the Temple to the end of the world. Go in.",
+        'type': 'kill',
+        'level_min': 64,
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'road_reach',
+        'objectives': [
+            {'type': 'kill', 'description': 'Defeat the shattered emperor', 'target': 'shattered emperor', 'required': 1}
+        ],
+        'rewards': {'exp': 28000, 'gold': 3500, 'items': []},
+        'repeatable': False,
+        'region': 'reach'
+    },
+
     # ========== TUTORIAL QUESTS ==========
     'tutorial_1_awakening': {
         'name': 'Awakening',
@@ -2778,6 +2903,10 @@ class QuestManager:
 
             # Check chain availability
             if not QuestManager.is_chain_quest_available(player, quest_def):
+                continue
+
+            # one that follows another (`after`: the quest that must be done first)
+            if quest_def.get('after') and quest_def['after'] not in (getattr(player, 'quests_completed', None) or []):
                 continue
 
             # Check level requirements

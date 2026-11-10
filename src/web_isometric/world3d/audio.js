@@ -4,7 +4,7 @@
 // the camera's focus. Recorded effects are short mp3s (audio/sfx, CC0); swings, spells and room
 // tone are made here (the 2D client's synths, ported); music streams from audio/music and
 // crossfades between zones and into the battle track. What sounds when: soundtable.js.
-import { SOUNDS, FILES, BEDS, VOICES, schoolOf } from './soundtable.js';
+import { SOUNDS, FILES, BEDS, VOICES, schoolOf, regionPad, REGION_PAD_LEVEL } from './soundtable.js';
 
 const BASE = new URL('./audio/', import.meta.url).href;
 const ls = {
@@ -143,6 +143,7 @@ class Sound {
     const q = ls.get('mh3d_quality') || 'high';
     this.maxVoices = VOICES[q === 'med' ? 'medium' : q] || VOICES.high;
     this.bed = { key: null, nodes: [], timer: null };
+    this.pad = { key: null, want: null, voices: [] };      // the region's chord under the music (regionPad)
     this.music = { want: null, zone: null, battle: false, decks: [], cur: -1, timer: null };
     this._unlock = () => this.unlock();
     for (const ev of ['pointerdown', 'keydown', 'touchstart']) window.addEventListener(ev, this._unlock, { capture: true });
@@ -171,6 +172,7 @@ class Sound {
       PRELOAD.forEach(k => { for (let i = 1; i <= FILES[k]; i++) this.load(k, i); });
       setTimeout(() => Object.keys(FILES).forEach(k => { for (let i = 1; i <= FILES[k]; i++) this.load(k, i); }), 1200);
       if (this.bed.want) { const w = this.bed.want; this.bed.want = null; this.ambience(w); }
+      if (this.pad.want) { const w = this.pad.want; this.pad.want = null; this.regionPad(w); }
       if (this.music.want) this.playMusic(this.music.want, 0.5);
     }
     if (this.ctx.state === 'suspended') this.ctx.resume().catch(() => {});
@@ -286,6 +288,39 @@ class Sound {
   }
 
   // ---- ambience: a room tone and its calls, by the zone's look (immersion.js beds) ----
+  // The region's chord (soundtable.js REGION_PAD): a few soft oscillators under the music, each
+  // swelling and ebbing at its own slow rate so the chord never sits still. Crossing into another
+  // region fades the old chord out over four seconds as the new one comes in. null: silence.
+  regionPad(region) {
+    if (!this.ctx) { this.pad.want = region; return; }
+    if (this.pad.key === region) return;
+    const c = this.ctx, t = c.currentTime;
+    for (const v of this.pad.voices) {
+      try {
+        v.gain.gain.cancelScheduledValues(t);
+        v.gain.gain.setTargetAtTime(0.0001, t, 1.2);
+        v.lfoGain.gain.setTargetAtTime(0, t, 0.5);
+        v.osc.stop(t + 5); v.lfo.stop(t + 5);
+      } catch (_) { /* already stopped */ }
+    }
+    this.pad = { key: region, want: null, voices: [] };
+    const spec = regionPad(region);
+    if (!spec) return;
+    spec.notes.forEach((f, i) => {
+      const osc = c.createOscillator(), gain = c.createGain(), flt = c.createBiquadFilter();
+      const lfo = c.createOscillator(), lfoGain = c.createGain();
+      osc.type = spec.wave; osc.frequency.value = f; osc.detune.value = (i % 2 ? 4 : -4);
+      flt.type = 'lowpass'; flt.frequency.value = spec.cut; flt.Q.value = 0.4;
+      const level = REGION_PAD_LEVEL / (1 + i * 0.35);          // the upper notes quieter
+      gain.gain.value = 0.0001;
+      gain.gain.setTargetAtTime(level, t, 2.5);
+      lfo.frequency.value = 0.035 + 0.017 * i; lfoGain.gain.value = level * 0.45;
+      lfo.connect(lfoGain); lfoGain.connect(gain.gain);
+      osc.connect(flt); flt.connect(gain); gain.connect(this.bus.music);
+      osc.start(t); lfo.start(t);
+      this.pad.voices.push({ osc, gain, lfo, lfoGain });
+    });
+  }
   ambience(key) {
     if (!this.ctx) { this.bed.want = key; return; }
     if (this.bed.key === key) return;

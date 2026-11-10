@@ -192,19 +192,41 @@ Also in this batch:
   files alone.
 - Measured, and left: a room takes about 2 ms to rebuild, so time-slicing the build is not needed.
 
+## The fifth batch (done)
+
+- **Each region's story** (`story_*` in `quests.py`): once a region's road quest is done, Sage
+  Aldric tells what put its lanterns out, and sends the hero against its villain: the Goblin King,
+  Ostragoth, Zyraxxis, the mazekeeper, Vyrkothas, Nerathis, Moloch in Morkai, and the one on the
+  Shattered Throne. A quest may follow another (`after`).
+- **Each region's own voice** (`soundtable.js REGION_PAD`, `audio.js regionPad`): a quiet chord
+  under the six recorded tracks, three or four soft oscillators, crossfaded as a border is
+  crossed. Written as notes, not recorded: the Vale a warm major third, the Frostmarch thin and
+  high, the Reach a grinding semitone.
+- **The HUD's colours**: every colour used three times or more in `hud.css` is a token in
+  `theme.css` (`--shadow`, `--white`, `--gold-face-hi/-lo`, `--on-gold`, `--star`, `--coin`, with
+  `--gold`, `--xp` and `--neutral` used where they were written raw): 501 raw colours down to 324.
+  What is left is used once or twice, by one component, and stays with it.
+
+Seen and heard in the running game (as the test paladin, with the immortal `settime` and
+`setweather`):
+- the bells: at six the log says "The Temple's bells begin to ring across the Vale..." after "The
+  sun begins to set", and the bell sound plays;
+- region weather: rain drawn as snow in the Frostmarch, a storm as ash in the Reach, an overcast
+  sky as mist in the Marches, fog as cloud in the Vale;
+- region music: the dark track in the Reach's open country; the region chord swapping (the Vale's
+  147/220/370 Hz to the Frostmarch's 165/247/392/740 and back), the audio running;
+- War, Pestilence and Death standing in the Guardian Chambers on their own bodies.
+
+Not seen: **the frame rate** (the test browser's page does not draw while its window is hidden,
+so a count of frames says nothing); **Ostragoth in his chamber** (he is not in the room until his
+lair entrance brings him, and it did not fire for an immortal walking in).
+
 ## Where it stands (end of 9 November)
 
-Everything in this document is done and committed on `claude/seamless-polish` except what is
-listed here.
+Everything in this document is done and committed on `claude/seamless-polish`.
 
-For the owner to look at (made, not waiting): the eight calls in the table above.
-
-Not seen or heard by the one who made them (the test browser was hidden: no sound, throttled
-frames): the bells, region weather and music, the frame rate with the wider room ring, the
-villains in their own rooms. Each has a test; none replaces an owner's look.
-
-Open, and larger than a pass: each region's own story beyond its first road quest; music written
-for regions (there are six tracks); the remaining raw colours in `hud.css` moved onto tokens.
+For the owner to look at: the eight calls in the fourth batch's table (each with how to take it
+back), and the two things above that could not be seen from here.
 
 ## Pass 2: the owner's calls (each changes how the game plays)
 

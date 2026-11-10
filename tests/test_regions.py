@@ -105,6 +105,21 @@ async def main():
     check({'road_vale', 'road_marches', 'road_sundersea'} <= offered and 'road_reach' not in offered and 'road_deeproad' not in offered,
           f'at level 7 the near roads are offered, the far ones not ({sorted(k for k in offered if k.startswith("road_"))})')
 
+    # ---- the roads' ends: each region's villain, told once its road is walked
+    from mobs import Mobile as _M
+    ends = {k: q for k, q in QUEST_DEFINITIONS.items() if k.startswith('story_')}
+    check(len(ends) == 8 and all(q['after'] == 'road_' + q['region'] and q['after'] in roads for q in ends.values()), "a story for each road, after it")
+    said = [(_M.said_name(p.get('name'), p.get('short_desc')) or p.get('name') or '').lower() for p in world.mob_prototypes.values()]
+    for k, q in ends.items():
+        t = q['objectives'][0]['target']
+        check(any(t in n for n in said), f"{q['name']}: there is a creature called by '{t}' to defeat")
+    vet = _P.create_new(name='Endtest', password=None, race='human', char_class='warrior', stats={k: 13 for k in ('str', 'int', 'wis', 'dex', 'con', 'cha')}, world=world)
+    vet.level = 30
+    check('story_marches' not in QuestManager.get_available_quests(vet, 3200), "the story is not told before its road is walked")
+    vet.quests_completed = ['road_marches']
+    got = QuestManager.get_available_quests(vet, 3200)
+    check('story_marches' in got and 'story_frostmarch' not in got, "and is told after it (and only that region's)")
+
     # ---- the bells at dusk: heard in the Lantern Vale, and nowhere else
     temple, square = world.rooms[3001], world.rooms[3005]
     check(regions.bells_line(temple) == regions.BELLS_INDOORS, 'in the Temple the bells come through the walls')

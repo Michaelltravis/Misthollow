@@ -223,3 +223,24 @@ export function bedFor({ theme, zoneKey } = {}) {
 
 // how many voices at once, by graphics quality (low-end machines get fewer)
 export const VOICES = { low: 10, medium: 16, high: 24 };
+
+// ---- each region's own voice (docs/world/WORLD_SPINE.md section 4) ----
+// The game has six recorded tracks, chosen by the kind of place. Under them each region of the world
+// holds a chord of its own, played by the audio engine as a slow, quiet pad (audio.js regionPad): the
+// Lantern Vale a warm major third, the Frostmarch a thin high minor, the Sundered Reach a cluster a
+// semitone apart. Notes in Hz; `wave` the oscillator; `cut` the lowpass that keeps it soft.
+export const REGION_PAD = {
+  vale: { notes: [146.83, 220.0, 369.99], wave: 'triangle', cut: 900 },          // D A F#: warm, settled
+  marches: { notes: [130.81, 196.0, 293.66], wave: 'triangle', cut: 800 },       // C G D: open fifths, grey
+  greenreach: { notes: [174.61, 261.63, 493.88], wave: 'sine', cut: 1100 },      // F C B: the raised fourth, old and strange
+  stonemarch: { notes: [110.0, 164.81, 261.63], wave: 'triangle', cut: 700 },    // A E C: a low minor
+  frostmarch: { notes: [164.81, 246.94, 392.0, 739.99], wave: 'sine', cut: 1600 }, // E B G F#: thin and high
+  sundersea: { notes: [98.0, 146.83, 220.0], wave: 'sine', cut: 900 },           // G D A: suspended, like water
+  deeproad: { notes: [65.41, 92.5, 130.81], wave: 'triangle', cut: 500 },        // C F# C: the tritone, under the world
+  reach: { notes: [73.42, 110.0, 116.54], wave: 'sawtooth', cut: 420 },          // D A Bb: a semitone grinding
+  beyond: { notes: [130.81, 164.81, 207.65], wave: 'sine', cut: 1000 },          // C E G#: whole tones, belonging nowhere
+};
+export const REGION_PAD_LEVEL = 0.028;      // each note's peak, on the music bus: felt more than heard
+export function regionPad(region) {
+  return (region && REGION_PAD[region]) || null;
+}
