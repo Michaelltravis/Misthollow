@@ -14,7 +14,7 @@
    "gold": 650,
    "hp_dice": "5d10+76",
    "level": 5,
-   "long_desc": "The big, ugly pit-beast is standing here sizing you up.",
+   "long_desc": "A big, heavy-jawed pit-beast stands here, sizing you up.",
    "name": "pitbeast",
    "short_desc": "the pit beast",
    "vnum": 18601,
@@ -80,9 +80,9 @@
    "gold": 325,
    "hp_dice": "2d10+40",
    "level": 2,
-   "long_desc": "The newbie monster stands here looking confused.  Kill him!  Kill him!",
-   "name": "newbie",
-   "short_desc": "the newbie monster",
+   "long_desc": "A shambling thing stands here, looking about as if it has forgotten what it came for.",
+   "name": "shambler",
+   "short_desc": "the shambler",
    "vnum": 18602,
    "inventory": [
     18613
@@ -101,7 +101,7 @@
    "gold": 500,
    "hp_dice": "4d10+64",
    "level": 4,
-   "long_desc": "Someone's little pet dragon has gotten loose, and is sniffing about here.",
+   "long_desc": "A baby dragon, someone's pet got loose, is sniffing about here.",
    "name": "dragon",
    "short_desc": "the baby dragon",
    "vnum": 18603,
@@ -126,9 +126,9 @@
     18608
    ],
    "level": 3,
-   "long_desc": "The Newbie Guard is here wondering where that dragon went.",
-   "name": "keeper",
-   "short_desc": "the Newbie Guard",
+   "long_desc": "A guard of the watch-house is here, looking for the dragon that got out.",
+   "name": "guard",
+   "short_desc": "the watch-house guard",
    "vnum": 18604
   },
   "18605": {
@@ -144,9 +144,9 @@
     18609
    ],
    "level": 5,
-   "long_desc": "The Newbie Alchemist is here trying to make something.",
+   "long_desc": "The alchemist is here, bent over something that has not worked yet.",
    "name": "alchemist",
-   "short_desc": "the Newbie Alchemist",
+   "short_desc": "the watch-house alchemist",
    "vnum": 18605
   },
   "18606": {
@@ -159,7 +159,7 @@
    "gold": 50,
    "hp_dice": "1d10+28",
    "level": 1,
-   "long_desc": "A creepy little crawling thing is scuttling along the floor at your feet.",
+   "long_desc": "A small crawling thing scuttles along the floor at your feet.",
    "name": "crawler",
    "short_desc": "the creepy crawler",
    "vnum": 18606,
@@ -177,9 +177,9 @@
    "gold": 450,
    "hp_dice": "4d10+64",
    "level": 4,
-   "long_desc": "A VERY gaunt looking newbie... it looks like a zombie!",
-   "name": "zombie",
-   "short_desc": "the zombiefied newbie",
+   "long_desc": "A gaunt figure in a novice's coat stands here. The mist has had this one: there is nobody behind the eyes.",
+   "name": "novice",
+   "short_desc": "the mist-taken novice",
    "vnum": 18607,
    "inventory": [
     18622
@@ -195,7 +195,7 @@
    "gold": 150,
    "hp_dice": "3d10+52",
    "level": 3,
-   "long_desc": "A funny little imp-like thing (a quasit perhaps?) is sneaking about here.",
+   "long_desc": "A small imp-like thing, a quasit perhaps, is sneaking about here.",
    "name": "quasit",
    "short_desc": "the quasit",
    "vnum": 18608,
@@ -217,9 +217,9 @@
    "gold": 2000,
    "hp_dice": "7d10+100",
    "level": 7,
-   "long_desc": "The Great Minotaur is wondering just what you'll taste like.",
+   "long_desc": "A massive minotaur stands here, considering what you will taste like.",
    "name": "minotaur",
-   "short_desc": "the massive Minotaur",
+   "short_desc": "the massive minotaur",
    "vnum": 18609,
    "loot_table": [
     {
@@ -279,7 +279,7 @@
    "gold": 800,
    "hp_dice": "6d10+88",
    "level": 6,
-   "long_desc": "The dark spectre is lurking in the shadows.",
+   "long_desc": "A dark spectre keeps to the shadows here.",
    "name": "spectre",
    "short_desc": "the dark spectre",
    "vnum": 18610,
@@ -344,9 +344,9 @@
    "gold": 375,
    "hp_dice": "2d10+40",
    "level": 2,
-   "long_desc": "A newbie is here annoying the hell out of you.",
-   "name": "newbie",
-   "short_desc": "the annoying newbie",
+   "long_desc": "A novice is here, pleased with himself and eager to tell you why.",
+   "name": "novice",
+   "short_desc": "the boastful novice",
    "vnum": 18611,
    "inventory": [
     18616
@@ -362,9 +362,9 @@
    "gold": 135,
    "hp_dice": "1d10+28",
    "level": 1,
-   "long_desc": "A newbie is here looking terribly confused.",
-   "name": "newbie",
-   "short_desc": "the clueless newbie",
+   "long_desc": "A novice is here, turning a map round and round.",
+   "name": "novice",
+   "short_desc": "the lost-looking novice",
    "vnum": 18612,
    "inventory": [
     18615
@@ -383,9 +383,9 @@
    "gold": 650,
    "hp_dice": "3d10+52",
    "level": 3,
-   "long_desc": "A newbie is here talking a lot.",
-   "name": "newbie",
-   "short_desc": "the talkative newbie",
+   "long_desc": "A novice is here, talking, whether or not anyone is listening.",
+   "name": "novice",
+   "short_desc": "the talkative novice",
    "vnum": 18613,
    "inventory": [
     18612
@@ -401,9 +401,9 @@
    "gold": 375,
    "hp_dice": "4d10+64",
    "level": 4,
-   "long_desc": "A newbie is here wandering about aimlessly.",
-   "name": "wanderer",
-   "short_desc": "the lost newbie",
+   "long_desc": "A novice is here, wandering with no clear idea of where.",
+   "name": "novice",
+   "short_desc": "the wandering novice",
    "vnum": 18614,
    "inventory": [
     18613,
@@ -426,9 +426,9 @@
    "gold": 1050,
    "hp_dice": "5d10+76",
    "level": 5,
-   "long_desc": "A newbie is here, and he looks quite sure of himself.",
-   "name": "veteran",
-   "short_desc": "the smart newbie",
+   "long_desc": "A novice is here who looks as if he knows what he is about.",
+   "name": "novice",
+   "short_desc": "the steady novice",
    "vnum": 18615,
    "inventory": [
     18602,
@@ -443,8 +443,8 @@
    "damage_dice": "1d5",
    "item_type": "weapon",
    "name": "sword",
-   "room_desc": "A shiny newbie sword is lying here waiting to be possessed.",
-   "short_desc": "a shiny newbie sword",
+   "room_desc": "A novice's shiny sword is lying here waiting to be possessed.",
+   "short_desc": "a novice's shiny sword",
    "value": 0,
    "vnum": 18601,
    "weapon_type": "slash",
@@ -455,8 +455,8 @@
    "armor_bonus": 4,
    "item_type": "armor",
    "name": "vest",
-   "room_desc": "A bright green newbie vest is lying here looking for a body to hug.",
-   "short_desc": "a bright green newbie vest",
+   "room_desc": "A novice's bright green vest is lying here looking for a body to hug.",
+   "short_desc": "a novice's bright green vest",
    "value": 0,
    "vnum": 18602,
    "weight": 4,
@@ -469,8 +469,8 @@
    "armor_bonus": 3,
    "item_type": "armor",
    "name": "helm",
-   "room_desc": "A bright newbie helm is hoping a loose head will wander by.",
-   "short_desc": "a bright newbie helm",
+   "room_desc": "A novice's bright helm is hoping a loose head will wander by.",
+   "short_desc": "a novice's bright helm",
    "value": 0,
    "vnum": 18603,
    "weight": 4,
@@ -483,8 +483,8 @@
    "armor_bonus": 0,
    "item_type": "armor",
    "name": "cloak",
-   "room_desc": "A dark newbie cloak is lying here hoping to smother you.",
-   "short_desc": "a dark newbie cloak",
+   "room_desc": "A novice's dark cloak is lying here hoping to smother you.",
+   "short_desc": "a novice's dark cloak",
    "value": 100,
    "vnum": 18604,
    "weight": 2,
@@ -497,8 +497,8 @@
    "armor_bonus": 0,
    "item_type": "armor",
    "name": "ring",
-   "room_desc": "A newbie signet ring is lying in the dust here.",
-   "short_desc": "a newbie signet ring",
+   "room_desc": "A novice's signet ring is lying in the dust here.",
+   "short_desc": "a novice's signet ring",
    "value": 500,
    "vnum": 18605,
    "weight": 1,
@@ -511,8 +511,8 @@
    "damage_dice": "1d4",
    "item_type": "weapon",
    "name": "dagger",
-   "room_desc": "A shiny newbie dagger is lying here looking for a back to stab.",
-   "short_desc": "a shiny newbie dagger",
+   "room_desc": "A novice's shiny dagger is lying here looking for a back to stab.",
+   "short_desc": "a novice's shiny dagger",
    "value": 0,
    "vnum": 18606,
    "weapon_type": "pierce",
@@ -536,7 +536,7 @@
   "18608": {
    "item_type": "key",
    "name": "key",
-   "room_desc": "A key with the newbie crest on it is here.",
+   "room_desc": "A key with the novice's crest on it is here.",
    "short_desc": "a wee little key",
    "value": 0,
    "vnum": 18608,
@@ -581,7 +581,7 @@
    "item_type": "armor",
    "name": "leggings",
    "room_desc": "A pair of neat looking leggings are here.",
-   "short_desc": "some cool newbie leggings",
+   "short_desc": "some novice's cool leggings",
    "value": 200,
    "vnum": 18612,
    "weight": 4,
@@ -595,7 +595,7 @@
    "item_type": "armor",
    "name": "sleeves",
    "room_desc": "A set of nifty sleeves is here.",
-   "short_desc": "some cool newbie sleeves",
+   "short_desc": "some novice's cool sleeves",
    "value": 400,
    "vnum": 18613,
    "weight": 3,
@@ -608,8 +608,8 @@
    "damage_dice": "2d6",
    "item_type": "weapon",
    "name": "mace",
-   "room_desc": "A finely crafted newbie mace is waiting for a worthy owner.",
-   "short_desc": "a glowing newbie mace",
+   "room_desc": "A novice's finely crafted mace is waiting for a worthy owner.",
+   "short_desc": "a novice's glowing mace",
    "value": 300,
    "vnum": 18614,
    "weapon_type": "pound",
@@ -823,10 +823,10 @@
  },
  "rooms": {
   "18600": {
-   "description": "Ahhh... the entrance to the newbie zone! Just the place you have been\nlooking for. Well, when you've readied yourself you can enter to the\nnorth. The smell of smoke and humanity hangs in the air. Vendors and\npedestrians bustle past.",
+   "description": "An arch of old city stone stands open here, a lantern bracket rusting on either side of it. This was a watch-house of the lantern-bearers once; the Temple still sends the newly woken here to find their feet. The way in is north. Behind you the smoke and noise of the city go on as they always have.",
    "exits": {
     "north": {
-     "description": "You see the start of the newbie zone.",
+     "description": "You see the arch of the Proving Halls.",
      "to_room": 18601
     },
     "west": {
@@ -843,7 +843,7 @@
      "vnum": 18602
     }
    ],
-   "name": "The Entrance To The Newbie Zone",
+   "name": "The Arch Of The Proving Halls",
    "sector_type": "city",
    "vnum": 18600,
    "extra_descs": {
@@ -851,14 +851,14 @@
    }
   },
   "18601": {
-   "description": "The passage opens entering a long corridor. You can hear the sound of\ncreatures roaming about, but you can't tell where the sound emanates\nfrom exactly. Exits lead to the east along the hallway, and south back\nto the entrance. Shadows gather in the corners. The walls are rough-hewn\nand cold to the touch.",
+   "description": "The passage opens into a long corridor of dressed stone. Something moves further in, though the sound comes from no one direction. The corridor runs east; the entrance is back to the south.",
    "exits": {
     "east": {
      "description": "More of the hallway there... how exciting!",
      "to_room": 18602
     },
     "south": {
-     "description": "The entrance to the newbie zone... how dull",
+     "description": "The way into the Proving Halls.",
      "to_room": 18600
     }
    },
@@ -873,7 +873,7 @@
    }
   },
   "18602": {
-   "description": "You continue wandering down the hallway. Nothing much different here,\nbut you are positive you here noises behind the door to the south, and\ncoming from the east. The walls are a bit slimy and moldy here... yeech,\ncouldn't they hire someone to clean this place? What will the newbies\nthink? Oh well, you can continue along the hallway to the east or west.\nDust motes drift in the stale air. The ceiling hangs low overhead.",
+   "description": "The hallway runs on, east and west. Damp has got into the mortar here and a grey bloom covers the lower courses of the wall. There is movement behind the door to the south, and more of it somewhere to the east.",
    "exits": {
     "east": {
      "description": "More of the hallway there... how exciting!",
@@ -912,7 +912,7 @@
    "vnum": 18602
   },
   "18603": {
-   "description": "Well... you've reached an intersection of two passages, to the north and\neast, the passage brightens, while the darker hallway continues to the\nsouth. The walls are rough-hewn and cold to the touch. Shadows gather in\nthe corners.",
+   "description": "Two passages meet here. North and east the light is better, as if lamps were still kept there; the hallway to the south is darker. Doors close off the north and the east, and a plain passage leads back west.",
    "exits": {
     "east": {
      "description": "A brighter hallway leads off that way.",
@@ -951,7 +951,7 @@
    "vnum": 18603
   },
   "18604": {
-   "description": "The thin passage is plain and undecorated, but still clean. It ends\nabruptly to the south at a small oak door, behind which you here\nmovement... The air is still and musty. The walls are rough-hewn and\ncold to the touch.",
+   "description": "A narrow passage, bare of any ornament but swept clean. It ends to the south at a small oak door, and something is moving on the other side of it.",
    "exits": {
     "north": {
      "description": "A large domed room.",
@@ -983,7 +983,7 @@
    "vnum": 18604
   },
   "18605": {
-   "description": "Ick... a dark damp dirty pit. Even worse, what is that dark damp dirty\nthing looking at you from the corner? Ewww... maybe you should go back\nup where it is a bit safer, unless you think you can tackle that thing\nin the corner. Dust motes drift in the stale air. Shadows gather in the\ncorners.",
+   "description": "A pit, dark and wet underfoot, the air close. Whatever the watch kept down here, something else has it now, and it is watching you from the corner. The only way out is back up.",
    "exits": {
     "up": {
      "description": "You see a ladder leading up",
@@ -1014,7 +1014,7 @@
    }
   },
   "18606": {
-   "description": "Hmmm... this is an interesting little room. Ack, and there is an\ninteresting little creature staring at you too. He looks a bit surprised\nat your intrusion. You can leave via the doors north or east, or you can\nstay and annoy him a bit more. There also appears to be some type of\nwell down here also, but it has a rather secure grate covering it. The\nceiling hangs low overhead. The air is still and musty.",
+   "description": "A small square room, the kind a watch-sergeant might have slept in. Its present tenant looks up, startled to have company. There are doors to the north and the east, and a hatch in the floor.",
    "exits": {
     "down": {
      "description": "A ladder leads down into darkness.",
@@ -1065,7 +1065,7 @@
    "vnum": 18606
   },
   "18607": {
-   "description": "Oh joy! More of this annoying passage. Perhaps there is something more\nexciting through that door to the west? Or you can keep searching the\nhallways to the north or south. The ceiling hangs low overhead. Shadows\ngather in the corners.",
+   "description": "More of the hallway, running north and south with a low ceiling. A door stands in the west wall.",
    "exits": {
     "north": {
      "description": "More of the hallway there... how exciting!",
@@ -1100,7 +1100,7 @@
    "vnum": 18607
   },
   "18608": {
-   "description": "Finally, you are in an open field... it is so nice to breathe fresh air\nagain! You can return to that dank, smelly place to the east, or take\nthe exit to the north which appears to lead into a large field. The air\nis still and musty. The walls are rough-hewn and cold to the touch.",
+   "description": "Open ground at last, and clean air: a strip of rough grass under the watch-house wall, with the wide fields beyond it. The passage back inside is to the east.",
    "exits": {
     "east": {
      "description": "The end of that darn hallway lies back to the east.",
@@ -1118,7 +1118,7 @@
    }
   },
   "18609": {
-   "description": "Ahhh... at last, the end of the hallway... you can exit into open air to\nthe west,or return to the east and make sure you didn't miss anything.\nDust motes drift in the stale air. The air is still and musty.",
+   "description": "The hallway ends here. To the west daylight shows through an open archway onto the fields; to the east the passage runs back the way you came.",
    "exits": {
     "east": {
      "description": "More of the hallway there... how exciting!",
@@ -1143,7 +1143,7 @@
    "vnum": 18609
   },
   "18610": {
-   "description": "The hallway continues on in a east-west direction... and it seems to be\nbrightening up to the west. The walls are rough-hewn and cold to the\ntouch. The air is still and musty.",
+   "description": "The hallway runs east and west. To the west it grows brighter, and the air moves a little.",
    "exits": {
     "east": {
      "description": "A corner in the passage lies to the east.",
@@ -1162,7 +1162,7 @@
    "vnum": 18610
   },
   "18611": {
-   "description": "Another corner of the passage, and just as untidy as the rest of this\nplace (maybe more so?). There is a door to the east though... wonder\nwhere that leads? Oh, and the hallway continues west and north. Shadows\ngather in the corners. The ceiling hangs low overhead.",
+   "description": "The passage turns here, west and north, and the floor is thick with what the damp has brought down from the walls. A door stands in the east wall.",
    "exits": {
     "east": {
      "description": "You peer into a cluttered little room to the east.",
@@ -1191,7 +1191,7 @@
    "vnum": 18611
   },
   "18612": {
-   "description": "Lots of bottles and flasks lie about this room, but it all looks like\nworthless clutter. It appears whatever alchemist has been working here\nis really very adept at his art. There are a lot of formulae and spells\nwritten on the walls too... couldn't he buy some paper? There is a door\nto the north, and also a dark stairway in the corner leading down, with\na large sign next to it that you probably should read... The air is\nstill and musty. The walls are rough-hewn and cold to the touch.",
+   "description": "Bottles and flasks crowd every shelf and half the floor, most of them empty, some of them not. Whoever works here works carefully: the walls are covered in formulae in a small exact hand. There are doors to the north and west, and a stair down.",
    "exits": {
     "down": {
      "description": "A shadowed stairway leading down.",
@@ -1236,7 +1236,7 @@
    "vnum": 18612
   },
   "18620": {
-   "description": "This corner is much like all the others... except you see a strange glow\ncoming from the south. Could be an exit... you hope. Dust motes drift in\nthe stale air. Shadows gather in the corners.",
+   "description": "A corner like the others, but for a red glow that comes up the passage from the south. The passage also runs east.",
    "exits": {
     "east": {
      "description": "The passage continues east quite a ways.",
@@ -1262,7 +1262,7 @@
    "vnum": 18620
   },
   "18621": {
-   "description": "This is an intersection of a long east-west passage with a corridor\nleading south. The air seems a bit clearer here though, as if you were\napproaching an exit. The walls are rough-hewn and cold to the touch. The\nceiling hangs low overhead.",
+   "description": "A long east-west passage meets a corridor leading south. The air is clearer here, as though a way out were not far off.",
    "exits": {
     "east": {
      "description": "To the east, the corridor leads toward Another Corner. Damp stones glisten with mildew and a chill draft slides past you.",
@@ -1292,7 +1292,7 @@
    "vnum": 18621
   },
   "18622": {
-   "description": "The passage turns from north to west here. The walls are still covered\nwith the same disgusting green fungus you have seen all along, and you\nhear sounds of creatures moving all around... Shadows gather in the\ncorners. The ceiling hangs low overhead.",
+   "description": "The passage turns here, south and west. Green-grey mould has covered the walls for some way now, and there are things moving in the dark that keep just out of your light.",
    "exits": {
     "south": {
      "description": "To the south, the corridor leads toward A Corner Room. Damp stones glisten with mildew and a chill draft slides past you.",
@@ -1312,7 +1312,7 @@
    "vnum": 18622
   },
   "18623": {
-   "description": "You can hear creatures moving all around... and it is not a\ncomforting sound at all. The furnishing is nothing to speak of either,\nplain grey brick walls with green fungus (or something) growing on them.\nDust motes drift in the stale air. The walls are rough-hewn and cold to\nthe touch.",
+   "description": "Plain grey brick, greened over with mould. You can hear things moving in every direction, and none of it sounds like footsteps. The passage runs east and south.",
    "exits": {
     "east": {
      "description": "To the east, the corridor leads toward Another Turn. Damp stones glisten with mildew and a chill draft slides past you.",
@@ -1332,7 +1332,7 @@
    "vnum": 18623
   },
   "18624": {
-   "description": "Hmmm... the passage turns south here. You beginning to realize you can\neasily lose your bearings if you aren't careful, and you don't think you\nwould like spending too much time here... The ceiling hangs low\noverhead. The air is still and musty.",
+   "description": "The passage turns south here, and west. It would be easy to lose your bearings in these turnings; the watch cut marks at the corners once, and the mould has taken most of them.",
    "exits": {
     "south": {
      "description": "To the south, the corridor leads toward A Branching Passage. Damp stones glisten with mildew and a chill draft slides past you.",
@@ -1358,7 +1358,7 @@
    "vnum": 18624
   },
   "18625": {
-   "description": "The passage opens into a large oval room. There really isn't much of\ninterest here though. The walls are rough-hewn and cold to the touch.\nThe air is still and musty.",
+   "description": "The passage opens into a wide oval room with a floor worn smooth by drilling feet. Nothing is kept here now. Ways lead east and south.",
    "exits": {
     "east": {
      "description": "To the east, the corridor leads toward A Long East-West Passage. Damp stones glisten with mildew and a chill draft slides past you.",
@@ -1378,7 +1378,7 @@
    "vnum": 18625
   },
   "18626": {
-   "description": "This is a long, narrow passage leading east and west. The walls are damp\nand covered with mildew and fungus. There is a very unhealthy air about\nthis place and you're beginning to want out of here... soon. The ceiling\nhangs low overhead. Dust motes drift in the stale air.",
+   "description": "A long, narrow passage running east and west. The walls are wet and furred with mould, and the air is bad: the mist has been in here, and not long ago.",
    "exits": {
     "east": {
      "description": "To the east, the corridor leads toward A Crossing Of Corridors. Damp stones glisten with mildew and a chill draft slides past you.",
@@ -1398,7 +1398,7 @@
    "vnum": 18626
   },
   "18627": {
-   "description": "Here a narrow east-west passage crosses with a wider passage to the\nnorth and south. The air is dank, and has an odor of decay and debris.\nNot a nice place at all really... The walls are rough-hewn and cold to\nthe touch. The ceiling hangs low overhead.",
+   "description": "A narrow east-west passage crosses a wider one running north and south. The air is dank and carries the smell of rot from somewhere below.",
    "exits": {
     "east": {
      "description": "To the east, the corridor leads toward A Corner Room. Damp stones glisten with mildew and a chill draft slides past you.",
@@ -1432,7 +1432,7 @@
    "vnum": 18627
   },
   "18628": {
-   "description": "This room is hardly more than a crossing of passages. You do sense a\nslight breeze wafting down the passage to the north though, but it\nsmells altogether bad... The ceiling hangs low overhead. Dust motes\ndrift in the stale air.",
+   "description": "Little more than a crossing of two passages, north and west. A thin draught comes down from the north, and it does not smell clean.",
    "exits": {
     "north": {
      "description": "To the north, the corridor leads toward Another Corner. Damp stones glisten with mildew and a chill draft slides past you.",
@@ -1452,7 +1452,7 @@
    "vnum": 18628
   },
   "18629": {
-   "description": "It takes you a moment to realize that the red glow here is coming from a\nround portal on the floor. It looks almost as if someone had painted a\npicture of a dirt running through a field on the floor of this room.\nOddly enough, it is so realistic you can feel the wind in the field\ncoming out of the picture. The ceiling hangs low overhead. The walls are\nrough-hewn and cold to the touch.",
+   "description": "The red light comes from the floor: a round opening, and through it, as if seen from a great height, a dirt road running across a field in evening light. It is not a painting. The air above it is warm. Passages lead east and north.",
    "exits": {
     "east": {
      "description": "To the east, the corridor leads toward A Branching Passage. Damp stones glisten with mildew and a chill draft slides past you.",
@@ -1482,7 +1482,7 @@
    "vnum": 18629
   },
   "18630": {
-   "description": "The north-south passage branches to the east here. There is a queer red\nglow coming from that way as well, along with a faint breeze. The walls\nare rough-hewn and cold to the touch. The air is still and musty.",
+   "description": "The north-south passage gives off a branch to the west. A red glow comes from that way, and a faint warm draught with it.",
    "exits": {
     "north": {
      "description": "To the north, the corridor leads toward Another Turn. Damp stones glisten with mildew and a chill draft slides past you.",
@@ -1506,7 +1506,7 @@
    "vnum": 18630
   },
   "18631": {
-   "description": "Ick... this place is just disgusting. You try and stay clear of the\nwalls, but the passage is so narrow you keep bumping them anyway. You\nare almost convinced that the fungus coating the walls is grabbing at\nyou too. The ceiling hangs low overhead. Dust motes drift in the stale\nair.",
+   "description": "The passage is so narrow here that your shoulders brush both walls, and the mould comes away on your sleeves. It clings more than it should. Ways lead east, north and south.",
    "exits": {
     "east": {
      "description": "To the east, the corridor leads toward The Entrance. Damp stones glisten with mildew and a chill draft slides past you.",
@@ -1530,7 +1530,7 @@
    "vnum": 18631
   },
   "18632": {
-   "description": "It is dark, dank, disgusting and cold up here. Plus you here the sounds\nof creatures all around... and somehow they don't sound friendly. It\nis probably wise to exercise some degree of caution here... no telling\nwhat you may run into here. Shadows gather in the corners. Dust motes\ndrift in the stale air.",
+   "description": "The stair comes up into cold and dark. This is the old part of the watch-house, the part the damp took first, and there are things moving in it that do not sound as if they would welcome you. Passages lead north, south and west; the stair goes on up.",
    "exits": {
     "north": {
      "description": "To the north, the corridor leads toward A Crossing Of Corridors. Damp stones glisten with mildew and a chill draft slides past you.",
@@ -1558,7 +1558,7 @@
    "vnum": 18632
   },
   "18633": {
-   "description": "Well... what is there to say. More fungus, more weird sounds, and a\nslight breeze from the north. Bet you want to sign a lease, don't ya...\nThe air is still and musty. Shadows gather in the corners.",
+   "description": "Another turning, east and north. More mould, more small sounds in the dark, and a thin draught from the north.",
    "exits": {
     "east": {
      "description": "To the east, the corridor leads toward An Intersection Of Passages. Damp stones glisten with mildew and a chill draft slides past you.",
@@ -1584,7 +1584,7 @@
    "vnum": 18633
   },
   "18634": {
-   "description": "Cold, smelly, and coated with green fungus... just like last week's\nleft-overs. Furthermore you want nothing to do with either, you just\nwant out right now. Shadows gather in the corners. The ceiling hangs low\noverhead.",
+   "description": "Three passages meet: north, south and west. It is cold here and everything is greened over, and you find you would rather be anywhere else.",
    "exits": {
     "north": {
      "description": "To the north, the corridor leads toward A Branching Passage. Damp stones glisten with mildew and a chill draft slides past you.",
@@ -1608,7 +1608,7 @@
    "vnum": 18634
   },
   "18635": {
-   "description": "This place is just plain nauseating... it certainly smells as if\nsomething (or someone) died in here. You hope you aren't next, but from\nthe sounds you hear all around, it seems as if something has other\nideas about that. The air is still and musty. Dust motes drift in the\nstale air.",
+   "description": "Something has died in here, and not recently. From the sounds in the passages around you, something else is still very much alive. Ways lead east and north.",
    "exits": {
     "east": {
      "description": "To the east, the corridor leads toward A Branch To The South. Damp stones glisten with mildew and a chill draft slides past you.",
@@ -1628,7 +1628,7 @@
    "vnum": 18635
   },
   "18636": {
-   "description": "The east-west passage branches of to the south here. All around is\nthe odour of death. Actually, the mold and fungus on the walls is doing\ngreat, but otherwise... well... you don't want to think about what else\nlives here. Shadows gather in the corners. The walls are rough-hewn and\ncold to the touch.",
+   "description": "The east-west passage gives off a branch to the south. The smell of death is everywhere; only the mould seems to thrive on it.",
    "exits": {
     "east": {
      "description": "To the east, the corridor leads toward Yet Another Corner. Damp stones glisten with mildew and a chill draft slides past you.",
@@ -1658,7 +1658,7 @@
    "vnum": 18636
   },
   "18637": {
-   "description": "The passage turns here and heads north. You sense something up ahead\nthat way, but you aren't sure what. You aren't sure if you want to know\nwhat either at this point. Shadows gather in the corners. The ceiling\nhangs low overhead.",
+   "description": "The passage turns north here, and west. There is something ahead to the north. You cannot tell what, and you are not sure you want to.",
    "exits": {
     "north": {
      "description": "To the north, the corridor leads toward An Intersection Of Passages. Damp stones glisten with mildew and a chill draft slides past you.",
@@ -1684,7 +1684,7 @@
    "vnum": 18637
   },
   "18638": {
-   "description": "You almost stumble as you enter this room... the sudden feeling of no\nwalls on either side of you makes you a bit nervous. Suddenly you are\nvulnerable on all sides. You can't even tell how big a room this is,\nbecause it extends to the east farther than you light will reach... Dust\nmotes drift in the stale air. Shadows gather in the corners.",
+   "description": "The walls fall away on either side and you are suddenly standing in open dark, your light reaching nothing. A large room, how large you cannot say. You can be come at from any side here. The ways you know of are east and north.",
    "exits": {
     "east": {
      "description": "The room extends into shadows...",
@@ -1710,7 +1710,7 @@
    "vnum": 18638
   },
   "18639": {
-   "description": "As you enter, you light glints of the wall to the east. There appears to\nbe words scrawled on the wall, and a crude picture. To the west the room\nextends beyond the reach of your light, and the dark shadows make you\nparanoid... anything could be hiding there. The area is painfully aware\nof how exposed you are without walls around. The ceiling hangs low\noverhead. Shadows gather in the corners.",
+   "description": "Your light catches the east wall: words scratched into the stone, and a crude picture beside them. They are names, dozens of them, cut by people who meant to be remembered. West, the room runs on beyond your light. Ways lead north and west.",
    "exits": {
     "north": {
      "description": "To the north, the corridor leads toward A Branch To The South. Damp stones glisten with mildew and a chill draft slides past you.",
@@ -1723,7 +1723,7 @@
    },
    "extra_descs": {
     "": "wall",
-    "words picture wall": "The scrawl reads: 'I was a newbie here. Now I have a castle. Keep walking.' The crude picture is, generously, a castle."
+    "words picture wall": "Names, cut deep, some with a year beside them. Under the last of them someone has scratched: 'I began here. Keep walking.' The crude picture is, generously, a lantern."
    },
    "flags": [
     "dark",
@@ -1740,7 +1740,7 @@
    "vnum": 18639
   },
   "18640": {
-   "description": "Here, the passage enters a small room. Exits lead to the east and south,\nand you notice a wonderful, large (and tastefully done) statue to the\nnorth. Dust motes drift in the stale air. Shadows gather in the corners.",
+   "description": "The passage enters a small room. Against the north wall stands a statue of a lantern-bearer, finely made, one arm raised to hold a light that is no longer there. Ways lead east and south.",
    "exits": {
     "east": {
      "description": "A long hallway, ending in a set of steps.",
@@ -1753,7 +1753,7 @@
    },
    "extra_descs": {
     "": "plaque nameplate name",
-    "statue": "The statue shows an adventurer mid-stride, chin up, pack square. The plaque says only: ONWARD. Newbies touch the boot for luck; the bronze shines there."
+    "statue": "The statue shows a lantern-bearer mid-stride, chin up, pack square. The plaque says only: ONWARD. The newly woken touch the boot for luck; the bronze shines there."
    },
    "flags": [
     "dark",
@@ -1770,7 +1770,7 @@
    "vnum": 18640
   },
   "18641": {
-   "description": "As you continue wandering down the hallway, you notice banners,\npictures, and other fine decorations adorning the walls all along this\npassage. It seems very different from the dismal passage where you\nentered. The walls are rough-hewn and cold to the touch. Dust motes\ndrift in the stale air.",
+   "description": "Banners hang along this passage, their colours still good, and between them painted panels of the watches that trained here. Someone has kept this part up. The hallway runs east and west.",
    "exits": {
     "east": {
      "description": "The hallway ends at a grand marble staircase.",
@@ -1790,7 +1790,7 @@
    "vnum": 18641
   },
   "18642": {
-   "description": "Here, the hall opens into a wide room, with a high domed roof. Now that\nthat you have come clear of the enclosed passage, Visible is that the\nstair leads upward to an open air balcony overlooking the area. To the\nsouth the room continues, and another stair is visible matching the one\nahead. The ceiling hangs low overhead. The air is still and musty.",
+   "description": "The hall opens into a wide room under a high dome. A stair climbs to a balcony open to the sky. The room continues south, and a hallway leaves to the west.",
    "exits": {
     "south": {
      "description": "You see another staircase and two passages leading west and south.",
@@ -1824,7 +1824,7 @@
    "vnum": 18642
   },
   "18643": {
-   "description": "Here you can look out and observe the world around. Constructed in a\nsemi-circle around the dome of the room, the balcony allows you to look\nout in almost any direction. Wandering to the north end, Visible is that\nthe Great Fields north of Garathorm continue off towards the Dragonhelm\nMountains to the north. The ceiling hangs low overhead. The air is still\nand musty.",
+   "description": "A balcony curving round the outside of the dome. From its northern end you can see across the wide fields to where the land goes grey: on a clear day that is haze, and on other days it is not. The balcony runs south; a stair goes down.",
    "exits": {
     "down": {
      "description": "Down the stairs to a large, domed room.",
@@ -1848,7 +1848,7 @@
    "vnum": 18643
   },
   "18644": {
-   "description": "Wow! What a change from the dismal passage to the south. Whoever keeps\nthis room up must really like newbies. The walls and floor are clean,\nand tastefully decorated. You also notice an interesting design on the\nfloor. Shadows gather in the corners. The ceiling hangs low overhead.",
+   "description": "A clean, well-kept hallway, the floor inlaid with a lantern in pale stone. After the passages to the south it is like stepping into another building. A door leads south; the hallway runs north.",
    "exits": {
     "north": {
      "description": "A small room with a statue in it.",
@@ -1878,7 +1878,7 @@
    "vnum": 18644
   },
   "18645": {
-   "description": "Here you can look out and observe the world around. Constructed in a\nsemi-circle around the dome of the room, the balcony allows you to look\nout in almost any direction. Wandering to the south end, Visible is the\ngreat city of Garathorm off to the south-west. Shadows gather in the\ncorners. The ceiling hangs low overhead.",
+   "description": "A balcony curving round the outside of the dome. From its southern end you look down on Garathorm: the roofs, the Temple, and at dusk the lanterns being lit one street at a time. The balcony runs north; a stair goes down.",
    "exits": {
     "down": {
      "description": "Back down the south staircase.",
@@ -1907,7 +1907,7 @@
    "vnum": 18645
   },
   "18646": {
-   "description": "Wow! What a change from the dismal passage to the west. Whoever keeps\nthis room up must really like newbies. The walls and floor are clean,\nand tastefully decorated. You also notice an interesting design on the\nfloor. The walls are rough-hewn and cold to the touch. The ceiling hangs\nlow overhead.",
+   "description": "A clean, well-kept hallway, the floor inlaid with a lantern in pale stone. After the passage to the west it is like stepping into another building. A door leads west; the hallway runs east.",
    "exits": {
     "east": {
      "description": "The passage opens into a domed room with a grand marble staircase.",
@@ -1926,7 +1926,7 @@
    },
    "extra_descs": {
     "": "floor design",
-    "desk design decorations": "Fresh flowers stand in a vase no one is ever seen refilling. The newbie hall keeps its small mysteries."
+    "desk design decorations": "Fresh flowers stand in a vase no one is ever seen refilling. The watch-house keeps its small mysteries."
    },
    "flags": [
     "dark",
@@ -1943,7 +1943,7 @@
    "vnum": 18646
   },
   "18647": {
-   "description": "Here, the hall opens into a wide room, with a high domed roof. Now that\nthat you have come clear of the enclosed passage, Visible is that the\nstair leads upward to an open air balcony overlooking the area. to the\nnorth the room continues, and another stair is visible matching the one\nahead. The air is still and musty. The walls are rough-hewn and cold to\nthe touch.",
+   "description": "The hall opens into a wide room under a high dome. A stair climbs to a balcony open to the sky. The room continues north; ways also lead south and west.",
    "exits": {
     "north": {
      "description": "Another stairway is to the north, as well as a passage to the west.",

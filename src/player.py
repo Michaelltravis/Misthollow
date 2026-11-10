@@ -24,8 +24,32 @@ from regeneration import RegenerationCalculator
 logger = logging.getLogger('Misthollow.Player')
 
 
-# the looks a hero may choose beyond their class's own (gear_look.py `style`): the archmage is a mage's
-LOOK_STYLES = {'archmage': ('mage',)}
+# the looks a hero may choose beyond their class's own (gear_look.py `style`): one a class (the
+# archmage is a mage's, the warden a warrior's, and so on: tools/art3d/blender/models). LOOK_WORDS says each in a line, with the class's own ('classic').
+LOOK_STYLES = {'archmage': ('mage',), 'warden': ('warrior',), 'templar': ('paladin',), 'hierophant': ('cleric',), 'footpad': ('thief',), 'nightblade': ('assassin',), 'wayfinder': ('ranger',), 'troubadour': ('bard',), 'gravecaller': ('necromancer',)}
+LOOK_WORDS = {
+    'mage': {'classic': 'the young mage in a travelling coat', 'archmage': 'a tall hat, a long white beard, a robe to the ankles'},
+    'warrior': {'classic': 'the fighter as their armour makes them', 'warden': 'a fur mantle, a great pauldron, a crimson tabard at the belt'},
+    'paladin': {'classic': 'the knight in the plate of their order', 'templar': 'a halo behind the head, winged pauldrons, a white tabard with the sun'},
+    'cleric': {'classic': 'the priest in plain vestments', 'hierophant': 'a gold-ended stole, a sunburst behind the head, a censer at the belt'},
+    'thief': {'classic': 'the rogue in travelling leathers', 'footpad': 'a red scarf, a bandolier of knives, pouches at the belt'},
+    'assassin': {'classic': 'the hooded killer', 'nightblade': 'a pointed black mantle, crossed blades on the back, a red sash'},
+    'ranger': {'classic': 'the hooded hunter', 'wayfinder': 'a mantle of leaves, feathers at the shoulder, a bedroll on the back'},
+    'bard': {'classic': 'the player in road clothes', 'troubadour': 'a white ruff, a half-cape, a lute across the back'},
+    'necromancer': {'classic': 'the dark scholar in a robe', 'gravecaller': 'a collar of bone spikes, a skull on the shoulder, a ragged shroud'},
+}
+
+
+# the classes asked their look as they are made (the others choose it after: `appearance`, or the
+# Character window in /play). A warrior is not asked: theirs is the commonest first hero, and one
+# more question before the first step is one too many.
+LOOK_ASKED = ('mage',)
+
+
+def looks_for(char_class):
+    """The looks a class may choose beyond its own, in order ([]: it has the one)."""
+    c = str(char_class or '').lower()
+    return [s for s, classes in LOOK_STYLES.items() if c in classes]
 
 class Character:
     """Base class for all characters (players and NPCs)."""
@@ -63,6 +87,7 @@ class Character:
         self.fighting = None
         self.stance = 'normal'
         self.wimpy = 0
+        self.wimpy_set = False          # whether the player chose their own wimpy (`wimpy <hp>`, 0 for none)
         self.flee_cooldown_until = 0
         self.escape_cooldown_until = 0
         self.disengage_cooldown_until = 0
@@ -507,7 +532,7 @@ class Player(Character):
         self.account_name = None  # Link to account for multi-character
         self.race = "human"
         self.sex = "neutral"  # male, female, or neutral
-        self.look_style = ""  # a mage's look in 3D: "" (classic) or "archmage" (gear_look.py)
+        self.look_style = ""  # the hero's look in 3D: "" (classic) or one of LOOK_STYLES for their class (gear_look.py)
         self.char_class = "warrior"
         self.title = "the Adventurer"
         
@@ -548,7 +573,7 @@ class Player(Character):
         self.target_labels = {}  # Label system: {"DEAD": character_obj, "TANK": char_obj}
 
         # Autoloot settings
-        self.autoloot = False  # Automatically loot items from corpses
+        self.autoloot = True  # Automatically loot items from corpses (on for a new hero since November 2026: every kill needed a corpse click)
         self.autoloot_gold = True  # Automatically loot gold from corpses (default on)
         self.autogold = True  # Automatically pick up gold from the ground
 
@@ -1296,6 +1321,7 @@ class Player(Character):
             'compact_mode': self.compact_mode,
             'stance': getattr(self, 'stance', 'normal'),
             'wimpy': getattr(self, 'wimpy', 0),
+            'wimpy_set': bool(getattr(self, 'wimpy_set', False)),
             'show_room_vnums': self.show_room_vnums,
             'autoexit': self.autoexit,
             'recall_point': self.recall_point,
@@ -1469,7 +1495,7 @@ class Player(Character):
             player.exp = data['exp']
             player.gold = data['gold']
             player.alignment = data.get('alignment', 0)
-            player.hp = data['hp']
+            player.hp = max(1, data['hp'])          # (a save caught mid-death held -7: nobody wakes below 1)
             player.mana = data['mana']
             player.move = data['move']
             for name in ('max_hp', 'max_mana', 'max_move', 'str', 'int', 'wis', 'dex', 'con', 'cha'):
@@ -1553,6 +1579,8 @@ class Player(Character):
             player.compact_mode = data.get('compact_mode', False)
             player.stance = data.get('stance', 'normal')
             player.wimpy = data.get('wimpy', 0)
+            # (a save from before the flag: one that set a wimpy chose it; one at 0 gets the newcomer's)
+            player.wimpy_set = bool(data.get('wimpy_set', bool(data.get('wimpy', 0))))
             player.autoexit = data.get('autoexit', True)
             player.recall_point = renumbered(data.get('recall_point', 3001))
             player.marquee = data.get('marquee')
@@ -3003,7 +3031,7 @@ class Player(Character):
 
         # Auto-flee (wimpy)
         if self.hp > 0 and self.is_fighting:
-            wimpy = getattr(self, 'wimpy', 0)
+            wimpy = self.wimpy_now()
             if wimpy and self.hp <= wimpy:
                 try:
                     now = time.time()
@@ -3070,6 +3098,7 @@ class Player(Character):
         c = self.config.COLORS
         # a new death: CombatHandler.handle_death (which runs after this) handles each one once
         self._death_processed = False
+        self.died_in_vnum = self.room.vnum if self.room else None      # where the gravestone goes
         
         # Stop fighting
         if self.fighting:
@@ -3151,7 +3180,7 @@ class Player(Character):
         gold_drop = int(self.gold * 0.05)
         if gold_drop > 0:
             self.gold -= gold_drop
-            await self.send(f"{c['yellow']}You drop {gold_drop} gold coins.{c['reset']}")
+            await self.send(f"{c['yellow']}You lose {gold_drop} gold coins.{c['reset']}")
             
         # Restore with partial HP/mana/move (not just 1)
         self.hp = max(1, self.max_hp // 4)  # 25% HP
@@ -3373,6 +3402,38 @@ class Player(Character):
         self.hp = min(self.max_hp, self.hp + hp_regen)
         self.mana = min(self.max_mana, self.mana + mana_regen)
         self.move = min(self.max_move, self.move + move_regen)
+        self.catch_breath()
+
+    # Catching your breath (the owner's seamless pass, November 2026): out of a fight for two minor
+    # ticks (about ten seconds), a hero gets back a twentieth of their health, mana and movement
+    # each tick, standing or resting, fed or not. A 75 hp warrior got 8 hp a minute before (3 when
+    # thirsty): five to seven minutes from a death back to full, spent doing nothing.
+    CALM_TICKS, BREATH = 2, 0.05
+
+    def catch_breath(self) -> int:
+        """One minor tick of it; returns the health given."""
+        if self.fighting or self.position in ('fighting', 'dead'):
+            self._calm_ticks = 0
+            return 0
+        self._calm_ticks = getattr(self, '_calm_ticks', 0) + 1
+        if self._calm_ticks < self.CALM_TICKS:
+            return 0
+        before = self.hp
+        for cur, top in (('hp', 'max_hp'), ('mana', 'max_mana'), ('move', 'max_move')):
+            cap = getattr(self, top, 0) or 0
+            if getattr(self, cur, 0) < cap:
+                setattr(self, cur, min(cap, getattr(self, cur) + max(1, int(cap * self.BREATH + 0.999))))
+        return self.hp - before
+
+    NEWCOMER_WIMPY_LEVEL = 5
+
+    def wimpy_now(self) -> int:
+        """The health at which this hero runs from a fight: what they set (`wimpy`), or, for a hero
+        of level 5 or less who never set one, a fifth of their health (a newcomer's first hard
+        fight ended in a death they had no warning of). `wimpy 0` turns it off."""
+        if getattr(self, 'wimpy_set', False) or (getattr(self, 'level', 1) or 1) > self.NEWCOMER_WIMPY_LEVEL:
+            return int(getattr(self, 'wimpy', 0) or 0)
+        return max(1, int((self.max_hp or 0) * 0.2))
 
     async def process_performance_tick(self):
         """Process bard performance effects each tick."""

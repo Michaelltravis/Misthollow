@@ -22,7 +22,18 @@ export const LOOK = {
 
 // the server's weather as the hero sees it where they stand: a desert's rain is dust (or only
 // cloud), on snowy ground rain falls as snow
-export function weatherKind(w, theme) {
+// `region` (the zone's region of the world, regionlook.js): its own weather on top. In the Frostmarch
+// whatever falls is snow, and a grey sky snows; in the Sundered Reach it rains ash; in the Marches a
+// grey day is mist in the ditches; in the Lantern Vale the lanterns hold the mist back (fog is only cloud).
+export function weatherKind(w, theme, region = null) {
+  const k = baseKind(w, theme);
+  if (region === 'frostmarch') return ['rain', 'storm', 'cloudy', 'fog'].includes(k) ? 'snow' : k;
+  if (region === 'reach') return ['rain', 'storm', 'snow'].includes(k) ? 'dust' : k;
+  if (region === 'marches') return k === 'cloudy' ? 'fog' : k;
+  if (region === 'vale') return k === 'fog' ? 'cloudy' : k;
+  return k;
+}
+function baseKind(w, theme) {
   if (!w || !w.sky) return 'clear';
   let k = { stormy: 'storm', rainy: 'rain', snowy: 'snow', foggy: 'fog', overcast: 'cloudy' }[w.sky] || 'clear';
   if (w.precipitation === 'snow' || w.precipitation === 'sleet') k = k === 'storm' ? 'snow' : (k === 'rain' ? 'snow' : k);
@@ -122,8 +133,9 @@ export class WeatherView {
   constructor(engine, fx, sound) {
     this.engine = engine; this.fx = fx; this.sound = sound;
     const scene = engine.scene;
-    const n = COUNT[(engine.quality && engine.quality.name) || 'high'] || COUNT.high;
-    this.n = n;
+    // room for the most any quality asks; `this.n` of them fall (setTier: a change in Settings is felt at once)
+    const n = Math.max(...Object.values(COUNT));
+    this.setTier((engine.quality && engine.quality.name) || 'high');
     // rain: short streaks
     this.rainPos = new Float32Array(n * 6);
     this.drops = new Float32Array(n * 3);
@@ -161,9 +173,13 @@ export class WeatherView {
     this.engine.weather = { dim: L.dim, fog: L.fog, grey: L.grey };
   }
 
-  // seed the falling things in the box round the hero
+  // how much falls, by graphics quality
+  setTier(tier) { this.n = COUNT[tier] || COUNT.high; }
+
+  // seed the falling things in the box round the hero (all there is room for: a higher quality
+  // chosen later finds its drops already placed)
   seed(c) {
-    for (let i = 0; i < this.n; i++) {
+    for (let i = 0; i < this.drops.length / 3; i++) {
       this.drops[i * 3] = c.x + (Math.random() * 2 - 1) * BOX;
       this.drops[i * 3 + 1] = Math.random() * TOP;
       this.drops[i * 3 + 2] = c.z + (Math.random() * 2 - 1) * BOX;
@@ -178,7 +194,8 @@ export class WeatherView {
     this.prints.update(dt);
     const L = this.open ? LOOK[this.kind] : LOOK.clear;
     const want = L.rain || L.snow || L.dust || 0;
-    this.amount += (want - this.amount) * Math.min(1, dt * 0.6);
+    // (under a roof the rain is gone as you step in, not six seconds later)
+    this.amount += (want - this.amount) * Math.min(1, dt * (this.open ? 0.6 : 5));
     if (!this.seeded || this.seeded.distanceTo(c) > BOX * 1.5) this.seed(c);
     const wx = this.wind / 18, wz = this.wind / 40;          // the wind's slant (metres a second, roughly)
     // rain

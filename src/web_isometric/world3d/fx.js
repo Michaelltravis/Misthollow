@@ -195,11 +195,13 @@ function geo(name) {
 const TEXT_LIFE = 1.45, LANE_LIFE = 1.35, TEXT_MAX = 14, LANE_MAX = 7;
 
 export class FX {
+  // what may be alive at once, by graphics quality (again when it is changed in Settings)
+  setTier(tier) { this.tier = tier; this.budget = BUDGET[tier] || BUDGET.high; }
+
   constructor(engine, overlay) {
     this.engine = engine;
     this.scene = engine.scene;
-    this.tier = (engine.quality && engine.quality.name) || 'high';
-    this.budget = BUDGET[this.tier] || BUDGET.high;
+    this.setTier((engine.quality && engine.quality.name) || 'high');
     this.live = {};
     this.p = new Particles(engine.scene);
     const atlas = typeof document !== 'undefined' ? glyphAtlas() : null;

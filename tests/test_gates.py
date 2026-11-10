@@ -40,6 +40,15 @@ async def main():
         for b in d.get('bosses') or []:
             ms = npcs(int(b['vnum']))
             want = [m['type'] for m in b.get('mechanics') or []]
+            # a room's owner who is less than a boss (the file's own "creatures" gives it a lesser
+            # rank: a queen in her chamber, a great spider in its den) is placed the same way: the
+            # one of its kind, in its room, of that rank
+            lesser = ((d.get('creatures') or {}).get(str(b['vnum'])) or {}).get('rank')
+            if lesser in ('elite', 'sub-boss'):
+                check(len(ms) == 1 and ms[0].room.vnum == int(b['room']) and getattr(ms[0], 'rank', None) == lesser
+                      and [m.spec['type'] for m in getattr(ms[0], 'mechanics', None) or []] == want,
+                      f'zone {z}: {b["why"]} ({lesser}, {want})')
+                continue
             check(len(ms) == 1 and ms[0].room.vnum == int(b['room']) and getattr(ms[0], 'is_boss', False)
                   and [m.spec['type'] for m in ms[0].mechanics] == want and getattr(ms[0], 'rank', None) in (None, 'boss'),
                   f'zone {z}: {b["why"]} ({want})')

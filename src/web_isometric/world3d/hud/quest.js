@@ -49,7 +49,9 @@ export function createQuest({ card, embark, tracker, toast, onMark }) {
     const nsig = JSON.stringify(b);
     if (nsig === sig) return;
     sig = nsig;
-    const objs = (b.objectives || []).map(o => `<li class="${o.done ? 'done' : ''}">${esc(o.text)}${o.need > 1 ? ` <span>${o.have || 0}/${o.need}</span>
+    // the step in hand is one of the objectives: said once, in bold, where it stands in the list
+    const same = (b.objectives || []).find(o => !o.done && o.text === b.title);
+    const objs = (b.objectives || []).map(o => `<li class="${o.done ? 'done' : o === same ? 'now' : ''}">${esc(o.text)}${o.need > 1 ? ` <span>${o.have || 0}/${o.need}</span>
       <i class="qt-bar"><i style="width:${Math.min(100, Math.round(100 * (o.have || 0) / o.need))}%"></i></i>` : ''}</li>`).join('');
     const trial = b.trial && b.trial.state ? `<div class="qt-trial">${b.trial.state === 'ready' ? 'The way into the trial is open here'
       : b.trial.state === 'inside' ? (b.trial.boss ? 'The last foe waits' : `Wave ${b.trial.wave || 1} of ${b.trial.of || 3}`) : esc(b.trial.state)}</div>` : '';
@@ -58,7 +60,7 @@ export function createQuest({ card, embark, tracker, toast, onMark }) {
     const act = b.action ? `<button class="btn qt-act" data-cmd="${esc(b.action.cmd)}">${esc(b.action.label)}</button>` : '';
     tracker.innerHTML = `<div class="qt-head"><span class="qt-star">★</span><span class="qt-name">${esc(b.name)}</span>
         <span class="qt-step">${b.stage || 0}/${b.of || 0}</span>${b.kind === 'quest' ? '<button class="qt-hide" title="Hide it from the tracker (your Journal, L, can show it again)">✕</button>' : ''}</div>
-      <div class="qt-title">${esc(b.title || '')}</div>
+      ${same ? '' : `<div class="qt-title">${esc(b.title || '')}</div>`}
       ${b.text ? `<div class="qt-text">${esc(b.text)}</div>` : ''}
       ${objs ? `<ul class="qt-obj">${objs}</ul>` : ''}${trial}${hold}${act}
       <div class="qt-foot">${b.where && b.where.name ? `<span title="Marked on your minimap; the gold arrow by your feet points the way">◆ ${esc(b.where.name)}${b.where.steps ? ` · ${b.where.steps} room${b.where.steps > 1 ? 's' : ''}${b.where.dir ? ` ${esc(b.where.dir)}` : ''}` : b.where.steps === 0 ? ' · here' : ''}</span>` : ''}

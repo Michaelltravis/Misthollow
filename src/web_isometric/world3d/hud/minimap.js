@@ -39,6 +39,18 @@ export function middleOf(z) {
   return isFinite(minX) ? { x: (minX + maxX) / 2, y: (minY + maxY) / 2 } : { x: 0, y: 0 };
 }
 
+// the zoom at which a zone's rooms just fill a view of `w` by `h` css px (cells of cw by ch at
+// zoom 1), a tenth left as margin; never closer than `max` (a three-room zone is not blown up)
+export function fitZoom(z, w, h, cw, ch, { min = 0.2, max = 1.6 } = {}) {
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const r of z.rooms.values()) {
+    minX = Math.min(minX, r.cx); maxX = Math.max(maxX, r.cx + 1); minY = Math.min(minY, r.cy); maxY = Math.max(maxY, r.cy + 1);
+  }
+  if (!isFinite(minX) || !(w > 0) || !(h > 0)) return 1;
+  const fit = Math.min(w / ((maxX - minX) * cw), h / ((maxY - minY) * ch)) * 0.9;
+  return Math.min(max, Math.max(min, fit));
+}
+
 // the zones the big map's list offers: those you have set foot in, and the one you stand in, by name
 export function zoneIndex(atlas, explored, here = null) {
   const zoneOf = new Map(((atlas && atlas.rooms) || []).map(r => [r.vnum, r.zone]));
@@ -90,7 +102,7 @@ export function createMinimap(root, onPick, onNorth = null, { cell = 1, browse =
       const [x, y] = toScreen(r.cx, r.cy);
       if (x < -cw || y < -ch || x > W() + cw || y > H() + ch) continue;
       const seen = shown ? shownSeen.has(r.vnum) : explored.has(r.vnum) || r === room;
-      ctx.globalAlpha = seen ? 0.95 : 0.32;
+      ctx.globalAlpha = seen ? 0.95 : browse ? 0.5 : 0.32;      // (the big map's field is wide and dark: unseen rooms a little clearer)
       const fill = isDeadly(r.data.flags) ? DEADLY : fillOf(r);
       ctx.fillStyle = fill;
       ctx.beginPath(); ctx.roundRect(x + pad, y + pad, cw - pad * 2, ch - pad * 2, 3 * S); ctx.fill();
@@ -242,6 +254,13 @@ export function createMinimap(root, onPick, onNorth = null, { cell = 1, browse =
       label();
     },
     browsing() { return shown ? shown.num : null; },
+    // the whole of the zone in view (the big map as it opens): its rooms fill the window
+    fit() {
+      const z = shown || zone;
+      if (!z || !z.rooms.size) return;
+      scale = fitZoom(z, W() / S, H() / S, CW * cell, CH * cell, { min: ZOOM_MIN, max: Math.min(ZOOM_MAX, 1.6) });
+      follow = false; vc = middleOf(z); dirty = true;
+    },
     // back to you: your zone, centred on you (the zoom is kept)
     home() { shown = null; follow = true; dirty = true; label(); },
     zoomBy(f) { zoomAt(f); },

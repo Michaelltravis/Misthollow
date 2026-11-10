@@ -155,6 +155,8 @@ const ridden = root => root.children.some(c => /^(steed_|raft$)/.test(String(c.n
 const body = root => root.children.filter(c => !/^(steed_|raft$|ward_)/.test(String(c.name)));
 
 export class Wards {
+  setTier(tier) { this.tier = tier; }      // graphics quality, changed in Settings
+
   constructor(engine, fx) {
     this.engine = engine;
     this.fx = fx;

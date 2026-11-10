@@ -71,7 +71,13 @@ async def main():
     stubs = {a for a, r in A.items() if not (r['name'] or '').strip() and not r['exits'] and not incoming[a]}
     missing = [a for a in A if a not in stubs and vn[a] not in W]
     check(not missing, f'every atlas room is in the world at its game vnum ({len(missing)} missing: {missing[:5]})')
-    misnamed = [a for a in A if a not in stubs and vn[a] in W and (A[a]['name'] or 'A Nameless Place').replace('Midgaard', 'Garathorm') != W[vn[a]].name]
+    # (as the world says it: Garathorm for Midgaard, and the words of another author's world said
+    # otherwise, world/words.json)
+    import json as _json
+    import regions as _regions
+    with open(_regions.WORDS_PATH, encoding='utf-8') as _f:
+        _fix = _regions._replacer(_json.load(_f).get('words') or {}) or (lambda t: t)
+    misnamed = [a for a in A if a not in stubs and vn[a] in W and _fix((A[a]['name'] or 'A Nameless Place').replace('Midgaard', 'Garathorm')) != W[vn[a]].name]
     check(not misnamed, f'every atlas room has its atlas name ({misnamed[:3]})')
     wrong = []
     for a, r in A.items():

@@ -1,5 +1,6 @@
 // Travel (T): the waypoints you have found, what each costs, and Travel (`travel <waypoint>`).
 // Data: /travel. A journey has a cooldown; the window says how long.
+import { netNote } from './netfail.js';
 
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
@@ -31,8 +32,10 @@ export function createTravel(root, { fetchTravel, send }) {
     body.querySelectorAll('.tr-buy:not([disabled])').forEach(b => b.addEventListener('click', () => { send(`travel ${b.dataset.key}`); toggle(false); }));
   }
   async function refresh() {
-    try { data = await fetchTravel(); } catch (_) { data = { waypoints: [] }; }
+    let failed = false;
+    try { data = await fetchTravel(); } catch (_) { data = { waypoints: [] }; failed = true; }
     render();
+    netNote(root, failed, refresh);
   }
   function toggle(on = !open) {
     open = on;

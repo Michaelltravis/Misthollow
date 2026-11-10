@@ -621,27 +621,43 @@ class Connection:
             
         self.temp_class = char_class
         self.temp_style = ''
-        if char_class == 'mage':
+        from player import looks_for, LOOK_ASKED
+        if char_class in LOOK_ASKED and looks_for(char_class):
             await self.show_style_menu()
             self.state = self.STATE_GET_STYLE
             return
         await self.show_stats()
         self.state = self.STATE_ROLLING_STATS
 
+    def _style_choices(self):
+        """The looks the chosen class may take: ['classic', 'archmage'] for a mage, ['classic',
+        'warden'] for a warrior (player.py LOOK_STYLES)."""
+        from player import looks_for
+        return ['classic'] + looks_for(self.temp_class)
+
     async def show_style_menu(self):
-        """A mage chooses their look in the 3D world: the classic mage, or the archmage (a tall hat,
-        a long white beard, a robe to the ankles and a moon staff). 'appearance' changes it later."""
+        """A class with a choice of look in the 3D world picks one: its own ('classic'), or the
+        other (a mage's archmage, a warrior's warden). 'appearance' changes it later. The question
+        is always "Which look, classic or <other>?": the 3D client's wizard answers the same one."""
+        from player import LOOK_WORDS
         c = self.config.COLORS
-        await self.send(f"\r\n {c['bright_yellow']}1){c['reset']} {c['bright_green']}classic{c['reset']}   {c['white']}the young mage in a travelling coat{c['reset']}")
-        await self.send(f" {c['bright_yellow']}2){c['reset']} {c['bright_green']}archmage{c['reset']}  {c['white']}a tall hat, a long white beard, a robe to the ankles{c['reset']}")
-        await self.send(f"\r\n{c['white']}Which look, classic or archmage? {c['reset']}")
+        names = self._style_choices()
+        words = LOOK_WORDS.get(self.temp_class, {})
+        await self.send('')
+        for i, name in enumerate(names, 1):
+            await self.send(f" {c['bright_yellow']}{i}){c['reset']} {c['bright_green']}{name:<9}{c['reset']} {c['white']}{words.get(name, '')}{c['reset']}")
+        await self.send(f"\r\n{c['white']}Which look, {' or '.join(names)}? {c['reset']}")
 
     async def handle_style(self, answer: str):
         a = answer.strip().lower()
-        style = {'1': '', 'classic': '', 'c': '', '2': 'archmage', 'archmage': 'archmage', 'a': 'archmage'}.get(a)
+        names = self._style_choices()
+        style = None
+        for i, name in enumerate(names, 1):
+            if a in (str(i), name, name[0]):
+                style = '' if name == 'classic' else name
         if style is None:
-            await self.send("Please choose classic or archmage (1 or 2).")
-            await self.send("Which look, classic or archmage? ")
+            await self.send(f"Please choose {' or '.join(names)} (1 to {len(names)}).")
+            await self.send(f"Which look, {' or '.join(names)}? ")
             return
         self.temp_style = style
         await self.show_stats()
@@ -735,7 +751,10 @@ class Connection:
         await self.send(f"\r\n{c['bright_cyan']}══════════════════════════════════════════════════════════════{c['reset']}")
         await self.send(f"{c['bright_yellow']}  Welcome to Misthollow, {self.player.name}!{c['reset']}")
         await self.send(f"{c['white']}  A world of quests, combat, crafting, and adventure awaits.{c['reset']}")
-        await self.send(f"{c['white']}  Type {c['bright_green']}help newbie{c['white']} for a new player guide, or {c['bright_green']}hint{c['white']} for tips.{c['reset']}")
+        if self.is_web:       # /play: keys and windows, not a command line
+            await self.send(f"{c['white']}  Press {c['bright_green']}H{c['white']} for help. The tracker on the right shows your next step.{c['reset']}")
+        else:
+            await self.send(f"{c['white']}  Type {c['bright_green']}help newbie{c['white']} for a new player guide, or {c['bright_green']}hint{c['white']} for tips.{c['reset']}")
         await self.send(f"{c['bright_cyan']}══════════════════════════════════════════════════════════════{c['reset']}\r\n")
 
         # Process rent charges from previous session

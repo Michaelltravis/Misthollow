@@ -179,8 +179,10 @@ export function createInventory() {
   function showMenu(e, item, worn, list) {
     menu.innerHTML = actionsFor(item, worn).map(([label, verb]) => `<button data-v="${verb}">${label}</button>`).join('');
     menu.classList.remove('hidden');
-    menu.style.left = `${Math.min(e.clientX, innerWidth - 160)}px`;
-    menu.style.top = `${Math.min(e.clientY, innerHeight - 220)}px`;
+    // (kept on the screen by its own size, whatever the HUD's scale and however many lines it has)
+    const mr = menu.getBoundingClientRect();
+    menu.style.left = `${Math.max(6, Math.min(e.clientX, innerWidth - mr.width - 6))}px`;
+    menu.style.top = `${Math.max(6, Math.min(e.clientY, innerHeight - mr.height - 6))}px`;
     menu.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { menu.classList.add('hidden'); run(b.dataset.v, item, list, worn); }));
   }
   // a drag under way: {from: 'bag'|'worn', item, slot, list}
@@ -227,8 +229,11 @@ export function createInventory() {
     return d;
   }
   function place(e) {
-    tip.style.left = `${Math.min(e.clientX + 16, innerWidth - 260)}px`;
-    tip.style.top = `${Math.min(e.clientY + 12, innerHeight - tip.offsetHeight - 10)}px`;
+    // (by its own size: a comparing tooltip is wider than a plain one; flipped to the cursor's left at the edge)
+    const tr = tip.getBoundingClientRect();
+    const x = e.clientX + 16 + tr.width > innerWidth - 6 ? e.clientX - 16 - tr.width : e.clientX + 16;
+    tip.style.left = `${Math.max(6, x)}px`;
+    tip.style.top = `${Math.max(6, Math.min(e.clientY + 12, innerHeight - tr.height - 10))}px`;
   }
   function render() {
     if (!player || !open) return;

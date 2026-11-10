@@ -401,7 +401,8 @@ class CommandHandler:
                         if len(token_matches) == 1:
                             await cls.typed_move(player, token_matches[0])
                             return
-                    await player.send(f"Huh?!? '{original_cmd}' is not a valid command. Type 'help' for a list.")
+                    how = "Press H for help." if getattr(getattr(player, 'connection', None), 'is_web', False) else "Type 'help' for a list."
+                    await player.send(f"Huh?!? '{original_cmd}' is not a valid command. {how}")
 
     @classmethod
     async def _record_collection_item(cls, player: 'Player', item):
@@ -654,7 +655,9 @@ class CommandHandler:
                 await AchievementManager.check_deathtrap(player)
             except Exception:
                 pass
-            await CombatHandler.handle_death(player, player)
+            # the trap kills: Player.die() takes death's price and wakes them at the temple (handle_death
+            # alone, with the player as their own killer, left them standing in the trap, their gold gone)
+            await player.die(None)
             return
 
         player.move -= move_cost
@@ -4737,7 +4740,7 @@ class CommandHandler:
             else:
                 await player.send("Backstab whom?")
                 if player.target:
-                    await player.send(f"{c['yellow']}(Your target is not here. Use 'target <name>' to set a new target){c['reset']}")
+                    await player.send(f"{c['yellow']}(Your target is not here. {'Tab picks a new one' if getattr(getattr(player, 'connection', None), 'is_web', False) else "Use 'target <name>' to set a new target"}){c['reset']}")
                 return
         else:
             # Find target with numbered targeting support
@@ -4832,7 +4835,7 @@ class CommandHandler:
             else:
                 await player.send("Kill whom?")
                 if player.target:
-                    await player.send(f"{c['yellow']}(Your target is not here. Use 'target <name>' to set a new target){c['reset']}")
+                    await player.send(f"{c['yellow']}(Your target is not here. {'Tab picks a new one' if getattr(getattr(player, 'connection', None), 'is_web', False) else "Use 'target <name>' to set a new target"}){c['reset']}")
                 return
         else:
             # Find target with numbered targeting support
@@ -10539,6 +10542,9 @@ class CommandHandler:
                     await player.send(f"    {c['bright_black']}(quest accept {quest_id}){c['reset']}")
                 await player.send(f"\n{c['white']}Use 'quest accept <quest_id>' to accept a quest.{c['reset']}")
 
+        # Sage Aldric gives the next lesson to one who has none in hand (quests.resume_tutorial)
+        if 'aldric' in str(getattr(target, 'name', '')).lower() and getattr(target, 'special', None) in ('sage_aldric', 'quest_giver'):
+            await QuestManager.resume_tutorial(player)
         await QuestManager.check_quest_progress(
             player, 'talk', {'npc_vnum': getattr(target, 'vnum', 0), 'npc_name': target.name}
         )
@@ -13435,6 +13441,7 @@ class CommandHandler:
             amount = player.max_hp
         
         player.wimpy = amount
+        player.wimpy_set = True          # (their own choice from now on, 0 included: player.wimpy_now)
         
         if amount > 0:
             await player.send(f"{c['green']}You will flee when HP drops below {amount}.{c['reset']}")
@@ -14668,8 +14675,8 @@ class CommandHandler:
 
     @classmethod
     async def cmd_appearance(cls, player: 'Player', args: List[str]):
-        """How your hero looks in the 3D world, where their class has a choice (a mage: classic or
-        archmage). Usage: appearance [classic|archmage]"""
+        """How your hero looks in the 3D world: their class's own look ('classic') or its other (a
+        mage's archmage, a warrior's warden, a paladin's templar...). Usage: appearance [classic|<look>]"""
         from player import LOOK_STYLES
         c = player.config.COLORS
         cls_name = str(getattr(player, 'char_class', '') or '').lower()

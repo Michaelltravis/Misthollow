@@ -64,7 +64,7 @@ async def main():
     back = Player.load('Merlo', world)
     check(back is not None and back.look_style == 'archmage', f'saved and loaded ({getattr(back, "look_style", None)})')
     check(gear_look.look_of(back).get('style') == 'archmage', 'the look carries it (the archmage pieces)')
-    odd = Player.create_new(name='Odd', password=None, race='human', char_class='warrior', world=world, stats=STATS,
+    odd = Player.create_new(name='Odd', password=None, race='human', char_class='thief', world=world, stats=STATS,
                             look_style='archmage')
     check('style' not in gear_look.look_of(odd), 'not a mage: no archmage look')
     plain = Player.create_new(name='Plain', password=None, race='human', char_class='mage', world=world, stats=STATS)
@@ -86,7 +86,7 @@ async def main():
     odd.connection = tae.Conn()
     odd.room = world.rooms.get(3001)
     await CommandHandler.cmd_appearance(odd, ['archmage'])
-    check(odd.look_style == 'archmage' and 'one look' in tae.said(odd, 1), 'a warrior has one look')
+    check(odd.look_style == 'archmage' and 'choose classic or footpad' in tae.said(odd, 1).lower(), "a thief is told their own looks (every class has one: test_warden_look.py)")
     print(f"\n{'ALL OK' if not failures else f'{len(failures)} FAILED'}")
     sys.exit(1 if failures else 0)
 

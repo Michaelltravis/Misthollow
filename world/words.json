@@ -1,0 +1,8 @@
+{
+ "_about": "Words from another author's world that the stock areas carry, and what this world says instead (docs/world/WORLD_SPINE.md, pillar 5). Applied to every room, creature and thing as the world loads (src/regions.py apply_words): the files keep their words, so taking a line out of here puts it back. Whole words only; the case of the first letter is kept.",
+ "words": {
+  "Lloth": "Ishaleth",
+  "Lolth": "Ishaleth",
+  "yochlol": "silk-handmaiden"
+ }
+}

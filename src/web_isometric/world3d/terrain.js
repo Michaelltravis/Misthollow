@@ -1,6 +1,7 @@
 // Turns a room layout (MH.generateRoomTopDown: a 24x15 tile grid of FLOOR / BLOCK /
 // WATER with gaps, obstacles and props) into 3D at a world offset. 1 tile = 1 m.
 // World axes: x = east, z = south, y = up; a room's tile (0,0) corner sits at origin.
+import { postFor, postCell } from './lanternposts.js';
 import { isDeadly, deathTrap } from './deathtrap.js';
 import * as THREE from 'three';
 import { Batcher, trs } from './assets.js';
@@ -340,6 +341,22 @@ export function buildRoom(layout, ox, oz, kits, room) {
   // a way into another region: a named stone gateway (terrain-castle.js)
   if (room) zoneGates(ctx(), theme);
   drawFeatures(ctx());
+  // a lantern post by the road (lanternposts.js): lit in the Lantern Vale, dark beyond it, a cold
+  // flame where the mist rules
+  if (room && !UNDERGROUND.has(theme)) {
+    const rd = room.data || room;
+    const post = postFor({ vnum: layout.vnum, sector: rd.sector, flags: rd.flags, region: layout.region });
+    const model = post && kits.graveyard && kits.graveyard.get('lantern_standing');
+    const featSet = new Set(featCells);          // (what the room's words put in it keeps its ground)
+    const cell = model ? postCell(layout.vnum, W, H, (x, y) => at(x, y) === FLOOR && !featSet.has(y * W + x)) : null;
+    if (cell) {
+      const px = ox + cell.x + 0.5, pz = oz + cell.y + 0.5;
+      b.add(model, trs(px, 0, pz, 0, 1.25));
+      const flame = new THREE.Vector3(px, 2.0, pz + 0.12);
+      if (post.state === 'lit') torches.push(flame);
+      else if (post.state === 'cold') ghostfires.push(flame);
+    }
+  }
   // a set piece's own light (setpieces.py): a glow of its colour over the room
   if (layout.setpiece && layout.setpiece.light) {
     const l = new THREE.PointLight(new THREE.Color(layout.setpiece.light), 34, 18, 1.4);

@@ -169,6 +169,53 @@ CONTEXTUAL_HINTS = {
     'tutorial_quest_accept': "Quest accepted! Use 'quests' to track objectives, and 'hint' for guidance.",
 }
 
+# The same advice for a /play player, who has windows and keys rather than a command line: a tip
+# that names a typed command is said as what to press (for_play). A tip not listed reads the same.
+PLAY_TIPS = {
+    "Tip: Type 'help' to see help on any topic.": "Tip: Press H for help on any topic.",
+    "Tip: Type 'score' to see your character stats.": "Tip: Press C to see your character sheet.",
+    "Tip: Type 'inventory' or 'i' to see what you're carrying.": "Tip: Press I to see what you're carrying.",
+    "Tip: Type 'equipment' or 'eq' to see what you're wearing.": "Tip: Press I: what you wear is on the figure beside your pack.",
+    "Tip: Type 'consider <mob>' before fighting to gauge difficulty.": "Tip: Target a creature (Tab or a click): its frame says how hard a fight it is.",
+    "Tip: Type 'look <object>' to examine things more closely.": "Tip: Right-click a creature or a thing to see what you can do with it.",
+    "Tip: Type 'commands' to see a list of all available commands.": "Tip: Press H for the full list of what you can do.",
+    "Tip: Type 'achievements' to see your progress and goals.": "Tip: Press Y for your almanac: achievements, progress and goals.",
+    "Tip: Use 'flee' if a fight is going badly!": "Tip: The running figure at the end of your bar flees a fight that is going badly!",
+    "Tip: Watch your HP in the prompt. Heal before it's too late!": "Tip: Watch the red orb. Heal before it's too late!",
+    "Tip: 'Consider' a mob first to see if you can handle it.": "Tip: A creature's frame says how it compares with you: look before you swing.",
+    "Tip: Type 'search' in some rooms to find hidden exits or items.": "Tip: Typing 'search' in the chat line finds hidden exits or items in some rooms.",
+    "Tip: The 'map' command shows a web-based map of the area.": "Tip: Press M for the map of the zone and of the world.",
+    "Tip: 'Sell' items at shops to make money.": "Tip: Right-click a shopkeeper to trade: the Sell tab turns loot into gold.",
+    "Tip: 'List' shows what a shop has for sale.": "Tip: Right-click a shopkeeper to see what they sell.",
+    "Tip: 'Value <item>' shows what a shop will pay for it.": "Tip: A shop's Sell tab shows what it will pay for each thing you carry.",
+    "Tip: 'Spells' shows all spells you know.": "Tip: Press K for your spellbook: every spell you know.",
+    "Tip: Save your game often by 'quit' and reconnecting.": "Tip: Your hero is saved as you play; Log out is in Settings (O).",
+    "Tip: 'Who' shows who else is playing.": "Tip: Press P to see who else is playing.",
+    "Tip: Type 'quests' to check your quest log and objectives.": "Tip: Press L for your quest journal; the tracker on the right shows the next step.",
+    "Tip: Type 'achievements' to see goals and track your progress.": "Tip: Press Y for your almanac: goals and your progress.",
+    "Tip: At level 10, unlock your talent tree with 'talents'!": "Tip: At level 10 your talent tree opens: press N!",
+    "Tip: Type 'help newbie' for a comprehensive new player guide.": "Tip: Press H and look up 'newbie' for a new player guide.",
+    "Great job on your first kill! Check 'achievements' to see your progress.": "Great job on your first kill! Your almanac (Y) shows your progress.",
+    "You've entered a new area. 'Look' around to get your bearings.": "You've entered a new area. The map (M) shows where you are.",
+    "This NPC has a [!] marker — they have a quest for you! Type 'talk <name>' to learn more.": "This one has a quest for you! Right-click them, then Talk.",
+    "As a mage, you spend Mana to cast spells. Keep an eye on it with 'score'!": "As a mage, you spend Mana to cast spells. Keep an eye on the blue orb!",
+    "You've reached level 10! Type 'talents' to see your talent tree — customize your playstyle!": "You've reached level 10! Press N to see your talent tree — customize your playstyle!",
+    "Level 50 — the pinnacle! Prestige classes are now available. Type 'help prestige' to learn more.": "Level 50 — the pinnacle! Prestige classes are now available: press G for your legend.",
+    "New here? Use N/S/E/W (or 'n'/'s') to move. 'look' repeats a room description.": "New here? W, A, S and D move you, or click where you want to go.",
+    "Use 'inventory' to see your items. Try 'wield <weapon>' or 'wear <item>' to equip gear.": "Press I to see your items. Drag a weapon or a piece of armour onto the figure to equip it.",
+    "Wielded weapons boost your damage. Check 'score' for a quick combat readout.": "Wielded weapons boost your damage. Your character sheet (C) has the numbers.",
+    "You notice resource nodes here! Try 'mine', 'forage', or 'fish' to gather materials for crafting.": "You notice resource nodes here! Click one to gather materials for crafting.",
+    "Tip: Try 'mine', 'forage', or 'fish' when you find resource nodes.": "Tip: Click a resource node (ore, herbs, a fishing spot) to gather from it.",
+    "Quest accepted! Use 'quests' to track objectives, and 'hint' for guidance.": "Quest accepted! The tracker on the right shows the next step; your journal (L) has them all.",
+}
+
+
+def for_play(player, text):
+    """`text` as a /play player should read it (PLAY_TIPS); telnet players read it as written."""
+    if isinstance(text, str) and getattr(getattr(player, 'connection', None), 'is_web', False):
+        return PLAY_TIPS.get(text, text)
+    return text
+
 
 class TipManager:
     """Manages tip delivery to players."""
@@ -234,7 +281,7 @@ class TipManager:
         tip = cls.get_tip(player)
         if tip:
             c = player.config.COLORS
-            await player.send(f"\r\n{c['cyan']}{tip}{c['reset']}\r\n")
+            await player.send(f"\r\n{c['cyan']}{for_play(player, tip)}{c['reset']}\r\n")
             return True
         return False
     
@@ -243,7 +290,7 @@ class TipManager:
         """Show a tip for a specific event."""
         if event in EVENT_TIPS:
             c = player.config.COLORS
-            await player.send(f"\r\n{c['bright_cyan']}{EVENT_TIPS[event]}{c['reset']}\r\n")
+            await player.send(f"\r\n{c['bright_cyan']}{for_play(player, EVENT_TIPS[event])}{c['reset']}\r\n")
 
     # Track which contextual hints each player has seen
     _contextual_shown = {}  # player_name -> set of hint keys
@@ -269,7 +316,7 @@ class TipManager:
                 return False
 
         c = player.config.COLORS
-        await player.send(f"\r\n{c['bright_cyan']}💡 {hint}{c['reset']}\r\n")
+        await player.send(f"\r\n{c['bright_cyan']}💡 {for_play(player, hint)}{c['reset']}\r\n")
 
         # Mark as shown
         if player.name not in cls._contextual_shown:

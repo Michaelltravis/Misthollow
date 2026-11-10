@@ -14,10 +14,11 @@ export function makeStage() {
   const plinth = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.25, 0.25, 40),
     new THREE.MeshStandardMaterial({ color: 0x3a3442, roughness: 0.6, metalness: 0.2 }));
   plinth.position.y = -0.125; scene.add(plinth);
-  const clock = new THREE.Clock();
+  const clock = new THREE.Timer();
+  const sinceLast = () => { clock.update(); return clock.getDelta(); };
   const loop = () => {
     raf = requestAnimationFrame(loop);
-    const dt = Math.min(clock.getDelta(), 0.05);
+    const dt = Math.min(sinceLast(), 0.05);
     if (actor) { actor.update(dt); actor.root.rotation.y += dt * 0.5; }
     if (renderer) renderer.render(scene, cam);
   };
@@ -30,7 +31,7 @@ export function makeStage() {
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
       }
-      if (!raf) { clock.getDelta(); loop(); }
+      if (!raf) { sinceLast(); loop(); }
     },
     // look: what they wear (gear_look.py); none: the class's starting gear
     async show(cls, { flourish = true, look = null } = {}) {

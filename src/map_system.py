@@ -1512,6 +1512,25 @@ def _marquee_block(player):
         return None
 
 
+def _region(zone_num):
+    try:
+        import regions
+        return regions.of(zone_num)
+    except Exception:
+        return None
+
+
+def _zone_level(world, zone):
+    try:
+        import statistics
+        vnums = {int(r.get('vnum') if isinstance(r, dict) else r) for room in zone.rooms.values()
+                 for r in (getattr(room, 'mob_resets', None) or [])}
+        levels = [int(world.mob_prototypes[v].get('level') or 1) for v in vnums if v in world.mob_prototypes]
+        return int(statistics.median(levels)) if levels else None
+    except Exception:
+        return None
+
+
 def build_zonemap(world, zone_num: int) -> Optional[dict]:
     """One zone laid out as a single continuous space for the 3D client (/play).
 
@@ -1586,6 +1605,11 @@ def build_zonemap(world, zone_num: int) -> Optional[dict]:
     _ZONEMAP_CACHE[zone_num] = data = {
         'type': 'zonemap', 'zone': zone_num, 'name': zone.name,
         'size': [w, h], 'rooms': out_rooms, 'links': sorted(z for z in links if z is not None),
+        # which of the world's nine regions this is (regions.py; None: none): the banner and the map say it
+        'region': _region(zone_num),
+        # about what level its creatures are (the median of those that spawn here; None: none do):
+        # the banner warns a hero who walks into a place far beyond them
+        'level': _zone_level(world, zone),
     }
     return data
 

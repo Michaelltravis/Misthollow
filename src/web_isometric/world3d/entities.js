@@ -10,6 +10,7 @@ import { creatureLook, hashStr, npcDress } from './looks.js';
 import { makeProc, makeProp } from './proc.js';
 import { poseFor, postureChange, bodyPosition } from './posture.js';
 import { makeKin } from './kin.js';
+import { freeBody } from './freebody.js';
 import { isHostile, conOf, shownName } from './targeting.js';
 import { deathStyle, remains, fallOver, nameKey } from './corpse.js';
 import { plateAuras } from './hud/buffs.js';
@@ -99,6 +100,9 @@ function dyingAs(d, dt) {
     }
   }
 }
+
+// how small a body is as it arrives (it grows to its size in a fifth of a second)
+const ARRIVE_FROM = 0.72;
 
 export class Entities {
   constructor(engine, plates, kits = null) {
@@ -310,7 +314,7 @@ export class Entities {
       if (payload.vnum != null && e.vnum !== payload.vnum && this.zone && this.zone.rooms.get(payload.vnum)) this.moveTo(e, payload.vnum, m);
       else this.place(e, m);
       if (m.fighting && e.actor && e.root && this.hero && e.position !== 'sleeping') {
-        e.root.rotation.y = Math.atan2(this.hero.x - e.root.position.x, this.hero.z - e.root.position.z);
+        e.wantYaw = Math.atan2(this.hero.x - e.root.position.x, this.hero.z - e.root.position.z);
         e.actor.once(['1H_Melee_Attack_Chop', '1H_Melee_Attack_Slice_Diagonal', '1H_Melee_Attack_Stab'][(hashStr(e.key) + Date.now()) % 3], 0.08, 1.1);
       }
     }
@@ -360,6 +364,8 @@ export class Entities {
       e.root.userData.lying = lies(e);
       actor.play(e.pose || (isHostile(w) ? 'Idle_Combat' : actor.idle || 'Idle'), 0, e.still ? 0 : 0.85 + (hashStr(key) % 30) / 100);
       if (isPlayer && w.data.mount) e.riding = mountRider(actor, w.data.mount, null);
+      // (it swells into place over a fifth of a second rather than appear whole: update() grows it)
+      e.arrive = 0; e.root.scale.multiplyScalar(ARRIVE_FROM); e.root.userData.arriveK = ARRIVE_FROM;
       this.engine.scene.add(e.root);
     }).catch(() => {});
   }
@@ -415,7 +421,7 @@ export class Entities {
     // a creature that was fighting or out of health died: let it fall, then clear it away
     const died = !now && e.actor && e.kind === 'mob' && ((e.data.maxHp && e.data.hp <= 0) || e.data.fighting);
     if (!died) {
-      if (now) this.engine.scene.remove(e.root);
+      if (now) { this.engine.scene.remove(e.root); freeBody(e.root); }
       else this.vanished.push(e);
       return;
     }
@@ -473,18 +479,38 @@ export class Entities {
 
   update(dt, t, hero) {
     this.hero = hero;
-    for (const e of this.vanished) this.engine.scene.remove(e.root);
+    for (const e of this.vanished) { this.engine.scene.remove(e.root); freeBody(e.root); }      // (one its corpse claimed has left this list)
     this.vanished.length = 0;
     for (let i = this.dying.length - 1; i >= 0; i--) {
       const d = this.dying[i];
       if (d.fall) d.fall.update(dt);
       if (d.style && d.style !== 'fall') dyingAs(d, dt);
-      if ((d.left -= dt) <= 0) { this.engine.scene.remove(d.e.root); this.dying.splice(i, 1); for (const m of d.mats || []) m.dispose(); }
+      if ((d.left -= dt) <= 0) { this.engine.scene.remove(d.e.root); this.dying.splice(i, 1); for (const m of d.mats || []) m.dispose(); freeBody(d.e.root); }
     }
     for (const e of this.list.values()) {
       if (!e.root) continue;
       // walking to a new room's spot (other players keep up with where they really are:
       // the further behind, the faster they run)
+      if (e.arrive != null) {
+        e.arrive = Math.min(1, e.arrive + dt / 0.2);
+        const k = ARRIVE_FROM + (1 - ARRIVE_FROM) * (1 - Math.pow(1 - e.arrive, 3)), was = e.root.userData.arriveK || k;
+        e.root.scale.multiplyScalar(k / was);            // (by ratio: whatever else sizes the body still holds)
+        e.root.userData.arriveK = k;
+        if (e.arrive >= 1) e.arrive = null;
+      }
+      if (e.settling) {
+        if (e.goal) e.settling = 0;                       // told to walk on: no stop at all
+        else if ((e.settling -= dt) <= 0) {
+          e.settling = 0;
+          if (e.actor) e.actor.play(e.riding ? 'Idle' : e.pose || e.actor.idle || 'Idle', 0.18, e.still ? 0 : 1);
+        }
+      }
+      // turning to face a way (a foe, the road): a quick turn by the short way round, not a snap
+      if (e.wantYaw != null && e.root) {
+        const r = e.root.rotation, off = Math.atan2(Math.sin(e.wantYaw - r.y), Math.cos(e.wantYaw - r.y));
+        if (Math.abs(off) < 0.02) { r.y = e.wantYaw; e.wantYaw = null; }
+        else r.y += off * (1 - Math.exp(-dt * 14));
+      }
       // knocked back by a heavy blow: a short shove, easing off
       if (e.knock) {
         const k = Math.min(dt, e.knock.t);
@@ -497,13 +523,16 @@ export class Entities {
       if (e.goal && !held) {
         const p = e.root.position, dx = e.goal.x - p.x, dz = e.goal.z - p.z, d = Math.hypot(dx, dz);
         if (d < 0.1 && e.then) { e.goal = e.then; e.then = null; }
+        // (another player reaches each reported spot a little before the next is told: they keep their
+        // stride for a third of a second rather than stop and start between every two)
+        else if (d < 0.1 && e.kind === 'player' && !e.settling) { e.goal = null; e.rush = false; e.settling = 0.3; }
         else if (d < 0.1) { e.goal = null; e.rush = false; if (e.actor) e.actor.play(e.riding ? 'Idle' : e.pose || (isHostile(e) ? 'Idle_Combat' : e.actor.idle || 'Idle'), 0.18, e.still ? 0 : 1); }
         else {
           // (a creature charging over from next door runs)
           const speed = e.kind === 'player' ? Math.min(9 * (e.data.speed || 1), Math.max(3.2, d * 4)) : e.rush ? Math.min(7, Math.max(3.2, d * 1.6)) : 3.2;
           const step = Math.min(d, speed * dt);
           p.x += dx / d * step; p.z += dz / d * step;
-          e.root.rotation.y = Math.atan2(dx, dz);
+          e.wantYaw = Math.atan2(dx, dz);
           if (e.actor) e.actor.play(e.riding ? 'Idle' : speed > 4.5 ? 'Running_A' : 'Walking_A', 0.15, 1.1);
         }
       }
@@ -542,7 +571,9 @@ export class Entities {
         e._conFor = this.heroLevel;
         e.plate.dataset.con = conOf(e.data.level || 1, this.heroLevel).key;
       }
-      e.plate.querySelector('.hp b').style.width = `${Math.max(0, Math.min(1, hp)) * 100}%`;
+      // (the bar is found once, and written only when the health changed)
+      const hpw = `${(Math.max(0, Math.min(1, hp)) * 100).toFixed(1)}%`;
+      if (e._hpw !== hpw) { e._hpw = hpw; (e._hpBar || (e._hpBar = e.plate.querySelector('.hp b'))).style.width = hpw; }
       e.plate.style.opacity = this.target === e.key ? 1 : Math.max(0.25, Math.min(1, (28 - dist) / 8));
     }
   }

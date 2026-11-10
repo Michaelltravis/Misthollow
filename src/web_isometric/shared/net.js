@@ -461,7 +461,7 @@
     st._loginNameSent = false;
     st._lastPromptKey = null;
     if (st.mudSocket) { try { st.mudSocket.close(); } catch (_) {} }
-    MH.bus.emit('login.status', `Connecting to ${MH.urls.mudWs}…`);
+    MH.bus.emit('login.status', 'Connecting…');
     const sock = st.mudSocket = new WebSocket(MH.urls.mudWs);
     st.mudSocket.addEventListener('open', () => runLoginSequence());
     st.mudSocket.addEventListener('message', e => handleMudMessage(e.data));

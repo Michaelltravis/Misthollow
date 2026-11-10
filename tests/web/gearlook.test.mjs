@@ -155,8 +155,9 @@ test('crowns, circlets and lights', () => {
   const crown = kitted({ sig: 'cr', head: { k: 'crown', v: 'circlet', m: 'silver', t: 3 } }, 'ranger');
   assert.deepEqual(crown.addons.map(a => [a.kind, a.variant, a.on, a.spot]), [['crown', 'circlet', 'rogue-Head', 'crown']], 'a circlet round the head');
   const lantern = kitted({ sig: 'ln', main: { k: 'sword', h: 1, m: 'steel', t: 1 }, light: { k: 'lantern' } });
-  assert.ok(lantern.addons.some(a => a.kind === 'lantern' && a.shape && a.spot === 'hip'), 'a lantern at the hip');
-  assert.ok(lantern.glow > 0, 'and it is lit');
+  // (a hero's own lantern hangs there already, tools/art3d/blender/models/lantern.py: no second, built one)
+  assert.ok(lantern.props.some(p => p.name === 'Lantern_Hip') && !lantern.addons.some(a => a.kind === 'lantern'), 'a lantern at the hip');
+  assert.ok(lantern.lantern, 'and it is lit');
   const torch = kitted({ sig: 'tr', main: { k: 'sword', h: 1, m: 'steel', t: 1 }, light: { k: 'torch' } });
   assert.ok(torch.procs.some(p => p.shape === 'torch' && p.piece.endsWith('_Offhand')), 'a torch in the free hand');
   const busy = kitted({ sig: 'tb', main: { k: 'sword', h: 1, m: 'steel', t: 1 }, off: { k: 'shield', v: 'round', m: 'iron', t: 1 }, light: { k: 'torch' } });
@@ -355,4 +356,63 @@ test('the archmage: a mage who chose it wears the Blender pieces, white-haired; 
   assert.ok(!names(classic).some(n => n.startsWith('Archmage')), 'the classic mage is as it was');
   const warrior = planLook({ ...starterLook('warrior'), style: 'archmage', sig: 'w' }, 'warrior', kit);
   assert.ok(!names(warrior).some(n => n.startsWith('Archmage')), 'not a mage: no archmage');
+});
+
+test("every hero carries the lantern at the hip; a creature its zone dressed carries none", () => {
+  const worn = plan => plan.props.map(p => p.name);
+  for (const cls of Object.keys(CLASS_BASE)) {
+    assert.ok(worn(planLook(starterLook(cls), cls, kit)).includes('Lantern_Hip'), `${cls} carries it`);
+  }
+  assert.equal(kit.pieces.Lantern_Hip.bone, 'hips', 'it rides the hips');
+  assert.ok(planLook(starterLook('warrior'), 'warrior', kit).lantern, 'and it is lit, whatever they wear');
+  const npc = planLook({ v: 1, sig: 'npc', base: 'guard', body: { w: 2, m: 'iron', t: 1 } }, 'warrior', kit);
+  assert.ok(!worn(npc).includes('Lantern_Hip'), 'a zone-dressed creature has none');
+  // one who also carries a lantern as their light does not get a second, built one
+  const lit = planLook({ ...starterLook('warrior'), sig: 'lit', light: { k: 'lantern' } }, 'warrior', kit);
+  assert.ok(!(lit.addons || []).some(a => a.kind === 'lantern'), 'no second lantern');
+  assert.ok((planLook({ v: 1, sig: 'npc2', base: 'guard', light: { k: 'lantern' } }, 'warrior', kit).addons || []).some(a => a.kind === 'lantern'), 'a creature with a lantern still shows one');
+});
+
+test("the warden: a warrior's chosen look, its pieces over any armour, its own pauldrons for the shoulders", async () => {
+  const { WARDEN } = await import('../../src/web_isometric/world3d/gearlook.js');
+  const { lookChoices, classOfStyle } = await import('../../src/web_isometric/world3d/hud/lookstyles.js');
+  const worn = plan => plan.props.map(p => p.name);
+  for (const piece of WARDEN) assert.ok(kit.pieces[piece], `the kit has ${piece}`);
+  const w = planLook({ ...starterLook('warrior'), sig: 'wd', style: 'warden' }, 'warrior', kit);
+  for (const piece of WARDEN) assert.ok(worn(w).includes(piece), `a warden wears ${piece}`);
+  assert.ok(!WARDEN.some(p => worn(planLook(starterLook('warrior'), 'warrior', kit)).includes(p)), 'the classic warrior wears none of it');
+  assert.ok(!WARDEN.some(p => worn(planLook({ ...starterLook('mage'), sig: 'wm', style: 'warden' }, 'mage', kit)).includes(p)), 'nor does a mage who asks');
+  // fine plate or renown would add pauldrons of its own: the warden's stand for them
+  const fine = planLook({ v: 1, sig: 'wf', style: 'warden', rn: 3, body: { w: 3, m: 'steel', t: 4 } }, 'warrior', kit);
+  assert.ok(!(fine.addons || []).some(a => a.kind === 'pauldron'), 'no second pair of pauldrons');
+  assert.equal(kit.pieces.Warden_Tabard.bone, null, 'the tabard is weighted, to sway');
+  assert.equal(kit.pieces.Warden_Mantle.bone, 'chest');
+  // what the Character window offers
+  assert.deepEqual(lookChoices('warrior', 'warden').map(l => [l.id, l.on]), [['classic', false], ['warden', true]]);
+  assert.deepEqual(lookChoices('Warrior', '').map(l => [l.id, l.on]), [['classic', true], ['warden', false]]);
+  assert.deepEqual(lookChoices('creature', ''), [], 'what is no class has no looks');
+  assert.equal(classOfStyle('warden'), 'warrior');
+  assert.equal(classOfStyle('archmage'), 'mage');
+});
+
+test("every class has a look of its own to choose, and only its own", async () => {
+  const { LOOKS } = await import('../../src/web_isometric/world3d/gearlook.js');
+  const { STYLES, lookChoices, classOfStyle } = await import('../../src/web_isometric/world3d/hud/lookstyles.js');
+  const worn = plan => plan.props.map(p => p.name);
+  const classes = Object.keys(CLASS_BASE);
+  for (const cls of classes) assert.equal(lookChoices(cls, '').length, 2, `${cls} has its own look and one other`);
+  for (const [style, L] of Object.entries(LOOKS)) {
+    assert.ok(classes.includes(L.cls), `${style} is a class's`);
+    assert.equal(classOfStyle(style), L.cls, `the wizard and the window know ${style}`);
+    assert.ok(STYLES[L.cls].some(([id]) => id === style));
+    for (const piece of L.pieces) assert.ok(kit.pieces[piece], `the kit has ${piece}`);
+    const mine = worn(planLook({ ...starterLook(L.cls), sig: `s:${style}`, style }, L.cls, kit));
+    for (const piece of L.pieces) assert.ok(mine.includes(piece), `${L.cls} in the ${style} look wears ${piece}`);
+    const other = classes.find(c => c !== L.cls);
+    assert.ok(!L.pieces.some(p => worn(planLook({ ...starterLook(other), sig: `o:${style}`, style }, other, kit)).includes(p)), `${style} is not ${other}'s`);
+    assert.ok(!L.pieces.some(p => worn(planLook(starterLook(L.cls), L.cls, kit)).includes(p)), `the classic ${L.cls} wears none of it`);
+  }
+  // no piece belongs to two looks
+  const all = Object.values(LOOKS).flatMap(L => L.pieces);
+  assert.equal(new Set(all).size, all.length);
 });

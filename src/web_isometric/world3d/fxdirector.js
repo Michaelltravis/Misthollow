@@ -744,7 +744,7 @@ export class Director {
     const f = r.flags;
     if (f.has('shake+')) this.fx.shake(0.3, 0.35);
     else if (f.has('shake')) this.fx.shake(0.16, 0.22);
-    if (f.has('stop') && this.engine && this.engine.hitStop) this.engine.hitStop(85);
+    if (f.has('stop') && this.engine && this.engine.hitStop && this.fx.opts.shake) this.engine.hitStop(85);
     if (f.has('flash')) this.fx.screen(hex(pal.mark), { time: 0.5, opacity: 0.28 });
   }
 

@@ -2345,8 +2345,14 @@ class CombatHandler:
                     if hasattr(m, 'send'):
                         await m.send(f"{c['bright_cyan']}{'You receive' if m is looter else looter.name + ' receives'} {item.short_desc} (round-robin).{c['reset']}")
 
+        # A fallen player keeps what they carry: Player.die() has already taken death's price (exp,
+        # 5% of the gold) and woken them at the temple. They leave no corpse to loot: one made here
+        # lay at the temple (where die() had moved them) with their whole pack in it and a copy of
+        # their gold beside the gold they still held.
+        player_victim = cls.is_player(victim)
+
         # Check for autoloot_gold setting
-        if hasattr(victim, 'gold') and victim.gold > 0:
+        if hasattr(victim, 'gold') and victim.gold > 0 and not player_victim:
             if hasattr(killer, 'gold'):
                 # Autoloot gold is on by default for players
                 if hasattr(killer, 'autoloot_gold') and killer.autoloot_gold:
@@ -2368,7 +2374,7 @@ class CombatHandler:
                     gold_looted = True
 
         # Check for autoloot items
-        if hasattr(killer, 'autoloot') and killer.autoloot and hasattr(victim, 'inventory'):
+        if hasattr(killer, 'autoloot') and killer.autoloot and hasattr(victim, 'inventory') and not player_victim:
             if hasattr(killer, 'inventory'):
                 from groups import _worth_rolling
                 for item in list(victim.inventory):
@@ -2404,8 +2410,18 @@ class CombatHandler:
                         except Exception:
                             pass
 
+        if player_victim:
+            # the memorial stands where they fell (die() notes the room before it moves them)
+            try:
+                from gravestones import GravestoneRegistry
+                fell = getattr(victim, 'died_in_vnum', None) or (victim.room.vnum if victim.room else None)
+                if fell is not None:
+                    GravestoneRegistry.record(fell, victim.name, getattr(killer, 'name', 'something'))
+            except Exception:
+                pass
+
         # Create corpse with remaining items (if not autolooted)
-        if victim.room and hasattr(victim, 'inventory'):
+        if victim.room and hasattr(victim, 'inventory') and not player_victim:
             from objects import Object
             corpse = Object(0, killer.world if hasattr(killer, 'world') else None)
             corpse.name = f"corpse of {victim.name}"
@@ -2572,12 +2588,14 @@ class CombatHandler:
 
             # Move player
             from commands import CommandHandler
+            from_room = player.room
             await CommandHandler.cmd_move(player, direction)
 
-            # Lose some experience
-            exp_loss = int(player.exp * 0.01)
-            player.exp = max(0, player.exp - exp_loss)
-            await player.send(f"{c['yellow']}You lose {exp_loss} experience points.{c['reset']}")
+            # Lose some experience (only for a flight that got somewhere)
+            exp_loss = int(player.exp * 0.01) if player.room is not from_room else 0
+            if exp_loss > 0:
+                player.exp = max(0, player.exp - exp_loss)
+                await player.send(f"{c['yellow']}You lose {exp_loss} experience points.{c['reset']}")
         else:
             await player.send(f"{c['red']}You fail to flee ({flee_risk} risk)!{c['reset']}")
 
@@ -2601,7 +2619,14 @@ class CombatHandler:
         room = exit_data.get('room')
         if room is None:
             return False
-        if doors.is_seal(exit_data.get('door')) and not getattr(player, 'is_immortal', False):
+        door = exit_data.get('door')
+        if doors.is_seal(door) and not getattr(player, 'is_immortal', False):
+            return False
+        # panic does not open doors, and nobody flees into a pit: a shut door refused the move after
+        # the fight was already ended and paid for, and a death trap killed the one who got away
+        if isinstance(door, dict) and door.get('state') == 'closed' and not door.get('broken'):
+            return False
+        if 'deathtrap' in room.flags or 'death' in room.flags:
             return False
         return not ('imm_only' in room.flags and not room.admits(player))
 

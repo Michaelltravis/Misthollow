@@ -70,7 +70,7 @@ async def main():
     # what the dispatcher does with a typed word that is a direction, or a part of one, or an exit's
     # name: the same refusal in /play (typed_move), never straight to cmd_move
     disp = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'src', 'commands.py'), encoding='utf-8').read()
-    fallback = disp[disp.index("# Check if it's a direction"):disp.index("is not a valid command. Type 'help'")]
+    fallback = disp[disp.index("# Check if it's a direction"):disp.index("is not a valid command.")]
     check('cmd_move(' not in fallback and fallback.count('typed_move(') == 5,
           'a typed direction, part of one, or an exit\'s name goes through typed_move')
     src = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'src', 'commands.py'), encoding='utf-8').read()

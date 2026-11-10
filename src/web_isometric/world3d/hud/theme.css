@@ -16,6 +16,21 @@
 
 :root {
   --ui: 1;
+  /* shared edges and signals (hud.css used these as raw colours in a dozen places) */
+  --gold-edge: #f0d28c;
+  --danger: #ff7a6a;
+  --warn: #ffb84a;
+  --good: #7ee07e;
+  --shadow: #000;          /* outlines and drop shadows */
+  --white: #fff;
+  --gold-face-hi: #f3d999; /* a chosen button's face, top */
+  --gold-face-lo: #b98d45; /* and bottom */
+  --on-gold: #1a1206;      /* text on that face */
+  --star: #ffd86a;         /* quest stars and marks */
+  --coin: #e8c050;         /* gold amounts */
+  --danger-soft: #ff9a8a; /* a warning said gently: a fallen title, a debuff's name */
+  --good-soft: #8fd18a; /* a gain said gently */
+  --blood: #7a1210;    /* the dark end of a health bar or a wound */
   /* type */
   --display: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
   --title: 'Cinzel', Georgia, 'Times New Roman', serif;
