@@ -108,35 +108,57 @@ async def main():
     # ---- the roads' ends: each region's villain, told once its road is walked
     from mobs import Mobile as _M
     ends = {k: q for k, q in QUEST_DEFINITIONS.items() if k.startswith('story_')}
-    check(len(ends) == 8 and all(q['after'] == 'road_' + q['region'] and q['after'] in roads for q in ends.values()), "a story for each road, after it")
+    trails = {k: q for k, q in QUEST_DEFINITIONS.items() if k.startswith('trail_') and q.get('region')}
+    lits = {k: q for k, q in QUEST_DEFINITIONS.items() if k.startswith('lit_') and q.get('region')}
+    check(len(ends) == 8 and all(q['after'] == 'trail_' + q['region'] and q['after'] in trails for q in ends.values()), "a story for each region, after its trail")
+    check(len(trails) == 8 and all(q['after'] == 'road_' + q['region'] and q['after'] in roads and q['quest_giver'] == 3200 for q in trails.values()), "a trail for each road, after it")
+    check(len(lits) == 8 and all(q['after'] == 'story_' + q['region'] and q['objectives'][0]['target'] == roads['road_' + q['region']]['objectives'][0]['target']
+                                 for q in lits.values()), "and a last walk for each story, back to the road's own room")
+    check(all(roads['road_' + q['region']]['level_min'] <= q['level_min'] <= ends['story_' + q['region']]['level_min'] for q in trails.values()),
+          "a trail is of a level between its road and its story")
     said = [(_M.said_name(p.get('name'), p.get('short_desc')) or p.get('name') or '').lower() for p in world.mob_prototypes.values()]
     for k, q in ends.items():
         t = q['objectives'][0]['target']
         check(any(t in n for n in said), f"{q['name']}: there is a creature called by '{t}' to defeat")
+    by_region = {}
+    for m in world.npcs:
+        z = getattr(getattr(m, 'room', None), 'zone', None)
+        r = regions.of(z.number) if z is not None else None
+        if r:
+            by_region.setdefault(r['id'], []).append((m.name or '').lower())
+    for k, q in trails.items():
+        o = q['objectives'][0]
+        n = sum(1 for name in by_region.get(q['region'], []) if o['target'] in name)
+        check(n > o['required'], f"{q['name']}: {n} creatures called '{o['target']}' live in {q['region']} (it asks for {o['required']})")
     vet = _P.create_new(name='Endtest', password=None, race='human', char_class='warrior', stats={k: 13 for k in ('str', 'int', 'wis', 'dex', 'con', 'cha')}, world=world)
     vet.level = 30
     check('story_marches' not in QuestManager.get_available_quests(vet, 3200), "the story is not told before its road is walked")
     vet.quests_completed = ['road_marches']
     got = QuestManager.get_available_quests(vet, 3200)
-    check('story_marches' in got and 'story_frostmarch' not in got, "and is told after it (and only that region's)")
+    check('trail_marches' in got and 'story_marches' not in got, "the road walked, the trail is told; the story not yet")
+    vet.quests_completed = ['road_marches', 'trail_marches']
+    got = QuestManager.get_available_quests(vet, 3200)
+    check('story_marches' in got and 'story_frostmarch' not in got and 'lit_marches' not in got, "and is told after it (and only that region's)")
+    vet.quests_completed = ['road_marches', 'trail_marches', 'story_marches']
+    check('lit_marches' in QuestManager.get_available_quests(vet, 3200), "the villain fallen, the road is walked once more")
 
     # ---- a story is within a mortal's reach, and is not taken before its road by name either
     import prestige
     import test_atlas_engine as tae
     cap = prestige.get_max_level(vet)
-    check(all(q['level_min'] <= cap for q in list(roads.values()) + list(ends.values())),
+    check(all(q['level_min'] <= cap for q in list(roads.values()) + list(ends.values()) + list(trails.values()) + list(lits.values())),
           f"every road and story can be offered at a level a hero reaches (the cap is {cap}: {sorted((k, q['level_min']) for k, q in ends.items() if q['level_min'] > cap)})")
     skip = _P.create_new(name='Skiptest', password=None, race='human', char_class='warrior', stats={k: 13 for k in ('str', 'int', 'wis', 'dex', 'con', 'cha')}, world=world)
     skip.connection = tae.Conn()
     skip.level = 30
     await QuestManager.accept_quest(skip, 'story_vale')
     check(not QuestManager.has_active_quest(skip, 'story_vale') and 'another to finish first' in tae.said(skip, 2), '`quest accept story_vale` before its road is refused, and says why')
-    skip.quests_completed = ['road_vale']
+    skip.quests_completed = ['road_vale', 'trail_vale']
     await QuestManager.accept_quest(skip, 'story_vale')
     check(QuestManager.has_active_quest(skip, 'story_vale'), 'and taken once the road is walked')
     top = _P.create_new(name='Toptest', password=None, race='human', char_class='warrior', stats={k: 13 for k in ('str', 'int', 'wis', 'dex', 'con', 'cha')}, world=world)
     top.level = cap
-    top.quests_completed = ['road_deeproad', 'road_reach']
+    top.quests_completed = ['road_deeproad', 'road_reach', 'trail_deeproad', 'trail_reach']
     got = QuestManager.get_available_quests(top, 3200)
     check('story_deeproad' in got and 'story_reach' in got, 'at the level cap the last two stories are offered')
 
