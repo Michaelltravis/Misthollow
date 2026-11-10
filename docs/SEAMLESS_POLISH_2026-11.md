@@ -219,7 +219,12 @@ Seen and heard in the running game (as the test paladin, with the immortal `sett
 
 - **Ostragoth in the King's Chamber** on his own body (2.8 m, the mesh `ostragoth`), fighting. An
   immortal does not set off his lair's entrance (`lairs.on_enter`), so he was put there with
-  `mload 647006`: the body and the fight were seen, the bat's flight in was not.
+  `mload 647006`. Then with a mortal: a test hero that is no admin (`lairprobe`, made on the local
+  server by the game's own sign-up, raised and brought to the antechamber by an immortal) walked
+  north into the chamber. It stood empty for four seconds; then Ostragoth was there on his own
+  body, cast Night's Embrace (the Brace / Sidestep prompt showed), and neither `flee` nor walking
+  south took the hero out: the lair holds. The moment of his arrival was sampled once a second,
+  so the bat's own shape in the air was not caught in a frame.
 - **The cost of the wider room ring**, by timing drawn frames (the engine stepped by hand, 120
   frames a sample, a pixel read back each sample so the graphics card's work is counted): on the
   Lantern Road at 1280x720, High, an RTX 4070, **2.3 ms a frame with the wide ring (19 rooms
@@ -231,8 +236,7 @@ Seen and heard in the running game (as the test paladin, with the immortal `sett
 Everything in this document is done and committed on `claude/seamless-polish`.
 
 For the owner to look at: the eight calls in the fourth batch's table (each with how to take it
-back). One thing was not seen from here: Ostragoth's flight into his chamber as a bat (an
-immortal does not set it off; `tests/test_lairs.py` covers the server's side).
+back). The branch is local: nothing has been pushed.
 
 ## Pass 2: the owner's calls (each changes how the game plays)
 
