@@ -174,7 +174,9 @@ async def main():
     await settle()
     check(not lair.sealed and door['state'] == 'open' and lair.slain_at, 'his death opens the door')
     corpse = [o for o in chamber.items if 'corpse' in getattr(o, 'name', '')]
-    keys = [i for o in corpse for i in (getattr(o, 'contents', None) or [])] + list(chamber.items)
+    # (on his corpse, on the floor, or already in the hand of the one who killed him: new heroes
+    # loot what they kill, player.py autoloot)
+    keys = [i for o in corpse for i in (getattr(o, 'contents', None) or [])] + list(chamber.items) + list(ann.inventory)
     check(any(getattr(i, 'vnum', None) == 747005 for i in keys), 'and he leaves his star-key')
     await C.cmd_move(ann, 'south')
     await C.cmd_move(ann, 'north')

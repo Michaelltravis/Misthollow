@@ -115,6 +115,20 @@
      }
     ]
    }
+  },
+  "799760": {
+   "name": "dark alchemist",
+   "short_desc": "the dark alchemist",
+   "long_desc": "The dark alchemist stoops over a stained stone table, stirring something that smokes.",
+   "description": "A hunched man in a stained leather apron, his fingers dyed black to the knuckle. The druids' cult pays him for poisons and he takes his pay in bones and blood. A row of stoppered bottles hangs from his belt.",
+   "level": 26,
+   "flags": [
+    "aggressive",
+    "sentinel"
+   ],
+   "rank": "elite",
+   "alignment": -500,
+   "why": "the alchemist whose chamber this is"
   }
  },
  "bosses": [
@@ -148,6 +162,15 @@
      "why": "step out"
     }
    ]
+  }
+ ],
+ "spawns": [
+  {
+   "vnum": 799760,
+   "rooms": [
+    24693
+   ],
+   "why": "the alchemist whose chamber this is"
   }
  ]
 }

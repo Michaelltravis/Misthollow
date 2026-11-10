@@ -10,11 +10,15 @@
 import * as THREE from 'three';
 import { recipeFor, timeline, THEMES } from './abilityfx.js';
 import { RECIPES } from './abilityfx-table.js';
+import { mobRecipe } from './mobfx.js';
 import { Director } from './fxdirector.js';
 import { LANDS } from './soundtable.js';
 import { swingClips, rangedBlow } from './gearlook.js';
 import { SCHOOL } from './fx.js';
 import { SCHOOL_CSS, titleOf, harmColour } from './sctlogic.js';
+
+// a body lying asleep on the ground (entities.js, controller.js: posture.js's Lie_Idle)
+const lying = who => !!(who && who.root && who.root.userData && who.root.userData.lying);
 
 // the ordinary swing, by class: for anyone without a look (gearlook.js swingClips picks it
 // from what the hand holds)
@@ -41,7 +45,10 @@ function slashColour(src, cls) {
 
 const COLORS = { dmgOut: '#ffe9a8', dmgIn: '#ff6a52', heal: '#7dff8f', miss: '#b8b8c4', crit: '#ffb02a', parry: '#8cc8ff', block: '#9ad0ff', dodge: '#d8e0ff', spell: '#e0b8ff' };
 const keyOf = ref => JSON.stringify(ref || null);
-const abilityId = e => String(e.ability || e.spell || '').toLowerCase().replace(/[\s']+/g, '_');
+// (a creature's ability comes with its look's name: combat_hooks.fx_key)
+const abilityId = e => String(e.fx || e.ability || e.spell || '').toLowerCase().replace(/[\s']+/g, '_');
+// a creature's wind-up let go, named with its look (servers before fx keep the plain release)
+const released = e => e.k === 'resolve' && !!e.fx;
 
 // whether a wound over time is a poison's (its school, or its name: Knife Poison, Serpent Sting...)
 export const poisonTick = (e, school) => school === 'poison' || /poison|venom|sting|plague|toxin/i.test(String(e.dot || ''));
@@ -57,6 +64,7 @@ export class CombatView {
     this.onWound = onWound;           // (entity) => void: its health changed
     this.onAggro = onAggro;           // (mob id, event) => void: a creature went for the hero
     this.telegraphs = new Map();      // mob id -> telegraph
+    this.charges = new Map();         // mob id -> its wind-up's gathering power (fxdirector.js charge)
     this.impacts = new Map();         // "src>dst" -> {at, crit, n}: when this action's blow lands
     this.director = new Director({ fx, engine, getHero, chest: w => this.chest(w) });
     this.director.onSound = (name, at, opts) => this.sfx(name, at, opts);
@@ -94,8 +102,9 @@ export class CombatView {
     if (who.look) return swingClips(who.look, who.cls, ranged);
     return SWING[String(who.cls || '').toLowerCase()] || SWING.paladin;
   }
-  // what the hero is about to do: the recipe (main.js plays its start on the key press)
-  recipe(id, cls, ev = {}) { return recipeFor(RECIPES, id, cls, ev); }
+  // what the hero is about to do: the recipe (main.js plays its start on the key press); a
+  // creature's own (`src` one: mobfx.js, in its family's marks and its rank's size)
+  recipe(id, cls, ev = {}, src = null) { return src && src.mob ? mobRecipe(id, src, ev) : recipeFor(RECIPES, id, cls, ev); }
 
   // ---- who is who ----
   resolve(ref) {
@@ -113,6 +122,7 @@ export class CombatView {
     if (!who || !other) return;
     const a = who.root.position, b = other.root.position;
     if (who.hero) { const h = this.getHero(); h.ctl.face(b.x, b.z); }
+    else if (who.ent) who.ent.wantYaw = Math.atan2(b.x - a.x, b.z - a.z);      // entities.js turns it there
     else who.root.rotation.y = Math.atan2(b.x - a.x, b.z - a.z);
   }
   play(who, anim, speed = 1) {
@@ -150,13 +160,13 @@ export class CombatView {
     // ability reaches its target (an area's too), so they are found and timed first
     const reached = new Map();
     list.forEach((e, i) => {
-      if (e.k !== 'ability' && e.k !== 'spell') return;
+      if (e.k !== 'ability' && e.k !== 'spell' && !released(e)) return;
       const who = keyOf(e.src), hits = [];
       for (let j = i + 1; j < list.length; j++) {
         const f = list[j];
         if (keyOf(f.src) !== who) continue;
         if (f.k === 'dmg' || f.k === 'heal') { if (f.dst && !hits.some(h => keyOf(h) === keyOf(f.dst))) hits.push(f.dst); continue; }
-        if (['ability', 'spell', 'attack'].includes(f.k)) break;
+        if (['ability', 'spell', 'attack', 'resolve', 'windup'].includes(f.k)) break;
       }
       reached.set(e, hits);
     });
@@ -181,8 +191,8 @@ export class CombatView {
   }
   // how long an ability or spell takes to reach its target (its recipe's timeline)
   landsIn(e) {
-    const src = this.resolve(e.src), dst = this.resolve(e.dst);
-    const r = this.recipe(abilityId(e), src && !src.mob ? src.cls : null, e);
+    const src = this.resolve(e.src), dst = released(e) ? this.releaseAt(e, src) : this.resolve(e.dst);
+    const r = this.recipe(abilityId(e), src && !src.mob ? src.cls : null, e, src);
     const around = String(e.shape || '') === 'self' || String(e.shape || '').startsWith('nova');
     const dist = src && dst && src.root !== dst.root && (!around || r.travel) ? this.chest(src).distanceTo(this.chest(dst)) : 0;
     let t = timeline(r, dist).land;
@@ -224,7 +234,8 @@ export class CombatView {
     this._winced = this._winced || new Map();
     if (!who || now - (this._winced.get(who) || 0) < 1500) return;
     this._winced.set(who, now);
-    if (dst.hero) this.getHero().ctl.swing('Hit_B', true, { speed: 0.9 });
+    if (lying(dst)) { /* a sleeper on the ground stays down */ }
+    else if (dst.hero) this.getHero().ctl.swing('Hit_B', true, { speed: 0.9 });
     else if (dst.actor && !(dst.ent && dst.ent.dying)) dst.actor.once('Hit_A', 0.08, 0.85);
     this.fx.p.emit(p, { count: 7, color: 0x6aa83a, bright: 0.8, speed: 0.55, up: 0.45, life: 1.1, size: 0.38, grow: 0.6, drag: 1.6 });
     this.fx.glyph(p, { glyph: 'bubble', count: 4, color: 0x9cff5a, bright: 1.4, speed: 0.5, up: 0.7, life: 0.9, size: 0.14, drag: 1.2 });
@@ -275,7 +286,7 @@ export class CombatView {
       const bite = dst.hero && MH.state && MH.state.player && MH.state.player.max_hp ? e.amt / MH.state.player.max_hp : 0;
       if (crit || killing || bite > 0.04) this.fx.shake(Math.min(0.42, (killing ? 0.26 : crit ? 0.22 : 0.12) + bite * 1.6), killing ? 0.3 : 0.2);
       if (crit) { const src = this.resolve(e.src); if (src && !src.mob) this.director.react('crit', { ...dst, cls: src.cls }); }
-      if ((crit || killing || bite > 0.15) && this.engine.hitStop) this.engine.hitStop(killing ? 110 : bite > 0.15 ? 80 : 70);
+      if ((crit || killing || bite > 0.15) && this.engine.hitStop && this.fx.opts.shake) this.engine.hitStop(killing ? 110 : bite > 0.15 ? 80 : 70);
       // a second or third blow in the same round gets its own swing
       if (imp && imp.n > 1) { const src = this.resolve(e.src); if (src && !src.hero) this.play(src, '1H_Melee_Attack_Slice_Diagonal', 1.3); }
     };
@@ -291,6 +302,9 @@ export class CombatView {
       case 'windup': return this.windup(e);
       case 'resolve': return this.resolveWindup(e);
       case 'cancel': return this.cancelWindup(e);
+      case 'phase': return this.phase(e);
+      case 'enrage': return this.enrage(e);
+      case 'summon': return this.summon(e);
       case 'hazard': return this.hazard(e);
       case 'gloom': return this.gloom(e);
       case 'death': return this.death(e);
@@ -359,12 +373,15 @@ export class CombatView {
       const crit = e.crit || res === 'crit';
       this.fx.impact(p, school, crit || e.heavy);
       this.fx.flash(dst.root, heroHit ? 0xff2a1a : 0xffe0c0, 0.16);
-      if (dst.actor && !dst.hero && !(dst.ent && dst.ent.dying)) dst.actor.once(Math.random() < 0.5 ? 'Hit_A' : 'Hit_B', 0.05, crit || e.heavy ? 0.85 : 1.2);
-      if (dst.hero) this.getHero().ctl.swing(Math.random() < 0.5 ? 'Hit_A' : 'Hit_B', true);
+      // (one lying asleep does not jerk up to flinch: the blow wakes it, and it gets up, posture.js)
+      if (dst.actor && !dst.hero && !(dst.ent && dst.ent.dying) && !lying(dst)) dst.actor.once(Math.random() < 0.5 ? 'Hit_A' : 'Hit_B', 0.05, crit || e.heavy ? 0.85 : 1.2);
+      if (dst.hero && !lying(dst)) this.getHero().ctl.swing(Math.random() < 0.5 ? 'Hit_A' : 'Hit_B', true);
       // a crit or a heavy blow shoves a creature back (it staggers: the flinch played slower), and
       // the view darts in when it is the hero's crit or a crit on the hero
       if ((crit || e.heavy) && dst.ent && !dst.hero && src && src.root) this.ents.knock(dst.ent, src.root.position, crit ? 0.55 : 0.35);
-      if (crit && ((src && src.hero) || heroHit) && this.engine.punch) this.engine.punch(heroHit ? 1.8 : 1.2);
+      // (and a creature's whole body reels from it, which its one flinch can't show)
+      if ((crit || e.heavy) && dst.mob && !(dst.ent && dst.ent.dying)) { this.director.pose(dst, { pitch: -0.2 }, 0.05); this.fx.after(0.2, () => this.director.pose(dst, {}, 0.3)); }
+      if (crit && ((src && src.hero) || heroHit) && this.engine.punch && this.fx.opts.shake) this.engine.punch(heroHit ? 1.8 : 1.2);
     } else {
       const word = { miss: 'Miss', dodge: 'Dodge', parry: 'Parry', block: 'Block', resist: 'Resist', immune: 'Immune' }[res] || res;
       if (heroHit) this.fx.lane(word, { color: COLORS[res] || COLORS.miss, size: 15 });
@@ -373,6 +390,7 @@ export class CombatView {
       if (res === 'dodge' && dst.actor && !dst.hero) dst.actor.once(Math.random() < 0.5 ? 'Dodge_Left' : 'Dodge_Right', 0.05, 1.4);
       if (res === 'dodge' && dst.hero) this.getHero().ctl.swing(Math.random() < 0.5 ? 'Dodge_Left' : 'Dodge_Right', true);
       if (['dodge', 'parry', 'block'].includes(res) && !dst.mob) this.director.react(res, dst);
+      else if (['dodge', 'parry', 'block'].includes(res) && dst.ent) this.director.creatureReact(res, dst, dst.ent.family);
     }
   }
 
@@ -387,7 +405,7 @@ export class CombatView {
       spot.position.copy(this.toWorld(e.at[0], e.at[1]));
       dst = { root: spot, point: true };
     }
-    const r = this.recipe(abilityId(e), src && !src.mob ? src.cls : null, e);
+    const r = this.recipe(abilityId(e), src && !src.mob ? src.cls : null, e, src);
     // something thrown at nobody in particular goes to the hero's target
     if (!dst && src && src.hero && r.travel && this.ents.targeted && this.ents.targeted.root) {
       const t = this.ents.targeted;
@@ -501,7 +519,9 @@ export class CombatView {
       const dst = this.resolve(e.dst) || this.resolve(e.src);
       if (!dst) return;
       this.sfx('heal', dst);
-      if (!announced) {
+      const src = e.fx && !announced ? this.resolve(e.src) : null;
+      if (src && src.mob) this.director.play(this.recipe(e.fx, null, e, src), { src, dst, e });
+      else if (!announced) {
         this.fx.swirl(dst.root, { school: e.school || 'holy', time: 0.8, count: 2 });
         this.fx.p.emit(this.chest(dst), { count: 10, color: 0x8dffa0, speed: 0.6, up: 1.4, life: 0.8, size: 0.2, drag: 1.2 });
       }
@@ -513,7 +533,11 @@ export class CombatView {
     const dst = this.resolve(e.dst);
     if (!dst) return;
     this.sfx(e.k, dst);
-    this.fx.swirl(dst.root, { school: e.school || (e.k === 'debuff' ? 'shadow' : 'holy'), time: 0.8, count: 2 });
+    // a creature's ward is drawn as its ability; what its hex did was shown as the hex landed
+    // (its wind-up's release), so only the name rises
+    const src = e.fx ? this.resolve(e.src) : null;
+    if (src && src.mob && e.k === 'buff') this.director.play(this.recipe(e.fx, null, e, src), { src, dst, e });
+    else if (!(src && src.mob)) this.fx.swirl(dst.root, { school: e.school || (e.k === 'debuff' ? 'shadow' : 'holy'), time: 0.8, count: 2 });
     if (e.name && dst.hero) this.fx.lane(e.k === 'debuff' ? titleOf(e.name) : `+${titleOf(e.name)}`, { color: e.k === 'debuff' ? '#d8a8ff' : '#fff0b0', size: 14 });
     else if (e.name) this.fx.text(this.chest(dst).setY(dst.root.position.y + 2.4), e.name, { color: e.k === 'debuff' ? '#d8a8ff' : '#fff0b0', size: 13, rise: 0.8 });
   }
@@ -546,13 +570,22 @@ export class CombatView {
       : a.shape === 'cone' || !a.shape ? src.root.position.clone() : (target ? target.root.position.clone() : src.root.position.clone());
     let facing = 0;
     if (target) { const d = target.root.position.clone().sub(src.root.position); facing = Math.atan2(-d.z, d.x); }
-    const t = this.fx.telegraph(center, { shape: a.shape || 'circle', radius: a.r || 2.6, angle: a.angle || Math.PI / 2, facing, time: secs });
+    // the mark says what to do about it: violet, break it (kick, bash, silence); red, get out of
+    // it or brace
+    const t = this.fx.telegraph(center, { shape: a.shape || 'circle', radius: a.r || 2.6, angle: a.angle || Math.PI / 2, facing, time: secs,
+      color: e.interruptible ? 0xa45aff : 0xff3a28 });
     this.sfx('windup', src);
     if (!a.x && (a.shape === 'circle' || !a.shape)) t.follow = src.root;
     const key = e.src && e.src.m != null ? `m${e.src.m}` : 'x';
     if (this.telegraphs.get(key)) this.telegraphs.get(key).cancel();
     this.telegraphs.set(key, t);
-    if (src.actor) src.actor.once(src.mob ? 'Block' : 'Spellcast_Long', 0.1, 0.8);
+    // its body tells you what is coming and what it gathers builds until it lets go (its
+    // ability's recipe: mobfx-hand.js)
+    if (this.charges.get(key)) this.charges.get(key).release();
+    if (src.mob) {
+      const h = this.director.charge(this.recipe(abilityId(e), null, e, src), src, target, secs, e);
+      if (h) this.charges.set(key, h);
+    } else if (src.actor) src.actor.once('Spellcast_Long', 0.1, 0.8);
     this.fx.text(this.chest(src).setY(src.root.position.y + 2.6), e.label || 'Winding up!', { color: '#ff8a5a', size: 14, rise: 0.5, life: Math.min(1.6, secs), exact: true });
     // the cues (combatcues.js): step out if you stand where it will land
     if (this.onTelegraph) this.onTelegraph(key, { center: a.x != null ? center : null, follow: t.follow || null, shape: a.shape || 'circle',
@@ -564,6 +597,9 @@ export class CombatView {
     if (t) { t.cancel(); this.telegraphs.delete(key); }
     if (this.onTelegraphEnd) this.onTelegraphEnd(key, 'landed');
     const src = this.resolve(e.src);
+    const h = this.charges.get(key);
+    if (h) { h.release(); this.charges.delete(key); }
+    if (released(e) && src) return this.release(e, src);
     const a = e.area || {};
     // the blow lands on the ground it marked (a heavy blow or a spell where you stood)
     const at = a.x != null ? this.toWorld(a.x, a.z) : src ? src.root.position.clone() : null;
@@ -581,6 +617,38 @@ export class CombatView {
     for (const h of e.hits || []) { const d = this.resolve(h.dst); if (d) this.land(h, src, d, e.school || 'physical'); }
     if (e.dodged) for (const ref of e.dodged) { const d = this.resolve(ref); if (d) this.fx.text(this.chest(d), 'Evaded!', { color: '#a8ffd0', size: 16 }); }
   }
+  // where a creature's wind-up goes when it lets go: the ground it marked (a spot it threw at),
+  // around itself (a sweep, a roar), else whom it was aimed at
+  releaseAt(e, src) {
+    const a = e.area || {};
+    if (a.x != null) {
+      const spot = new THREE.Object3D();
+      spot.position.copy(this.toWorld(a.x, a.z));
+      return { root: spot, point: true };
+    }
+    if (e.kind === 'aoe' || (a.shape === 'circle' && !e.dst)) return null;
+    return this.resolve(e.dst);
+  }
+  // a creature's wind-up lets go (mob_ai intents with their `fx`): its recipe's release, flight and
+  // landing, the target flinching (or the ground empty where they stood), the numbers rising when
+  // it arrives (handle() paired its wounds with it)
+  release(e, src) {
+    const a = e.area || {};
+    const dst = this.releaseAt(e, src);
+    const ev = dst ? e : { ...e, shape: `nova:${a.r || 3}` };
+    const r = this.recipe(abilityId(e), null, ev, src);
+    const school = r.school || e.school || 'physical';
+    // whoever stepped out of the mark isn't struck: their wounds never came
+    const dodged = new Set((e.dodged || []).map(keyOf));
+    const refs = [...(dst && !dst.point ? [e.dst] : []), ...(e._hits || [])].filter(ref => ref && !dodged.has(keyOf(ref)));
+    const struck = [...new Map(refs.map(ref => [keyOf(ref), this.resolve(ref)])).values()].filter(w => w && w.root && w.root !== src.root);
+    const landAll = () => {
+      if (!r.flags.has('ally')) for (const w of struck) this.land({ ...e, res: 'hit', heavy: r.flags.has('heavy') || e.kind === 'heavy' }, src, w, school);
+      for (const ref of e.dodged || []) { const d = this.resolve(ref); if (d) this.fx.text(this.chest(d), 'Evaded!', { color: '#a8ffd0', size: 16 }); }
+    };
+    this.director.play(r, { src, dst: dst || src, hits: struck.filter(w => !dst || w.root !== dst.root), e: ev, onLand: landAll });
+  }
+
   // a wind-up broken before it landed (staggered, kicked, snared, killed, the fight over)
   cancelWindup(e) {
     const key = e.src && e.src.m != null ? `m${e.src.m}` : 'x';
@@ -588,6 +656,11 @@ export class CombatView {
     if (t) { t.fade(); this.telegraphs.delete(key); }
     if (this.onTelegraphEnd) this.onTelegraphEnd(key, e.reason);
     const src = this.resolve(e.src);
+    // what it gathered: gone quietly when it died or the fight ended, burst apart when broken
+    const h = this.charges.get(key);
+    this.charges.delete(key);
+    if (h && (!src || e.reason === 'death' || e.reason === 'end')) h.release();
+    else if (h) this.director.collapse(h, e.reason);
     if (!src || e.reason === 'death' || e.reason === 'end') return;
     // a foe knocked off its stride is open: the cues call for the strike
     if (e.reason === 'stagger' && this.onOpening) this.onOpening(src);
@@ -596,8 +669,151 @@ export class CombatView {
     this.sfx('cancel', src);
     const word = { stagger: 'Staggered!', snare: 'Snared!' }[e.reason] || 'Interrupted!';
     this.fx.text(p.clone().setY(src.root.position.y + 2.6), word, { color: '#ffe066', size: 15, rise: 0.6 });
-    if (src.actor && !(src.ent && src.ent.dying)) src.actor.once(Math.random() < 0.5 ? 'Hit_A' : 'Hit_B', 0.05, 1.0);
+    if (src.actor && !(src.ent && src.ent.dying) && !lying(src)) src.actor.once(Math.random() < 0.5 ? 'Hit_A' : 'Hit_B', 0.05, 1.0);
   }
+  // ---- a boss's moments (bosses.py) ----
+  // a new phase: it roars, the ground breaks under it, the view jolts and washes red, and what the
+  // phase says hangs over it
+  phase(e) {
+    const src = this.resolve(e.src);
+    if (!src) return;
+    const at = src.root.position.clone().setY(0);
+    if (src.actor) src.actor.once('Taunt', 0.1, 0.8);
+    this.director.pose(src, { pitch: -0.3 }, 0.15);
+    this.fx.after(0.45, () => this.director.pose(src, {}, 0.4));
+    this.sfx('resolve', at, { school: 'physical' });
+    this.fx.decal(at, { sigil: 'crack', radius: 4.2, time: 3.2, dark: true, opacity: 0.8, spin: 0, grow: 0.6 });
+    for (let i = 0; i < 3; i++) this.fx.after(i * 0.16, () => this.fx.shockwave(at, { color: 0xff3a1a, radius: 5 + i * 1.5, time: 0.6 }));
+    this.fx.p.emit(at.clone().setY(0.3), { count: 40, color: 0xb8a888, speed: 4.5, up: 1.6, life: 0.9, size: 0.55, grow: 0.5, drag: 2 });
+    this.fx.shake(0.4, 0.55);
+    this.fx.screen('#ff3a1a', { time: 0.6, opacity: 0.22 });
+    if (this.engine.punch) this.engine.punch(1.6);
+    if (this.engine.hitStop) this.engine.hitStop(120);
+    const words = e.label || `Phase ${(e.n || 1) + 1}`;
+    this.fx.text(this.chest(src).setY(src.root.position.y + (src.ent && src.ent.plateY ? src.ent.plateY : 2.6) + 0.6), words,
+      { color: '#ff7a4a', size: 20, rise: 0.4, life: 2.6, exact: true });
+  }
+  // enraged until it falls: a roar, a red ring, then it smoulders and sheds embers for good
+  enrage(e) {
+    const src = this.resolve(e.src);
+    if (!src || !src.ent) return;
+    if (src.actor) src.actor.once('Taunt', 0.1, 0.9);
+    this.fx.shockwave(src.root.position.clone().setY(0), { color: 0xff2a0a, radius: 4, time: 0.5 });
+    this.fx.text(this.chest(src).setY(src.root.position.y + (src.ent.plateY || 2.6) + 0.5), 'Enraged!', { color: '#ff4a2a', size: 18, rise: 0.5, life: 1.8 });
+    if (src.ent.enraged) return;
+    src.ent.enraged = true;
+    let glowAt = 0;
+    this.fx.add({ update: dt => {
+      const ent = src.ent;
+      if (!ent.root || !ent.root.parent || ent.dying || ent.alive === false) return false;
+      if ((glowAt -= dt) <= 0) { glowAt = 0.9; this.fx.tint(ent.root, 0xff3a1a, { time: 0.9, strength: 0.3, hold: 0.3 }); }
+      if (Math.random() < dt * 14) {
+        const a = Math.random() * Math.PI * 2, p = ent.root.position;
+        this.fx.p.emit(new THREE.Vector3(p.x + Math.cos(a) * 0.6, p.y + 0.3 + Math.random() * 1.2, p.z + Math.sin(a) * 0.6),
+          { count: 1, color: 0xff5a1a, bright: 1.5, speed: 0.2, up: 1.6, life: 0.7, size: 0.16, drag: 0.5 });
+      }
+      return true;
+    } });
+  }
+  // a boss calls for help: it calls them up, and each rises out of the ground where it appears
+  // (the grave's dead in bone, anything else out of smoke); they come with the room's next roster,
+  // so each is waited for a moment
+  summon(e) {
+    const src = this.resolve(e.src);
+    if (src && src.actor) src.actor.once('Spellcast_Summon', 0.1, 0.9);
+    const color = this.colorOf(e.school || 'shadow'), dead = e.school === 'necrotic';
+    (e.adds || []).forEach((ref, i) => {
+      let tries = 0, done = false;
+      this.fx.every(0.1, 30, () => {
+        if (done) return;
+        const w = this.resolve(ref);
+        if (!w && ++tries < 30) return;
+        done = true;
+        if (!w) return;
+        const at = w.root.position.clone().setY(0);
+        this.fx.after(i * 0.12, () => {
+          this.fx.decal(at, { sigil: dead ? 'boneCircle' : 'ring', radius: 1.4, time: 1.6, color, spin: 1.2 });
+          if (dead) this.fx.growth(at, { kind: 'bones', count: 7, radius: 0.9, height: 1.1, time: 1.2, color: 0xe8e2cc, glow: 0.1 });
+          else this.fx.p.emit(at.clone().setY(0.6), { count: 30, color: 0x3a3044, speed: 1.4, up: 0.8, life: 1.0, size: 0.7, grow: 0.8, drag: 1.6 });
+          this.fx.pillar(at, { color, radius: 0.7, time: 0.6 });
+          // up out of the ground
+          const root = w.root, base = root.scale.clone();
+          let t = 0;
+          this.fx.add({ update: dt => {
+            t = Math.min(1, t + dt / 0.6);
+            const k = 1 - Math.pow(1 - t, 3);
+            root.scale.set(base.x * (0.3 + 0.7 * k), base.y * k, base.z * (0.3 + 0.7 * k));
+            return t < 1;
+          }, dispose: () => root.scale.copy(base) });
+        });
+      });
+    });
+  }
+
+  // a creature brought in by the room itself (a lair: lairs.py sends {type: 'mob_move', action:
+  // 'arrive', dir: 'up', name}): it drops in from above; and one that arrives where another came
+  // in a moment before takes its place (the bat that becomes the vampire lord): the first bursts
+  // into smoke and crimson wisps, and the second rises out of it. The message names the creature,
+  // so it is found by name once the room's roster brings it (a few tenths of a second)
+  arrive(m) {
+    if (!m || m.action !== 'arrive') return;
+    const key = s => String(s || '').toLowerCase().replace(/^(a|an|the|some)\s+/, '').trim();
+    const want = key(m.name);
+    // (a lair's master follows its herald in a couple of seconds: lairs.py TURN_DELAY)
+    this.arrivals = (this.arrivals || []).filter(a => performance.now() - a.at < 8000);
+    let tries = 0, found = null;
+    this.fx.every(0.1, 30, () => {
+      if (found || ++tries > 30) return;
+      for (const ent of this.ents.list.values()) {
+        if (ent.kind !== 'mob' || !ent.root || ent._arrived || !ent.data) continue;
+        if (key(ent.data.name) === want || key(ent.data.short) === want) { found = ent; break; }
+      }
+      if (!found) return;
+      found._arrived = true;
+      const before = this.arrivals.find(a => a.ent !== found);
+      this.arrivals.push({ ent: found, at: performance.now(), pos: found.root.position.clone() });
+      if (before) this.transform(before, found);
+      else this.dropIn(found);
+    });
+  }
+  // out of the sky: from high above down to where it stands, dust and a rush of air as it lands
+  dropIn(ent) {
+    const root = ent.root, h = 7, T = 0.9;
+    let t = 0;
+    const set = y => { if (ent.fly) ent.lift = y; else root.position.y = y; };
+    set(h);
+    this.fx.add({ update: dt => {
+      t = Math.min(1, t + dt / T);
+      set(h * Math.pow(1 - t, 2));
+      if (Math.random() < dt * 30) this.fx.p.emit(root.position.clone().setY(root.position.y + 0.8), { count: 1, color: 0x3a3044, speed: 0.4, up: 0.6, life: 0.6, size: 0.4, grow: 0.4, drag: 1.5 });
+      return t < 1;
+    }, dispose: () => {
+      set(0);
+      const at = root.position.clone().setY(0);
+      this.fx.shockwave(at, { color: 0xd8c8a0, radius: 2.6, time: 0.4 });
+      this.fx.p.emit(at.clone().setY(0.2), { count: 24, color: 0xb8a888, speed: 3, up: 0.6, life: 0.7, size: 0.5, grow: 0.5, drag: 2 });
+    } });
+  }
+  // `was` (an arrival a moment ago) becomes `ent`: gone in smoke, and it rises where it was
+  transform(was, ent) {
+    const at = (was.ent.root ? was.ent.root.position : was.pos).clone().setY(0), fx = this.fx;
+    if (was.ent.root) fx.fade(was.ent.root, { time: 0.6, opacity: 0, inT: 0.1, outT: 0.4 });
+    fx.p.emit(at.clone().setY(1.2), { count: 60, color: 0x1a1020, speed: 2.6, up: 0.9, life: 1.4, size: 0.8, grow: 0.9, drag: 1.4, jitter: 0.8 });
+    fx.glyph(at.clone().setY(1.2), { glyph: 'wisp', count: 18, color: 0xc0203a, speed: 2.8, up: 1.6, life: 1.1, size: 0.42, drag: 1.6, spin: 5 });
+    fx.decal(at, { sigil: 'ring', radius: 2.2, time: 2, color: 0xc0203a, spin: 1.5 });
+    fx.shockwave(at, { color: 0xc0203a, radius: 4, time: 0.55 });
+    fx.light(at.clone().setY(1.2), 0xc0203a, 8, 0.5);
+    fx.shake(0.22, 0.35);
+    this.sfx('resolve', at, { school: 'shadow' });
+    // the new one where the old one was, rising out of the smoke from a crouch
+    if (ent.root) {
+      ent.root.position.x = at.x; ent.root.position.z = at.z;
+      const who = { root: ent.root, actor: ent.actor, ent, mob: true };
+      this.director.pose(who, { squash: 0.3 }, 0.01);
+      fx.after(0.35, () => { this.director.pose(who, {}, 0.6); fx.flash(ent.root, 0xc0203a, 0.5); if (ent.actor) ent.actor.once('Taunt', 0.15, 0.8); });
+    }
+  }
+
   // a lasting danger on the ground (a boss's plague pool: boss_mechanics.py): marked for as long as
   // it lasts, with the STEP OUT cue while you stand in it
   hazard(e) {

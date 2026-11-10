@@ -709,6 +709,14 @@ class World:
             population.apply(self)
         except Exception as e:
             logger.error(f"population failed: {e}")
+        # zones lifted to their region's levels (world/zone_levels.json: the Frostmarch)
+        try:
+            import regions
+            lifted = regions.relevel(self)
+            if lifted:
+                logger.info(f"zone levels: {lifted}")
+        except Exception as e:
+            logger.error(f"zone levels failed: {e}")
         # secret ways hidden until found (zone_hazards.py: Shadowspire's mirror door and library)
         try:
             import zone_hazards
@@ -771,6 +779,14 @@ class World:
             pass
         
         # Reset zones (spawn mobs and objects)
+        # words of another author's world, said otherwise (world/words.json), before anything spawns
+        try:
+            import regions
+            n = regions.apply_words(self)
+            if n:
+                logger.info(f"words: {n} strings")
+        except Exception as e:
+            logger.error(f"words failed: {e}")
         await self.reset_all_zones()
 
         # Spawn faction NPCs
@@ -892,6 +908,13 @@ class World:
                 data = json.load(f)
                 
             zone = Zone.from_dict(data)
+            # (what it is called in play: world/zone_names.json; its file's own name is kept beside it)
+            try:
+                import regions
+                zone.file_name = zone.name
+                zone.name = regions.zone_name(zone.number, zone.name)
+            except Exception:
+                pass
             self.zones[zone.number] = zone
             
             # Add rooms to global lookup
@@ -1130,10 +1153,20 @@ class World:
         be there; else (a private trial closed while they were away, the God Rooms, a land sealed
         until built) their recall room, or the temple."""
         room = self.get_room(getattr(player, 'room_vnum', None) or self.config.STARTING_ROOM)
-        if room is None or not room.admits(player):
+        if room is None or not room.admits(player) or self.login_unsafe(player, room):
             room = (player.recall_room() if hasattr(player, 'recall_room') else None) \
                 or self.get_room(self.config.STARTING_ROOM)
         return room
+
+    @staticmethod
+    def login_unsafe(player, room) -> bool:
+        """Whether a player should not wake where they left: under three tenths of their health in a
+        room that is not peaceful (they wake at the temple instead). A hero saved at -7 hp among the
+        creatures that had them there was hunted down again as they logged in."""
+        top = getattr(player, 'max_hp', 0) or 0
+        if not top or 'peaceful' in (getattr(room, 'flags', None) or ()):
+            return False
+        return (getattr(player, 'hp', top) or 0) < top * 0.3
         
     async def add_player(self, player: 'Player'):
         """Add a player to the world."""
@@ -1428,6 +1461,13 @@ class World:
                 for player in self.players.values():
                     await msgkind.send_ui(player, f"\r\n{c['yellow']}{announcement}{c['reset']}\r\n")
                 logger.info(f"Time: {self.game_time.get_time_string()}")
+            # at dusk the Temple's bells ring over the Lantern Vale (regions.dusk_bells)
+            if self.game_time.hour == 18:
+                try:
+                    import regions
+                    await regions.dusk_bells(self)
+                except Exception:
+                    logger.exception('dusk bells')
             await web_hud.push_sky(self)
 
             # Process NPC schedules (shopkeepers open/close, etc.)

@@ -66,6 +66,10 @@ call them. The brain calls back through `mob_ai.<name>`, so those wrappers stay 
 The brain's dice are a `random.Random` of its own. It never draws on the world's `random`, so the
 balance sims still replay exactly.
 
+How what a creature decides looks in /play (its wind-up's tell and charge, the release, a broken
+cast bursting apart) is in docs/COMBAT.md, "Creatures cast as heroes do". combat_hooks only reads
+what changed for that, so it never moves the sims.
+
 ## Phases
 
 Each phase ships as its own pull request, behind its flag in `world/ai_profiles.json` `features`.

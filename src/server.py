@@ -7,6 +7,7 @@ Handles network connections and player sessions.
 import msgkind
 import quest_guide
 import asyncio
+import ipaddress
 import logging
 import re
 import textwrap
@@ -75,8 +76,17 @@ _CONTROL_CHARS = re.compile(r'[\x00-\x08\x0b-\x1f\x7f]')
 # the web bridge's first line (web_client.py): its page lays text out itself, so the
 # connection's messages are not hard-wrapped at 80 columns as a telnet terminal's are
 WEB_MARK = b'\x1b]WEB\x07'
+# ...or with the browser's own address, which the game counts sign-ups and email codes by
+# (`\x1b]WEB:203.0.113.5\x07`)
+WEB_MARK_RE = re.compile(rb'\x1b\]WEB(?::([0-9A-Fa-f.:]{2,45}))?\x07')
 
 logger = logging.getLogger('Misthollow.Server')
+
+# new names being made right now (lower case -> the Connection making it). A name is checked
+# when it is typed but saved only after race, class and stats: the hold turns a second
+# connection away at once, rather than after it has chosen everything
+_naming = {}
+
 
 class Connection:
     """Represents a single client connection."""
@@ -99,7 +109,9 @@ class Connection:
     STATE_GET_SEX = 17
     STATE_GET_STYLE = 18
     STATE_CLAIM_PASSWORD = 19
-    
+    STATE_GET_EMAIL = 20                # a sign-up's email (when emails are verified)
+    STATE_VERIFY_CODE = 21              # the code mailed to it
+
     def __init__(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter, server):
         self.reader = reader
         self.writer = writer
@@ -126,9 +138,17 @@ class Connection:
         self.account = None
         self.temp_account_name = None
         self.play_after = None          # a character asked for by name, opened via its account
+        self.held_name = None           # the new name this connection is making (_naming)
+        self.new_account_only = False   # `newaccount`: the password makes an account, no hero
+        self.temp_email = ''            # ...signing in by this email too
+        self.code = None                # the email code asked for (security.new_code), and what for:
+        self.code_for = ''              # 'signup', 'newaccount' or 'email' (a menu's new email)
         self.login_failures = 0         # wrong passwords on this connection (security.py)
         self.forgot_sent = False
         self.is_web = False             # the web bridge announced itself (WEB_MARK): no hard wrap
+        # where the player is: this connection's own address, or the browser's one the web
+        # bridge passes on (believed only from this machine: web_client.py)
+        self.client_ip = self.address[0] if self.address else ''
         
         logger.info(f"New connection from {self.address}")
         
@@ -262,7 +282,11 @@ class Connection:
             await self.handle_confirm_password(line)
         elif self.state == self.STATE_CONFIRM_DELETE:
             await self.handle_confirm_delete(line)
-            
+        elif self.state == self.STATE_GET_EMAIL:
+            await self.handle_signup_email(line)
+        elif self.state == self.STATE_VERIFY_CODE:
+            await self.handle_verify_code(line)
+
     async def handle_name(self, name: str):
         """Handle name/account entry."""
         if not name:
@@ -273,8 +297,43 @@ class Connection:
         if name.lower().startswith('resume '):
             await self.handle_resume(name.split())
             return
-            
-        from accounts import AccountManager, name_problem, name_taken
+
+        from accounts import AccountManager, name_problem, name_taken, email_problem, verification_on
+        # `newaccount <name> [<email>]`: an account with no character yet (/play's Create
+        # account), signing in by its email too; its menu's create makes the heroes, of any free
+        # names. When the server can send mail, the email is needed and proves itself with a code.
+        if name.lower().startswith('newaccount '):
+            parts = name.split()
+            want, email = parts[1], (parts[2] if len(parts) > 2 else '')
+            # (held last: a refusal for anything else leaves the name free)
+            why = (name_problem(want) or ("That name is already taken." if name_taken(want) else '')
+                   or (email_problem(email) if email else '') or ('Usage: newaccount <name> [<email>]' if len(parts) > 3 else '')
+                   or ("An email is needed: newaccount <name> <email>. A code will be sent to it."
+                       if not email and verification_on() else '')
+                   or ("That name is already taken." if not self._hold_name(want) else ''))
+            if why:
+                await self.send(why)
+                await self.send("Enter account name (or character name): ")
+                return
+            self.temp_account_name = want.lower()
+            self.temp_email = email
+            self.temp_name = None
+            self.new_account_only = True
+            await self.send(f"Choose a password for the account {want.capitalize()}: ")
+            self.state = self.STATE_GET_PASSWORD
+            return
+        # an email: the account that signs in by it
+        if '@' in name:
+            account = AccountManager.find_by_email(name)
+            if account is None:
+                await self.send(f"No account uses the email {name}.")
+                await self.send("Enter account name (or character name): ")
+                return
+            self.temp_account_name = account.account_name
+            self.play_after = self.login_alt = None
+            await self.send("Account password: ")
+            self.state = self.STATE_ACCOUNT_PASSWORD
+            return
         why = name_problem(name)
         if why:
             await self.send(why)
@@ -306,6 +365,10 @@ class Connection:
             return
         
         # A new name: a new account, and its first character of the same name
+        if not self._hold_name(name_lower):
+            await self.send(f"'{name_cap}' is already taken: someone is making it right now.")
+            await self.send("Enter account name (or character name): ")
+            return
         self.temp_account_name = name_lower
         self.temp_name = name_cap
         await self.send(f"'{name_cap}' is a new name. Create account? (Y/N) ")
@@ -317,10 +380,28 @@ class Connection:
             await self.send("Choose a password: ")
             self.state = self.STATE_GET_PASSWORD
         else:
+            self._let_name_go()
             self.temp_name = self.temp_account_name = None
             await self.send("What name shall you be known by? ")
             self.state = self.STATE_GET_NAME
-            
+
+    def _hold_name(self, name: str) -> bool:
+        """Hold a new name while this connection makes it (False: another connection is)."""
+        key = name.lower()
+        holder = _naming.get(key)
+        if (holder is not None and holder is not self and not getattr(holder, '_disconnected', False)
+                and not holder.writer.is_closing()):
+            return False
+        self._let_name_go()
+        _naming[key] = self
+        self.held_name = key
+        return True
+
+    def _let_name_go(self):
+        if self.held_name and _naming.get(self.held_name) is self:
+            del _naming[self.held_name]
+        self.held_name = None
+
     async def handle_password(self, password: str):
         """The new account's password (a sign-up: the account and its first character are
         made together when the character is finished)."""
@@ -337,14 +418,113 @@ class Connection:
         self.state = self.STATE_CONFIRM_PASSWORD
             
     async def handle_confirm_new_char_password(self, password: str):
-        """Confirm new character password."""
-        if password == self.temp_password:
-            await self.show_race_menu()
-            self.state = self.STATE_GET_RACE
-        else:
+        """Confirm new character password. When the server can send mail, the email proves
+        itself with a code before anything is made (the sign-up's email is asked for here;
+        `newaccount` brought its own)."""
+        if password != self.temp_password:
             await self.send("Passwords don't match. Enter password: ")
             self.temp_password = None
             self.state = self.STATE_GET_PASSWORD
+            return
+        from accounts import verification_on
+        if verification_on():
+            if self.new_account_only:
+                await self._mail_signup_code()
+            else:
+                await self.send("Your email (a code will be sent to it, and you can sign in by it): ")
+                self.state = self.STATE_GET_EMAIL
+            return
+        await self._signup_settled()
+
+    async def _signup_settled(self):
+        """A sign-up's password (and email) settled: `newaccount`'s account alone, then its
+        menu; or the sign-up's first hero, race first."""
+        if not self.new_account_only:
+            await self.show_race_menu()
+            self.state = self.STATE_GET_RACE
+            return
+        from accounts import AccountManager
+        self.new_account_only = False
+        account, why = await AccountManager.create_account(self.temp_account_name, self.temp_password, self.temp_email)
+        self.temp_email = ''
+        self.temp_password = None
+        self._let_name_go()
+        if account is None:
+            self.temp_account_name = None
+            await self.send(f"{why} The account was not made.")
+            await self.send("Enter account name (or character name): ")
+            self.state = self.STATE_GET_NAME
+            return
+        self.account = account
+        await self.send(f"Account {account.account_name} made.")
+        await self.show_character_menu()
+
+    async def handle_signup_email(self, email: str):
+        """The sign-up's email (nothing typed: start over)."""
+        from accounts import email_problem
+        if not email:
+            await self._abandon_signup("Sign-up stopped: nothing was made.")
+            return
+        why = email_problem(email)
+        if why:
+            await self.send(f"{why} Your email: ")
+            return
+        self.temp_email = email.strip()
+        await self._mail_signup_code()
+
+    async def _mail_code(self, email: str, purpose: str) -> str:
+        """Mail a code to `email`, kept for `purpose` ('signup', 'newaccount', 'email'): '' when
+        it went, else why not (too many lately, or the mail failed)."""
+        import security
+        from accounts import send_code
+        why = security.code_send_allowed(email, self.client_ip)
+        if why:
+            return why
+        code, kept = security.new_code()
+        if not await asyncio.to_thread(send_code, email, code):
+            return f"A code couldn't be sent to {email}. Check the address, or try again later."
+        self.code, self.code_for = kept, purpose
+        logger.info(f"Email code sent for {purpose} ({self.temp_account_name or (self.account and self.account.account_name)}) from {self.client_ip}")
+        return ''
+
+    async def _mail_signup_code(self):
+        why = await self._mail_code(self.temp_email, 'newaccount' if self.new_account_only else 'signup')
+        if why:
+            await self._abandon_signup(f"{why} Nothing was made.")
+            return
+        await self.send(f"A code has been sent to {self.temp_email}. Enter the 6-digit code "
+                        f"('resend' for another, or nothing to start over): ")
+        self.state = self.STATE_VERIFY_CODE
+
+    async def handle_verify_code(self, line: str):
+        """The code mailed for a sign-up: right, it goes on; wrong, it asks again (five tries)."""
+        import security
+        if not line:
+            await self._abandon_signup("Sign-up stopped: nothing was made.")
+            return
+        if line.lower() == 'resend':
+            await self._mail_signup_code()
+            return
+        result = security.check_code(self.code, line)
+        if result == 'ok':
+            self.code = None
+            await self._signup_settled()
+        elif result == 'wrong':
+            await self.send("That code isn't right. Enter the 6-digit code: ")
+        elif result == 'expired':
+            await self.send("That code has expired. Type 'resend' for a new one: ")
+        else:
+            await self._abandon_signup("Too many wrong codes: nothing was made. Start again.")
+
+    async def _abandon_signup(self, why: str):
+        """A sign-up given up: nothing of it is kept, and the name prompt comes back."""
+        self.temp_password = self.temp_name = self.temp_account_name = self.code = None
+        self.temp_email = ''
+        self.new_account_only = False
+        self._let_name_go()
+        await self.send(why)
+        await self.send("Enter account name (or character name): ")
+        self.state = self.STATE_GET_NAME
             
     async def show_race_menu(self):
         """Display race selection menu."""
@@ -441,27 +621,43 @@ class Connection:
             
         self.temp_class = char_class
         self.temp_style = ''
-        if char_class == 'mage':
+        from player import looks_for, LOOK_ASKED
+        if char_class in LOOK_ASKED and looks_for(char_class):
             await self.show_style_menu()
             self.state = self.STATE_GET_STYLE
             return
         await self.show_stats()
         self.state = self.STATE_ROLLING_STATS
 
+    def _style_choices(self):
+        """The looks the chosen class may take: ['classic', 'archmage'] for a mage, ['classic',
+        'warden'] for a warrior (player.py LOOK_STYLES)."""
+        from player import looks_for
+        return ['classic'] + looks_for(self.temp_class)
+
     async def show_style_menu(self):
-        """A mage chooses their look in the 3D world: the classic mage, or the archmage (a tall hat,
-        a long white beard, a robe to the ankles and a moon staff). 'appearance' changes it later."""
+        """A class with a choice of look in the 3D world picks one: its own ('classic'), or the
+        other (a mage's archmage, a warrior's warden). 'appearance' changes it later. The question
+        is always "Which look, classic or <other>?": the 3D client's wizard answers the same one."""
+        from player import LOOK_WORDS
         c = self.config.COLORS
-        await self.send(f"\r\n {c['bright_yellow']}1){c['reset']} {c['bright_green']}classic{c['reset']}   {c['white']}the young mage in a travelling coat{c['reset']}")
-        await self.send(f" {c['bright_yellow']}2){c['reset']} {c['bright_green']}archmage{c['reset']}  {c['white']}a tall hat, a long white beard, a robe to the ankles{c['reset']}")
-        await self.send(f"\r\n{c['white']}Which look, classic or archmage? {c['reset']}")
+        names = self._style_choices()
+        words = LOOK_WORDS.get(self.temp_class, {})
+        await self.send('')
+        for i, name in enumerate(names, 1):
+            await self.send(f" {c['bright_yellow']}{i}){c['reset']} {c['bright_green']}{name:<9}{c['reset']} {c['white']}{words.get(name, '')}{c['reset']}")
+        await self.send(f"\r\n{c['white']}Which look, {' or '.join(names)}? {c['reset']}")
 
     async def handle_style(self, answer: str):
         a = answer.strip().lower()
-        style = {'1': '', 'classic': '', 'c': '', '2': 'archmage', 'archmage': 'archmage', 'a': 'archmage'}.get(a)
+        names = self._style_choices()
+        style = None
+        for i, name in enumerate(names, 1):
+            if a in (str(i), name, name[0]):
+                style = '' if name == 'classic' else name
         if style is None:
-            await self.send("Please choose classic or archmage (1 or 2).")
-            await self.send("Which look, classic or archmage? ")
+            await self.send(f"Please choose {' or '.join(names)} (1 to {len(names)}).")
+            await self.send(f"Which look, {' or '.join(names)}? ")
             return
         self.temp_style = style
         await self.show_stats()
@@ -508,8 +704,11 @@ class Connection:
         if self.account:
             self.player, why = await AccountManager.create_character(self.account, self.temp_name, **char)
         else:
-            self.account, self.player, why = await AccountManager.sign_up(self.temp_account_name, self.temp_password or '', **char)
+            self.account, self.player, why = await AccountManager.sign_up(self.temp_account_name, self.temp_password or '',
+                                                                          email=self.temp_email, **char)
         self.temp_password = None
+        self.temp_email = ''
+        self._let_name_go()
         if self.player is None:
             # the name was taken while the character was being made
             await self.send(f"{why} Your character was not made.")
@@ -552,7 +751,10 @@ class Connection:
         await self.send(f"\r\n{c['bright_cyan']}══════════════════════════════════════════════════════════════{c['reset']}")
         await self.send(f"{c['bright_yellow']}  Welcome to Misthollow, {self.player.name}!{c['reset']}")
         await self.send(f"{c['white']}  A world of quests, combat, crafting, and adventure awaits.{c['reset']}")
-        await self.send(f"{c['white']}  Type {c['bright_green']}help newbie{c['white']} for a new player guide, or {c['bright_green']}hint{c['white']} for tips.{c['reset']}")
+        if self.is_web:       # /play: keys and windows, not a command line
+            await self.send(f"{c['white']}  Press {c['bright_green']}H{c['white']} for help. The tracker on the right shows your next step.{c['reset']}")
+        else:
+            await self.send(f"{c['white']}  Type {c['bright_green']}help newbie{c['white']} for a new player guide, or {c['bright_green']}hint{c['white']} for tips.{c['reset']}")
         await self.send(f"{c['bright_cyan']}══════════════════════════════════════════════════════════════{c['reset']}\r\n")
 
         # Process rent charges from previous session
@@ -774,9 +976,10 @@ class Connection:
         
         if self.account:
             security.succeeded(self.temp_account_name)
-            # asked for one of its characters by name: straight in
+            # asked for one of its characters by name: straight in (a web page always shows the
+            # account's heroes: one login, every hero)
             wanted, self.play_after = self.play_after, None
-            if wanted and wanted in self.account.characters:
+            if wanted and wanted in self.account.characters and not self.is_web:
                 from player import Player
                 self.player = Player.load(wanted, self.world)
                 if self.player:
@@ -856,8 +1059,9 @@ class Connection:
         except (ConnectionResetError, BrokenPipeError, ConnectionAbortedError, OSError):
             pass
     
-    async def show_character_menu(self):
-        """Display character selection menu."""
+    async def show_character_menu(self, note: str = '', bad: bool = False):
+        """Display character selection menu (note: what the last command did, which a web page
+        shows over its list; bad: it was refused)."""
         c = self.config.COLORS
         from accounts import AccountManager
         
@@ -874,6 +1078,8 @@ class Connection:
         await self.send(f"  {c['bright_green']}practice <name>{c['reset']}             - Show character skills")
         await self.send(f"  {c['bright_green']}move <name> <up|down> [n]{c['reset']}   - Reorder character list")
         await self.send(f"  {c['bright_green']}password{c['reset']}                    - Change account password")
+        await self.send(f"  {c['bright_green']}email <address>{c['reset']}             - Sign in by this email (and get password resets)")
+        await self.send(f"  {c['bright_green']}verify <code>{c['reset']}               - The code mailed for a new email")
         await self.send(f"  {c['bright_green']}delete <name>{c['reset']}               - Delete a character")
         await self.send(f"  {c['bright_green']}claim <name>{c['reset']}                - Move in a character from another account of yours")
         await self.send(f"  {c['bright_green']}time{c['reset']}                        - Display game time")
@@ -889,9 +1095,18 @@ class Connection:
                 await self.send(f"  {c['bright_green']}{i}) {info['name']:<12}{c['white']} Lvl {info['level']:<3} {info['class']:<12}{c['reset']}")
         else:
             await self.send(f"\r\n{c['yellow']}You have no characters yet. Type 'create' to make one!{c['reset']}")
-        
+
         await self.send(f"\r\n{c['bright_cyan']}════════════════════════════════════════════════════════════{c['reset']}")
         self.state = self.STATE_SELECT_CHAR
+        if self.is_web:
+            # the page draws the menu itself: the account and its characters as a hidden signal
+            # (web_client.py turns it into {type: 'account'})
+            import json
+            menu = {'account': self.account.account_name, 'max': self.account.settings.get('max_chars', 8),
+                    'email': self.account.settings.get('email') or '', 'note': note, 'bad': bad,
+                    'pending': self.temp_email if self.code_for == 'email' and self.code else '',
+                    'chars': [{k: i[k] for k in ('name', 'level', 'class', 'race')} for i in char_info]}
+            await self._send_raw(f"\x1b]ACCOUNT:{json.dumps(menu, separators=(',', ':'))}\x07".encode('utf-8'))
     
     async def show_account_help(self):
         """Display detailed account menu help."""
@@ -1163,7 +1378,7 @@ class Connection:
                 await self.send("You have reached the maximum number of characters!")
                 await self.show_character_menu()
                 return
-            await self.send("Enter name for new character: ")
+            await self.send("Enter name for new character (or nothing, to go back): ")
             self.state = self.STATE_CREATE_CHAR_NAME
         
         elif cmd == 'delete' or cmd == 'd':
@@ -1220,7 +1435,50 @@ class Connection:
             self.account.characters.insert(new_idx, char_name)
             self.account.save()
             await self.send(f"Moved {char_name} to position {new_idx + 1}.")
-        
+
+        elif cmd == 'email':
+            # (when the server can send mail, a new email proves itself with a code: `verify`)
+            from accounts import AccountManager, email_problem, verification_on
+            if not args:
+                await self.send(f"Email: {self.account.settings.get('email') or 'none'}. Usage: email <address>")
+                return
+            why = email_problem(args[0], self.account)
+            if why:
+                ok, note = False, why
+            elif verification_on():
+                why = await self._mail_code(args[0], 'email')
+                if why:
+                    ok, note = False, why
+                else:
+                    self.temp_email = args[0].strip().lower()
+                    ok, note = True, f"A code has been sent to {self.temp_email}. Type: verify <code>"
+            else:
+                ok = AccountManager.set_email(self.account, args[0])
+                note = (f"Email set to {self.account.settings['email']}: sign in by it from now on." if ok
+                        else email_problem(args[0], self.account))
+            await self.send(note)
+            await self.show_character_menu(note, bad=not ok)
+
+        elif cmd == 'verify':
+            # the code mailed for the menu's new email
+            import security
+            from accounts import AccountManager, email_problem
+            if self.code_for != 'email' or not self.temp_email:
+                await self.show_character_menu("No email is waiting for a code: email <address> first.", bad=True)
+                return
+            result = security.check_code(self.code, args[0] if args else '')
+            if result == 'ok':
+                email, self.temp_email, self.code, self.code_for = self.temp_email, '', None, ''
+                ok = AccountManager.set_email(self.account, email)
+                note = (f"Email set to {email}: sign in by it from now on." if ok else email_problem(email, self.account))
+            elif result == 'wrong':
+                ok, note = False, "That code isn't right. Type: verify <code>"
+            else:
+                self.temp_email, self.code, self.code_for = '', None, ''
+                ok, note = False, ("That code has expired." if result == 'expired' else "Too many wrong codes.") + " Ask for a new one: email <address>"
+            await self.send(note)
+            await self.show_character_menu(note, bad=not ok)
+
         elif cmd == 'password' or cmd == 'passwd':
             self.temp_new_password = None
             await self.send("Enter new password: ", newline=False)
@@ -1337,22 +1595,22 @@ class Connection:
         await self.show_character_menu()
     
     async def handle_create_char_name(self, name: str):
-        """Handle new character name for account."""
+        """Handle new character name for account (nothing typed: back to the menu)."""
         if not name:
-            await self.send("Enter name for new character: ")
+            await self.show_character_menu()
             return
         
         from accounts import name_problem, name_taken
         why = name_problem(name)
         if why:
             await self.send(why)
-            await self.send("Enter name for new character: ")
+            await self.send("Enter name for new character (or nothing, to go back): ")
             return
         
         name = name.capitalize()
         
-        # Check if name is taken (a character's, or another account's)
-        if name_taken(name, self.account):
+        # Check if name is taken (a character's, another account's, or one being made)
+        if name_taken(name, self.account) or not self._hold_name(name):
             await self.send("That name is already taken. Choose another: ")
             return
         
@@ -1550,6 +1808,7 @@ class Connection:
         if getattr(self, '_disconnected', False):
             return                         # quit already did this; the input loop's finally comes again
         self._disconnected = True
+        self._let_name_go()
         logger.info(f"Connection closed: {self.address}")
         
         if self.player:
@@ -1631,6 +1890,12 @@ class MUDServer:
             migrate_saves()
         except Exception:
             logger.exception('accounts migration')
+        # ...and any one-time move of characters between accounts (world/moves.json)
+        try:
+            from accounts import apply_moves
+            apply_moves()
+        except Exception:
+            logger.exception('accounts moves')
         self.server = await asyncio.start_server(
             self.handle_connection,
             self.config.HOST,
@@ -1696,8 +1961,13 @@ class MUDServer:
                     data = await asyncio.wait_for(reader.readline(), timeout=1800.0)
                     if not data:
                         break
-                    if data.strip() == WEB_MARK:
+                    mark = WEB_MARK_RE.fullmatch(data.strip())
+                    if mark:
                         conn.is_web = True
+                        # the browser's own address, from the bridge on this machine only (a
+                        # telnet player can't claim one)
+                        if mark.group(1) and conn.address and ipaddress.ip_address(conn.address[0]).is_loopback:
+                            conn.client_ip = mark.group(1).decode('ascii')
                         continue
                     line = _CONTROL_CHARS.sub('', data.decode('utf-8', errors='ignore')).strip()
                     await conn.handle_input(line)

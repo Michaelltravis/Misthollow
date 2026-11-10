@@ -2,11 +2,17 @@
 // answer a marked blow.   node --test tests/web/*.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import vm from 'node:vm';
+import { fileURLToPath } from 'node:url';
 import { shopRows, keywordFor, shopTip } from '../../src/web_isometric/world3d/hud/shop.js';
 import { readTalk, talkQuests } from '../../src/web_isometric/world3d/hud/talk.js';
 import { onlineRows, hereRows } from '../../src/web_isometric/world3d/hud/who.js';
 import { rankTopics, CONTROLS } from '../../src/web_isometric/world3d/hud/help.js';
 import { reactionKeys, threatens, ReactionPrompt } from '../../src/web_isometric/world3d/reactions.js';
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
 test('the shop buys by the number in its list and sells by the word the MUD knows', () => {
   const data = { found: true, keeper: 'the armourer', gold: 100,
@@ -45,6 +51,20 @@ test("hovering a shop row shows the item's stats, and this shop's price, not its
   assert.match(shopTip(bread, 'sell', null, tooltip), /doesn't deal in that/);
   const player = { char_class: 'warrior', equipment: { wield: { name: 'dagger', short: 'a dagger', type: 'weapon', slot: 'wield', damage_dice: '1d4' } } };
   assert.match(shopTip(shopRows(data, 'buy')[0], 'buy', player, tooltip), /Against a dagger/);
+});
+
+test('a sale or a purchase asks the server for the hero again, so the bags drop what was sold', () => {
+  // the map socket pushes only on a move: without this the sold item stayed in the bags
+  const src = fs.readFileSync(path.join(ROOT, 'src/web_isometric/shared/parser.js'), 'utf8');
+  const events = [];
+  let refreshed = 0;
+  const MH = { bus: { on() {}, emit: (name, e) => events.push([name, e]) }, refreshState: () => { refreshed++; }, setCombat() {} };
+  vm.runInNewContext(src, { window: { MH } });
+  MH.parseLine('You sell a rusty sword for 9 gold.');
+  MH.parseLine('You buy an iron helm for 1,240 gold.');
+  assert.equal(refreshed, 2);
+  assert.deepEqual(events.map(([n, e]) => [n, e.kind, e.item, e.price]),
+    [['item.trade', 'sell', 'a rusty sword', 9], ['item.trade', 'buy', 'an iron helm', 1240]]);
 });
 
 test('a reply to talk: their words, the responses as buttons, the offers; the telnet hints go', () => {

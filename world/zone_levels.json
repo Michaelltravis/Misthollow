@@ -1,0 +1,70 @@
+{
+ "_about": "Zones whose creatures are lifted to a level band as the world loads (docs/world/WORLD_SPINE.md section 5: the Frostmarch raised to 20-35 to fill the level-30s gap, and the zones that sat under their region's band raised into it). src/regions.py relevel: each creature that spawns in the zone gains `add` levels, held within [lo, hi] (one already above hi keeps its level), and takes at least the standard numbers of its new level (population.numbers: never fewer than it had). The zone files are untouched: take a zone out of here and it is as it was. Zones above their region's band are not lowered: the banner and the map say how dangerous they are.",
+ "zones": {
+  "66": {
+   "add": 10,
+   "lo": 20,
+   "hi": 26
+  },
+  "180": {
+   "add": 12,
+   "lo": 22,
+   "hi": 28
+  },
+  "521": {
+   "add": 13,
+   "lo": 24,
+   "hi": 30
+  },
+  "522": {
+   "add": 13,
+   "lo": 28,
+   "hi": 34
+  },
+  "190": {
+   "add": 12,
+   "lo": 30,
+   "hi": 38
+  },
+  "416": {
+   "add": 3,
+   "lo": 8,
+   "hi": 17
+  },
+  "448": {
+   "add": 4,
+   "lo": 5,
+   "hi": 11
+  },
+  "501": {
+   "add": 2,
+   "lo": 35,
+   "hi": 44
+  },
+  "67": {
+   "add": 4,
+   "lo": 25,
+   "hi": 39
+  },
+  "475": {
+   "add": 8,
+   "lo": 30,
+   "hi": 38
+  },
+  "429": {
+   "add": 12,
+   "lo": 30,
+   "hi": 37
+  },
+  "420": {
+   "add": 8,
+   "lo": 30,
+   "hi": 38
+  },
+  "73": {
+   "add": 8,
+   "lo": 30,
+   "hi": 38
+  }
+ }
+}

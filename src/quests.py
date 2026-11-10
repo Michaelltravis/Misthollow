@@ -1260,10 +1260,498 @@ QUEST_DEFINITIONS = {
         'repeatable': False
     },
 
+    # ========== THE ROADS OUT (docs/world/WORLD_SPINE.md, step 6: each region's opening quest) ==========
+    # Sage Aldric, in the Temple, sends a lantern-bearer to the gate of each region when they are of a
+    # level for it: a walk there, and the region's own banner as they arrive. (Not the Guard's captain
+    # at the fountain: he speaks only to those the Guard counts as friends.)
+    'road_vale': {
+        'name': 'The First Dark Lantern',
+        'description': 'The lantern on the plains road went out three nights ago, and nobody the Guard sent has said why. Walk out by the road and see how it stands.',
+        'type': 'visit',
+        'level_min': 1,
+        'level_max': 12,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'objectives': [
+            {'type': 'visit', 'description': 'Go out to the Plains', 'target': 6092, 'required': 1}
+        ],
+        'rewards': {'exp': 150, 'gold': 20, 'items': []},
+        'repeatable': False,
+        'region': 'vale'
+    },
+    'road_marches': {
+        'name': 'The Lantern Road',
+        'description': 'The old road runs out from the gate past keeps that were raised to guard it. Half of them have fallen. Go out onto the road and see how far its lanterns still burn.',
+        'type': 'visit',
+        'level_min': 6,
+        'level_max': 22,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'objectives': [
+            {'type': 'visit', 'description': 'Go out to the Lantern Road', 'target': 9702, 'required': 1}
+        ],
+        'rewards': {'exp': 900, 'gold': 120, 'items': []},
+        'repeatable': False,
+        'region': 'marches'
+    },
+    'road_sundersea': {
+        'name': 'Where the Lake Ran Out',
+        'description': 'When the Throne was shattered the lake emptied down this river in a night. You will need a raft or a boat. Go down to the water and look on what it left.',
+        'type': 'visit',
+        'level_min': 5,
+        'level_max': 30,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'objectives': [
+            {'type': 'visit', 'description': 'Go out to the Desert River', 'target': 3203, 'required': 1}
+        ],
+        'rewards': {'exp': 750, 'gold': 100, 'items': []},
+        'repeatable': False,
+        'region': 'sundersea'
+    },
+    'road_greenreach': {
+        'name': 'Under the Old Trees',
+        'description': 'West of the road the forest is older than the kingdom was, and it has never needed our lanterns. Go as far as its eaves.',
+        'type': 'visit',
+        'level_min': 8,
+        'level_max': 26,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'objectives': [
+            {'type': 'visit', 'description': 'Go out to the Minar Wood', 'target': 2341, 'required': 1}
+        ],
+        'rewards': {'exp': 1200, 'gold': 160, 'items': []},
+        'repeatable': False,
+        'region': 'greenreach'
+    },
+    'road_stonemarch': {
+        'name': 'The High Passes',
+        'description': 'The dwarves dug their halls under those mountains, and dug too deep to keep them. Climb to the passes and see what still holds them.',
+        'type': 'visit',
+        'level_min': 10,
+        'level_max': 30,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'objectives': [
+            {'type': 'visit', 'description': 'Go out to the Mountain Range', 'target': 8506, 'required': 1}
+        ],
+        'rewards': {'exp': 1500, 'gold': 200, 'items': []},
+        'repeatable': False,
+        'region': 'stonemarch'
+    },
+    'road_frostmarch': {
+        'name': 'North, Where It Froze',
+        'description': 'In the north the mist did not lift. It froze. Take warm gear and a full pack, and go as far as the wilderness trail.',
+        'type': 'visit',
+        'level_min': 18,
+        'level_max': 36,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'objectives': [
+            {'type': 'visit', 'description': 'Go out to the Northern Wilderness', 'target': 6607, 'required': 1}
+        ],
+        'rewards': {'exp': 2700, 'gold': 360, 'items': []},
+        'repeatable': False,
+        'region': 'frostmarch'
+    },
+    'road_reach': {
+        'name': 'East, Toward the Throne',
+        'description': 'Every mile east of here was a kingdom once. The Throne is at the end of it. Go as far as the highland trail, and come back if you can.',
+        'type': 'visit',
+        'level_min': 23,
+        'level_max': 40,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'objectives': [
+            {'type': 'visit', 'description': 'Go out to the Eastern Highlands', 'target': 6700, 'required': 1}
+        ],
+        'rewards': {'exp': 3450, 'gold': 460, 'items': []},
+        'repeatable': False,
+        'region': 'reach'
+    },
+    'road_deeproad': {
+        'name': 'The Long Way Under',
+        'description': 'There is a road under the world, from the lost dwarf-holds to a city that does not know it died. Its gate is the bridge across the ravine. Go and stand on it.',
+        'type': 'visit',
+        'level_min': 33,
+        'level_max': 55,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'objectives': [
+            {'type': 'visit', 'description': 'Go out to Aredrel', 'target': 24702, 'required': 1}
+        ],
+        'rewards': {'exp': 4950, 'gold': 660, 'items': []},
+        'repeatable': False,
+        'region': 'deeproad'
+    },
+
+    # ========== THE ROADS' ENDS: each region's story after its road quest ==========
+    # Sage Aldric tells a lantern-bearer who has met the villain's hand in a region (`after`:
+    # trail_<region>, itself after road_<region>) what
+    # put its lanterns out: the region's great villain, and the bargain it made with the mist
+    # (docs/world/WORLD_SPINE.md section 2).
+    'story_vale': {
+        'name': 'The King in the Fields',
+        'description': "The lantern on the plains road did not go out by itself. Grukthar, who calls himself king of the goblins, has been putting them out one by one: his people see better without them. Find him in the Plains and end it, and the Guard will relight the road behind you.",
+        'type': 'kill',
+        'level_min': 16,
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'trail_vale',
+        'objectives': [
+            {'type': 'kill', 'description': 'Defeat Grukthar the Goblin King', 'target': 'goblin king', 'required': 1}
+        ],
+        'rewards': {'exp': 8800, 'gold': 1100, 'items': []},
+        'repeatable': False,
+        'region': 'vale'
+    },
+    'story_marches': {
+        'name': 'The Name-Taker',
+        'description': "The keeps along the road did not fall to any army. Ostragoth kept his own name through the mist by taking other people's: every traveller he has fed on is someone the bells no longer ring for. His castle stands at the end of the Badlands. Go there and give those names back.",
+        'type': 'kill',
+        'level_min': 15,
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'trail_marches',
+        'objectives': [
+            {'type': 'kill', 'description': 'Defeat Ostragoth, the vampire lord', 'target': 'ostragoth', 'required': 1}
+        ],
+        'rewards': {'exp': 8400, 'gold': 1050, 'items': []},
+        'repeatable': False,
+        'region': 'marches'
+    },
+    'story_greenreach': {
+        'name': 'The Weaver of the Wood',
+        'description': "The old forest never needed our lanterns, and now something in it is spinning the light out of the air. Zyraxxis has webbed the heart of the wood so thick that the mist pools under it and does not move. Cut her out of it.",
+        'type': 'kill',
+        'level_min': 20,
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'trail_greenreach',
+        'objectives': [
+            {'type': 'kill', 'description': 'Defeat Zyraxxis the Spider Queen', 'target': 'zyraxxis', 'required': 1}
+        ],
+        'rewards': {'exp': 10400, 'gold': 1300, 'items': []},
+        'repeatable': False,
+        'region': 'greenreach'
+    },
+    'story_stonemarch': {
+        'name': 'What the Dwarves Left Locked',
+        'description': "The dwarves dug too deep, and when they fled they left a keeper in the maze below their kingdom to see that nothing followed them up. It has kept that door for so long that it has forgotten which side it guards. Go down through the Dwarven Kingdom and put it to rest.",
+        'type': 'kill',
+        'level_min': 23,
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'trail_stonemarch',
+        'objectives': [
+            {'type': 'kill', 'description': 'Defeat the mazekeeper', 'target': 'mazekeeper', 'required': 1}
+        ],
+        'rewards': {'exp': 11600, 'gold': 1450, 'items': []},
+        'repeatable': False,
+        'region': 'stonemarch'
+    },
+    'story_frostmarch': {
+        'name': 'The Frozen Sky',
+        'description': "In the north the mist froze, and it froze because of what sleeps on the Frostspire. Vyrkothas breathes it out as rime, and every winter it reaches a little further south. Climb the spire. Bring the thaw.",
+        'type': 'kill',
+        'level_min': 32,
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'trail_frostmarch',
+        'objectives': [
+            {'type': 'kill', 'description': 'Defeat Vyrkothas the Frost Wyrm', 'target': 'vyrkothas', 'required': 1}
+        ],
+        'rewards': {'exp': 15200, 'gold': 1900, 'items': []},
+        'repeatable': False,
+        'region': 'frostmarch'
+    },
+    'story_sundersea': {
+        'name': 'The King Who Drowned With His Name',
+        'description': "When the lake ran out to the sea, Nerathis went with it rather than be forgotten on the shore. He kept his name by drowning with it, and he keeps a court of the drowned who had no such choice. Go down into the Sunken Ruins of Atal'narath and let them go.",
+        'type': 'kill',
+        'level_min': 20,
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'trail_sundersea',
+        'objectives': [
+            {'type': 'kill', 'description': 'Defeat Nerathis, the Drowned King', 'target': 'nerathis', 'required': 1}
+        ],
+        'rewards': {'exp': 10400, 'gold': 1300, 'items': []},
+        'repeatable': False,
+        'region': 'sundersea'
+    },
+    'story_deeproad': {
+        'name': 'The City That Forgot It Died',
+        'description': "At the end of the long way under the world is Morkai, a city so thoroughly lost to the mist that it does not know it is dead. Moloch rules it from a throne of other people's memories. The road cannot be relit while he sits there.",
+        'type': 'kill',
+        'level_min': 50,   # (the most a hero without a prestige class reaches: prestige.get_max_level)
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'trail_deeproad',
+        'objectives': [
+            {'type': 'kill', 'description': 'Defeat Moloch, the Ancient Demon Lord', 'target': 'moloch', 'required': 1}
+        ],
+        'rewards': {'exp': 27200, 'gold': 3400, 'items': []},
+        'repeatable': False,
+        'region': 'deeproad'
+    },
+    'story_reach': {
+        'name': 'The Shattered Throne',
+        'description': "Every road has led here. Whoever broke the Throne is still sitting on what is left of it, and the mist comes out of that room like breath. You have carried a lantern from the Temple to the end of the world. Go in.",
+        'type': 'kill',
+        'level_min': 50,   # (the most a hero without a prestige class reaches: prestige.get_max_level)
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'trail_reach',
+        'objectives': [
+            {'type': 'kill', 'description': 'Defeat the shattered emperor', 'target': 'shattered emperor', 'required': 1}
+        ],
+        'rewards': {'exp': 28000, 'gold': 3500, 'items': []},
+        'repeatable': False,
+        'region': 'reach'
+    },
+
+    # ========== THE ROADS BETWEEN: a region's middle chapter and its last ==========
+    # road_<region> -> trail_<region> -> story_<region> -> lit_<region>. The trail is the villain's hand
+    # in the region (its servants, met before it is); the last is the road walked again, the lantern
+    # relit. Sage Aldric gives them all.
+    'trail_vale': {
+        'name': 'The Lamp-Breakers',
+        'description': 'You saw the dark lantern. Its glass was broken from below, by small hands. Goblins have been at the lamps all along the plains road. Thin them out before another goes dark.',
+        'type': 'kill',
+        'level_min': 3,
+        'level_max': 30,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'road_vale',
+        'objectives': [
+            {'type': 'kill', 'description': 'Drive off goblins on the Plains', 'target': 'goblin', 'required': 6}
+        ],
+        'rewards': {'exp': 670, 'gold': 83, 'items': []},
+        'repeatable': False,
+        'region': 'vale'
+    },
+    'lit_vale': {
+        'name': 'The Road Relit',
+        'description': 'Grukthar is dead and his people have scattered. Walk back out by the plains road: the Guard will not light a lamp until a lantern-bearer has stood under it.',
+        'type': 'visit',
+        'level_min': 16,
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'story_vale',
+        'objectives': [
+            {'type': 'visit', 'description': 'Stand under the plains lantern', 'target': 6092, 'required': 1}
+        ],
+        'rewards': {'exp': 2200, 'gold': 366, 'items': []},
+        'repeatable': False,
+        'region': 'vale'
+    },
+    'trail_marches': {
+        'name': 'Those Who Gave Their Names',
+        'description': 'The keeps stand empty, but the villages under them do not. There are hooded folk on the road who gave their names to something in exchange for being let alone. They will not let you alone. Break them up.',
+        'type': 'kill',
+        'level_min': 10,
+        'level_max': 40,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'road_marches',
+        'objectives': [
+            {'type': 'kill', 'description': 'Break up the cultists of the Marches', 'target': 'cultist', 'required': 6}
+        ],
+        'rewards': {'exp': 3400, 'gold': 425, 'items': []},
+        'repeatable': False,
+        'region': 'marches'
+    },
+    'lit_marches': {
+        'name': 'The Bells of the Marches',
+        'description': 'With Ostragoth gone the names he took are loose again, and the bells have someone to ring for. Go back out to the Lantern Road and hear them.',
+        'type': 'visit',
+        'level_min': 15,
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'story_marches',
+        'objectives': [
+            {'type': 'visit', 'description': 'Return to the Lantern Road', 'target': 9702, 'required': 1}
+        ],
+        'rewards': {'exp': 2100, 'gold': 350, 'items': []},
+        'repeatable': False,
+        'region': 'marches'
+    },
+    'trail_greenreach': {
+        'name': 'Webs Across the Path',
+        'description': 'You have seen the old trees. You will have seen what hangs between them too. The spiders of the Minar Wood did not always grow so large, nor spin across the road. Cut the road clear.',
+        'type': 'kill',
+        'level_min': 10,
+        'level_max': 40,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'road_greenreach',
+        'objectives': [
+            {'type': 'kill', 'description': 'Clear spiders from the wood', 'target': 'spider', 'required': 8}
+        ],
+        'rewards': {'exp': 3400, 'gold': 425, 'items': []},
+        'repeatable': False,
+        'region': 'greenreach'
+    },
+    'lit_greenreach': {
+        'name': 'The Trees Remember',
+        'description': 'The Weaver is dead, and the webs will rot off the branches by spring. Go back under the old trees and see the road open.',
+        'type': 'visit',
+        'level_min': 20,
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'story_greenreach',
+        'objectives': [
+            {'type': 'visit', 'description': 'Return under the old trees', 'target': 2341, 'required': 1}
+        ],
+        'rewards': {'exp': 2600, 'gold': 433, 'items': []},
+        'repeatable': False,
+        'region': 'greenreach'
+    },
+    'trail_stonemarch': {
+        'name': 'Below the Deeping',
+        'description': 'The dwarves locked their lower halls and went away, and did not say why. Orcs have got in by the mine roads since, black with the soot of it. Clear them from below the Deeping before they find what was locked in.',
+        'type': 'kill',
+        'level_min': 12,
+        'level_max': 45,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'road_stonemarch',
+        'objectives': [
+            {'type': 'kill', 'description': 'Clear the mine orcs below the Deeping', 'target': 'mine orc', 'required': 6}
+        ],
+        'rewards': {'exp': 4720, 'gold': 590, 'items': []},
+        'repeatable': False,
+        'region': 'stonemarch'
+    },
+    'lit_stonemarch': {
+        'name': 'The Passes Kept',
+        'description': 'What the dwarves left locked is ended, and the passes can be held again. Climb back to the high passes and see the lantern there lit.',
+        'type': 'visit',
+        'level_min': 23,
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'story_stonemarch',
+        'objectives': [
+            {'type': 'visit', 'description': 'Return to the high passes', 'target': 8506, 'required': 1}
+        ],
+        'rewards': {'exp': 2900, 'gold': 483, 'items': []},
+        'repeatable': False,
+        'region': 'stonemarch'
+    },
+    'trail_frostmarch': {
+        'name': 'What the Cold Sends South',
+        'description': 'The winter in the north is not weather. It sends its wolves south ahead of it, more of them each year, and the trappers have stopped coming in. Cull the packs.',
+        'type': 'kill',
+        'level_min': 20,
+        'level_max': 50,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'road_frostmarch',
+        'objectives': [
+            {'type': 'kill', 'description': 'Cull the wolves of the Frostmarch', 'target': 'wolf', 'required': 8}
+        ],
+        'rewards': {'exp': 12400, 'gold': 1550, 'items': []},
+        'repeatable': False,
+        'region': 'frostmarch'
+    },
+    'lit_frostmarch': {
+        'name': 'The Thaw',
+        'description': 'The wyrm is down, and the sky it froze will loosen. Go north again to where it froze and feel the wind change.',
+        'type': 'visit',
+        'level_min': 32,
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'story_frostmarch',
+        'objectives': [
+            {'type': 'visit', 'description': 'Return to the frozen road', 'target': 6607, 'required': 1}
+        ],
+        'rewards': {'exp': 3800, 'gold': 633, 'items': []},
+        'repeatable': False,
+        'region': 'frostmarch'
+    },
+    'trail_sundersea': {
+        'name': 'The Drowned Do Not Rest',
+        'description': 'When the lake ran out it took a kingdom with it. Its dead are still on the Island of the Dead, shades who have forgotten everything but the drowning. Lay them down.',
+        'type': 'kill',
+        'level_min': 14,
+        'level_max': 45,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'road_sundersea',
+        'objectives': [
+            {'type': 'kill', 'description': 'Lay to rest the shades of the drowned', 'target': 'shade', 'required': 6}
+        ],
+        'rewards': {'exp': 6280, 'gold': 785, 'items': []},
+        'repeatable': False,
+        'region': 'sundersea'
+    },
+    'lit_sundersea': {
+        'name': 'The Water Stills',
+        'description': 'Nerathis has his name again, and his rest. Go down to the water where the lake ran out; they say it lies quiet now.',
+        'type': 'visit',
+        'level_min': 20,
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'story_sundersea',
+        'objectives': [
+            {'type': 'visit', 'description': 'Return to the water', 'target': 3203, 'required': 1}
+        ],
+        'rewards': {'exp': 2600, 'gold': 433, 'items': []},
+        'repeatable': False,
+        'region': 'sundersea'
+    },
+    'trail_deeproad': {
+        'name': "The City's Dead",
+        'description': 'The city under the road does not know it died. Its miners still dig and its dead still walk their rounds, and they are hungry. Put down the ghouls of the deep halls.',
+        'type': 'kill',
+        'level_min': 36,
+        'level_max': 60,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'road_deeproad',
+        'objectives': [
+            {'type': 'kill', 'description': 'Put down the ghouls of the Deep Road', 'target': 'ghoul', 'required': 8}
+        ],
+        'rewards': {'exp': 39280, 'gold': 4910, 'items': []},
+        'repeatable': False,
+        'region': 'deeproad'
+    },
+    'lit_deeproad': {
+        'name': 'The Long Way Back',
+        'description': "Moloch is cast down and the city can finish dying. Go back to where the long way under begins and leave your lantern's light on the door.",
+        'type': 'visit',
+        'level_min': 50,
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'story_deeproad',
+        'objectives': [
+            {'type': 'visit', 'description': 'Return to the door of the Deep Road', 'target': 24702, 'required': 1}
+        ],
+        'rewards': {'exp': 6800, 'gold': 1133, 'items': []},
+        'repeatable': False,
+        'region': 'deeproad'
+    },
+    'trail_reach': {
+        'name': "The Emperor's Engines",
+        'description': 'The Throne was shattered, but nobody told its engines. The Clockwork Foundry still turns out soldiers for an emperor who has no name left to command them by. Stop them.',
+        'type': 'kill',
+        'level_min': 44,
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'road_reach',
+        'objectives': [
+            {'type': 'kill', 'description': 'Destroy clockwork soldiers', 'target': 'clockwork', 'required': 4}
+        ],
+        'rewards': {'exp': 58480, 'gold': 7310, 'items': []},
+        'repeatable': False,
+        'region': 'reach'
+    },
+    'lit_reach': {
+        'name': 'East, and Home Again',
+        'description': 'The Shattered Emperor is ended, and with him the oldest bargain the mist ever made. Walk the east road once more. It is only a road now.',
+        'type': 'visit',
+        'level_min': 50,
+        'level_max': 70,
+        'quest_giver': 3200,  # Sage Aldric, in the Temple
+        'after': 'story_reach',
+        'objectives': [
+            {'type': 'visit', 'description': 'Return to the east road', 'target': 6700, 'required': 1}
+        ],
+        'rewards': {'exp': 7000, 'gold': 1166, 'items': []},
+        'repeatable': False,
+        'region': 'reach'
+    },
+
     # ========== TUTORIAL QUESTS ==========
     'tutorial_1_awakening': {
         'name': 'Awakening',
-        'description': 'Speak with Sage Aldric at the Temple to begin your training. He is right here in the Temple with you. Simply type "talk aldric" to speak with him.',
+        'description': 'You woke in the Temple with a lantern at your hip, its flame already lit. Speak with Sage Aldric to learn what it is for. He is right here in the Temple with you. Simply type "talk aldric" to speak with him.',
         'type': 'tutorial',
         'level_min': 1,
         'level_max': 5,
@@ -2301,6 +2789,12 @@ class QuestManager:
             await player.send("That quest is not available right now.")
             return
 
+        # one that follows another is not taken before it (`after`): `quest accept <id>` comes
+        # straight here, past the list a quest giver offers (get_available_quests)
+        if not QuestManager.after_done(player, quest_def):
+            await player.send("That quest is not available yet: there is another to finish first.")
+            return
+
         # Check daily quest cooldown
         if quest_def.get('daily') and not QuestManager.can_accept_daily(player, quest_id):
             await player.send("You've already completed this daily quest today. Come back tomorrow!")
@@ -2635,6 +3129,12 @@ class QuestManager:
         return any(q.quest_id == quest_id for q in player.active_quests)
 
     @staticmethod
+    def after_done(player: 'Player', quest_def: dict) -> bool:
+        """Whether the quest this one follows (`after`) is done (True when it follows none)."""
+        need = quest_def.get('after')
+        return not need or need in (getattr(player, 'quests_completed', None) or [])
+
+    @staticmethod
     def get_available_quests(player: 'Player', quest_giver_vnum: int) -> List[str]:
         """
         Get list of available quests from a quest giver.
@@ -2661,6 +3161,10 @@ class QuestManager:
 
             # Check chain availability
             if not QuestManager.is_chain_quest_available(player, quest_def):
+                continue
+
+            # one that follows another (`after`: the quest that must be done first)
+            if not QuestManager.after_done(player, quest_def):
                 continue
 
             # Check level requirements
@@ -2696,6 +3200,37 @@ class QuestManager:
         return available
 
     @staticmethod
+    def next_tutorial(player: 'Player'):
+        """The tutorial step a player should be on when they have none in hand: the first of the chain
+        they have not finished (None: all done). The chain is walked by each quest's `next_quest`;
+        tutorial_4_skills is skipped, as the chain itself skips it (it was merged into the third)."""
+        done = set(getattr(player, 'quests_completed', None) or [])
+        qid, seen = 'tutorial_1_awakening', set()
+        while qid and qid in QUEST_DEFINITIONS and qid not in seen:
+            seen.add(qid)
+            if qid != 'tutorial_4_skills' and qid not in done:
+                return qid
+            qid = QUEST_DEFINITIONS[qid].get('next_quest')
+        return None
+
+    @staticmethod
+    async def resume_tutorial(player: 'Player') -> bool:
+        """Sage Aldric takes back a pupil who set the lessons down: someone under level 10 with no
+        tutorial step in hand and some of the chain undone is given the next one. (Abandoning a
+        step used to end the chain for good: nothing offered it again.)"""
+        if (getattr(player, 'level', 1) or 1) >= 10:
+            return False
+        if any(q.quest_id.startswith('tutorial_') for q in getattr(player, 'active_quests', None) or []):
+            return False
+        qid = QuestManager.next_tutorial(player)
+        if not qid:
+            return False
+        c = player.config.COLORS
+        await player.send(f"\r\n{c['bright_cyan']}Sage Aldric tells you, 'Ah, {player.name}. Shall we take up where we left off?'{c['reset']}")
+        await QuestManager.accept_quest(player, qid)
+        return True
+
+    @staticmethod
     async def start_tutorial(player: 'Player'):
         """
         Start the tutorial quest chain for a new player.
@@ -2724,7 +3259,10 @@ class QuestManager:
         await player.send(f"{c['bright_cyan']}║{c['white']}    🏠 Player housing            🏟 PvP Arena               {c['bright_cyan']}║{c['reset']}")
         await player.send(f"{c['bright_cyan']}╚══════════════════════════════════════════════════════════════╝{c['reset']}")
         await player.send(f"\r\n{c['white']}Sage Aldric at the Temple can teach you the ways of the Realms.")
-        await player.send(f"Type {c['bright_green']}hint{c['white']} anytime for guidance, or {c['bright_green']}help newbie{c['white']} for a full guide.{c['reset']}\r\n")
+        if getattr(getattr(player, 'connection', None), 'is_web', False):
+            await player.send(f"The tracker on the right shows your next step; press {c['bright_green']}H{c['white']} anytime for help.{c['reset']}\r\n")
+        else:
+            await player.send(f"Type {c['bright_green']}hint{c['white']} anytime for guidance, or {c['bright_green']}help newbie{c['white']} for a full guide.{c['reset']}\r\n")
         
         # Auto-accept the first tutorial quest
         await QuestManager.accept_quest(player, 'tutorial_1_awakening')

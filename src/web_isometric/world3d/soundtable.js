@@ -161,7 +161,14 @@ export const MUSIC = ['town', 'wilds', 'inn', 'dungeon', 'dark', 'battle'];
 const DARK = new Set(['web', 'darkforest', 'swamp', 'necropolis', 'darkcastle', 'voidstar', 'volcanic', 'drow']);
 const DUNGEON = new Set(['sewer', 'mines', 'dwarvenhall', 'clockwork', 'arcane']);
 const TOWN = new Set(['midgaard', 'rome', 'sandstone', 'castle', 'temple', 'chessboard']);
-export function musicFor({ theme, zoneKey, dark, interior } = {}) {
+// `region`: the zone's region of the world. Where the mist rules (the Deep Road, the Sundered Reach,
+// the Places Beyond) open country has no pastoral tune: the dark one plays there.
+const MIST_RULES = new Set(['deeproad', 'reach', 'beyond']);
+export function musicFor({ theme, zoneKey, dark, interior, region } = {}) {
+  const m = placeMusic({ theme, zoneKey, dark, interior });
+  return m === 'wilds' && MIST_RULES.has(region) ? 'dark' : m;
+}
+function placeMusic({ theme, zoneKey, dark, interior } = {}) {
   if (theme === 'inside' && interior === 'tavern') return 'inn';
   if (theme === 'crypt' || theme === 'volcanic' || theme === 'web' || theme === 'necropolis' || theme === 'drow') return 'dark';
   if (theme === 'cave' || theme === 'mine' || theme === 'sewer' || theme === 'foundry') return 'dungeon';
@@ -216,3 +223,54 @@ export function bedFor({ theme, zoneKey } = {}) {
 
 // how many voices at once, by graphics quality (low-end machines get fewer)
 export const VOICES = { low: 10, medium: 16, high: 24 };
+
+// ---- each region's own voice (docs/world/WORLD_SPINE.md section 4) ----
+// The game has six recorded tracks, chosen by the kind of place. Under them each region of the world
+// holds a chord of its own, played by the audio engine as a slow, quiet pad (audio.js regionPad): the
+// Lantern Vale a warm major third, the Frostmarch a thin high minor, the Sundered Reach a cluster a
+// semitone apart. Notes in Hz; `wave` the oscillator; `cut` the lowpass that keeps it soft.
+export const REGION_PAD = {
+  vale: { notes: [146.83, 220.0, 369.99], wave: 'triangle', cut: 900 },          // D A F#: warm, settled
+  marches: { notes: [130.81, 196.0, 293.66], wave: 'triangle', cut: 800 },       // C G D: open fifths, grey
+  greenreach: { notes: [174.61, 261.63, 493.88], wave: 'sine', cut: 1100 },      // F C B: the raised fourth, old and strange
+  stonemarch: { notes: [110.0, 164.81, 261.63], wave: 'triangle', cut: 700 },    // A E C: a low minor
+  frostmarch: { notes: [164.81, 246.94, 392.0, 739.99], wave: 'sine', cut: 1600 }, // E B G F#: thin and high
+  sundersea: { notes: [98.0, 146.83, 220.0], wave: 'sine', cut: 900 },           // G D A: suspended, like water
+  deeproad: { notes: [65.41, 92.5, 130.81], wave: 'triangle', cut: 500 },        // C F# C: the tritone, under the world
+  reach: { notes: [73.42, 110.0, 116.54], wave: 'sawtooth', cut: 420 },          // D A Bb: a semitone grinding
+  beyond: { notes: [130.81, 164.81, 207.65], wave: 'sine', cut: 1000 },          // C E G#: whole tones, belonging nowhere
+};
+export const REGION_PAD_LEVEL = 0.028;      // each note's peak, on the music bus: felt more than heard
+export function regionPad(region) {
+  return (region && REGION_PAD[region]) || null;
+}
+
+// ---- a region's own tune ----
+// Over its chord each region has a short phrase, played now and then as soft struck notes (audio.js
+// regionPad): the Vale's lantern-song climbs and comes home, the Frostmarch's falls from a height, the
+// Deep Road's turns on the tritone and does not resolve. `steps`: semitones above the chord's lowest
+// note; `beat`: seconds a step; `wave`: the oscillator. (Written as notes, not recorded: there is no
+// one to record them.)
+export const REGION_MOTIF = {
+  vale: { steps: [0, 4, 7, 9, 7, 4, 2, 0], beat: 0.9, wave: 'triangle' },          // up the major, and home
+  marches: { steps: [0, 7, 5, 7, 2, 0], beat: 1.1, wave: 'triangle' },             // fifths and a fall: a road song with verses missing
+  greenreach: { steps: [0, 4, 6, 7, 11, 7, 6, 4], beat: 0.8, wave: 'sine' },       // the raised fourth, never landing
+  stonemarch: { steps: [0, 3, 7, 5, 3, 0, -2, 0], beat: 1.2, wave: 'triangle' },   // a minor, a step under and back: a work song
+  frostmarch: { steps: [12, 10, 7, 3, 7, 2, 0], beat: 1.4, wave: 'sine' },         // falling from the octave
+  sundersea: { steps: [0, 2, 7, 9, 7, 2, 5, 0], beat: 1.0, wave: 'sine' },         // rocking, like a boat
+  deeproad: { steps: [0, 6, 1, 0, 6, 7, 6], beat: 1.6, wave: 'triangle' },         // the tritone, unresolved
+  reach: { steps: [0, 1, 0, 7, 8, 7, 1, 0], beat: 1.5, wave: 'triangle' },         // semitones leaning on each other
+  beyond: { steps: [0, 2, 4, 6, 8, 10, 8, 4], beat: 1.3, wave: 'sine' },           // whole tones: no home to come to
+};
+export const REGION_MOTIF_LEVEL = 0.03;          // a note's peak, on the music bus
+export const REGION_MOTIF_EVERY = [28, 46];      // seconds between one telling of the tune and the next
+// the tune as notes to play: [{f (Hz), at (seconds from its start), dur}], in a register that carries
+// (the chord's lowest note raised by octaves until it is at least 260 Hz); null when the region has none
+export function regionMotif(region) {
+  const m = region && REGION_MOTIF[region], pad = regionPad(region);
+  if (!m || !pad) return null;
+  let root = pad.notes[0];
+  while (root < 260) root *= 2;
+  const notes = m.steps.map((s, i) => ({ f: root * 2 ** (s / 12), at: i * m.beat, dur: m.beat * (i === m.steps.length - 1 ? 3 : 1.7) }));
+  return { notes, wave: m.wave, length: m.steps.length * m.beat + m.beat * 2 };
+}

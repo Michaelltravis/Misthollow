@@ -143,6 +143,61 @@
      }
     ]
    }
+  },
+  "795720": {
+   "name": "young red dragon",
+   "short_desc": "a young red dragon",
+   "long_desc": "A young red dragon lies coiled on the scorched floorstones, smoke curling from its nostrils.",
+   "description": "Not yet the size of the great wyrms of legend, but far more than big enough: a dragon the length of a barge, its scales the red of iron in the forge. It found the lair under the city and made it its own. The two shapes melted into the floor were the last to argue.",
+   "level": 19,
+   "flags": [
+    "aggressive",
+    "sentinel",
+    "boss"
+   ],
+   "rank": "boss",
+   "alignment": -700,
+   "why": "the red dragon its lair is named for",
+   "race": "dragon",
+   "boss_config": {
+    "enrage_time": 180,
+    "enrage_multiplier": 1.5,
+    "ability_interval": 5.0,
+    "phases": [
+     {
+      "threshold": 50,
+      "message": "The young red dragon rears up, fire roaring in its throat!"
+     }
+    ],
+    "abilities": [
+     {
+      "name": "Fire Breath",
+      "telegraph": "The young red dragon draws a long breath, its throat glowing!",
+      "cast_time": 2,
+      "cooldown": 12,
+      "damage_dice": "3d8+6",
+      "aoe": true,
+      "radius": 4.5
+     },
+     {
+      "name": "Raking Claws",
+      "telegraph": "The young red dragon rakes its claws at you!",
+      "cast_time": 1,
+      "cooldown": 7,
+      "damage_dice": "3d10+5",
+      "dodge": true
+     },
+     {
+      "name": "Inferno",
+      "telegraph": "The young red dragon gathers a blaze in its chest!",
+      "cast_time": 2.5,
+      "cooldown": 18,
+      "damage_dice": "4d8+8",
+      "interruptible": true,
+      "min_phase": 1
+     }
+    ]
+   }
   }
  },
  "patrols": [
@@ -195,6 +250,23 @@
      },
      "shout": "The Rat King squeals, and giant rats pour out of the walls!",
      "why": "his swarm at 60% and 30%"
+    }
+   ]
+  },
+  {
+   "vnum": 795720,
+   "room": 7328,
+   "why": "the red dragon its lair is named for",
+   "mechanics": [
+    {
+     "type": "plague_pools",
+     "label": "Burning Floor",
+     "school": "fire",
+     "every": 9,
+     "radius": 2.5,
+     "last": 10,
+     "pct": 0.045,
+     "why": "where its breath falls the floor burns: step out"
     }
    ]
   }

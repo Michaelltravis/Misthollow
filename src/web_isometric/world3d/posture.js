@@ -12,6 +12,13 @@ export function poseFor(position) {
   return null;
 }
 
+// the posture a body in the payload is drawn in: a player's as the server says; a creature's only
+// when a spell holds it asleep (its other positions, fighting or standing, are all on its feet)
+export function bodyPosition(kind, data) {
+  const pos = (data && data.position) || 'standing';
+  return kind === 'player' ? pos : pos === 'sleeping' ? 'sleeping' : 'standing';
+}
+
 // what to play when the posture changes from `was` to `now`: a clip once (getting down, getting
 // up) and the loop to hold after it (null: back to the body's own idle)
 export function postureChange(was, now) {

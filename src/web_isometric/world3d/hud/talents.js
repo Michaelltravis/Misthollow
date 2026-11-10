@@ -2,6 +2,7 @@
 // spends a point on it (`talents learn <id>`); the server keeps the rules (talents.py): a tier
 // opens at five points spent in its tree for each tier below it, some talents need another
 // first, and each has a top rank. Data: /talents. Warriors grow by doctrine instead.
+import { netNote } from './netfail.js';
 
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
@@ -59,8 +60,10 @@ export function createTalents(root, { fetchTalents, send }) {
     }));
   }
   async function refresh() {
-    try { data = await fetchTalents(); } catch (_) { data = { has_trees: false }; }
+    let failed = false;
+    try { data = await fetchTalents(); } catch (_) { data = { has_trees: false }; failed = true; }
     render();
+    netNote(root, failed, refresh);
   }
   function toggle(on = !open) {
     open = on;

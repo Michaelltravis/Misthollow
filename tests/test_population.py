@@ -94,6 +94,15 @@ async def main():
     guardian = mob_in(11057, 11010)
     check(guardian is not None and 'boss' in (guardian.flags or ()) and guardian.short_desc == 'the High Elven Guardian',
           f'the High Elven Guardian keeps the end of the fine path, a boss ({guardian})')
+
+    # a room named for its owner has it: the guardians' chambers below Moria, a lair's beast in the
+    # lair and not the tunnel beside it, the demon lord on his throne, the Sea King on his
+    owners = {20581: 799650, 20588: 799651, 20578: 799652, 24858: 650507, 24899: 650506, 23513: 23508, 23506: 23504,
+              16023: 796600, 14009: 796400, 14015: 796401, 7328: 795720, 15140: 799910, 15187: 799911, 24518: 797450,
+              21737: 799740, 5827: 799880}
+    missing = [(room, v) for room, v in owners.items() if mob_in(v, room) is None]
+    check(not missing, f'every room named for its owner has it ({missing})')
+    check(mob_in(650507, 24855) is None and mob_in(650506, 224824) is None, 'and Bone Gnasher and Estorgoth left the tunnel and the dead end')
     print(f"\n{'ALL OK' if not failures else f'{len(failures)} FAILED'}")
     sys.exit(1 if failures else 0)
 

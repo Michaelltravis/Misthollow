@@ -274,7 +274,9 @@ async def main():
     main_js = src('main.js')
     check('basic render driver|swiftshader|llvmpipe' in main_js and "engine.setQuality('low')" in main_js,
           'a browser drawing without a graphics card gets Low quality and a word on why')
-    check('r.built.group.visible = far <= 3' in src('zone.js'), 'rooms kept for the way back are not drawn past the fog')
+    # (on Low the old ring: three cells any way; on Med and High a wider one, by BUILD_RING)
+    check('r.built.group.visible = low ? Math.max(fx, fy) <= 3 : fx <= BUILD_X && fy <= BUILD_Y' in src('zone.js')
+          and "BUILD_RING = { low: [2, 2], wide: [3, 4] }" in src('zone.js'), 'rooms kept for the way back are not drawn past the fog')
     check('x + inward * 4' in src('terrain.js'), "an exit's sign stands inside its own room, clear of the one across the edge")
 
     # combat numbers stay longer (the owner: "fades pretty fast"), weighted, with a setting and a cap

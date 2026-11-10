@@ -1,5 +1,6 @@
 // Who is about (O): everyone online (/who) and who is here, in the hero's room (the map
 // payload's `nearby` entry for it). A name opens the same menu a right-click on them would.
+import { netNote } from './netfail.js';
 
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
@@ -59,8 +60,10 @@ export function createWho(root, { fetchWho, here, onPick }) {
     }
   }
   async function refresh() {
-    try { online = await fetchWho(); } catch (_) { online = { players: [] }; }
+    let failed = false;
+    try { online = await fetchWho(); } catch (_) { online = { players: [] }; failed = true; }
     render();
+    netNote(root, failed, refresh);
   }
   function toggle(on = !open, name) {
     open = on;

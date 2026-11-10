@@ -65,6 +65,24 @@ The equipment kit takes every piece in `blender/out/equip`, which git ignores: b
 out. On Windows, `setup.sh` needs Python 3.11 for bpy 4.2: `uv venv --python 3.11 tools/art3d/.venv`
 and `uv pip install --python tools/art3d/.venv/Scripts/python.exe "bpy==4.2.*"` does it.
 
+### Pieces for the heroes (`mhb/kit.py`)
+
+A hero is the KayKit body dressed from the equipment kit, so what a hero gains is a **piece on
+the KayKit rig**, not a new body: it moves with all 68 clips and every class can wear it.
+`mhb/kit.py` has what a piece's script needs (the shapes, binding to a bone or by weights, the
+export with its sidecar, a preview worn by one of the pack's heroes); `models/lantern.py` (the
+lantern every hero carries, the world's sign) is the short example and `models/archmage.py` the
+long one.
+
+```
+tools/art3d/blender/run.sh models/lantern.py --preview --export     # -> out/lantern_preview.png, out/equip/lantern.glb + .json
+cd tools/art3d && node build.mjs .cache equip                        # the kit, with every piece in out/equip
+git checkout -- src/web_isometric/art3d/licenses                     # (on Windows the build rewrites their line endings)
+```
+
+Then `gearlook.js` says who wears it. Look at the piece from the game's own camera before
+calling it done: the left hip is behind the shield, and the camera sits behind and above.
+
 ### Writing a model (`tools/art3d/blender/mhb`)
 
 - **`Skel`:** the body as a graph of points with radii.

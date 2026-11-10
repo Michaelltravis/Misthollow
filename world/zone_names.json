@@ -1,0 +1,33 @@
+{
+ "_about": "What each zone is called in play, where that differs from the name in its zone file (docs/world/WORLD_SPINE.md: no builder's numerals, no jokes about the game, nothing from another author's world). Applied as the world loads (src/regions.py zone_name); the zone files keep their old names, so taking a line out of here puts that name back.",
+ "names": {
+  "25": "The High Tower",
+  "51": "The Umbral City",
+  "72": "The Undercity",
+  "186": "The Proving Halls",
+  "220": "The Castle of the Apocalypse",
+  "408": "The Lantern Road",
+  "423": "Hollowmere",
+  "435": "The Minar Wood",
+  "439": "The White Mount",
+  "448": "The Mirrormere",
+  "451": "The Mirrormere Deeps",
+  "455": "Beacon Isle",
+  "457": "The Castle of the Apocalypse: Gatehouse",
+  "461": "The Nameless Tombs",
+  "465": "Below the Deeping",
+  "467": "The Deeping Dark",
+  "469": "The High Tower: Upper Halls",
+  "471": "The Badlands",
+  "480": "Saltmarsh Lot",
+  "494": "The Garden Isle",
+  "496": "The Becalmed Isle",
+  "501": "Aredrel",
+  "503": "Durmandel",
+  "504": "Elvenhame",
+  "505": "The Lost Crypt",
+  "507": "The Lost Crypt: Lower Vaults",
+  "508": "Durmandel Keep",
+  "509": "The Durmandel Mines"
+ }
+}

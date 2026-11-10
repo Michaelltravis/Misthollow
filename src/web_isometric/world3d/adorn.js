@@ -23,6 +23,8 @@ const _p = new THREE.Vector3();
 const wanted = a => !!(a && (a.motes || a.aura || a.legendary || a.element));
 
 export class Adorn {
+  setTier(tier) { this.tier = tier; }      // graphics quality, changed in Settings
+
   constructor(engine, fx) {
     this.engine = engine;
     this.fx = fx;
@@ -101,7 +103,7 @@ export class Adorn {
     const s = this.on.get(a);
     if (!s) return;
     if (s.ring) { this.engine.scene.remove(s.ring); s.ring.geometry.dispose(); s.ring.material.dispose(); }
-    if (s.pulse && a.gear && a.gear.glow) a.gear.glow.value = a.gear.plan.glow;
+    if (s.pulse && a.gear && a.gear.glow) a.gear.glow.value = Math.max(a.gear.plan.glow || 0, a.gear.plan.lantern ? 1 : 0);
     this.on.delete(a);
   }
 }

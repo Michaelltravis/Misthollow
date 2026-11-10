@@ -24,6 +24,7 @@ import glob
 import hashlib
 import hmac
 import logging
+import re
 import secrets
 import shutil
 import smtplib
@@ -191,6 +192,85 @@ def _write_save(path: str, data: dict):
     os.replace(tmp, path)
 
 
+# ---------------------------------------------------------------- mail
+
+MAIL_FILE = os.path.join(os.path.dirname(__file__), '..', 'lib', 'mail.json')
+
+
+def mail_settings() -> dict:
+    """How the server sends mail: {host, port, user, password, from, tls}, or {} when it can't.
+    From MISTHOLLOW_SMTP_* in the environment, else lib/mail.json (the server machine's own file,
+    never committed), else config.py's SMTP_*. With none, sign-ups need no email code."""
+    from config import Config
+    env = {k: os.environ.get(f'MISTHOLLOW_SMTP_{k.upper()}') for k in ('host', 'port', 'user', 'password', 'from', 'tls')}
+    if env['host']:
+        s = env
+    else:
+        try:
+            with open(MAIL_FILE, encoding='utf-8') as f:
+                s = json.load(f)
+        except (OSError, ValueError):
+            s = {'host': Config.SMTP_HOST, 'port': Config.SMTP_PORT, 'user': Config.SMTP_USER,
+                 'password': Config.SMTP_PASS, 'from': Config.SMTP_FROM, 'tls': Config.SMTP_TLS}
+    if not s.get('host') or not s.get('from'):
+        return {}
+    tls = s.get('tls', True)
+    return {'host': s['host'], 'port': int(s.get('port') or 587), 'user': s.get('user') or '',
+            'password': s.get('password') or '', 'from': s['from'],
+            'tls': tls if isinstance(tls, bool) else str(tls).lower() not in ('0', 'false', 'no')}
+
+
+def verification_on() -> bool:
+    """New accounts and new emails prove their email with a code (the server can send mail)."""
+    return bool(mail_settings())
+
+
+def send_mail(to: str, subject: str, body: str) -> bool:
+    """One plain email (blocking: callers in the game loop run it in a thread). True if sent."""
+    s = mail_settings()
+    if not s or not to:
+        return False
+    msg = EmailMessage()
+    msg['Subject'] = subject
+    msg['From'] = s['from']
+    msg['To'] = to
+    msg.set_content(body)
+    try:
+        with smtplib.SMTP(s['host'], s['port'], timeout=20) as server:
+            if s['tls']:
+                server.starttls()
+            if s['user'] and s['password']:
+                server.login(s['user'], s['password'])
+            server.send_message(msg)
+        return True
+    except Exception as e:
+        logger.warning(f"accounts: mail to {to} not sent: {e}")
+        return False
+
+
+def send_code(to: str, code: str) -> bool:
+    """The email carrying a sign-up (or new email's) code."""
+    return send_mail(to, f'Your Misthollow code: {code}',
+                     f"Your Misthollow code is {code}\n\n"
+                     f"Type it where the game asks for it. It works for 15 minutes.\n\n"
+                     f"If you didn't ask for it, someone typed your address by mistake: you can ignore this email.")
+
+
+EMAIL_RE = re.compile(r'^[^@\s]+@[^@\s]+\.[^@\s.]+$')
+
+
+def email_problem(email: str, account: Optional[Account] = None) -> str:
+    """Why an email won't do for `account` (or a new account) ('' if it will): one account an
+    email, so it can sign in by it."""
+    email = (email or '').strip()
+    if len(email) > 254 or not EMAIL_RE.match(email):
+        return "That isn't an email address."
+    other = AccountManager.find_by_email(email)
+    if other is not None and (account is None or other.account_name != account.account_name):
+        return "That email already belongs to an account."
+    return ''
+
+
 def name_taken(name: str, account: Optional[Account] = None) -> bool:
     """Whether a name is someone's: a character's, or an account's other than `account` (a
     new character may share its own account's name)."""
@@ -204,17 +284,24 @@ class AccountManager:
     """The one place accounts and characters are made, joined, claimed, renamed and deleted."""
 
     @staticmethod
-    async def create_account(account_name: str, password: str) -> Tuple[Optional[Account], str]:
-        """A new, empty account: (account, '') or (None, why not)."""
+    async def create_account(account_name: str, password: str, email: str = '') -> Tuple[Optional[Account], str]:
+        """A new, empty account, with the email it signs in by if one is given: (account, '') or
+        (None, why not)."""
         why = name_problem(account_name) or security.weak(password)
         if why:
             return None, why
+        if email and email_problem(email):
+            return None, email_problem(email)
         password_hash = await security.hash_async(password)
         # checked after the hashing (it awaits): nothing else runs between this and the save
         if name_taken(account_name):
             return None, "That name is already taken."
+        if email and email_problem(email):
+            return None, email_problem(email)
         account = Account(account_name)
         account.password_hash = password_hash
+        if email:
+            account.settings['email'] = email.strip().lower()
         account.save()
         logger.info(f"accounts: made account {account.account_name}")
         return account, ''
@@ -236,17 +323,24 @@ class AccountManager:
         player = Player.create_new(name=name, password=None, race=race, char_class=char_class, stats=stats,
                                    world=world, sex=sex, look_style=look_style)
         player.account_name = account.account_name
+        try:
+            # made, never written over: a save that appeared anyway (another server process,
+            # a hand-copied file) is someone's character
+            await player.save(new=True)
+        except FileExistsError:
+            account.remove_character(name)
+            return None, "That name is already taken."
         account.save()
-        await player.save()
         logger.info(f"accounts: made {name} on {account.account_name}")
         return player, ''
 
     @staticmethod
     async def sign_up(account_name: str, password: str, race: str, char_class: str, stats: Dict[str, int],
-                      world=None, sex: str = 'neutral', look_style: str = '') -> Tuple[Optional[Account], Optional['Player'], str]:
-        """A new account and its first character, named after it, made together (a sign-up
-        left half-way leaves nothing behind): (account, player, '') or (None, None, why not)."""
-        account, why = await AccountManager.create_account(account_name, password)
+                      world=None, sex: str = 'neutral', look_style: str = '', email: str = '') -> Tuple[Optional[Account], Optional['Player'], str]:
+        """A new account (signing in by `email` too, if given) and its first character, named
+        after it, made together (a sign-up left half-way leaves nothing behind): (account,
+        player, '') or (None, None, why not)."""
+        account, why = await AccountManager.create_account(account_name, password, email)
         if account is None:
             return None, None, why
         player, why = await AccountManager.create_character(account, account_name, race, char_class, stats,
@@ -316,7 +410,34 @@ class AccountManager:
             return False, "Wrong password."
         if len(account.characters) >= account.settings.get('max_chars', 8):
             return False, "This account has no room for another character."
-        if source is not None:
+        AccountManager._move(account, name, data, source)
+        logger.info(f"accounts: {account.account_name} claimed {name} from {source.account_name if source else 'no account'}")
+        return True, ''
+
+    @staticmethod
+    def move_character(account: Account, char_name: str) -> Tuple[bool, str]:
+        """An admin's move of a character into `account`, no password asked (tools/move_to_account.py,
+        run on the server's machine while the game is down): (True, '') or (False, why not)."""
+        name = (char_name or '').capitalize()
+        data = _read_save(name)
+        if name_problem(name) or data is None:
+            return False, f"There is no character called {name or 'that'}."
+        name = data.get('name') or name
+        if name in account.characters:
+            return False, f"{name} is already on this account."
+        if len(account.characters) >= account.settings.get('max_chars', 8):
+            return False, "This account has no room for another character."
+        source = Account.load(data.get('account_name') or '')
+        AccountManager._move(account, name, data, source)
+        logger.info(f"accounts: {name} moved to {account.account_name} from {source.account_name if source else 'no account'}")
+        return True, ''
+
+    @staticmethod
+    def _move(account: Account, name: str, data: dict, source: Optional[Account]):
+        """Take a character off `source` (if any) and put it on `account`: its save names the
+        account and keeps no password of its own; its devices sign in again. A source left with
+        no characters is retired, unless it is an admin one."""
+        if source is not None and source.account_name != account.account_name:
             source.remove_character(name)
             source.save()
         account.add_character(name)
@@ -327,8 +448,6 @@ class AccountManager:
         security.forget_all(name)
         if source is not None and not source.characters and not source.is_admin:
             AccountManager._retire(source)
-        logger.info(f"accounts: {account.account_name} claimed {name} from {source.account_name if source else 'no account'}")
-        return True, ''
 
     @staticmethod
     def _retire(account: Account):
@@ -342,12 +461,29 @@ class AccountManager:
 
     @staticmethod
     def set_email(account: Account, email: str) -> bool:
-        """Set account email for password resets."""
-        if not email or '@' not in email:
+        """Set the account's email: it signs in by it, and password resets go to it (False: not
+        an email, or another account's; email_problem says which)."""
+        if email_problem(email, account):
             return False
-        account.settings['email'] = email
+        account.settings['email'] = email.strip().lower()
         account.save()
         return True
+
+    @staticmethod
+    def find_by_email(email: str) -> Optional[Account]:
+        """The account whose email this is (any case), if one."""
+        want = (email or '').strip().lower()
+        if not want:
+            return None
+        for path in glob.glob(os.path.join(ACCOUNTS_DIR, '*.json')):
+            try:
+                with open(path, encoding='utf-8') as f:
+                    data = json.load(f)
+            except (OSError, ValueError):
+                continue
+            if ((data.get('settings') or {}).get('email') or '').strip().lower() == want:
+                return Account.from_dict(data)
+        return None
 
     @staticmethod
     def generate_reset_token(account: Account) -> str:
@@ -367,37 +503,15 @@ class AccountManager:
     def send_reset_email(account: Account, token: str) -> bool:
         """Send reset email via SMTP. Returns True if sent."""
         from config import Config
-        cfg = Config()
-
-        if not cfg.SMTP_HOST or not cfg.SMTP_FROM:
-            return False
         if not account.settings.get('email'):
             return False
-
-        msg = EmailMessage()
-        msg['Subject'] = 'Misthollow Password Reset'
-        msg['From'] = cfg.SMTP_FROM
-        msg['To'] = account.settings['email']
-        msg.set_content(
-            f"Hello {account.account_name},\n\n"
-            f"Use this token to reset your password (valid {cfg.PASSWORD_RESET_TTL_HOURS} hours):\n\n"
-            f"{token}\n\n"
-            f"You can reset from the login screen by typing:\n"
-            f"reset {token} <newpassword>\n\n"
-            f"If you did not request this, you can ignore this email."
-        )
-
-        try:
-            server = smtplib.SMTP(cfg.SMTP_HOST, cfg.SMTP_PORT)
-            if cfg.SMTP_TLS:
-                server.starttls()
-            if cfg.SMTP_USER and cfg.SMTP_PASS:
-                server.login(cfg.SMTP_USER, cfg.SMTP_PASS)
-            server.send_message(msg)
-            server.quit()
-            return True
-        except Exception:
-            return False
+        return send_mail(account.settings['email'], 'Misthollow Password Reset',
+                         f"Hello {account.account_name},\n\n"
+                         f"Use this token to reset your password (valid {Config.PASSWORD_RESET_TTL_HOURS} hours):\n\n"
+                         f"{token}\n\n"
+                         f"You can reset from the login screen by typing:\n"
+                         f"reset {token} <newpassword>\n\n"
+                         f"If you did not request this, you can ignore this email.")
 
     @staticmethod
     async def reset_with_token(account_name: str, token: str, new_password: str) -> bool:
@@ -524,6 +638,95 @@ def _free_account_name(name: str) -> Optional[str]:
         if not name_problem(alt) and not Account.exists(alt) and not os.path.exists(_save_path(alt)):
             return alt
     return None
+
+
+MOVES = os.path.join(os.path.dirname(__file__), '..', 'world', 'moves.json')
+MOVES_DONE = os.path.join(os.path.dirname(__file__), '..', 'lib', 'moves_done.json')
+
+
+def apply_moves(path: str = MOVES, done_path: str = MOVES_DONE, backup_root: Optional[str] = None) -> List[str]:
+    """Run each move in world/moves.json once, at start (no one is in the world to save over
+    it). A move puts characters on the account of a named character (`to_account_of`): those it
+    names, and with `min_level` every character of at least that level (`all`: every one),
+    except those on `skip_accounts`; `admin` makes that account an admin one (so characters
+    immortal through their old account stay so); `gearup` gives every character then on the
+    account the endgame kit at its next login (its value tells this gift from an earlier one).
+    The account's limit grows to hold them. A move whose account
+    isn't there yet waits for a later start; one that ran is recorded in lib/moves_done.json
+    and never runs again, so a character later moved elsewhere stays there. Everything a move
+    changes is copied first to <backup_root> (default lib/backups/moves-<id>-<time>).
+    Returns what was done, a line a character."""
+    try:
+        with open(path, encoding='utf-8') as f:
+            moves = json.load(f).get('moves') or []
+    except (OSError, ValueError):
+        return []
+    try:
+        with open(done_path, encoding='utf-8') as f:
+            done = set(json.load(f))
+    except (OSError, ValueError):
+        done = set()
+    report = []
+    for mv in moves:
+        mid = mv.get('id')
+        if not mid or mid in done:
+            continue
+        owner = _read_save(mv.get('to_account_of') or '')
+        target = Account.load((owner or {}).get('account_name') or '')
+        if target is None:
+            logger.warning(f"accounts: move {mid} waits: no account holds {mv.get('to_account_of')}")
+            continue
+        skip = {a.lower() for a in mv.get('skip_accounts') or []}
+        names = [n.capitalize() for n in mv.get('characters') or []]
+        if mv.get('min_level') or mv.get('all'):
+            for p in sorted(glob.glob(os.path.join(_players_dir(), '*.json'))):
+                try:
+                    with open(p, encoding='utf-8') as f:
+                        d = json.load(f)
+                except (OSError, ValueError):
+                    continue
+                if isinstance(d, dict) and d.get('name') and int(d.get('level') or 0) >= int(mv.get('min_level') or 0):
+                    names.append(d['name'])
+        chosen = []
+        for n in dict.fromkeys(names):
+            d = _read_save(n)
+            acct = ((d or {}).get('account_name') or '').lower()
+            if d is None:
+                report.append(f"{n}: no such character")
+            elif acct == target.account_name:
+                report.append(f"{d.get('name') or n}: already on {target.account_name}")
+            elif acct in skip:
+                report.append(f"{d.get('name') or n}: left on {acct}")
+            else:
+                chosen.append(d.get('name') or n)
+        backup = backup_root or os.path.join(_players_dir(), '..', 'backups', f"moves-{mid}-{datetime.now():%Y%m%d%H%M%S}")
+        os.makedirs(os.path.join(backup, 'players'), exist_ok=True)
+        os.makedirs(os.path.join(backup, 'accounts'), exist_ok=True)
+        for n in chosen:
+            shutil.copy2(_save_path(n), os.path.join(backup, 'players', f'{n.lower()}.json'))
+            src = ((_read_save(n) or {}).get('account_name') or '').lower()
+            if src and Account.exists(src):
+                shutil.copy2(os.path.join(ACCOUNTS_DIR, f'{src}.json'), os.path.join(backup, 'accounts', f'{src}.json'))
+        shutil.copy2(os.path.join(ACCOUNTS_DIR, f'{target.account_name}.json'), os.path.join(backup, 'accounts', f'{target.account_name}.json'))
+        target.settings['max_chars'] = max(target.settings.get('max_chars', 8), len(target.characters) + len(chosen))
+        if mv.get('admin'):
+            target.is_admin = True
+        target.save()
+        for n in chosen:
+            ok, why = AccountManager.move_character(target, n)
+            report.append(f"{n}: {'moved to ' + target.account_name if ok else why}")
+        if mv.get('gearup'):
+            # the endgame kit for every character on the account now (not one made later), at
+            # each one's next login (grants.py, from its runtime file)
+            import grants
+            grants.add_runtime_gifts({n: {'gearup': mv['gearup'], 'why': f"move {mid}"} for n in target.characters})
+            report.append(f"the endgame kit at next login for {', '.join(target.characters)}")
+        done.add(mid)
+        os.makedirs(os.path.dirname(done_path), exist_ok=True)
+        with open(done_path, 'w', encoding='utf-8') as f:
+            json.dump(sorted(done), f, indent=2)
+        logger.info(f"accounts: move {mid} onto {target.account_name}: " + '; '.join(report))
+    return report
 
 
 def migrate_saves(backup_root: Optional[str] = None) -> Dict[str, list]:

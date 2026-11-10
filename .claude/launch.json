@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "misthollow",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-X", "utf8", "-c", "import os, sys, runpy; os.chdir('src'); sys.path.insert(0, '.'); runpy.run_path('main.py', run_name='__main__')"],
+      "port": 4001
+    }
+  ]
+}

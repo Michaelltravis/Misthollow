@@ -3,6 +3,7 @@
 // driven by the shared net.js state (`map` payloads, `combat.update`, server text).
 // Actions go out as bus events ('hud.attack', 'hud.ability', 'hud.flee') for main.js,
 // which knows the target and plays the hero's animation.
+import { bannerSays } from './regionsay.js';
 import { splitByKind } from './logkinds.js';
 import { framed as inBox, renderBox, renderLine, renderCols, classify, meters, inList, unprompt, isTitle } from './frames.js';
 import { SCHOOL_CSS } from '../sctlogic.js';
@@ -25,9 +26,9 @@ import { createStable } from './stable.js';
 import { createServices } from './services.js';
 import { createLegend } from './legend.js';
 import { abilityIcon, uiIcon } from './icons.js';
-import { buffList } from './buffs.js';
+import { buffList, auraBase } from './buffs.js';
 import { lookPortrait, creaturePortrait } from './portrait.js';
-import { SLOTS, cleanBar, defaultBar, placeNew, putOnBar, takeOffBar, diffAbilities, usable, costLine, rankOf, MAIN, keyOf, slotForKey } from '../abilities.js';
+import { SLOTS, cleanBar, defaultBar, placeNew, putOnBar, takeOffBar, keepUnseen, diffAbilities, usable, costLine, rankOf, MAIN, keyOf, slotForKey } from '../abilities.js';
 import { createBars } from './bars.js';
 import { conOf, shownName } from '../targeting.js';
 import { recipeFor } from '../abilityfx.js';
@@ -68,9 +69,14 @@ export function createHud() {
     menu: $('#menu'), settings: $('#settings'), slots: $('#slots'), xbars: $('#xbars'),
   };
   const st = { player: null, abilities: null, byId: new Map(), bar: new Array(SLOTS).fill(null), custom: false, barEdited: 0,
-    barSig: '', glow: new Set(), cooldowns: {}, cdAt: 0, target: null, history: [], hi: -1, barsFor: '' };
+    arranged: null, serverSig: '', barSig: '', glow: new Set(), cooldowns: {}, cdAt: 0, target: null, history: [], hi: -1, barsFor: '' };
   // the extra bars (bars.js): floating, movable; their slots behave as the main bar's
-  const bars = createBars(els.xbars, { onChange: () => { st.barSig = ''; renderBar(); try { syncSettings(); } catch (_) {} } });
+  const mainLock = document.createElement('button');
+  mainLock.className = 'barlock';
+  $('#bar-mid').appendChild(mainLock);
+  const bars = createBars(els.xbars, { mainLock, onChange: () => { st.barSig = ''; renderBar(); try { syncSettings(); } catch (_) {} } });
+  const locked = i => bars.lockedSlot(i);
+  const lockedToast = () => toast('That bar is locked: click its 🔒 to change what is on it');
   // a slot anywhere on the bars (main and extra)
   const slotQ = sel => els.slots.querySelector(sel) || els.xbars.querySelector(sel);
   const slotQA = sel => [...els.slots.querySelectorAll(sel), ...els.xbars.querySelectorAll(sel)];
@@ -82,8 +88,10 @@ export function createHud() {
     onUse: id => use(id),
     onAdd: id => {
       // the first free slot on a bar that shows (the main bar first)
-      const i = st.bar.findIndex((x, k) => x === null && (k < MAIN || k - MAIN < 8 * bars.count));
-      if (i < 0) toast('Your bars are full: drag the ability onto a slot (more bars: Settings, O)'); else editBar(putOnBar(st.bar, id, i));
+      const i = st.bar.findIndex((x, k) => x === null && !locked(k) && (k < MAIN || k - MAIN < 8 * bars.count));
+      if (i < 0) toast('Your bars are full (or locked): drag the ability onto a slot (more bars: Settings, O)');
+      else if (st.bar.includes(id) && locked(st.bar.indexOf(id))) lockedToast();
+      else editBar(putOnBar(st.bar, id, i, locked));
     },
     onDragStart: () => { els.ab.classList.add('dragging'); if (els.xbars) els.xbars.classList.add('dragging'); },
     onDragEnd: () => { els.ab.classList.remove('dragging'); if (els.xbars) els.xbars.classList.remove('dragging'); },
@@ -121,6 +129,7 @@ export function createHud() {
   const legend = createLegend($('#legend'), { fetchLegend: () => q('legend'), fetchDoctrine: () => q('doctrine'), send,
     isWarrior: () => String((MH.state.player || {}).char_class || '').toLowerCase() === 'warrior' });
   const PROGRESS = { talents, almanac, travel, stable, services, legend };
+  const openWindows = [];   // window ids, the one opened last at the end (raise(), below)
   const help = createHelp($('#help'), {
     fetchTopics: () => getJSON('/help'),
     fetchTopic: name => getJSON(`/help?topic=${encodeURIComponent(name)}`),
@@ -142,10 +151,18 @@ export function createHud() {
   // ---- scale ----
   function applyScale() {
     const pref = ls.get('mh3d_ui') || 'auto';
-    const w = window.innerWidth;
+    // a wide but short window is a small one: the height counts as the width it would be at 16:9
+    const w = Math.min(window.innerWidth, window.innerHeight * 16 / 9);
     const v = pref === 'auto' ? (w >= 1800 ? 1.05 : w >= 1400 ? 0.95 : w >= 1000 ? 0.85 : 0.72) : Number(pref) || 1;
     document.documentElement.style.setProperty('--ui', v);
+    stackParty();
   }
+  // the party frames hang under your own, however tall it has grown (buffs, meters, the riding line)
+  function stackParty() {
+    const r = els.pf.getBoundingClientRect();
+    if (r.height) document.documentElement.style.setProperty('--pf-bottom', `${Math.round(r.bottom)}px`);
+  }
+  if (window.ResizeObserver) new ResizeObserver(stackParty).observe(els.pf);
   window.addEventListener('resize', applyScale);
   applyScale();
 
@@ -178,6 +195,11 @@ export function createHud() {
   let portraitFor = '', lastLevel = 0;
   // a moment: a title over light rays (a level gained, a fall)
   let momentTimer = 0;
+  // What stands in the middle of the screen says so on <body> (mid-react, mid-moment, mid-herald,
+  // mid-banner), and the stylesheet keeps them off each other: a blow to answer comes before a
+  // level gained, that before the world's news, that before a place's name; the toasts move below
+  // whichever is up (hud.css "the middle of the screen").
+  const mid = (what, on) => document.body.classList.toggle(`mid-${what}`, !!on);
   function moment({ kicker = '', title = '', sub = '', tone = '' }) {
     const m = $('#moment');
     m.querySelector('.mo-kicker').textContent = kicker;
@@ -187,7 +209,8 @@ export function createHud() {
     void m.offsetWidth;
     m.classList.add('in');
     clearTimeout(momentTimer);
-    momentTimer = setTimeout(() => m.classList.add('hidden'), 4300);
+    mid('moment', true);
+    momentTimer = setTimeout(() => { m.classList.add('hidden'); mid('moment', false); }, 4300);
   }
   // the death card: who did it, what it cost, where you wake (player.py sends a 'fallen' event
   // with them; the death event alone shows the card at once, the details fill it in)
@@ -271,7 +294,7 @@ export function createHud() {
     buffSig = nsig;
     $('#buffs').innerHTML = list.map(a => {
       const id = String(a.name || a.spell).toLowerCase();
-      const base = id.replace(/_(invuln|damage|speed|mend|crit|stealth|haste|stun|regen|bonus)$/, '');
+      const base = auraBase(id);
       const bad = BAD.test(id);
       const left = a.remaining != null ? a.remaining : a.duration;
       const frac = a.duration ? Math.max(0, Math.min(1, (left || 0) / a.duration)) : 1;
@@ -306,9 +329,30 @@ export function createHud() {
     const el = e.target.closest && e.target.closest('[data-tip-title]');
     if (!el) return;
     const r = el.getBoundingClientRect();
-    showTip(`<div class="tc-name">${esc(el.dataset.tipTitle)}</div>${el.dataset.tipSub ? `<div class="tc-sub">${esc(el.dataset.tipSub)}</div>` : ''}`, r.left + r.width / 2, r.top);
+    showTip(`${el.dataset.tipTitle ? `<div class="tc-name">${esc(el.dataset.tipTitle)}</div>` : ''}${el.dataset.tipSub ? `<div class="tc-sub">${esc(el.dataset.tipSub)}</div>` : ''}`, r.left + r.width / 2, r.top);
   });
   document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('[data-tip-title], .slot')) hideTip(); });
+  // the browser's own tooltips (title=...) on the HUD become the HUD's: one look, no grey box after a wait.
+  // What had a title keeps it as its name for a screen reader.
+  const adoptTitles = root => (root.querySelectorAll ? root.querySelectorAll('[title]') : []).forEach(el => {
+    const t = el.getAttribute('title');
+    if (!t || el.closest('#login, #create')) return;
+    if (!el.dataset.tipTitle) {
+      // (a few words are a name; a sentence is the small print under the thing's own words)
+      const own = el.textContent.trim().replace(/\s+/g, ' ');
+      if (t.length <= 28) el.dataset.tipTitle = t;
+      else { el.dataset.tipTitle = own.length <= 28 ? own : ''; el.dataset.tipSub = t; }
+      if (!el.getAttribute('aria-label') && !own) el.setAttribute('aria-label', t);
+    }
+    el.removeAttribute('title');
+  });
+  adoptTitles(document.body);
+  new MutationObserver(list => { for (const m of list) for (const n of m.addedNodes) if (n.nodeType === 1) { if (n.hasAttribute && n.hasAttribute('title')) adoptTitles(n.parentNode || n); else adoptTitles(n); } })
+    .observe(document.body, { childList: true, subtree: true });
+  // (a slot or buff re-drawn under the cursor is gone without a mouseout: the tooltip goes with it)
+  setInterval(() => {
+    if (!tip.classList.contains('hidden') && !document.querySelector('[data-tip-title]:hover, .slot:hover')) hideTip();
+  }, 400);
 
   // ---- action bar: Attack (F), your own 16 slots (1-8, Shift+1-8), Flee ----
   // Abilities come from the payload (`abilities`, `bar`: see abilities.js). A character who
@@ -339,7 +383,7 @@ export function createHud() {
       pct: learned[id] || 0, known: !!learned[id], level: i + 1, target: SELF.has(id) ? 'self' : 'enemy' }));
   }
   function buildBar(p) {
-    if (p.name && p.name !== st.barsFor) { st.barsFor = p.name; bars.load(p.name); }
+    if (p.name && p.name !== st.barsFor) { st.barsFor = p.name; st.serverSig = ''; st.barEdited = 0; bars.load(p.name); }
     const cls = String(p.char_class || '').toLowerCase();
     const list = abilityList(p);
     const prev = st.abilities && st.abilities.fromBook === !!books.get(cls) ? st.abilities : null, before = st.bar;
@@ -347,16 +391,24 @@ export function createHud() {
     st.abilities = list;
     st.byId = new Map(list.map(a => [a.id, a]));
     for (const a of list) iconTypes.set(a.id, a.type || 'skill');
-    // a bar you just changed outlives payloads the server sent before it had your change
-    if (performance.now() - st.barEdited > 4000) {
-      st.custom = Array.isArray(p.bar) && p.bar.some(Boolean);
-      st.bar = st.custom ? cleanBar(p.bar, list) : defaultBar(list, KIT[cls] || []);
+    // the server's bar is taken up when it CHANGES. Between map payloads the same player object
+    // comes again with every vitals tick and combat round, carrying the bar as it was then:
+    // taking that up each time undid what you had arranged since (and the next edit sent the
+    // old bar back to the server). Nor is it taken up while a change of yours is on its way.
+    const sig = JSON.stringify(Array.isArray(p.bar) ? p.bar : null);
+    if (sig !== st.serverSig) {
+      st.serverSig = sig;
+      if (performance.now() - st.barEdited > 4000) {
+        st.custom = Array.isArray(p.bar) && p.bar.some(Boolean);
+        st.arranged = st.custom ? p.bar.slice(0, SLOTS) : null;
+      }
     }
+    st.bar = st.custom ? cleanBar(st.arranged, list) : defaultBar(list, KIT[cls] || []);
     if (prev) {
       const { learned, improved } = diffAbilities(prev, list);
       if (learned.length) {
         // into free slots, without moving what is already on your keys
-        const r = placeNew(st.custom ? st.bar : cleanBar(before, list), learned.filter(id => usable(st.byId.get(id))), MAIN + 8 * bars.count);
+        const r = placeNew(st.custom ? st.bar : cleanBar(before, list), learned.filter(id => usable(st.byId.get(id))), MAIN + 8 * bars.count, locked);
         if (r.placed.length || !st.custom) editBar(r.bar, true);
         for (const id of learned) {
           const a = st.byId.get(id), i = st.bar.indexOf(id);
@@ -373,10 +425,12 @@ export function createHud() {
   }
   // send the bar to the server (kept with the character)
   function editBar(bar, quiet) {
+    // (what the bar held that this client can't show yet stays on it: keepUnseen)
+    st.arranged = st.custom ? keepUnseen(bar, st.arranged, st.bar) : bar.slice();
     st.bar = bar;
     st.custom = true;
     st.barEdited = performance.now();
-    MH.sendCommand(`webbar ${bar.map(x => x || '-').join(' ')}`, false);
+    MH.sendCommand(`webbar ${st.arranged.map(x => x || '-').join(' ')}`, false);
     renderBar();
     spellbook.update(st.abilities, st.bar, st.player && st.player.level);
     if (!quiet) requestAnimationFrame(fitChat);
@@ -384,11 +438,11 @@ export function createHud() {
   function slotHtml(i) {
     const id = st.bar[i], a = id && st.byId.get(id), key = keyOf(i);
     if (!a) return `<div class="slot empty" data-i="${i}" data-tip-title="An empty slot${keyTip(i)}" data-tip-sub="Drag an ability here from your spellbook (K)"><span class="key">${key}</span></div>`;
-    return `<div class="slot${st.glow.has(id) ? ' glow' : ''}${a.marquee ? ' marquee' : ''}" data-i="${i}" data-id="${a.id}" draggable="true">`
+    return `<div class="slot${st.glow.has(id) ? ' glow' : ''}${a.marquee ? ' marquee' : ''}${locked(i) ? ' pinned' : ''}" data-i="${i}" data-id="${a.id}" draggable="${!locked(i)}">`
       + `${ICON(a.id)}<span class="key">${key}</span><div class="cd"><i></i><span></span></div></div>`;
   }
   function renderBar() {
-    const sig = JSON.stringify([st.bar, [...st.glow], st.bar.map(id => id && st.byId.has(id)), bars.count]);
+    const sig = JSON.stringify([st.bar, [...st.glow], st.bar.map(id => id && st.byId.has(id)), bars.count, st.bar.map((_, i) => locked(i))]);
     if (sig === st.barSig) return;
     st.barSig = sig;
     const row = (from, to) => Array.from({ length: to - from }, (_, k) => slotHtml(from + k)).join('');
@@ -419,23 +473,21 @@ export function createHud() {
         if (st.bar[i]) MH.bus.emit('hud.slotMenu', { x: e.clientX, y: e.clientY, slot: i, id: st.bar[i], name: (st.byId.get(st.bar[i]) || {}).name });
       });
       el.addEventListener('dragstart', e => {
+        if (locked(i)) { e.preventDefault(); return; }
         e.dataTransfer.setData('text/x-ability', st.bar[i]);
         e.dataTransfer.setData('text/x-slot', String(i));
         e.dataTransfer.effectAllowed = 'move';
         els.ab.classList.add('dragging');
         els.xbars.classList.add('dragging');
       });
-      // dropped nowhere: off the bar
-      el.addEventListener('dragend', e => {
+      // (let go off the bars, it comes off: the document's drop, below)
+      el.addEventListener('dragend', () => {
         els.ab.classList.remove('dragging');
         els.xbars.classList.remove('dragging');
-        if (e.dataTransfer.dropEffect === 'none' && st.bar[i]) {
-          const a = st.byId.get(st.bar[i]);
-          editBar(takeOffBar(st.bar, i));
-          toast(`${a ? a.name : 'That'} is off your bar (it stays in your spellbook, K)`);
-        }
       });
-      el.addEventListener('dragover', e => { if (e.dataTransfer.types.includes('text/x-ability')) { e.preventDefault(); el.classList.add('over'); } });
+      // a locked slot takes the drop too, and keeps what it has: one turned away would read as
+      // let go off the bars, and the ability dragged would come off
+      el.addEventListener('dragover', e => { if (e.dataTransfer.types.includes('text/x-ability')) { e.preventDefault(); if (!locked(i)) el.classList.add('over'); } });
       el.addEventListener('dragleave', () => el.classList.remove('over'));
       el.addEventListener('drop', e => {
         e.preventDefault();
@@ -443,11 +495,29 @@ export function createHud() {
         els.ab.classList.remove('dragging');
         els.xbars.classList.remove('dragging');
         const id = e.dataTransfer.getData('text/x-ability');
-        if (id && st.byId.has(id)) editBar(putOnBar(st.bar, id, i));
+        if (!id || !st.byId.has(id)) return;
+        const next = putOnBar(st.bar, id, i, locked);
+        if (next.every((x, k) => x === st.bar[k])) { if (st.bar[i] !== id) lockedToast(); return; }
+        editBar(next);
       });
     });
     requestAnimationFrame(fitChat);
   }
+  // an ability dragged from a slot and let go off the bars comes off them. Only a drop does it:
+  // a drag called off (Esc), let go outside the window, or on a bar's frame between slots keeps it
+  document.addEventListener('dragover', e => { if (e.dataTransfer.types.includes('text/x-slot')) e.preventDefault(); });
+  document.addEventListener('drop', e => {
+    if (!e.dataTransfer.types.includes('text/x-slot')) return;
+    e.preventDefault();
+    els.ab.classList.remove('dragging');
+    els.xbars.classList.remove('dragging');
+    if (e.target.closest && e.target.closest('#actionbar, #xbars')) return;
+    const i = +e.dataTransfer.getData('text/x-slot'), id = e.dataTransfer.getData('text/x-ability');
+    if (!id || st.bar[i] !== id || locked(i)) return;
+    const a = st.byId.get(id);
+    editBar(takeOffBar(st.bar, i));
+    toast(`${a ? a.name : 'That'} is off your bar (it stays in your spellbook, K)`);
+  });
   // "+2%": an ability on the bar grew
   function tick(id, by) {
     const el = slotQ(`.slot[data-id="${id}"]`);
@@ -760,14 +830,23 @@ export function createHud() {
 
   // ---- banner + toasts ----
   let bannerTimer = 0;
-  function banner(room, zone) {
-    // mid-fight a room's name would sit on the fight; a new region still announces itself
+  // `region` ({name, line}: the zone's region of the world): named over the zone; its line is
+  // said when you cross into it from another (or first arrive), and the banner stays a little longer
+  let lastRegion = null;
+  function banner(room, zone, region = null, zoneLevel = null) {
+    // mid-fight a room's name would sit on the fight; a new zone still announces itself
     if (MH.state.inCombat && !zone) return;
+    const said = bannerSays(zone, region, lastRegion, { zone: zoneLevel, hero: (MH.state.player || {}).level });
+    els.banner.classList.toggle('danger', !!said.danger);
+    if (zone && region) lastRegion = region.id || region.name;
+    els.banner.querySelector('.region').textContent = said.region;
     els.banner.querySelector('.zone').textContent = zone || '';
     els.banner.querySelector('.room').textContent = room || '';
+    els.banner.querySelector('.line').textContent = said.line;
     els.banner.style.opacity = 1;
     clearTimeout(bannerTimer);
-    bannerTimer = setTimeout(() => { els.banner.style.opacity = 0; }, zone ? 3200 : 1800);
+    mid('banner', true);
+    bannerTimer = setTimeout(() => { els.banner.style.opacity = 0; mid('banner', false); }, said.line ? 5200 : zone ? 3200 : 1800);
   }
   // the world's news, large and gilded for a few seconds: an achievement, a rare creature sighted
   let heraldTimer = 0;
@@ -779,7 +858,8 @@ export function createHud() {
     el.querySelector('.hd-t').textContent = title;
     el.querySelector('.hd-s').textContent = sub;
     clearTimeout(heraldTimer);
-    heraldTimer = setTimeout(() => { el.className = `hud ${tone}`; }, 5200);
+    mid('herald', true);
+    heraldTimer = setTimeout(() => { el.className = `hud ${tone}`; mid('herald', false); }, 5200);
   }
   function toast(msg, ms = 2900) {
     if (!msg) return;
@@ -887,7 +967,9 @@ export function createHud() {
   }
   MH.bus.on('terminal.echo', () => { box = null; cols = null; });
   // a command typed shows as typed; one the bar sent for a fight goes with the fight ({ text, kind })
-  MH.bus.on('terminal.echo', cmd => (typeof cmd === 'object' ? log(`> ${cmd.text}`, 'cmd', cmd.kind) : log(`> ${cmd}`, 'cmd')));
+  // (the '#46' a bar key adds to name the exact creature is the client's own business)
+  const said = t => String(t).replace(/\s+#\d+$/, '');
+  MH.bus.on('terminal.echo', cmd => (typeof cmd === 'object' ? log(`> ${said(cmd.text)}`, 'cmd', cmd.kind) : log(`> ${said(cmd)}`, 'cmd')));
   // tabs filter the log; the mode chip decides what Enter does with plain text
   document.querySelectorAll('#chat .chat-tabs button').forEach(b => b.addEventListener('click', () => {
     els.log.dataset.tab = b.dataset.tab;
@@ -936,6 +1018,7 @@ export function createHud() {
   els.menu.querySelectorAll('button[data-icon]').forEach(b => {
     b.innerHTML = `<img alt="" src="${uiIcon(b.dataset.icon, { size: 72 })}"><kbd>${esc(b.dataset.key || '')}</kbd>`;
     b.dataset.tipTitle = b.dataset.tip; b.dataset.tipSub = b.dataset.key ? `Key: ${b.dataset.key}` : '';
+    b.setAttribute('aria-label', b.dataset.key ? `${b.dataset.tip} (${b.dataset.key})` : b.dataset.tip);
   });
   els.menu.querySelector('[data-act="settings"]').addEventListener('click', () => els.settings.classList.toggle('hidden'));
   // a window opened tells the server (`uiseen`): the tutorial's "type score" steps count it
@@ -1079,19 +1162,28 @@ export function createHud() {
     shop: ['coins', 'ui_close'], lootwin: ['leather', 'ui_close'], talk: ['ui_offer', 'ui_close'], who: ['ui_open', 'ui_close'], help: ['book_open', 'book_close'],
     talents: ['book_open', 'book_close'], almanac: ['book_open', 'book_close'], travel: ['ui_open', 'ui_close'], stable: ['leather', 'ui_close'],
     services: ['coins', 'ui_close'], legend: ['book_open', 'book_close'] };
+  // the window opened last stands in front of the others (they share the middle of the screen), and Esc closes it first
+  function raise(id, open) {
+    const i = openWindows.indexOf(id);
+    if (i >= 0) openWindows.splice(i, 1);
+    if (open) openWindows.push(id);
+    openWindows.forEach((w, n) => { const el = document.getElementById(w); if (el) el.style.zIndex = String(16 + Math.min(n, 5)); });
+    if (!open) { const el = document.getElementById(id); if (el) el.style.zIndex = ''; }
+  }
   for (const [id, [on, off]] of Object.entries(WINDOW_SOUNDS)) {
     const el = document.getElementById(id);
     if (!el) continue;
     let was = !el.classList.contains('hidden');
     new MutationObserver(() => {
       const now = !el.classList.contains('hidden');
-      if (now !== was) { was = now; sound.play(now ? on : off); }
+      if (now !== was) { was = now; sound.play(now ? on : off); raise(id, now); }
     }).observe(el, { attributes: true, attributeFilter: ['class'] });
   }
   // a click on a window's buttons (not the action bar: abilities make their own sounds)
   document.addEventListener('click', e => {
     const b = e.target && e.target.closest && e.target.closest('.panel button, #create .pick, #login .btn');
-    if (b && !b.closest('#actionbar') && !b.matches('[data-act="mute"]')) sound.play('ui_click');
+    // (a button that opens or closes a window: the window makes the sound)
+    if (b && !b.closest('#actionbar') && !b.matches('[data-act="mute"], #menu button, .win-x')) sound.play('ui_click');
   }, true);
   // gold changes hands: coins
   MH.bus.on('terminal.output', ({ text }) => {
@@ -1118,7 +1210,11 @@ export function createHud() {
 
   // ---- keys (when not typing) ----
   window.addEventListener('keydown', e => {
-    if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+    if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) {
+      // Esc in a search box or a number field steps out of it (the chat line has its own Esc)
+      if (e.key === 'Escape' && e.target !== els.input && MH.state.isLoggedIn) e.target.blur();
+      return;
+    }
     if (!MH.state.isLoggedIn) return;
     const k = e.key;
     if (k === 'Enter') { els.input.focus(); e.preventDefault(); return; }
@@ -1133,19 +1229,23 @@ export function createHud() {
       e.preventDefault(); return;
     }
     if (k === 'Escape') {
-      const mapOpen = !$('#bigmap').classList.contains('hidden');
-      const progOpen = Object.values(PROGRESS).some(w => w.open);
-      if (inventory.open || character.open || spellbook.open || trainer.open || journal.open || mapOpen || shop.open || lootwin.open || talk.open || who.open || help.open || progOpen) {
-        for (const w of Object.values(PROGRESS)) w.toggle(false);
-        inventory.toggle(false); character.toggle(false); spellbook.toggle(false); trainer.toggle(false); journal.toggle(false);
-        shop.toggle(false); lootwin.toggle(false); talk.toggle(false); who.toggle(false); help.toggle(false);
-        MH.bus.emit('hud.map', false); return;
-      }
-      MH.bus.emit('hud.untarget'); els.settings.classList.add('hidden'); return;
+      // one press, one window: the one opened last (raise() keeps the order); with none open, the target goes
+      const closers = { inventory: () => inventory.toggle(false), character: () => character.toggle(false), spellbook: () => spellbook.toggle(false),
+        trainer: () => trainer.toggle(false), journal: () => journal.toggle(false), shop: () => shop.toggle(false), lootwin: () => lootwin.toggle(false),
+        talk: () => talk.toggle(false), who: () => who.toggle(false), help: () => help.toggle(false), bigmap: () => MH.bus.emit('hud.map', false),
+        settings: () => els.settings.classList.add('hidden') };
+      for (const [id, w] of Object.entries(PROGRESS)) closers[id] = () => w.toggle(false);
+      for (const id of ['give-pick', 'item-menu']) { const el = document.getElementById(id); if (el && !el.classList.contains('hidden')) { el.classList.add('hidden'); return; } }
+      const top = openWindows.filter(id => { const el = document.getElementById(id); return el && !el.classList.contains('hidden'); }).pop();
+      if (top && closers[top]) { closers[top](); return; }
+      // (a window open from before the HUD watched them: close what is open, as before)
+      const stray = Object.keys(closers).find(id => { const el = document.getElementById(id); return el && !el.classList.contains('hidden'); });
+      if (stray) { closers[stray](); return; }
+      MH.bus.emit('hud.untarget'); return;
     }
-    if ((k === 'i' || k === 'I') && !e.ctrlKey && !e.metaKey) { inventory.toggle(); e.preventDefault(); return; }
-    if ((k === 'c' || k === 'C') && !e.ctrlKey && !e.metaKey) { character.toggle(); e.preventDefault(); return; }
-    if ((k === 'k' || k === 'K') && !e.ctrlKey && !e.metaKey) { spellbook.toggle(); e.preventDefault(); return; }
+    if ((k === 'i' || k === 'I') && !e.ctrlKey && !e.metaKey && !e.altKey) { inventory.toggle(); e.preventDefault(); return; }
+    if ((k === 'c' || k === 'C') && !e.ctrlKey && !e.metaKey && !e.altKey) { character.toggle(); e.preventDefault(); return; }
+    if ((k === 'k' || k === 'K') && !e.ctrlKey && !e.metaKey && !e.altKey) { spellbook.toggle(); e.preventDefault(); return; }
     if (k === 'Tab') { MH.bus.emit('hud.cycleTarget'); e.preventDefault(); return; }
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     if (k === 'l' || k === 'L') { journal.toggle(); e.preventDefault(); return; }
@@ -1165,7 +1265,7 @@ export function createHud() {
       .map(a => ({ id: a.id, label: a.name, spell: a.type === 'spell' }));
   }
   function useAbility(id) { use(id); }
-  function unslot(i) { if (st.bar[i]) editBar(takeOffBar(st.bar, i)); }
+  function unslot(i) { if (!st.bar[i]) return; if (locked(i)) lockedToast(); else editBar(takeOffBar(st.bar, i)); }
   function prefill(text) { els.input.value = text; els.input.focus(); }
   function openPanel(name) { if (name === 'inventory') inventory.toggle(true); else if (name === 'character') character.toggle(true); else if (name === 'mail') services.show('mail'); }
   function openTrainer(name) { trainer.toggle(true, name || ''); if (MH.refreshState) MH.refreshState(); }
@@ -1177,7 +1277,7 @@ export function createHud() {
     if (!bag.length) { toast('You carry nothing to give.'); return; }
     const word = (it, list) => { const kw = String(it.name || it.short || 'item').toLowerCase().split(/\s+/).find(w => w.length > 1) || 'item';
       let n = 0; for (const o of list) { if (String(o.name || o.short || '').toLowerCase().split(/\s+/).includes(kw)) n++; if (o === it) break; } return n > 1 ? `${n}.${kw}` : kw; };
-    el.innerHTML = `<div class="gp-title">Give ${esc(name)}…</div>` + bag.slice(0, 24).map((it, i) => `<button data-i="${i}">${esc(it.short || it.name)}</button>`).join('')
+    el.innerHTML = `<div class="gp-title">Give ${esc(name)}…</div>` + bag.map((it, i) => `<button data-i="${i}">${esc(it.short || it.name)}</button>`).join('')
       + '<button data-i="gold">Some gold…</button>';
     el.style.left = `${Math.min(x, innerWidth - 240)}px`; el.style.top = `${Math.min(y, innerHeight - 320)}px`;
     el.classList.remove('hidden');

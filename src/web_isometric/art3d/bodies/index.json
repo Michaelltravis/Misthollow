@@ -791,5 +791,95 @@
   "height": 0.24,
   "for": "manta rays, ixitxachitl; tinted by bestiary.js",
   "ref": 1.155
+ },
+ "drowned_king": {
+  "kind": "boss",
+  "anims": [
+   "Idle",
+   "Walk",
+   "Run",
+   "Bite_Front",
+   "Bite_InPlace",
+   "HitRecieve",
+   "Death"
+  ],
+  "tris": 2472,
+  "height": 3.695,
+  "for": "Nerathis, the Drowned King (its own colours: not tinted)"
+ },
+ "ostragoth": {
+  "kind": "boss",
+  "anims": [
+   "Idle",
+   "Walk",
+   "Run",
+   "Bite_Front",
+   "Bite_InPlace",
+   "HitRecieve",
+   "Death"
+  ],
+  "tris": 2130,
+  "height": 2.893,
+  "for": "Ostragoth, the vampire lord (its own colours: not tinted)"
+ },
+ "war": {
+  "kind": "boss",
+  "anims": [
+   "Idle",
+   "Walk",
+   "Run",
+   "Bite_Front",
+   "Bite_InPlace",
+   "HitRecieve",
+   "Death"
+  ],
+  "tris": 1994,
+  "height": 4.205,
+  "for": "War (its own colours: not tinted)"
+ },
+ "famine": {
+  "kind": "boss",
+  "anims": [
+   "Idle",
+   "Walk",
+   "Run",
+   "Bite_Front",
+   "Bite_InPlace",
+   "HitRecieve",
+   "Death"
+  ],
+  "tris": 2512,
+  "height": 3.315,
+  "for": "Famine (its own colours: not tinted)"
+ },
+ "pestilence": {
+  "kind": "boss",
+  "anims": [
+   "Idle",
+   "Walk",
+   "Run",
+   "Bite_Front",
+   "Bite_InPlace",
+   "HitRecieve",
+   "Death"
+  ],
+  "tris": 2304,
+  "height": 2.924,
+  "for": "Pestilence (its own colours: not tinted)"
+ },
+ "death": {
+  "kind": "boss",
+  "anims": [
+   "Idle",
+   "Walk",
+   "Run",
+   "Bite_Front",
+   "Bite_InPlace",
+   "HitRecieve",
+   "Death"
+  ],
+  "tris": 2212,
+  "height": 3.872,
+  "for": "Death (its own colours: not tinted)"
  }
 }

@@ -55,7 +55,7 @@
      "description": "To the west lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "The wall top is strewn with rubble here, chunks of masonry and broken\ncoping stones fallen from a tower that has since collapsed. You pick a\ncareful path between them, the wind tugging at you each time you step\nclose to the edge. East the walk narrows between strangely smooth walls,\nand west it opens toward a broad corner bastion.",
+   "description": "The wall top is strewn with rubble here, chunks of masonry and broken\ncoping stones fallen from a tower that has since collapsed. You pick a\ncareful path between them, the wind tugging at you each time you step\nclose to the edge. East the walk runs on past doorways framed in\nstrangely smooth stone, and west it opens toward a broad corner bastion.",
    "extra_descs": {}
   },
   "22150": {
@@ -69,7 +69,6 @@
    "sector_type": "inside",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
    "exits": {
@@ -80,9 +79,13 @@
     "west": {
      "to_room": 14165,
      "description": "To the west lies Ragged Walkway Atop The Castle."
+    },
+    "south": {
+     "to_room": 22181,
+     "description": "To the south lies A Passage Of Grinding Walls."
     }
    },
-   "description": "A smooth-walled passage runs here where the open walkway should be, and\nits stone is warm, as if polished by long friction. The instant you are\nbetween the walls they begin to grind together, slow and certain. Dust\npours from the seams overhead, and dark stains streak the stone at about\nthe height of a man's chest. The roar of moving rock swallows every\nother sound.",
+   "description": "The walkway runs east and west along the top of the outer wall, its\nbattlements broken to stumps. In the inner face of the wall a narrow\ndoorway opens to the south, framed in dressed stone too smooth and too\nnew for these old ramparts. From inside comes a slow grinding, like a\nmillstone turning in the dark. Dark stains streak the threshold, and\nnobody has swept them away.",
    "extra_descs": {}
   },
   "14167": {
@@ -107,7 +110,7 @@
      "description": "To the west lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "A flagstaff leans from the parapet at a drunken angle, the iron collar\nthat held it cracked in two and its pole charred from top to bottom.\nAshes of a banner cling in the joints of the stones, and a scorched\ncrest is still just visible carved on the wall beneath. Past the\nparapet, rust-red cliffs and dead plains fall away into haze. The walk\ngoes east and west, though westward it closes between smooth walls.",
+   "description": "A flagstaff leans from the parapet at a drunken angle, the iron collar\nthat held it cracked in two and its pole charred from top to bottom.\nAshes of a banner cling in the joints of the stones, and a scorched\ncrest is still just visible carved on the wall beneath. Past the\nparapet, rust-red cliffs and dead plains fall away into haze. The walk\ngoes east and west, though westward a doorway of smooth stone opens off\nthe inner side.",
    "extra_descs": {}
   },
   "14168": {
@@ -207,7 +210,7 @@
      "description": "To the west lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "An entire section of battlements has been sheared away here, and for\nseveral paces the walkway runs with no parapet at all, open on the outer\nside to the long drop. The wind comes straight across the gap and\nthreatens to shove you off. West the walk runs back toward the oil\ntroughs, and east it enters a passage between smooth stone walls that\nlook newer than everything around them.",
+   "description": "An entire section of battlements has been sheared away here, and for\nseveral paces the walkway runs with no parapet at all, open on the outer\nside to the long drop. The wind comes straight across the gap and\nthreatens to shove you off. West the walk runs back toward the oil\ntroughs, and east it passes an arch of smooth stone that looks newer\nthan everything around it.",
    "extra_descs": {}
   },
   "22151": {
@@ -221,10 +224,9 @@
    "sector_type": "inside",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
-   "description": "You stumble into a deadly crushing walls! There is no escape...",
+   "description": "Here the walkway is whole for a few strides, its flagstones worn into\nshallow dishes by the boots of long-dead sentries. A low arch in the\ninner parapet leads south into a passage between close walls of dressed\nstone. A splintered spear shaft lies across its threshold, snapped clean\nin two. The walk goes on east and west, and the wind sings along it.",
    "exits": {
     "east": {
      "to_room": 14173,
@@ -233,6 +235,10 @@
     "west": {
      "to_room": 14171,
      "description": "To the west lies Ragged Walkway Atop The Castle."
+    },
+    "south": {
+     "to_room": 22182,
+     "description": "To the south lies A Passage Of Crushing Walls."
     }
    }
   },
@@ -258,7 +264,7 @@
      "description": "To the west lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "This stretch is littered with the shards of a shattered statue, a stone\nwarrior whose plinth still stands on the parapet with only a pair of\nbooted feet left upon it. The wind has scoured the broken pieces smooth\nand pale. East the walkway leads to a turret at the corner of the wall,\nwhile west it disappears between close, smooth walls of dressed stone.",
+   "description": "This stretch is littered with the shards of a shattered statue, a stone\nwarrior whose plinth still stands on the parapet with only a pair of\nbooted feet left upon it. The wind has scoured the broken pieces smooth\nand pale. East the walkway leads to a turret at the corner of the wall,\nwhile west it runs past an arch of close, smooth stone in the inner\nparapet.",
    "extra_descs": {
     "plinth statue feet": "Only the statue's booted feet remain on the plinth, broken off at the\nankle. Letters were once cut into the plinth's face, but they have been\nchiselled out deliberately, leaving a rough scar."
    }
@@ -496,7 +502,7 @@
      "description": "To the down lies Hall Along The Inner Wall."
     }
    },
-   "description": "The walkway meets a bend in the wall here, and a stair of worn steps\nspirals down through a broken hatch into the castle below. Iron hinges\nhang from the hatch frame, rusted through, the door itself long gone.\nThe walk runs north along the wall, and west a narrow stretch disappears\nbetween high, close-set walls of dressed stone that look oddly smooth\nand new. Wind whistles down the stairwell like a breath drawn in.",
+   "description": "The walkway meets a bend in the wall here, and a stair of worn steps\nspirals down through a broken hatch into the castle below. Iron hinges\nhang from the hatch frame, rusted through, the door itself long gone.\nThe walk runs north along the wall, and west it runs on past doorways of\ndressed stone that look oddly smooth and new. Wind whistles down the\nstairwell like a breath drawn in.",
    "extra_descs": {}
   },
   "22156": {
@@ -510,7 +516,6 @@
    "sector_type": "inside",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
    "exits": {
@@ -521,9 +526,13 @@
     "west": {
      "to_room": 22180,
      "description": "To the west lies Ragged Walkway Atop The Castle."
+    },
+    "north": {
+     "to_room": 22188,
+     "description": "To the north lies A Passage Of Moving Walls."
     }
    },
-   "description": "Close walls of dressed stone rise on either hand, and the moment you\nstep between them a deep grinding begins somewhere inside the masonry.\nThe walls are moving, sliding together on hidden runners with a sound\nlike a millstone. Dust sifts from above as the gap shrinks to an arm's\nwidth, then less. There is no ledge to climb, no door, and no time left.",
+   "description": "The walkway runs west along the outer wall and east to the corner by the\nstair. On the inner side, to the north, close walls of dressed stone\nframe a passage no wider than an arm's reach, and a deep grinding\nmurmurs inside the masonry. A crushed helm lies at its threshold,\nflattened to the thickness of a coin. The wind whistles past the opening\nas if afraid to go in.",
    "extra_descs": {}
   },
   "22180": {
@@ -537,7 +546,6 @@
    "sector_type": "inside",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
    "exits": {
@@ -548,9 +556,13 @@
     "west": {
      "to_room": 22162,
      "description": "To the west lies Ragged Walkway Atop The Castle."
+    },
+    "north": {
+     "to_room": 22187,
+     "description": "To the north lies A Narrowing Passage."
     }
    },
-   "description": "Here the passage is barely wider than your shoulders, the stones on both\nsides scored with long scratches where someone tried to hold them apart.\nA low rumble shakes the floor, and the walls lurch inward a hand's\nbreadth at a time. Old bones lie crushed flat in the cracks between the\nflagstones. Whatever way you turn, the stone is closing.",
+   "description": "The walkway is narrow here, a single file of flagstones between a low\nparapet and the inner edge. To the north a slot of a doorway, barely\nwider than a man's shoulders, opens into the wall, its stones scored\nwith long scratches. Old bones lie in the gutter beneath it. The walk\nruns on east and west along the outer wall.",
    "extra_descs": {}
   },
   "22162": {
@@ -564,7 +576,6 @@
    "sector_type": "inside",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
    "exits": {
@@ -575,9 +586,13 @@
     "west": {
      "to_room": 22030,
      "description": "To the west lies Ragged Walkway Atop The Castle."
+    },
+    "north": {
+     "to_room": 22186,
+     "description": "To the north lies A Passage Of Bloody Hands."
     }
    },
-   "description": "Bloody handprints streak the smooth walls of this passage, smeared\ndownward as if someone slid to the floor between them. With a shudder\nand a groan of chains deep in the castle, the two walls begin to grind\ntoward each other. Splinters of old shields are pressed into the mortar\nwhere they failed to hold the stone back. The darkness fills with the\nroar of moving rock.",
+   "description": "The flagstones here are cracked and uneven, and the wind comes hard over\nthe outer battlements. On the inner side, to the north, bloody\nhandprints streak the frame of a narrow doorway, smeared downward as if\nsomeone slid to the floor beside it. Somewhere beyond it, chains groan\ndeep in the masonry. The broken walk goes on east and west, swallowed by\nthe dark.",
    "extra_descs": {}
   },
   "22030": {
@@ -669,7 +684,6 @@
    "sector_type": "inside",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
    "exits": {
@@ -680,9 +694,13 @@
     "west": {
      "to_room": 14190,
      "description": "To the west lies Ragged Walkway Atop The Castle."
+    },
+    "north": {
+     "to_room": 22185,
+     "description": "To the north lies A Sealed Passage."
     }
    },
-   "description": "The walkway funnels into a sealed passage of smooth stone, and a heavy\nslab drops behind you with a boom that shakes your teeth. At once the\nside walls shudder and begin to close, pushed by some engine buried deep\nin the castle. The air fills with stone dust and the shriek of grinding\nrock. There is nowhere left to stand.",
+   "description": "Here the walkway runs east and west along the top of the outer wall,\nwith the drop to the plain open on one hand. On the inner side, to the\nnorth, a heavy stone slab hangs in a slot above a dark doorway, held up\nby a chain that groans in the wind. The prints of careful feet lead past\nit, and none lead in. Stone dust lies thick along the parapet.",
    "extra_descs": {}
   },
   "14190": {
@@ -707,7 +725,7 @@
      "description": "To the west lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "Pale grey daylight returns to the wall here, falling on a stretch of\nbattlement scarred by fire. Every merlon is blackened, and an iron fire-\nbasket hangs crooked from a hook, rusted into a shapeless lump. Both\nways the walk vanishes between smooth, close walls: east into a passage\nthat rumbles faintly, west into a hall where something heavy swings and\nwhistles. Out past the parapet, the dead land stretches to a ruddy,\nsmoking horizon.",
+   "description": "Pale grey daylight returns to the wall here, falling on a stretch of\nbattlement scarred by fire. Every merlon is blackened, and an iron fire-\nbasket hangs crooked from a hook, rusted into a shapeless lump. Both\nways the walk passes doorways in the inner wall: east one that rumbles\nfaintly, west one where something heavy swings and whistles. Out past\nthe parapet, the dead land stretches to a ruddy, smoking horizon.",
    "extra_descs": {}
   },
   "22157": {
@@ -721,10 +739,9 @@
    "sector_type": "inside",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
-   "description": "You stumble into a deadly pendulum hall! There is no escape...",
+   "description": "The walkway runs east and west along the outer wall, hemmed in by a\nframe of black timber that leans over the inner side. Through it, to the\nnorth, a short hall opens into the wall, and from its roof hangs a great\niron blade on a chain. The blade sways a little, though no wind reaches\nin there to move it. Rust and old blood darken the flagstones beneath.",
    "exits": {
     "east": {
      "to_room": 14190,
@@ -733,6 +750,10 @@
     "west": {
      "to_room": 14192,
      "description": "To the west lies Ragged Walkway Atop The Castle."
+    },
+    "north": {
+     "to_room": 22184,
+     "description": "To the north lies The Pendulum Hall."
     }
    }
   },
@@ -813,7 +834,7 @@
      "description": "To the south lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "The parapet here is crowned with iron spikes set in lead, most of them\nsnapped or bent outward by some long-ago assault. The broken hooks of a\nsiege ladder are still caught on the stones, the wood long rotted away.\nTo the north the walk narrows between smooth, close walls, and to the\nsouth it falls into deep shadow. The wind is so strong here that you\nlean into it just to stand.",
+   "description": "The parapet here is crowned with iron spikes set in lead, most of them\nsnapped or bent outward by some long-ago assault. The broken hooks of a\nsiege ladder are still caught on the stones, the wood long rotted away.\nTo the north the walk passes a doorway of smooth, close stone, and to\nthe south it falls into deep shadow. The wind is so strong here that you\nlean into it just to stand.",
    "extra_descs": {}
   },
   "22152": {
@@ -827,7 +848,6 @@
    "sector_type": "inside",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
    "exits": {
@@ -838,9 +858,13 @@
     "south": {
      "to_room": 14194,
      "description": "To the south lies Ragged Walkway Atop The Castle."
+    },
+    "west": {
+     "to_room": 22183,
+     "description": "To the west lies A Hall Of Sliding Walls."
     }
    },
-   "description": "You step between two walls of polished stone that should not be here at\nall, and the floor drops a finger's breadth beneath your weight with a\nclick. Deep in the castle something answers, and both walls begin to\nslide inward with a terrible grinding patience. Crushed armour and old\nbones are pressed flat into the joints. The passage shrinks around you.",
+   "description": "The wall top narrows here between parapets of cracked grey stone, and\nthe walkway runs on north and south. To the west, two walls of polished\nstone jut out from the face of the wall around a passage that should not\nbe here at all. A loose flagstone before it sits a finger's breadth\nlower than the rest. Deep in the castle a chain rattles once, then falls\nsilent.",
    "extra_descs": {}
   },
   "14196": {
@@ -865,7 +889,7 @@
      "description": "To the south lies Ragged Walkway Atop The Castle."
     }
    },
-   "description": "A wide breach yawns in the outer face of the wall, where a whole section\nof parapet has slumped away into the ditch far beneath. Only a ledge of\ncracked flagstones, scarcely two paces wide, carries the walk past it.\nLooking down makes your head swim: the drop goes on and on to a ruin of\nrubble at the wall's foot. The walkway carries on north, while south it\nslips between close, smooth walls.",
+   "description": "A wide breach yawns in the outer face of the wall, where a whole section\nof parapet has slumped away into the ditch far beneath. Only a ledge of\ncracked flagstones, scarcely two paces wide, carries the walk past it.\nLooking down makes your head swim: the drop goes on and on to a ruin of\nrubble at the wall's foot. The walkway carries on north, while south it\nruns past a passage of close, smooth walls.",
    "extra_descs": {}
   },
   "14197": {
@@ -943,6 +967,190 @@
     }
    },
    "description": "The walk climbs here over a hump in the wall where the masonry has\nheaved up, and the flagstones tilt like the deck of a ship in a swell.\nFrom the crest you can see the whole broken length of the outer wall\ncurving away, its towers gutted and its battlements gap-toothed. Wind\nscreams over the crest and drives grit into your eyes. The walkway goes\nnorth toward a corner and south down the slope.",
+   "extra_descs": {}
+  },
+  "22181": {
+   "vnum": 22181,
+   "name": "A Passage Of Grinding Walls",
+   "map": {
+    "x": -8,
+    "y": -61,
+    "z": 0
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "north": {
+     "to_room": 22150,
+     "description": "To the north lies Ragged Walkway Atop The Castle."
+    }
+   },
+   "description": "A smooth-walled passage runs into the thickness of the wall, its stone\nwarm, as if polished by long friction. The instant you are between the\nwalls they begin to grind together, slow and certain. Dust pours from\nthe seams overhead, and dark stains streak the stone at about the height\nof a man's chest. The doorway behind you is already narrower than your\nshoulders.",
+   "extra_descs": {}
+  },
+  "22182": {
+   "vnum": 22182,
+   "name": "A Passage Of Crushing Walls",
+   "map": {
+    "x": -2,
+    "y": -61,
+    "z": 0
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "north": {
+     "to_room": 22151,
+     "description": "To the north lies Ragged Walkway Atop The Castle."
+    }
+   },
+   "description": "Two walls of polished stone close in on either hand the moment you step\nthrough the arch, sliding on hidden runners with a sound like grinding\nteeth. Broken spear shafts and the rims of shields lie crushed flat in\nthe joints, where others tried to hold them apart. Dust streams from\nabove as the gap shrinks to an arm's width, then less. The arch is a\nthin line of grey light, far out of reach.",
+   "extra_descs": {}
+  },
+  "22183": {
+   "vnum": 22183,
+   "name": "A Hall Of Sliding Walls",
+   "map": {
+    "x": -11,
+    "y": -65,
+    "z": 0
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "east": {
+     "to_room": 22152,
+     "description": "To the east lies Ragged Walkway Atop The Castle."
+    }
+   },
+   "description": "You step between two walls of polished stone, and the floor drops a\nfinger's breadth beneath your weight with a click. Deep in the castle\nsomething answers, and both walls begin to slide inward with a terrible\ngrinding patience. Crushed armour and old bones are pressed flat into\nthe joints. The way back closes with the rest.",
+   "extra_descs": {}
+  },
+  "22184": {
+   "vnum": 22184,
+   "name": "The Pendulum Hall",
+   "map": {
+    "x": -9,
+    "y": -67,
+    "z": 0
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "south": {
+     "to_room": 22157,
+     "description": "To the south lies Ragged Walkway Atop The Castle."
+    }
+   },
+   "description": "A great iron blade, notched and brown with old blood, swings across this\nnarrow hall on a chain that runs up into the dark. Its arc fills the\nhall from wall to wall, and each pass comes lower than the last. The\ndoorway is only a stride behind, but the blade is quicker. The hiss of\nits passing is the last sound most hear.",
+   "extra_descs": {}
+  },
+  "22185": {
+   "vnum": 22185,
+   "name": "A Sealed Passage",
+   "map": {
+    "x": -7,
+    "y": -67,
+    "z": 0
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "south": {
+     "to_room": 22163,
+     "description": "To the south lies Ragged Walkway Atop The Castle."
+    }
+   },
+   "description": "The doorway opens into a passage of smooth stone, and the heavy slab\ndrops behind you with a boom that shakes your teeth. At once the side\nwalls shudder and begin to close, pushed by some engine buried deep in\nthe castle. The air fills with stone dust and the shriek of grinding\nrock. There is nowhere left to stand.",
+   "extra_descs": {}
+  },
+  "22186": {
+   "vnum": 22186,
+   "name": "A Passage Of Bloody Hands",
+   "map": {
+    "x": -3,
+    "y": -67,
+    "z": 0
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "south": {
+     "to_room": 22162,
+     "description": "To the south lies Ragged Walkway Atop The Castle."
+    }
+   },
+   "description": "Bloody handprints streak the smooth walls of this passage, smeared\ndownward as if someone slid to the floor between them. With a shudder\nand a groan of chains deep in the castle, the two walls begin to grind\ntoward each other. Splinters of old shields are pressed into the mortar\nwhere they failed to hold the stone back. The darkness fills with the\nroar of moving rock.",
+   "extra_descs": {}
+  },
+  "22187": {
+   "vnum": 22187,
+   "name": "A Narrowing Passage",
+   "map": {
+    "x": -2,
+    "y": -67,
+    "z": 0
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "south": {
+     "to_room": 22180,
+     "description": "To the south lies Ragged Walkway Atop The Castle."
+    }
+   },
+   "description": "Here the passage is barely wider than your shoulders, the stones on both\nsides scored with long scratches where someone tried to hold them apart.\nA low rumble shakes the floor, and the walls lurch inward a hand's\nbreadth at a time. Old bones lie crushed flat in the cracks between the\nflagstones. Whatever way you turn, the stone is closing.",
+   "extra_descs": {}
+  },
+  "22188": {
+   "vnum": 22188,
+   "name": "A Passage Of Moving Walls",
+   "map": {
+    "x": -1,
+    "y": -67,
+    "z": 0
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "south": {
+     "to_room": 22156,
+     "description": "To the south lies Ragged Walkway Atop The Castle."
+    }
+   },
+   "description": "Close walls of dressed stone rise on either hand, and the moment you\nstep between them a deep grinding begins somewhere inside the masonry.\nThe walls are moving, sliding together on hidden runners with a sound\nlike a millstone. Dust sifts from above as the gap shrinks to an arm's\nwidth, then less. There is no ledge to climb, no door, and no time left.",
    "extra_descs": {}
   }
  },

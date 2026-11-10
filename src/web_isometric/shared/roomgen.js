@@ -511,7 +511,7 @@
     // the altar of "The First Altar", nearest the middle) ----
     const FEAT = {
       standing_stone: [1, 1, 'edge', true], altar: [2, 1, 'centre', true], statue: [1, 1, 'centre', true], obelisk: [1, 1, 'centre', true],
-      pillar: [1, 1, 'edge', true], well: [2, 2, 'centre', true], fountain: [2, 2, 'centre', true], brazier: [1, 1, 'centre', true],
+      pillar: [1, 1, 'edge', true], piling: [1, 1, 'centre', true], well: [2, 2, 'centre', true], fountain: [2, 2, 'centre', true], brazier: [1, 1, 'centre', true],
       tent: [2, 2, 'edge', true], cage: [1, 1, 'edge', true], stake: [1, 1, 'edge', true], pole: [1, 1, 'edge', true],
       banner: [1, 1, 'edge', true], grave: [1, 1, 'edge', true], coffin: [1, 1, 'edge', true], drum: [1, 1, 'centre', true],
       throne: [1, 1, 'centre', true], table: [2, 1, 'centre', true], bench: [1, 1, 'edge', true], shelf: [1, 1, 'edge', true],
@@ -526,8 +526,10 @@
       mirror: [1, 1, 'edge', true], bell: [1, 1, 'centre', true], waterfall: [2, 1, 'edge', true],
     };
     const features = [];
-    const featWanted = (roomData.features || []).filter(f => FEAT[f.k]);
-    if (featWanted.length && !swim) {
+    // (none read from the words where you swim; on the seabed a set piece's, placed by hand: the
+    // pilings under the dock, the bones in a lair)
+    const featWanted = (roomData.features || []).filter(f => FEAT[f.k] && (!swim || (sector === 'underwater' && f.x != null && f.y != null)));
+    if (featWanted.length) {
       const taken = new Set();
       const inLaneCell = (x, y) => ((gaps.east || gaps.west) && Math.abs(y - midY) <= 1) || ((gaps.north || gaps.south) && Math.abs(x - midX) <= 1);
       const nearPoiCell = (x, y) => pois.some(([px, py]) => Math.abs(x - px) <= 1 && Math.abs(y - py) <= 1);

@@ -53,6 +53,12 @@
   "4430": {"why": "By the Diamond Altar: the hollow bishop's altar ringed with crystals, candles and banners", "light": "#9adcff",
     "layout": [{"k": "altar", "x": 11, "y": 11, "main": true, "c": "white"}, {"k": "crystal", "x": 8, "y": 10, "c": "teal"}, {"k": "crystal", "x": 15, "y": 10, "c": "teal"},
                {"k": "crystal", "x": 5, "y": 3, "c": "teal"}, {"k": "crystal", "x": 18, "y": 3, "c": "teal"}, {"k": "candle", "x": 10, "y": 12}, {"k": "candle", "x": 14, "y": 12},
-               {"k": "banner", "x": 4, "y": 1}, {"k": "banner", "x": 19, "y": 1}]}
+               {"k": "banner", "x": 4, "y": 1}, {"k": "banner", "x": 19, "y": 1}]},
+  "5698": {"why": "Under the dock at New Thalos: the four wooden pylons it stands on, the iron grate to the west",
+    "layout": [{"k": "piling", "x": 9, "y": 4}, {"k": "piling", "x": 15, "y": 4}, {"k": "piling", "x": 9, "y": 10}, {"k": "piling", "x": 15, "y": 10},
+               {"k": "rubble", "x": 3, "y": 3}]},
+  "5699": {"why": "The Ixitxachitl's lair behind the grate: blood in the water over the bones of its meals", "light": "#b03a3a",
+    "layout": [{"k": "blood", "x": 11, "y": 5, "main": true}, {"k": "blood", "x": 14, "y": 9}, {"k": "bones", "x": 6, "y": 4}, {"k": "bones", "x": 15, "y": 3},
+               {"k": "bones", "x": 17, "y": 11}, {"k": "skull", "x": 8, "y": 11}, {"k": "rubble", "x": 4, "y": 10}, {"k": "rubble", "x": 19, "y": 4}]}
  }
 }

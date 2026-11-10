@@ -27,6 +27,9 @@ import { PassageGate, HOP_TIMEOUT_MS } from './passages.js';
 import { doorPrompt, doorVerbs, doorAnchor, cap } from './doorlogic.js';
 import { createPrompt } from './hud/prompt.js';
 import { createCastbar } from './hud/castbar.js';
+import { charLook } from './charlook.js';
+import { tintFor } from './regionlook.js';
+import { mapSays } from './hud/regionsay.js';
 import { createContextMenu } from './hud/contextmenu.js';
 import { attachWorldInput } from './input.js';
 import { shouldRetarget, retargetOnDeath, refFor, abilityCommand, tabOrder } from './targeting.js';
@@ -53,6 +56,7 @@ import { AimCircle, clampAim, aimCommand } from './aim.js';
 import { FAR, farKind } from './far.js';
 
 const $ = s => document.querySelector(s);
+let lookClock = 0;
 const WATER_TILE = 4;   // zone.js / terrain.js tile kinds
 // where no sky reaches: no weather, no birds (weather.js, wildlife.js)
 const UNDER_SKY = new Set(['inside', 'web', 'necropolis', 'drow', 'foundry', 'sewer', 'underwater', 'ice_cave', 'lava_cave', 'cave', 'mine', 'dungeon', 'crypt']);
@@ -111,6 +115,7 @@ async function runDemo() {
     const at = g === 'mobs' ? await showMobGallery(engine) : g === 'beasts' ? await showBeastGallery(engine, kits)
       : g === 'kin' ? await showBeastGallery(engine, kits, KIN_SAMPLES)
       : g === 'abilities' ? await showAbilityGallery(engine)
+      : g === 'mobfx' ? await (await import('./gallery.js')).showMobFxGallery(engine, kits)
       : g === 'gear' ? await showGearGallery(engine)
       : g === 'corpses' ? await (await import('./gallery.js')).showCorpseGallery(engine, kits)
       : g === 'wards' ? await (await import('./gallery.js')).showWardGallery(engine)
@@ -250,7 +255,7 @@ async function runGame() {
   let skyOpen = false, skyTheme = 'field';
   function applySky() {
     const w = lastPayload && lastPayload.weather;
-    sky.set(weatherKind(w, skyTheme), w && w.wind, skyOpen);
+    sky.set(weatherKind(w, skyTheme, zone && zone.region ? zone.region.id : null), w && w.wind, skyOpen);
     GRASS.wind.value = 0.3 + Math.min(1.2, ((w && w.wind) || 0) / 20);
   }
   engine.onTick((dt, t) => {
@@ -349,9 +354,10 @@ async function runGame() {
     ents.sightRadius = !s.dark ? 0 : lit ? 16 : eyes ? 14 : 7;
     const L = engine.heroLight;
     if (!L) return;
-    const want = lit ? 64 : blind ? 22 : 0;
-    L.color.setHex(lit ? 0xffb36a : 0x8a9ac8);
-    L.distance = lit ? 17 : 7;
+    // (out of the dark the hero's own lantern still casts a little warmth at their feet)
+    const want = lit ? 64 : blind ? 22 : 5;
+    L.color.setHex(blind ? 0x8a9ac8 : 0xffb36a);
+    L.distance = lit ? 17 : blind ? 7 : 5.5;
     L.intensity += (want - L.intensity) * Math.min(1, dt * 4);
     if (hero && hero.root) L.position.set(hero.root.position.x, hero.root.position.y + 1.7, hero.root.position.z);
   });
@@ -406,6 +412,8 @@ async function runGame() {
       else if (e.k === 'cancel' && e.reason !== 'death') hud.targetCast({ end: 'broken' });
     }
   });
+  // a creature the room brings in (a lair's herald, its master in its place: combat.js arrive)
+  MH.bus.on('mob.move', p => { if (hero && p && (p.vnum == null || !heroRoom || p.vnum === heroRoom.vnum)) combat.arrive(p); });
   // your group: frames, the invite popup, loot rolls; click a member to target them (heals and
   // blessings go to your target), right-click for more
   MH.bus.on('group.update', e => hud.party.update(e && e.group));
@@ -524,6 +532,9 @@ async function runGame() {
   const mmBig = createMinimap(bigEl, room => { bigEl.classList.add('hidden'); travelTo(room); }, null, { cell: 1.7, browse: true });
   bigEl.querySelector('.bm-close').addEventListener('click', () => bigEl.classList.add('hidden'));
   let atlasP = null, knownRooms = [];
+  // the region of the zone the big map shows, beside its name, with the region's levels and (when it
+  // lies outside them) about what level this zone is (regionsay.js mapSays)
+  const mapRegion = (r, level = null) => { const el = bigEl.querySelector('.bm-region'); if (el) el.textContent = mapSays(r, level); };
   const fetchAtlas = () => atlasP || (atlasP = fetch('/atlas').then(r => r.json()).catch(e => { atlasP = null; throw e; }));
   const fetchExplored = async () => (await fetch(`/explored?player=${encodeURIComponent(MH.state.playerName || '')}`)).json();
   const world = createWorldMap(bigEl.querySelector('.wm-canvas'), {
@@ -552,8 +563,8 @@ async function runGame() {
   async function showZone(id, tab = null) {
     world.focusZone(id);
     if (tab) setMapTab(tab);
-    if (!zone || id === zone.num) { mmBig.home(); return; }
-    try { mmBig.browse(mapOfZone(await fetchZonemap(`zone=${id}`)), knownRooms); }
+    if (!zone || id === zone.num) { mmBig.home(); mapRegion(zone && zone.region, zone && zone.level); return; }
+    try { const zm = await fetchZonemap(`zone=${id}`); mmBig.browse(mapOfZone(zm), knownRooms); mapRegion(zm.region, zm.level); }
     catch (_) { hud.toast('That map could not be unrolled.'); }
   }
   bigEl.querySelector('.bm-zoom').addEventListener('click', e => {
@@ -561,7 +572,7 @@ async function runGame() {
     if (!z) return;
     if (z === 'home') {
       mmBig.home(); world.home();
-      if (zone) zoneSel.value = String(zone.num);
+      if (zone) { zoneSel.value = String(zone.num); mapRegion(zone.region, zone.level); }
       return;
     }
     const f = z === 'in' ? 1.25 : 0.8;
@@ -579,7 +590,8 @@ async function runGame() {
   MH.bus.on('hud.map', on => {
     const show = on === undefined || on === null ? bigEl.classList.contains('hidden') : !!on;
     bigEl.classList.toggle('hidden', !show);
-    if (show) { mmBig.home(); world.home(); mmBig.redraw(); setMapTab(mapTab); fillZones(); } else world.show(false);
+    // (it opens on the whole zone, its rooms filling the window; the home button centres on you)
+    if (show) { mmBig.home(); world.home(); setMapTab(mapTab); mmBig.fit(); mmBig.redraw(); fillZones(); } else world.show(false);
   });
   const mm = {
     setZone: z => { mmSmall.setZone(z); mmBig.setZone(z); },
@@ -625,7 +637,7 @@ async function runGame() {
     }
     if (payload.player) { envLayer.body(payload.player); alerts.setMail(payload.player.mail); }
     if ('world_events' in payload) alerts.setEvents(payload.world_events);
-    if (payload.player) { hud.setPlayer(payload.player); body.update(payload.player); ents.heroLevel = payload.player.level || 1; }
+    if (payload.player) { hud.setPlayer(payload.player); body.update(payload.player); ents.heroLevel = payload.player.level || 1; ents.iconClass = String(payload.player.char_class || '').toLowerCase(); }
     // what the hero wears (gear_look.py): re-dressed when it changes
     if (hero && payload.player && payload.player.look) dress(hero, payload.player.look, payload.player.char_class);
     if (hero && payload.player) ride(payload.player);
@@ -633,7 +645,7 @@ async function runGame() {
     if ('group' in payload) hud.party.update(payload.group);
     if (payload.player && 'quest' in payload.player) hud.quest.update(payload.player.quest);
     if (!payload.player || !payload.player.vnum) return;
-    if (!zone) { if (!starting) starting = start(payload).catch(err => { console.error(err); hud.toast('Could not load the world: ' + err.message); }).finally(() => { starting = null; }); return; }
+    if (!zone) { if (!starting) starting = start(payload).catch(err => { console.error(err); hud.toast('Could not load the world: ' + err.message); }).finally(() => { starting = null; $('#loading').classList.add('done'); }); return; }
     if (starting) return;
     ents.sync(payload, MH.state.playerName); loot.sync(payload); spots.sync(payload); followLoot(payload);
     applyPendingAggro();
@@ -707,12 +719,13 @@ async function runGame() {
       relocate: v2 => relocate(v2),
     });
     sync.start(v);
-    zone.prebuild(room, 1);
+    zone.prebuild(room, 2);          // (two cells round, under the veil: the world is whole as the mist parts)
     placeHero(room, zone.centre(room));
     engine.rig.target.copy(hero.root.position);
     engine.placeCamera(true);
     hud.showGame(true);
-    hud.banner(room.name, zone.name);
+    $('#loading').classList.add('done');          // the mist parts on the world, built (login.success drew it)
+    hud.banner(room.name, zone.name, zone.region, zone.level);
     ents.sync(payload, MH.state.playerName); loot.sync(payload); spots.sync(payload); followLoot(payload);
     mm.setExplored((payload.rooms || []).map(r => r.vnum));
     mm.setTime(payload.time);
@@ -731,6 +744,9 @@ async function runGame() {
     loot.clear();
     spots.clear();
     mm.setZone(zone);
+    mapRegion(zone.region, zone.level);
+    engine.regionTint = tintFor(zone.region);      // the region's cast over the picture (regionlook.js)
+    sound.regionPad(zone.region ? zone.region.id : null);      // and its chord under the music (soundtable.js REGION_PAD)
     zmCache.set(zm.zone, zm);
     nextDoor(zone);
   }
@@ -785,7 +801,7 @@ async function runGame() {
     if (onWater && !raft) raft = makeRaft();
     if (raft) { if (onWater && !riding) hero.root.add(raft); else hero.root.remove(raft); }
     const look = { theme: L.theme, zoneKey: L.zoneKey, dark: L.dark, snowy: L.snowy, icy: L.icy,
-      interior: L.theme === 'inside' ? interiorKind(L) : null };
+      interior: L.theme === 'inside' ? interiorKind(L) : null, region: zone && zone.region ? zone.region.id : null };
     sound.setZoneMusic(musicFor(look));
     sound.ambience(bedFor(look));
     stepSurface = surfaceFor(look);
@@ -881,7 +897,7 @@ async function runGame() {
       enterZone(zm);
       const r = zone.rooms.get(v);
       teleport(r, oldV != null ? zone.arrival(r, oldV, null) : zone.centre(r));
-      hud.banner(r.name, zone.name);
+      hud.banner(r.name, zone.name, zone.region, zone.level);
       if (lastPayload) { ents.sync(lastPayload, MH.state.playerName); loot.sync(lastPayload); spots.sync(lastPayload); }
     } finally {
       const next = relocating && relocating.next;
@@ -891,7 +907,7 @@ async function runGame() {
   }
   function teleport(room, pos) {
     sound.play('teleport');
-    zone.prebuild(room, 1);
+    zone.prebuild(room, 2);          // (under the flash)
     placeHero(room, pos);
     ctl.halt();
     engine.rig.target.copy(hero.root.position);
@@ -938,8 +954,10 @@ async function runGame() {
         if (!zm) { hop = null; climb = null; return relocate(v); }
         enterZone(zm);
         const r = zone.rooms.get(v);
-        land(r, zone.arrival(r, h.from.vnum, h.dir), h.from.vnum, h.seamless);
-        hud.banner(r.name, zone.name);
+        // (a room is a couple of milliseconds to build: two cells round at once, rather than have the
+        // new zone come into being room by room over the next second)
+        land(r, zone.arrival(r, h.from.vnum, h.dir), h.from.vnum, h.seamless, 2);
+        hud.banner(r.name, zone.name, zone.region, zone.level);
         if (lastPayload) { ents.sync(lastPayload, MH.state.playerName); loot.sync(lastPayload); spots.sync(lastPayload); }
       } else {
         const r = zone.rooms.get(v);
@@ -954,8 +972,9 @@ async function runGame() {
     else travel = null;
   }
   // arrive: appear on the passage that leads back, then step off it to the arrival point
-  function land(room, at, fromVnum, seamless = false) {
-    zone.prebuild(room, 1);
+  // (`radius`: how far round the arrival room is built at once; a new zone starts empty, so 2 there)
+  function land(room, at, fromVnum, seamless = false, radius = 1) {
+    zone.prebuild(room, radius);
     const side = Object.keys(room.data.exits).find(d => room.data.exits[d].to === fromVnum && room.data.exits[d].kind !== 'open');
     const from = side ? zone.passageWorld(room, side) : at.clone();
     placeHero(room, at);
@@ -1414,7 +1433,7 @@ async function runGame() {
   MH.bus.on('env.channel.end', () => castbar.end());
   // E: do what the prompt says
   window.addEventListener('keydown', e => {
-    if (!hero || e.repeat || /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+    if (!hero || e.repeat || /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
     if (aiming && e.key === 'Escape') { stopAim(); e.stopPropagation(); return; }
     // a marked blow coming: Q, E or X answer it first (reactions.js)
     const answer = react.press(e.key, performance.now());
@@ -1461,7 +1480,7 @@ async function runGame() {
   }
   // ---- right-click (press and release without dragging): a menu for what is under it ----
   // (a right-drag turns the camera: input.js tells them apart)
-  attachWorldInput(engine, canvas, { onContext: openContext, typing: e => /INPUT|TEXTAREA/.test((e.target || {}).tagName || '') });
+  attachWorldInput(engine, canvas, { onContext: openContext, typing: e => /INPUT|TEXTAREA|SELECT/.test((e.target || {}).tagName || '') });
   function pickAt(x, y) {
     const ent = ents.pick(x, y);
     if (ent) return { kind: ent.kind === 'player' ? 'player' : 'mob', ent };
@@ -1549,9 +1568,12 @@ async function runGame() {
     const ent = row.kind === 'mob' ? ents.list.get(`m${row.id}`) : ents.list.get(`p${row.name}`);
     if (ent) menuFor({ kind: ent.kind === 'player' ? 'player' : 'mob', ent }, x, y);
   });
-  // graphics quality from Settings, at once (only smoother edges wait for a reload)
+  // graphics quality from Settings, at once (only smoother edges wait for a reload): the picture, and
+  // what each part may spend on it (how many effects, how much rain, how many sounds, how many auras)
   MH.bus.on('hud.quality', q => {
     if (engine.setQuality(q)) hud.toast('Smoother edges come with the next reload');
+    const tier = engine.quality.name;
+    for (const part of [fx, sky, sound, wards, adorn]) part.setTier(tier);
     if (heroRoom) applyFar(zone.layoutOf(heroRoom));
   });
 
@@ -1565,6 +1587,7 @@ async function runGame() {
     if (sig !== reactSig) {
       reactSig = sig;
       reactEl.classList.toggle('hidden', !c);
+      document.body.classList.toggle('mid-react', !!c);      // the banner and the news stand aside (hud.css)
       if (c) reactEl.innerHTML = `<span class="rx-what">${cap(String(c.label)).replace(/[&<>"]/g, '')}!</span>`
         + c.keys.map(k => `<span class="rx-key${c.used === k ? ' used' : ''}"><kbd>${k.toUpperCase()}</kbd>${REACTIONS[k].label}</span>`).join('')
         + '<span class="rx-bar"></span>';
@@ -1752,6 +1775,12 @@ async function runGame() {
       hud.toast("The way didn't open.");
     }
     ents.update(dt, t, p);
+    // every body lit as a character (charlook.js): a sweep once a second catches new arrivals and new gear
+    if ((lookClock -= dt) <= 0) {
+      lookClock = 1;
+      if (hero && hero.root) charLook(hero.root);
+      for (const e of ents.list.values()) if (e.root) charLook(e.root, { blob: e.fly ? 0 : 0.55 });
+    }
     adorn.update(dt, t, hero, ents.dressed());
     wards.update(dt, t, hero, (MH.state.player && MH.state.player.wards) || [], ents.warded());
     fightTick(dt);

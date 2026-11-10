@@ -13,6 +13,8 @@ Event shape (all fields optional except k):
   amt     damage or healing amount
   ability / spell, school (fire, frost, lightning, arcane, holy, shadow, necrotic, nature,
   poison, sound, physical, blood), ranged (bool), area {shape, r, angle, x, z}, ms (wind-up)
+  fx      a creature's ability, in lower_snake (fire_breath): the look the 3D client draws its
+          wind-up, release and interruption with (world3d/mobfx-hand.js)
 """
 import asyncio
 import contextvars

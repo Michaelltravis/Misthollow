@@ -15,7 +15,6 @@
    "sector_type": "city",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
    "exits": {
@@ -26,9 +25,17 @@
     "south": {
      "to_room": 22110,
      "description": "To the south lies Pathway To Ocam's Reach."
+    },
+    "east": {
+     "to_room": 22198,
+     "description": "To the east lies A Windswept Cell."
+    },
+    "west": {
+     "to_room": 22199,
+     "description": "To the west lies A Chamber Of Hooks."
     }
    },
-   "description": "Inside the promontory the passage is cut through black rock and pierced\nwith slits that open onto the howling sky beyond. The wind tears through\nthem with such force that it can hurl a body against the far wall, where\nbarbed iron hooks wait in rows. The passage leads north deeper into the\nReach and south back toward the castle. Shrieking gusts make thought\nnearly impossible.",
+   "description": "The passage is cut through black rock here, leading north deeper into\nOcam's Reach and south back toward the castle. Doorways open east and\nwest, and through each comes the howl of the wind from slits in the\npromontory's face. Barbed iron hooks glint in rows beyond them. Here,\nbetween the two, the air is strangely still.",
    "extra_descs": {},
    "look": "castle"
   },
@@ -440,7 +447,6 @@
    "sector_type": "inside",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
    "exits": {
@@ -451,9 +457,13 @@
     "south": {
      "to_room": 22008,
      "description": "To the south lies Hall Along The Inner Wall."
+    },
+    "east": {
+     "to_room": 22209,
+     "description": "To the east lies A Floor Of Rotten Planks."
     }
    },
-   "description": "The floor of this black hall is not stone at all but a skin of rotten\nplanks laid over a pit, and they groan beneath the slightest weight.\nFrom the depths below rises a stench of old death and the faint glint of\nupturned blades. Darkness swallows everything but the creak of failing\ntimber. The way north and the way south both lie across the same\ntreacherous boards.",
+   "description": "The black hall runs north and south here along the inner wall. To the\neast a doorway opens over a floor of rotten planks laid across a pit,\nand they groan in the draught. From the depths below rises a stench of\nold death and the faint glint of upturned blades. The hall's own\nflagstones are sound.",
    "extra_descs": {}
   },
   "22008": {
@@ -475,7 +485,7 @@
      "max": 3
     }
    ],
-   "description": "The path ends in a pile of collapsed masonry, the stones charred and\ncracked. There is no way forward. The dead end feels deliberate, like a\ntrap waiting to spring.",
+   "description": "The hall turns here at a corner of the castle, where a stair climbs\nthrough a broken hatch to the walkway atop the wall. Collapsed masonry,\ncharred and cracked, lies heaped against the outer side. West the hall\nruns on along the inner wall, and north it goes on into darkness over\nsounder stones. Cold air spills down the stairwell.",
    "exits": {
     "north": {
      "to_room": 22155,
@@ -559,7 +569,6 @@
    "sector_type": "inside",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
    "exits": {
@@ -570,9 +579,13 @@
     "west": {
      "to_room": 22159,
      "description": "To the west lies Hall Along The Inner Wall."
+    },
+    "south": {
+     "to_room": 22208,
+     "description": "To the south lies The Hall Of Spikes."
     }
    },
-   "description": "The walls of this narrow hall are pierced with hundreds of small holes,\nand from each one the point of an iron spike glints in whatever faint\nlight you carry. The floor is studded with pressure plates disguised as\nworn flagstones. Somewhere within the stone, great counterweights shift\nwith a grinding groan. The hall's only ways lead east and west, and\nevery step between them is a gamble.",
+   "description": "The hall runs east toward its far end and west along the inner wall. To\nthe south a side passage opens, its walls pierced with hundreds of small\nholes, and from each one the point of an iron spike glints in whatever\nlight you carry. Somewhere within the stone, great counterweights shift\nwith a groan. The floor of the hall itself is solid and dry.",
    "extra_descs": {}
   },
   "22159": {
@@ -586,7 +599,6 @@
    "sector_type": "inside",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
    "exits": {
@@ -597,9 +609,13 @@
     "west": {
      "to_room": 22026,
      "description": "To the west lies Hall Along The Inner Wall."
+    },
+    "south": {
+     "to_room": 22207,
+     "description": "To the south lies The Creeping Walls."
     }
    },
-   "description": "Here the hall narrows until its walls almost brush your shoulders, and\nthose walls are not still. With a slow, grinding patience they creep\ninward on hidden tracks, and the dust of their passage sifts down from\nthe ceiling. The stones are stained dark at the height of a man's chest.\nThe way east and the way west seem very far off in the blackness.",
+   "description": "The hall runs on east and west here, wide enough for two to walk\nabreast. In its south wall a narrow passage opens between stones stained\ndark at about the height of a man's chest. A slow grinding comes from\ninside it, and dust sifts from its lintel. The flagstones before it are\nscratched where something was pulled away.",
    "extra_descs": {}
   },
   "22026": {
@@ -638,7 +654,6 @@
    "sector_type": "inside",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
    "exits": {
@@ -649,9 +664,13 @@
     "west": {
      "to_room": 22179,
      "description": "To the west lies Hall Along The Inner Wall."
+    },
+    "north": {
+     "to_room": 22206,
+     "description": "To the north lies Under The Iron Slab."
     }
    },
-   "description": "The ceiling of this black hall is a single slab of iron hung on chains\nthat run up into the dark, and it hangs lower than it should. Scraps of\ncrushed armour are pressed flat into the floor beneath it like leaves in\na book. A chain groans somewhere overhead. The hall leads east to the\nscorched passage and west toward a stretch that no one seems to have\nwalked out of.",
+   "description": "The hall runs east to a scorched passage and west along the inner wall.\nTo the north opens a low chamber whose ceiling is a single slab of iron\nhung on chains, and it hangs lower than it should. A chain groans\nsomewhere overhead. Scraps of crushed armour lie at its threshold.",
    "extra_descs": {}
   },
   "22179": {
@@ -665,10 +684,9 @@
    "sector_type": "inside",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
-   "description": "You stumble into a deadly iron maiden! There is no escape...",
+   "description": "The black hall runs east and west along the inner wall. In its southern\nside stands an iron door, tall and narrow and shaped like a man, its\nface studded with rivets and its hinges oiled bright. It stands ajar.\nThe stones before it are worn into a groove by things dragged inside.",
    "exits": {
     "east": {
      "to_room": 22161,
@@ -677,6 +695,10 @@
     "west": {
      "to_room": 22104,
      "description": "To the west lies Hall Along The Inner Wall."
+    },
+    "south": {
+     "to_room": 22205,
+     "description": "To the south lies The Iron Maiden."
     }
    }
   },
@@ -2213,7 +2235,6 @@
    "sector_type": "city",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
    "exits": {
@@ -2224,9 +2245,13 @@
     "south": {
      "to_room": 14221,
      "description": "To the south lies Pathway Around The Castle."
+    },
+    "west": {
+     "to_room": 22189,
+     "description": "To the west lies A Tilting Floor."
     }
    },
-   "description": "Inside the bastion the passage is pitch black and close, and the floor\nslopes treacherously under a slick of black ooze. Too late, a flagstone\nshifts and tilts, tipping everything on it into a pit bristling with\niron stakes. Faint grey light marks the way back north and an opening to\nthe south, both suddenly far out of reach. The stink of old death rises\nfrom below.",
+   "description": "The pathway passes through the dark heart of a bastion here, roofed in\nstone and close on every side. The floor is slick with black ooze that\nseeps from a low opening to the west, and from beyond it comes the stink\nof old death. Faint grey light marks the way north and an opening to the\nsouth. Careful feet have kept to the far wall.",
    "extra_descs": {},
    "look": "castle"
   },
@@ -2265,7 +2290,6 @@
    "sector_type": "city",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
    "exits": {
@@ -2276,9 +2300,13 @@
     "south": {
      "to_room": 14223,
      "description": "To the south lies Pathway Around The Castle."
+    },
+    "west": {
+     "to_room": 22190,
+     "description": "To the west lies A Falling Ceiling."
     }
    },
-   "description": "This covered passage is so low that its ceiling of iron-banded stone\nalmost brushes the head. A grinding of hidden chains sounds in the walls\nas the ceiling lurches and begins to descend. Rubble narrows the way\nsouth, and the way north seems impossibly distant behind. Dust sifts\ndown in choking streams from the cracks above.",
+   "description": "A covered stretch of the pathway runs north and south here beneath a\nroof of iron-banded stone. To the west a low doorway opens into a\nchamber whose ceiling hangs lower still, and the grinding of hidden\nchains sounds somewhere in its walls. Rubble lies heaped along the\nfooting. Dust sifts down in thin streams from the cracks above.",
    "extra_descs": {},
    "look": "castle"
   },
@@ -2371,7 +2399,6 @@
    "sector_type": "city",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
    "exits": {
@@ -2382,9 +2409,13 @@
     "west": {
      "to_room": 14225,
      "description": "To the west lies Pathway Around The Castle."
+    },
+    "south": {
+     "to_room": 22204,
+     "description": "To the south lies The Hall Of Blades."
     }
    },
-   "description": "The roofed passage is utterly dark, and the air inside is warm and wet\nwith a sickly, sweet stench. Thin wires stretched across the floor at\nankle height trigger great scything blades that swing out of slots in\nthe walls. The way runs on east and back west, though few who come this\nfar ever reach either. Old stains blacken the stones underfoot.",
+   "description": "The roofed passage runs east and west, utterly dark, the air warm and\nwet with a sickly, sweet stench. To the south a side opening is crossed\nby thin wires at ankle height, and dark slots gape in its walls. Old\nstains blacken the stones before it. The way on keeps hard to the far\nwall.",
    "extra_descs": {},
    "look": "castle"
   },
@@ -2473,7 +2504,6 @@
    "sector_type": "city",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
    "exits": {
@@ -2484,9 +2514,13 @@
     "west": {
      "to_room": 22158,
      "description": "To the west lies Pathway To Ocam's Reach."
+    },
+    "south": {
+     "to_room": 22191,
+     "description": "To the south lies A Hollow Floor."
     }
    },
-   "description": "The roofed cutting is black as pitch, its rough walls sweating cold\nwater. Halfway along, the floor is hollow, and it gives way with a crack\nof rotten timber over a shaft that drops into the dark. The way back\neast and the way on west are only a few strides off, yet out of reach in\nthe gloom. The wind moans across the shaft's mouth like a voice.",
+   "description": "The roofed cutting runs east and west through rough rock that sweats\ncold water. On its south side the floor gives way to a square shaft\nframed in rotten timber, its boards long since fallen in. The wind moans\nacross the shaft's mouth like a voice. A narrow ledge along the far wall\nkeeps the way dry.",
    "extra_descs": {},
    "look": "castle"
   },
@@ -2501,7 +2535,6 @@
    "sector_type": "city",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
    "exits": {
@@ -2512,9 +2545,13 @@
     "west": {
      "to_room": 22106,
      "description": "To the west lies Pathway To Ocam's Reach."
+    },
+    "north": {
+     "to_room": 22192,
+     "description": "To the north lies The Iron-Plated Passage."
     }
    },
-   "description": "Here the passage is narrow and lined with plates of rusted iron, riveted\nedge to edge from floor to ceiling. Each step presses a hidden plate,\nand somewhere in the walls a mechanism clanks as rows of spikes shoot\nout from the seams. The passage runs east and west, both ends lost in\ndarkness. The air reeks of old oil and rust.",
+   "description": "The passage runs east and west here between walls of rough stone. To the\nnorth a side passage lined with plates of rusted iron, riveted edge to\nedge, opens off the way, and the reek of old oil and rust drifts from\nit. The plates nearest the opening are scored and pitted. Something in\nthe walls clanks now and then, as if waiting.",
    "extra_descs": {},
    "look": "castle"
   },
@@ -2583,7 +2620,6 @@
    "sector_type": "city",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
    "exits": {
@@ -2594,9 +2630,13 @@
     "west": {
      "to_room": 22028,
      "description": "To the west lies Pathway To Ocam's Reach."
+    },
+    "east": {
+     "to_room": 22193,
+     "description": "To the east lies The Chute Of Blades."
     }
    },
-   "description": "A short, crooked passage drops away from the door of bone and iron, its\nfloor polished slick by something that oozes from the walls. The slope\nsteepens without warning into a chute that ends in a nest of upturned\nblades. North lies the narrow hall with the door, and west the passage\nlevels toward another chamber. A sweet, rotten smell hangs in the dark.",
+   "description": "A short, crooked passage runs from the door of bone and iron to the\nnorth and levels west toward another chamber. To the east the floor\ndrops away into a chute polished slick by something that oozes from the\nwalls. A sweet, rotten smell rises from it. Those who came before kept\nclose to the western wall.",
    "extra_descs": {},
    "look": "castle"
   },
@@ -2818,7 +2858,6 @@
    "sector_type": "city",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
    "exits": {
@@ -2829,9 +2868,13 @@
     "south": {
      "to_room": 22108,
      "description": "To the south lies Pathway To Ocam's Reach."
+    },
+    "west": {
+     "to_room": 22194,
+     "description": "To the west lies The Rusted Grates."
     }
    },
-   "description": "The floor of this passage is a lattice of iron grates laid over a pit,\nand the grates are rusted through. One by one they sag and snap under\nany weight, spilling all upon them onto the spikes below. The passage\nleads north and south, though the grates between are the only way\nacross. A hot, foul breath rises from the depths.",
+   "description": "The passage runs north and south here along a narrow ledge of solid\nstone. To the west the floor becomes a lattice of iron grates laid over\na pit, rusted through and sagging. A hot, foul breath rises between the\nbars. The ledge is worn smooth by the feet of those who knew better than\nto step off it.",
    "extra_descs": {},
    "look": "castle"
   },
@@ -2846,7 +2889,6 @@
    "sector_type": "city",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
    "exits": {
@@ -2857,11 +2899,15 @@
     "south": {
      "to_room": 22164,
      "description": "To the south lies Pathway To Ocam's Reach."
+    },
+    "north": {
+     "to_room": 22195,
+     "description": "To the north lies The Rider's Niche."
     }
    },
-   "description": "The passage turns a sharp corner here, and in the angle stands a statue\nof an armoured rider on a gaunt horse, its stone arm raised. The sword\nin its fist is no carving but real iron, and it swings down on a hidden\nhinge at anyone who passes beneath. The way bends from south to east\naround the statue's base. Dark stains spatter the plinth.",
+   "description": "The passage turns a sharp corner here, and in the angle stands a statue\nof an armoured rider on a gaunt horse, its stone arm raised. The way\nbends from south to east around the statue's base. Behind it, to the\nnorth, a dark niche opens in the wall, and from it comes the creak of a\nhidden hinge. Dark stains spatter the plinth.",
    "extra_descs": {
-    "statue rider plinth": "The rider wears plate carved in fine detail, and its face is hidden\nbehind a closed helm. The iron sword is notched and dark with old\nstains, and its hinge is greased."
+    "statue rider plinth": "The rider wears plate carved in fine detail, and its face is hidden\nbehind a closed helm. The iron sword in its fist is notched and dark\nwith old stains, but its hinge has rusted fast."
    },
    "look": "castle"
   },
@@ -2903,7 +2949,6 @@
    "sector_type": "city",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
    "exits": {
@@ -2914,9 +2959,13 @@
     "south": {
      "to_room": 22109,
      "description": "To the south lies Pathway To Ocam's Reach."
+    },
+    "north": {
+     "to_room": 22196,
+     "description": "To the north lies Beneath The Propped Slab."
     }
    },
-   "description": "The ceiling of this passage is a single slab of black stone held up by\nwooden props, rotten and leaning. A careless step jars them loose, and\nthe whole slab comes down with a roar that shakes the castle to its\nroots. The passage runs from south to east beneath the slab. Splinters\nand grey dust cover the floor.",
+   "description": "The passage runs from south to east here beneath a ceiling of solid\nrock. To the north an opening leads under a slab of black stone held up\nby wooden props, rotten and leaning. Splinters and grey dust spill out\nacross the floor. No one who knew this place would breathe hard beside\nit.",
    "extra_descs": {},
    "look": "castle"
   },
@@ -2931,7 +2980,6 @@
    "sector_type": "city",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
    "exits": {
@@ -2942,9 +2990,13 @@
     "west": {
      "to_room": 22166,
      "description": "To the west lies Pathway To Ocam's Reach."
+    },
+    "south": {
+     "to_room": 22197,
+     "description": "To the south lies The Fuming Pit."
     }
    },
-   "description": "Thick, greenish fumes pool along the floor of this long passage, rising\nfrom cracks in the stone. The air burns the throat at the first breath\nand seals it shut at the second. East and west the passage stretches on,\nits far ends blurred by the poisoned haze. Mold furs the walls in pale,\nsickly patches.",
+   "description": "This long passage runs east and west, its walls furred with pale mold.\nTo the south, cracks in the floor open into a low side chamber where\nthick, greenish fumes pool and stir. The air near it stings the eyes. A\nline of old bones lies along the southern wall, swept aside by those who\ncame after.",
    "extra_descs": {},
    "look": "castle"
   },
@@ -2986,7 +3038,6 @@
    "sector_type": "city",
    "flags": [
     "dark",
-    "deathtrap",
     "indoors"
    ],
    "exits": {
@@ -3007,7 +3058,7 @@
      "description": "To the west lies Ocam's Armor's."
     }
    },
-   "description": "Four ways meet in this cramped hall at the heart of Ocam's Reach, and\nevery one of them is a snare. East a doorway marked with a carved sword\nopens onto Ocam's Weapon's, and west another, marked with a carved\nbreastplate, leads to Ocam's Armor's. North the corridor tightens among\nspines of iron, and south it runs back the way it came. The floor in the\nmiddle is a trapdoor, and it swings open with a hollow bang.",
+   "description": "Four ways meet in this cramped hall at the heart of Ocam's Reach, and\ntwo of them are snares. East a doorway marked with a carved sword opens\nonto Ocam's Weapon's, and west another, marked with a carved\nbreastplate, leads to Ocam's Armor's. North the corridor tightens among\nspines of iron, and south it runs back the way it came. Scratched into\nthe floor by many hands is a single word: walk.",
    "extra_descs": {},
    "look": "castle"
   },
@@ -3024,7 +3075,7 @@
     "dark",
     "indoors"
    ],
-   "description": "The corridor tightens, spines of iron jutting from the walls. The air is\ncold and metallic. The stone bears fresh gouges. The silence is\noppressive and watchful. The air is thick and hard to breathe.",
+   "description": "The corridor tightens, spines of iron jutting from the walls between\ndoorways to the east and west. Each doorway is framed in black iron, and\nthe air from each is cold and smells of metal. The stone bears fresh\ngouges. The way runs on north and south between them.",
    "exits": {
     "north": {
      "to_room": 22112,
@@ -3033,6 +3084,14 @@
     "south": {
      "to_room": 22169,
      "description": "To the south lies Ocam's Reach."
+    },
+    "east": {
+     "to_room": 22200,
+     "description": "To the east lies A Room Of Iron Spines."
+    },
+    "west": {
+     "to_room": 22201,
+     "description": "To the west lies The Narrow Vault."
     }
    }
   },
@@ -3092,7 +3151,7 @@
      "max": 1
     }
    ],
-   "description": "A throne of broken armor stands in a ruin‑stained chamber. The air is\nthick with iron and smoke. This place feels forged for slaughter. The\nfloor is slick with moisture. The silence is oppressive and watchful.",
+   "description": "A throne of broken armour stands in this ruin-stained chamber, where\nOcam's Reach runs north and south. Low doorways open east and west, each\nfilled with nothing but darkness and the smell of iron and smoke. This\nplace feels forged for slaughter. The floor is slick with moisture.",
    "exits": {
     "north": {
      "to_room": 22113,
@@ -3101,6 +3160,14 @@
     "south": {
      "to_room": 22112,
      "description": "To the south lies Ocam's Reach."
+    },
+    "east": {
+     "to_room": 22202,
+     "description": "To the east lies The Furnace Cell."
+    },
+    "west": {
+     "to_room": 22203,
+     "description": "To the west lies The Pit Of Swords."
     }
    }
   },
@@ -3273,6 +3340,489 @@
    "description": "Empty armour stands in ranks around the walls of this narrow room, suits\nof black plate propped on iron frames as if waiting for wearers. The\nframes are linked by hidden chains, and at a touch the whole line\ntopples inward with a crash of steel. The doorway back east to the hall\nof the Reach is the only way out. Rust lies thick upon every plate.",
    "extra_descs": {},
    "look": "castle"
+  },
+  "22189": {
+   "vnum": 22189,
+   "name": "A Tilting Floor",
+   "map": {
+    "x": -12,
+    "y": -62,
+    "z": -1
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "east": {
+     "to_room": 22153,
+     "description": "To the east lies Pathway Around The Castle."
+    }
+   },
+   "description": "The opening leads into a pitch-black pocket of the bastion, and the\nfloor slopes treacherously under a slick of black ooze. Too late, a\nflagstone shifts and tilts, tipping everything on it into a pit\nbristling with iron stakes. The faint light of the doorway is suddenly\nfar out of reach. The stink of old death rises from below.",
+   "extra_descs": {}
+  },
+  "22190": {
+   "vnum": 22190,
+   "name": "A Falling Ceiling",
+   "map": {
+    "x": -12,
+    "y": -65,
+    "z": -1
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "east": {
+     "to_room": 22154,
+     "description": "To the east lies Pathway Around The Castle."
+    }
+   },
+   "description": "This chamber is so low that its ceiling of iron-banded stone almost\nbrushes the head. A grinding of hidden chains sounds in the walls as the\nceiling lurches and begins to descend. The doorway seems impossibly\ndistant behind. Dust sifts down in choking streams from the cracks\nabove.",
+   "extra_descs": {}
+  },
+  "22191": {
+   "vnum": 22191,
+   "name": "A Hollow Floor",
+   "map": {
+    "x": -13,
+    "y": -70,
+    "z": -1
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "north": {
+     "to_room": 22177,
+     "description": "To the north lies Pathway To Ocam's Reach."
+    }
+   },
+   "description": "A few planks still span this alcove off the cutting, grey and rotten\nover a shaft that drops into the dark. They crack the moment a foot\ncomes down, and the floor gives way all at once. The way back is only a\nstride off, yet out of reach in the gloom. Far below, something waits on\nthe stones.",
+   "extra_descs": {}
+  },
+  "22192": {
+   "vnum": 22192,
+   "name": "The Iron-Plated Passage",
+   "map": {
+    "x": -14,
+    "y": -68,
+    "z": -1
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "south": {
+     "to_room": 22158,
+     "description": "To the south lies Pathway To Ocam's Reach."
+    }
+   },
+   "description": "This passage is narrow and lined with plates of rusted iron, riveted\nedge to edge from floor to ceiling. Each step presses a hidden plate,\nand somewhere in the walls a mechanism clanks as rows of spikes shoot\nout from the seams. The way back is lost in darkness. The air reeks of\nold oil and rust.",
+   "extra_descs": {}
+  },
+  "22193": {
+   "vnum": 22193,
+   "name": "The Chute Of Blades",
+   "map": {
+    "x": -15,
+    "y": -70,
+    "z": -1
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "west": {
+     "to_room": 22160,
+     "description": "To the west lies Pathway To Ocam's Reach."
+    }
+   },
+   "description": "The floor here is polished slick by something that oozes from the walls,\nand it slopes away without warning. Hands find nothing to hold, and the\nslope steepens into a chute that ends in a nest of upturned blades. The\npassage above is gone in the dark. A sweet, rotten smell hangs over\neverything.",
+   "extra_descs": {}
+  },
+  "22194": {
+   "vnum": 22194,
+   "name": "The Rusted Grates",
+   "map": {
+    "x": -20,
+    "y": -69,
+    "z": -1
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "east": {
+     "to_room": 22164,
+     "description": "To the east lies Pathway To Ocam's Reach."
+    }
+   },
+   "description": "The floor of this chamber is a lattice of iron grates laid over a pit,\nand the grates are rusted through. One by one they sag and snap under\nany weight, spilling all upon them onto the spikes below. The ledge is a\nstride away and no nearer. A hot, foul breath rises from the depths.",
+   "extra_descs": {}
+  },
+  "22195": {
+   "vnum": 22195,
+   "name": "The Rider's Niche",
+   "map": {
+    "x": -19,
+    "y": -67,
+    "z": -1
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "south": {
+     "to_room": 22165,
+     "description": "To the south lies Pathway To Ocam's Reach."
+    }
+   },
+   "description": "A second rider stands in this cramped niche, carved like the one\noutside, but its sword is real iron and hangs on a greased hinge. Step\nbeneath it and it swings down with the weight of a falling tree. The\npassage is barely a stride behind. The floor is black with old blood.",
+   "extra_descs": {}
+  },
+  "22196": {
+   "vnum": 22196,
+   "name": "Beneath The Propped Slab",
+   "map": {
+    "x": -18,
+    "y": -66,
+    "z": -1
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "south": {
+     "to_room": 22166,
+     "description": "To the south lies Pathway To Ocam's Reach."
+    }
+   },
+   "description": "The ceiling of this chamber is a single slab of black stone held up by\nwooden props, rotten and leaning. A careless step jars them loose, and\nthe whole slab comes down with a roar that shakes the castle to its\nroots. The way out is a black slot at the edge of sight. Splinters and\ngrey dust cover the floor.",
+   "extra_descs": {}
+  },
+  "22197": {
+   "vnum": 22197,
+   "name": "The Fuming Pit",
+   "map": {
+    "x": -17,
+    "y": -68,
+    "z": -1
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "north": {
+     "to_room": 22167,
+     "description": "To the north lies Pathway To Ocam's Reach."
+    }
+   },
+   "description": "Thick, greenish fumes pool along the floor of this low chamber, rising\nfrom cracks in the stone. The air burns the throat at the first breath\nand seals it shut at the second. The passage outside blurs in the\npoisoned haze. Mold furs the walls in pale, sickly patches.",
+   "extra_descs": {}
+  },
+  "22198": {
+   "vnum": 22198,
+   "name": "A Windswept Cell",
+   "map": {
+    "x": -15,
+    "y": -66,
+    "z": -1
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "west": {
+     "to_room": 22168,
+     "description": "To the west lies Ocam's Reach."
+    }
+   },
+   "description": "Slits in the black rock open onto the howling sky, and the wind tears\nthrough them with such force that it can hurl a body against the far\nwall, where barbed iron hooks wait in rows. There is no handhold on the\nsmooth stone. The doorway is a stride away against the gale. Shrieking\ngusts make thought nearly impossible.",
+   "extra_descs": {}
+  },
+  "22199": {
+   "vnum": 22199,
+   "name": "A Chamber Of Hooks",
+   "map": {
+    "x": -17,
+    "y": -66,
+    "z": -1
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "east": {
+     "to_room": 22168,
+     "description": "To the east lies Ocam's Reach."
+    }
+   },
+   "description": "The far wall of this narrow chamber is hung from floor to ceiling with\nbarbed iron hooks, and many still hold rags and bones. A gust through a\nslit in the rock throws anything that stands here hard against them. The\ndoorway is already out of reach behind you. The wind screams through the\nslits without pause.",
+   "extra_descs": {}
+  },
+  "22200": {
+   "vnum": 22200,
+   "name": "A Room Of Iron Spines",
+   "map": {
+    "x": -15,
+    "y": -64,
+    "z": -1
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "west": {
+     "to_room": 22111,
+     "description": "To the west lies Ocam's Reach."
+    }
+   },
+   "description": "Spines of iron jut from every wall of this small room, and the floor\ntilts under any weight toward the longest of them. The doorway tips away\nabove you. The air is cold and metallic. Nothing that has slid here has\nclimbed back out.",
+   "extra_descs": {}
+  },
+  "22201": {
+   "vnum": 22201,
+   "name": "The Narrow Vault",
+   "map": {
+    "x": -17,
+    "y": -64,
+    "z": -1
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "east": {
+     "to_room": 22111,
+     "description": "To the east lies Ocam's Reach."
+    }
+   },
+   "description": "This narrow vault has no floor beyond its threshold, only a black drop\nlined with barbed rails that run down out of sight. A breath of cold air\nrises from it. The doorway is the last solid stone, and it is already\nbehind you. The rails are polished bright by what has slid down them.",
+   "extra_descs": {}
+  },
+  "22202": {
+   "vnum": 22202,
+   "name": "The Furnace Cell",
+   "map": {
+    "x": -15,
+    "y": -62,
+    "z": -1
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "west": {
+     "to_room": 22114,
+     "description": "To the west lies Ocam's Reach."
+    }
+   },
+   "description": "Heat rolls out of the dark the moment you cross the threshold, and the\nfloor of this cell is an iron grate over a bed of coals that flares\nwhite at any weight. Smoke fills the throat. The doorway is a pale\nsquare behind the glare. The bars glow red beneath your feet.",
+   "extra_descs": {}
+  },
+  "22203": {
+   "vnum": 22203,
+   "name": "The Pit Of Swords",
+   "map": {
+    "x": -17,
+    "y": -62,
+    "z": -1
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "east": {
+     "to_room": 22114,
+     "description": "To the east lies Ocam's Reach."
+    }
+   },
+   "description": "The floor ends a single stride past the doorway, and below lies a pit\nset thick with upturned swords, their edges still bright. The stone at\nthe lip is slick and slopes toward it. The only way out is behind you,\nand the slope will not let you turn. Old armour lies broken on the\nblades.",
+   "extra_descs": {}
+  },
+  "22204": {
+   "vnum": 22204,
+   "name": "The Hall Of Blades",
+   "map": {
+    "x": -8,
+    "y": -70,
+    "z": -1
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "north": {
+     "to_room": 22176,
+     "description": "To the north lies Pathway Around The Castle."
+    }
+   },
+   "description": "Thin wires stretched across the floor at ankle height trigger great\nscything blades that swing out of slots in the walls. They come from\nboth sides at once and leave no gap between. The opening behind you is a\nstride away and no help. Old stains blacken the stones underfoot.",
+   "extra_descs": {}
+  },
+  "22205": {
+   "vnum": 22205,
+   "name": "The Iron Maiden",
+   "map": {
+    "x": -5,
+    "y": -68,
+    "z": -1
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "north": {
+     "to_room": 22179,
+     "description": "To the north lies Hall Along The Inner Wall."
+    }
+   },
+   "description": "The narrow iron chamber is shaped like a standing coffin, its inner face\nset with long spikes. The door swings shut behind you on its oiled\nhinges, and the spikes close with it. There is no room to turn. The\ndarkness inside is complete.",
+   "extra_descs": {}
+  },
+  "22206": {
+   "vnum": 22206,
+   "name": "Under The Iron Slab",
+   "map": {
+    "x": -4,
+    "y": -66,
+    "z": -1
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "south": {
+     "to_room": 22161,
+     "description": "To the south lies Hall Along The Inner Wall."
+    }
+   },
+   "description": "The ceiling of this low chamber is a single slab of iron hung on chains\nthat run up into the dark. Scraps of crushed armour are pressed flat\ninto the floor beneath it like leaves in a book. A chain snaps with a\ncrack overhead, and the slab comes down. The doorway is gone in the\nfalling dark.",
+   "extra_descs": {}
+  },
+  "22207": {
+   "vnum": 22207,
+   "name": "The Creeping Walls",
+   "map": {
+    "x": -2,
+    "y": -68,
+    "z": -1
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "north": {
+     "to_room": 22159,
+     "description": "To the north lies Hall Along The Inner Wall."
+    }
+   },
+   "description": "This passage narrows until its walls almost brush your shoulders, and\nthose walls are not still. With a slow, grinding patience they creep\ninward on hidden tracks, and the dust of their passage sifts down from\nthe ceiling. The stones are stained dark at the height of a man's chest.\nThe hall behind you seems very far off in the blackness.",
+   "extra_descs": {}
+  },
+  "22208": {
+   "vnum": 22208,
+   "name": "The Hall Of Spikes",
+   "map": {
+    "x": -1,
+    "y": -68,
+    "z": -1
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "north": {
+     "to_room": 22178,
+     "description": "To the north lies Hall Along The Inner Wall."
+    }
+   },
+   "description": "The walls of this narrow passage are pierced with hundreds of small\nholes, and the floor is studded with pressure plates disguised as worn\nflagstones. A plate sinks underfoot, and great counterweights shift\nwithin the stone. Iron spikes shoot from every hole at once. The hall is\na stride behind and of no use.",
+   "extra_descs": {}
+  },
+  "22209": {
+   "vnum": 22209,
+   "name": "A Floor Of Rotten Planks",
+   "map": {
+    "x": 4,
+    "y": -65,
+    "z": -1
+   },
+   "sector_type": "inside",
+   "flags": [
+    "dark",
+    "deathtrap",
+    "indoors"
+   ],
+   "exits": {
+    "west": {
+     "to_room": 22155,
+     "description": "To the west lies Hall Along The Inner Wall."
+    }
+   },
+   "description": "The floor of this room is not stone at all but a skin of rotten planks\nlaid over a pit. They split beneath the first step and spill everything\nupon them onto the upturned blades below. The doorway is a pale shape\nabove, out of reach. The creak of failing timber is the last sound in\nthe dark.",
+   "extra_descs": {}
   }
  },
  "mobs": {

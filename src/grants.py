@@ -22,13 +22,38 @@ GRANTS = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'world',
 PARTS = ('mounts', 'ride', 'explore_all', 'waypoints_all', 'room', 'gearup', 'immortal', 'gold')
 
 
-def load_grants(path=GRANTS) -> dict:
+RUNTIME = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'lib', 'grants.json')
+
+
+def _read(path) -> dict:
     try:
         with open(path, encoding='utf-8') as f:
             data = json.load(f)
-    except FileNotFoundError:
+    except (FileNotFoundError, ValueError):
         return {}
     return {k.lower(): v for k, v in data.items() if not k.startswith('_') and isinstance(v, dict)}
+
+
+def load_grants(path=GRANTS) -> dict:
+    """The gifts: world/grants.json, and (with it) the ones the server itself gave out at
+    start (lib/grants.json: accounts.apply_moves). A part both give is the server's, the later
+    gift (a new `gearup` value gives the kit again, at today's level cap)."""
+    gifts = _read(path)
+    if path == GRANTS:
+        for name, gift in _read(RUNTIME).items():
+            gifts[name] = {**gifts.get(name, {}), **gift}
+    return gifts
+
+
+def add_runtime_gifts(gifts: dict, path=None):
+    """Add gifts the server gives out itself (lib/grants.json, never in git), by character name."""
+    path = path or RUNTIME
+    have = _read(path)
+    for name, gift in gifts.items():
+        have[name.lower()] = {**have.get(name.lower(), {}), **gift}
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'w', encoding='utf-8') as f:
+        json.dump(have, f, indent=2)
 
 
 def grant_key(name, gift) -> str:

@@ -371,7 +371,8 @@ async def main():
         AffectManager.remove_affect(again, rage)
         check(again.damroll == base, f'and when it ends the stat is where it began ({again.damroll})')
 
-    # ---------------- a death leaves a corpse with what you carry; you keep what you wear, every time
+    # ---------------- a death takes nothing: a hero keeps what they carry and what they wear, every
+    # time (the owner's call of 9 November: docs/SEAMLESS_POLISH_2026-11.md, the fourth batch)
     from objects import Object
     victim = hero('Zzmarqtest', 'warrior')
     killer = foe(9704, 13, 7, victim)
@@ -385,10 +386,10 @@ async def main():
         victim.inventory = [pouch]
         if await victim.take_damage(99999, killer):
             await CombatHandler.handle_death(killer, victim)
-        corpses = [o for o in getattr(victim.room, 'items', []) if getattr(o, 'name', '') == 'corpse of Zzmarqtest'
-                   and any(getattr(x, 'name', '') == f'test pouch {n}' for x in getattr(o, 'contents', []))]
-        check(corpses and victim.equipment.get('wield') is blade,
-              f'death {n + 1}: a corpse holds what was carried; the worn blade stays on')
+        taken = [o for o in ROOM.items if getattr(o, 'name', '') == 'corpse of Zzmarqtest'
+                 and any(getattr(x, 'name', '') == f'test pouch {n}' for x in getattr(o, 'contents', []))]
+        check(not taken and pouch in victim.inventory and victim.equipment.get('wield') is blade,
+              f'death {n + 1}: what was carried is still carried; the worn blade stays on')
     try:
         os.remove(path)
     except OSError:

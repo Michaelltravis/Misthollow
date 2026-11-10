@@ -4,7 +4,7 @@
 // the camera's focus. Recorded effects are short mp3s (audio/sfx, CC0); swings, spells and room
 // tone are made here (the 2D client's synths, ported); music streams from audio/music and
 // crossfades between zones and into the battle track. What sounds when: soundtable.js.
-import { SOUNDS, FILES, BEDS, VOICES, schoolOf } from './soundtable.js';
+import { SOUNDS, FILES, BEDS, VOICES, schoolOf, regionPad, REGION_PAD_LEVEL, regionMotif, REGION_MOTIF_LEVEL, REGION_MOTIF_EVERY } from './soundtable.js';
 
 const BASE = new URL('./audio/', import.meta.url).href;
 const ls = {
@@ -41,7 +41,7 @@ function tone(ctx, out, { f = 440, f2 = null, type = 'sine', dur = 0.2, vol = 0.
   o.start(t); o.stop(t + dur + 0.05);
   return dur + delay;
 }
-function hiss(ctx, out, { dur = 0.3, vol = 0.1, delay = 0, type = 'bandpass', f = 1200, f2 = null, q = 0.8 }) {
+function hiss(ctx, out, { dur = 0.3, vol = 0.1, delay = 0, type = 'bandpass', f = 1200, f2 = null, q = 0.8, attack = null }) {
   const t = ctx.currentTime + delay;
   const src = ctx.createBufferSource();
   src.buffer = noiseBuf(ctx);
@@ -51,7 +51,8 @@ function hiss(ctx, out, { dur = 0.3, vol = 0.1, delay = 0, type = 'bandpass', f 
   if (f2) flt.frequency.exponentialRampToValueAtTime(f2, t + dur);
   const g = ctx.createGain();
   g.gain.setValueAtTime(0.0001, t);
-  g.gain.exponentialRampToValueAtTime(vol, t + Math.min(0.02, dur * 0.2));
+  // (`attack`: a slow swell, so rain's overlapping bursts run together instead of pulsing)
+  g.gain.exponentialRampToValueAtTime(vol, t + (attack != null ? Math.min(attack, dur * 0.45) : Math.min(0.02, dur * 0.2)));
   g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
   src.connect(flt); flt.connect(g); g.connect(out);
   src.start(t, Math.random() * 1.5); src.stop(t + dur + 0.05);
@@ -139,9 +140,9 @@ class Sound {
     // the 2D client's one switch ("ambience off") silences /play too until it is set here
     const m = ls.get('mh3d_mute');
     this.muted = m != null ? m === '1' : ls.get('misthollow_ambience') === 'off';
-    const q = ls.get('mh3d_quality') || 'high';
-    this.maxVoices = VOICES[q === 'med' ? 'medium' : q] || VOICES.high;
+    this.setTier(ls.get('mh3d_quality') || 'high');
     this.bed = { key: null, nodes: [], timer: null };
+    this.pad = { key: null, want: null, voices: [], timer: null };      // the region's chord under the music, and its tune (regionPad)
     this.music = { want: null, zone: null, battle: false, decks: [], cur: -1, timer: null };
     this._unlock = () => this.unlock();
     for (const ev of ['pointerdown', 'keydown', 'touchstart']) window.addEventListener(ev, this._unlock, { capture: true });
@@ -150,6 +151,9 @@ class Sound {
       if (document.hidden) this.ctx.suspend().catch(() => {}); else this.ctx.resume().catch(() => {});
     });
   }
+
+  // how many voices at once, by graphics quality (again when it is changed in Settings)
+  setTier(q) { this.maxVoices = VOICES[q === 'med' ? 'medium' : q] || VOICES.high; }
 
   // ---- start (on a user gesture: browsers keep audio off until then) ----
   unlock() {
@@ -170,6 +174,7 @@ class Sound {
       PRELOAD.forEach(k => { for (let i = 1; i <= FILES[k]; i++) this.load(k, i); });
       setTimeout(() => Object.keys(FILES).forEach(k => { for (let i = 1; i <= FILES[k]; i++) this.load(k, i); }), 1200);
       if (this.bed.want) { const w = this.bed.want; this.bed.want = null; this.ambience(w); }
+      if (this.pad.want) { const w = this.pad.want; this.pad.want = null; this.regionPad(w); }
       if (this.music.want) this.playMusic(this.music.want, 0.5);
     }
     if (this.ctx.state === 'suspended') this.ctx.resume().catch(() => {});
@@ -285,6 +290,57 @@ class Sound {
   }
 
   // ---- ambience: a room tone and its calls, by the zone's look (immersion.js beds) ----
+  // The region's chord (soundtable.js REGION_PAD): a few soft oscillators under the music, each
+  // swelling and ebbing at its own slow rate so the chord never sits still. Crossing into another
+  // region fades the old chord out over four seconds as the new one comes in. null: silence.
+  regionPad(region) {
+    if (!this.ctx) { this.pad.want = region; return; }
+    if (this.pad.key === region) return;
+    const c = this.ctx, t = c.currentTime;
+    for (const v of this.pad.voices) {
+      try {
+        v.gain.gain.cancelScheduledValues(t);
+        v.gain.gain.setTargetAtTime(0.0001, t, 1.2);
+        v.lfoGain.gain.setTargetAtTime(0, t, 0.5);
+        v.osc.stop(t + 5); v.lfo.stop(t + 5);
+      } catch (_) { /* already stopped */ }
+    }
+    clearTimeout(this.pad.timer);
+    this.pad = { key: region, want: null, voices: [], timer: null };
+    const spec = regionPad(region);
+    if (!spec) return;
+    this.pad.timer = setTimeout(() => this.motif(region), 9000);      // its tune, once the chord has risen
+    spec.notes.forEach((f, i) => {
+      const osc = c.createOscillator(), gain = c.createGain(), flt = c.createBiquadFilter();
+      const lfo = c.createOscillator(), lfoGain = c.createGain();
+      osc.type = spec.wave; osc.frequency.value = f; osc.detune.value = (i % 2 ? 4 : -4);
+      flt.type = 'lowpass'; flt.frequency.value = spec.cut; flt.Q.value = 0.4;
+      const level = REGION_PAD_LEVEL / (1 + i * 0.35);          // the upper notes quieter
+      gain.gain.value = 0.0001;
+      gain.gain.setTargetAtTime(level, t, 2.5);
+      lfo.frequency.value = 0.035 + 0.017 * i; lfoGain.gain.value = level * 0.45;
+      lfo.connect(lfoGain); lfoGain.connect(gain.gain);
+      osc.connect(flt); flt.connect(gain); gain.connect(this.bus.music);
+      osc.start(t); lfo.start(t);
+      this.pad.voices.push({ osc, gain, lfo, lfoGain });
+    });
+  }
+  // the region's tune over its chord (soundtable.js regionMotif), told again every half minute or so
+  // while the hero is still there; not while the page is hidden or the sound stopped (its notes would
+  // all sound at once on coming back)
+  motif(region) {
+    if (!this.ctx || this.pad.key !== region) return;
+    const m = regionMotif(region);
+    if (!m) return;
+    if (this.ctx.state === 'running' && !document.hidden) {
+      for (const n of m.notes) {
+        tone(this.ctx, this.bus.music, { f: n.f, type: m.wave, dur: n.dur, vol: REGION_MOTIF_LEVEL, delay: n.at, attack: 0.06 });
+        tone(this.ctx, this.bus.music, { f: n.f * 2, type: 'sine', dur: n.dur * 0.6, vol: REGION_MOTIF_LEVEL * 0.25, delay: n.at, attack: 0.02 });
+      }
+    }
+    const [lo, hi] = REGION_MOTIF_EVERY;
+    this.pad.timer = setTimeout(() => this.motif(region), (m.length + lo + Math.random() * (hi - lo)) * 1000);
+  }
   ambience(key) {
     if (!this.ctx) { this.bed.want = key; return; }
     if (this.bed.key === key) return;
@@ -310,7 +366,7 @@ class Sound {
     lfo.connect(lfoG); lfoG.connect(g.gain);
     src.connect(flt); flt.connect(g); g.connect(this.bus.amb);
     src.start(); lfo.start();
-    this.bed.nodes.push(src, lfo, g);
+    this.bed.nodes.push(src, lfo, g, lfoG);          // (the swell fades with the bed: left at full, it held the old bed up until it was cut)
     if (spec.chirp) {
       const loop = () => {
         if (this.bed.key !== key) return;

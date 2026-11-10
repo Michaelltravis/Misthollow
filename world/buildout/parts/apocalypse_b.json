@@ -54,7 +54,7 @@
    "look": "castle"
   },
   "22153": {
-   "description": "Inside the bastion the passage is pitch black and close, and the floor slopes treacherously under a slick of black ooze. Too late, a flagstone shifts and tilts, tipping everything on it into a pit bristling with iron stakes. Faint grey light marks the way back north and an opening to the south, both suddenly far out of reach. The stink of old death rises from below.",
+   "description": "The pathway passes through the dark heart of a bastion here, roofed in stone and close on every side. The floor is slick with black ooze that seeps from a low opening to the west, and from beyond it comes the stink of old death. Faint grey light marks the way north and an opening to the south. Careful feet have kept to the far wall.",
    "look": "castle"
   },
   "14221": {
@@ -62,7 +62,7 @@
    "look": "castle"
   },
   "22154": {
-   "description": "This covered passage is so low that its ceiling of iron-banded stone almost brushes the head. A grinding of hidden chains sounds in the walls as the ceiling lurches and begins to descend. Rubble narrows the way south, and the way north seems impossibly distant behind. Dust sifts down in choking streams from the cracks above.",
+   "description": "A covered stretch of the pathway runs north and south here beneath a roof of iron-banded stone. To the west a low doorway opens into a chamber whose ceiling hangs lower still, and the grinding of hidden chains sounds somewhere in its walls. Rubble lies heaped along the footing. Dust sifts down in thin streams from the cracks above.",
    "look": "castle"
   },
   "14223": {
@@ -78,7 +78,7 @@
    "look": "castle"
   },
   "22176": {
-   "description": "The roofed passage is utterly dark, and the air inside is warm and wet with a sickly, sweet stench. Thin wires stretched across the floor at ankle height trigger great scything blades that swing out of slots in the walls. The way runs on east and back west, though few who come this far ever reach either. Old stains blacken the stones underfoot.",
+   "description": "The roofed passage runs east and west, utterly dark, the air warm and wet with a sickly, sweet stench. To the south a side opening is crossed by thin wires at ankle height, and dark slots gape in its walls. Old stains blacken the stones before it. The way on keeps hard to the far wall.",
    "look": "castle"
   },
   "22105": {
@@ -94,11 +94,11 @@
    "look": "castle"
   },
   "22177": {
-   "description": "The roofed cutting is black as pitch, its rough walls sweating cold water. Halfway along, the floor is hollow, and it gives way with a crack of rotten timber over a shaft that drops into the dark. The way back east and the way on west are only a few strides off, yet out of reach in the gloom. The wind moans across the shaft's mouth like a voice.",
+   "description": "The roofed cutting runs east and west through rough rock that sweats cold water. On its south side the floor gives way to a square shaft framed in rotten timber, its boards long since fallen in. The wind moans across the shaft's mouth like a voice. A narrow ledge along the far wall keeps the way dry.",
    "look": "castle"
   },
   "22158": {
-   "description": "Here the passage is narrow and lined with plates of rusted iron, riveted edge to edge from floor to ceiling. Each step presses a hidden plate, and somewhere in the walls a mechanism clanks as rows of spikes shoot out from the seams. The passage runs east and west, both ends lost in darkness. The air reeks of old oil and rust.",
+   "description": "The passage runs east and west here between walls of rough stone. To the north a side passage lined with plates of rusted iron, riveted edge to edge, opens off the way, and the reek of old oil and rust drifts from it. The plates nearest the opening are scored and pitted. Something in the walls clanks now and then, as if waiting.",
    "look": "castle"
   },
   "22106": {
@@ -106,7 +106,7 @@
    "look": "castle"
   },
   "22160": {
-   "description": "A short, crooked passage drops away from the door of bone and iron, its floor polished slick by something that oozes from the walls. The slope steepens without warning into a chute that ends in a nest of upturned blades. North lies the narrow hall with the door, and west the passage levels toward another chamber. A sweet, rotten smell hangs in the dark.",
+   "description": "A short, crooked passage runs from the door of bone and iron to the north and levels west toward another chamber. To the east the floor drops away into a chute polished slick by something that oozes from the walls. A sweet, rotten smell rises from it. Those who came before kept close to the western wall.",
    "look": "castle"
   },
   "22028": {
@@ -122,11 +122,11 @@
    "look": "castle"
   },
   "22164": {
-   "description": "The floor of this passage is a lattice of iron grates laid over a pit, and the grates are rusted through. One by one they sag and snap under any weight, spilling all upon them onto the spikes below. The passage leads north and south, though the grates between are the only way across. A hot, foul breath rises from the depths.",
+   "description": "The passage runs north and south here along a narrow ledge of solid stone. To the west the floor becomes a lattice of iron grates laid over a pit, rusted through and sagging. A hot, foul breath rises between the bars. The ledge is worn smooth by the feet of those who knew better than to step off it.",
    "look": "castle"
   },
   "22165": {
-   "description": "The passage turns a sharp corner here, and in the angle stands a statue of an armoured rider on a gaunt horse, its stone arm raised. The sword in its fist is no carving but real iron, and it swings down on a hidden hinge at anyone who passes beneath. The way bends from south to east around the statue's base. Dark stains spatter the plinth.",
+   "description": "The passage turns a sharp corner here, and in the angle stands a statue of an armoured rider on a gaunt horse, its stone arm raised. The way bends from south to east around the statue's base. Behind it, to the north, a dark niche opens in the wall, and from it comes the creak of a hidden hinge. Dark stains spatter the plinth.",
    "look": "castle"
   },
   "22109": {
@@ -134,11 +134,11 @@
    "look": "castle"
   },
   "22166": {
-   "description": "The ceiling of this passage is a single slab of black stone held up by wooden props, rotten and leaning. A careless step jars them loose, and the whole slab comes down with a roar that shakes the castle to its roots. The passage runs from south to east beneath the slab. Splinters and grey dust cover the floor.",
+   "description": "The passage runs from south to east here beneath a ceiling of solid rock. To the north an opening leads under a slab of black stone held up by wooden props, rotten and leaning. Splinters and grey dust spill out across the floor. No one who knew this place would breathe hard beside it.",
    "look": "castle"
   },
   "22167": {
-   "description": "Thick, greenish fumes pool along the floor of this long passage, rising from cracks in the stone. The air burns the throat at the first breath and seals it shut at the second. East and west the passage stretches on, its far ends blurred by the poisoned haze. Mold furs the walls in pale, sickly patches.",
+   "description": "This long passage runs east and west, its walls furred with pale mold. To the south, cracks in the floor open into a low side chamber where thick, greenish fumes pool and stir. The air near it stings the eyes. A line of old bones lies along the southern wall, swept aside by those who came after.",
    "look": "castle"
   },
   "22110": {
@@ -146,11 +146,11 @@
    "look": "castle"
   },
   "22168": {
-   "description": "Inside the promontory the passage is cut through black rock and pierced with slits that open onto the howling sky beyond. The wind tears through them with such force that it can hurl a body against the far wall, where barbed iron hooks wait in rows. The passage leads north deeper into the Reach and south back toward the castle. Shrieking gusts make thought nearly impossible.",
+   "description": "The passage is cut through black rock here, leading north deeper into Ocam's Reach and south back toward the castle. Doorways open east and west, and through each comes the howl of the wind from slits in the promontory's face. Barbed iron hooks glint in rows beyond them. Here, between the two, the air is strangely still.",
    "look": "castle"
   },
   "22169": {
-   "description": "Four ways meet in this cramped hall at the heart of Ocam's Reach, and every one of them is a snare. East a doorway marked with a carved sword opens onto Ocam's Weapon's, and west another, marked with a carved breastplate, leads to Ocam's Armor's. North the corridor tightens among spines of iron, and south it runs back the way it came. The floor in the middle is a trapdoor, and it swings open with a hollow bang.",
+   "description": "Four ways meet in this cramped hall at the heart of Ocam's Reach, and two of them are snares. East a doorway marked with a carved sword opens onto Ocam's Weapon's, and west another, marked with a carved breastplate, leads to Ocam's Armor's. North the corridor tightens among spines of iron, and south it runs back the way it came. Scratched into the floor by many hands is a single word: walk.",
    "look": "castle"
   },
   "22174": {

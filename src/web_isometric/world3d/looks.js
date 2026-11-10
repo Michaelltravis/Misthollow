@@ -248,6 +248,9 @@ function withKin(look, m) {
 
 // creatures whose words no safe rule reads right, by prototype: what they are
 const BY_PROTO = {
+  // the world's great villains on bodies of their own (bestiary.js 'body:...')
+  647006: 'body:ostragoth',   // Ostragoth, the vampire lord
+  22070: 'body:pestilence', 22071: 'body:war', 22072: 'body:famine', 22073: 'body:death',   // the Horsemen
   2500: 'ghost',     // the shadow guardian: a shade that screams a challenge
   9712: 'ghost',     // the Echo of the Archmage, pacing out her last spell
   9775: 'ghost',     // a silent echo, the shape of a sound

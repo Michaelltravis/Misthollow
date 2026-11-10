@@ -1,6 +1,7 @@
 // Where the extra action bars float (hud/bars.js), pure (tests/web run it). Each extra bar is a
 // panel the player drags by its grip; it stays wholly on screen, lies along or across (vertical),
-// can be locked, and how many show is the player's choice (0-3). Kept per character and device in
+// can be locked (where it sits, and what is on it), and how many show is the player's choice
+// (0-3). The main bar has a lock of its own. Kept per character and device in
 // localStorage: a convenience, so anything odd read back falls to the defaults.
 export const BAR_COUNT = 3;
 export const SLOT_PX = 54;          // one slot (48) and its gap (6), unscaled
@@ -26,9 +27,9 @@ export function clamp(pos, size, vw, vh) {
   return { x, y };
 }
 
-// the saved layout: {count, bars: [{x, y, vertical, locked} | null] × 3}
+// the saved layout: {count, mainLocked, bars: [{x, y, vertical, locked} | null] × 3}
 export function defaults() {
-  return { count: 1, bars: new Array(BAR_COUNT).fill(null) };
+  return { count: 1, mainLocked: false, bars: new Array(BAR_COUNT).fill(null) };
 }
 export function parse(text) {
   const out = defaults();
@@ -37,6 +38,7 @@ export function parse(text) {
   if (!d || typeof d !== 'object') return out;
   const n = Number(d.count);
   if (Number.isInteger(n) && n >= 0 && n <= BAR_COUNT) out.count = n;
+  out.mainLocked = d.mainLocked === true;
   if (Array.isArray(d.bars)) {
     for (let i = 0; i < BAR_COUNT; i++) {
       const b = d.bars[i];
@@ -48,7 +50,15 @@ export function parse(text) {
   return out;
 }
 export function serialize(layout) {
-  return JSON.stringify({ count: layout.count, bars: layout.bars.map(b => (b ? { x: Math.round(b.x), y: Math.round(b.y), vertical: !!b.vertical, locked: !!b.locked } : null)) });
+  return JSON.stringify({ count: layout.count, mainLocked: !!layout.mainLocked, bars: layout.bars.map(b => (b ? { x: Math.round(b.x), y: Math.round(b.y), vertical: !!b.vertical, locked: !!b.locked } : null)) });
+}
+
+// is slot i (abilities.js: the main bar's 16, then 8 for each extra bar) on a locked bar
+export function slotLocked(layout, i) {
+  if (!(i >= 0)) return false;
+  if (i < 16) return !!layout.mainLocked;
+  const b = layout.bars[Math.floor((i - 16) / 8)];
+  return !!(b && b.locked);
 }
 
 // do two rectangles overlap (for tests and the default stacking)

@@ -1,6 +1,7 @@
 // The almanac (Y): your daily streak (the reward comes as you log in each day), achievements
 // with their progress, the titles you have earned (Wear one: `title <name>`), collections and
 // gear sets. Data: /almanac.
+import { netNote } from './netfail.js';
 
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
@@ -72,8 +73,10 @@ export function createAlmanac(root, { fetchAlmanac, send, prefill }) {
     }
   }
   async function refresh() {
-    try { data = await fetchAlmanac(); } catch (_) { data = {}; }
+    let failed = false;
+    try { data = await fetchAlmanac(); } catch (_) { data = {}; failed = true; }
     render();
+    netNote(root, failed, refresh);
   }
   function toggle(on = !open) {
     open = on;
