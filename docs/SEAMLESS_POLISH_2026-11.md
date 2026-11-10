@@ -217,16 +217,22 @@ Seen and heard in the running game (as the test paladin, with the immortal `sett
   147/220/370 Hz to the Frostmarch's 165/247/392/740 and back), the audio running;
 - War, Pestilence and Death standing in the Guardian Chambers on their own bodies.
 
-Not seen: **the frame rate** (the test browser's page does not draw while its window is hidden,
-so a count of frames says nothing); **Ostragoth in his chamber** (he is not in the room until his
-lair entrance brings him, and it did not fire for an immortal walking in).
+- **Ostragoth in the King's Chamber** on his own body (2.8 m, the mesh `ostragoth`), fighting. An
+  immortal does not set off his lair's entrance (`lairs.on_enter`), so he was put there with
+  `mload 647006`: the body and the fight were seen, the bat's flight in was not.
+- **The cost of the wider room ring**, by timing drawn frames (the engine stepped by hand, 120
+  frames a sample, a pixel read back each sample so the graphics card's work is counted): on the
+  Lantern Road at 1280x720, High, an RTX 4070, **2.3 ms a frame with the wide ring (19 rooms
+  drawn) against 2.2 ms with the old (9 rooms)**. A tenth of a millisecond. A machine without a
+  graphics card is on Low, which keeps the old ring.
 
 ## Where it stands (end of 9 November)
 
 Everything in this document is done and committed on `claude/seamless-polish`.
 
 For the owner to look at: the eight calls in the fourth batch's table (each with how to take it
-back), and the two things above that could not be seen from here.
+back). One thing was not seen from here: Ostragoth's flight into his chamber as a bat (an
+immortal does not set it off; `tests/test_lairs.py` covers the server's side).
 
 ## Pass 2: the owner's calls (each changes how the game plays)
 
