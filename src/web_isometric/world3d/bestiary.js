@@ -50,6 +50,14 @@ export const BESTIARY = [
   [/\b(sewer king|rat king)\b/, { proc: 'rat', body: 'rat_king', h: 1.0, tint: 0x7a6656 }],
   // Nerathis, the Drowned King (tools/art3d/blender/models/drowned_king.py): his own body and colours
   [/\b(nerathis|drowned king)\b/, { mob: 'cyclops', body: 'drowned_king', h: 3.3 }],
+  // The other great villains (tools/art3d/blender/models/villains.py), each on its own body. They are
+  // found by prototype, never by word (looks.js BY_PROTO): "war", "death" and "pestilence" are in the
+  // names of war dogs, death knights and plague cultists too.
+  [/^body:ostragoth$/, { mob: 'cyclops', body: 'ostragoth', h: 2.9 }],
+  [/^body:war$/, { mob: 'cyclops', body: 'war', h: 3.5 }],
+  [/^body:famine$/, { mob: 'cyclops', body: 'famine', h: 3.5 }],
+  [/^body:pestilence$/, { mob: 'cyclops', body: 'pestilence', h: 3.2 }],
+  [/^body:death$/, { mob: 'cyclops', body: 'death', h: 3.6 }],
   [/\bstick mother\b/, { proc: 'spider', h: 1.8, tint: 0x6a5032, body: 'stick_mother' }],
   [/\b(deepspawn|argos)\b/, { mob: 'cthulhu', h: 1.6, fly: 0.2, tint: 0x7a6a5a, body: 'horror' }],
   [/\b(abyssal angler|anglerfish)\b/, { mob: 'piranha', h: 1.4, tint: 0x2a3440, body: 'fish' }],

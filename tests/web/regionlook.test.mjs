@@ -59,3 +59,20 @@ test("a region's own stone, where a zone's words name none", async () => {
   assert.equal(stoneFor(null), null);
   for (const id of Object.keys(REGION_STONE)) assert.ok(regions.some(r => r.id === id), `${id} is a region`);
 });
+
+test('the great villains have bodies of their own, found by prototype and never by a word in a name', async () => {
+  const { beastLook } = await import('../../src/web_isometric/world3d/bestiary.js');
+  const index = JSON.parse(fs.readFileSync(new URL('../../src/web_isometric/art3d/bodies/index.json', import.meta.url), 'utf8'));
+  for (const v of ['ostragoth', 'war', 'famine', 'pestilence', 'death']) {
+    assert.equal(beastLook(`body:${v}`).body, v);
+    assert.equal(index[v].kind, 'boss', `${v} is built`);
+  }
+  for (const other of ['a death knight', 'the death dog', 'a trained war dog', 'a royal war mage', 'a plague cultist', 'war', 'death', 'famine', 'pestilence']) {
+    const look = beastLook(other);
+    assert.ok(!look || !['war', 'death', 'famine', 'pestilence', 'ostragoth'].includes(look.body), `${other} does not borrow a Horseman's body`);
+  }
+  const src = fs.readFileSync(new URL('../../src/web_isometric/world3d/looks.js', import.meta.url), 'utf8');
+  for (const [vnum, v] of [[647006, 'ostragoth'], [22070, 'pestilence'], [22071, 'war'], [22072, 'famine'], [22073, 'death']]) {
+    assert.ok(new RegExp(`${vnum}: 'body:${v}'`).test(src), `prototype ${vnum} is ${v}`);
+  }
+});
